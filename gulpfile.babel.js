@@ -16,7 +16,7 @@ exports.default = function() {
         .pipe(babel())
         .pipe(concat('decorator-validation.js'))
         .pipe(uglify())
-        .pipe(rename({ extname: '.min.js' }))
+        // .pipe(rename({ extname: '.min.js' }))
         .pipe(sourcemaps.write())
         .pipe(dest('build/'));
 }
