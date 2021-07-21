@@ -1,0 +1,153 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine validation/Validators/MaxLengthValidator.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>validation/Validators/MaxLengthValidator.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {Errors} from "../types";
+import Validator from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+
+/**
+ * Max Length Validator
+ *
+ * @class MaxLengthValidator
+ * @extends Validator
+ * @memberOf Validators
+ */
+export default class MaxLengthValidator extends Validator {
+    constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH){
+        super(ValidationKeys.MAX_LENGTH, message)
+    }
+
+    hasErrors(value: string, maxlength: number, message?: string): Errors {
+        if (value === undefined)
+            return;
+        return value.length > maxlength ? this.getMessage(message || this.message, maxlength) : undefined;
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
