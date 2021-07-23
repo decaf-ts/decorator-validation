@@ -71,7 +71,7 @@ git add .
 
 git commit "Updated package.json Version"
 
-git tag -a "$TAG" -m "$MESSAGE"
+# git tag -a "$TAG" -m "$MESSAGE"
 
 git push
 
