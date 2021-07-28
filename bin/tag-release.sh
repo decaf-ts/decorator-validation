@@ -52,7 +52,7 @@ git tag
 
 TAG=""
 
-while [[ "$TAG" == "" || ! "${TAG}" =~ ^v\d+\.\d+.\d+(\-[\d\w\-]+)?$ ]]; do
+while [[ "$TAG" == "" || ! "${TAG}" =~ ^v[0-9]+\.[0-9]+.[0-9]+(\-[0-9a-zA-Z\-]+)?$ ]]; do
   TAG=$(ask "What should be the new tag? (accepts v*.*.*[-...])")
 done
 
@@ -60,6 +60,11 @@ MESSAGE=$(ask "Tag Message")
 
 echo "Preparing Release... "
 npm run prepare-release
+
+if [[ $(git status --porcelain) ]]; then
+  git add .
+  git commit -m "after release preparation"
+fi
 
 npm version "$TAG"
 
