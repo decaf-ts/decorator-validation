@@ -70,7 +70,7 @@ npm version "$TAG"
 
 git add .
 
-git commit "Updated package.json Version"
+git commit -m "Updated package.json Version"
 
 git tag -a "$TAG" -m "$MESSAGE"
 
