@@ -68,12 +68,6 @@ fi
 
 npm version "$TAG"
 
-git add .
-
-git commit -m "Updated package.json Version"
-
-git tag -a "$TAG" -m "$MESSAGE"
-
 git push
 
 git push --tags
