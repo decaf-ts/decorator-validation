@@ -10,7 +10,7 @@
     "build:prod": "rimraf ./build && npm run minify",
     "minify": "npm install gulp gulp-babel gulp-rename gulp-sourcemaps gulp-typescript gulp-uglify gulp-concat && npx gulp && npm uninstall gulp gulp-babel gulp-rename gulp-sourcemaps gulp-typescript gulp-uglify gulp-concat",
     "test": "jest --coverage",
-    "prepare-release": "npm run build:prod && npm run coverage && npm run docs",
+    "prepare-release": "npm run build:prod && npm run docs",
     "release": "./bin/tag-release.sh",
     "clean-publish": "npx clean-publish",
     "coverage": "npm test && npm install jest-coverage-badges && jest-coverage-badges --input \"./workdocs/coverage/coverage-summary.json\" --output \"./workdocs/badges\" && npm uninstall jest-coverage-badges",
