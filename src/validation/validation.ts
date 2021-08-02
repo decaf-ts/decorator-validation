@@ -79,8 +79,7 @@ export function validate<T extends Model>(obj: T) : Errors{
         const errs = decorators.reduce((acc, decorator: {key: string, props: {}}) => {
             const validator = ValidatorRegistry.getValidator(decorator.key);
             if (!validator){
-                // @ts-ignore
-                throw new Error(`Could not find Matching validator for ${decorator.key} for property ${decoratedProperty.prop}`)
+                throw new Error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`)
             }
 
             // @ts-ignore

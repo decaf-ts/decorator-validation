@@ -4,11 +4,6 @@
  */
 
 /**
- * @typedef Err
- */
-export type Err = Error | string | undefined
-
-/**
  * Util function to retrieve the decorators for the provided Property
  *
  * @function getPropertyDecorators
