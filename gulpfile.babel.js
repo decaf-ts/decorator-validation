@@ -15,7 +15,7 @@ exports.default = function() {
         .pipe(tsProject())
         .pipe(babel())
         // .pipe(concat('index.js'))
-        .pipe(uglify())
+        // .pipe(uglify())
         // .pipe(rename({ extname: '.min.js' }))
         .pipe(sourcemaps.write())
         .pipe(dest('build/'));
