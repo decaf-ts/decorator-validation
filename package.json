@@ -44,7 +44,6 @@
     "@babel/preset-env": "^7.15.0",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.0.1",
-    "clean-publish": "^2.2.0",
     "jest": "^27.0.6",
     "jsdoc": "^3.6.7",
     "markdown-include": "^0.4.3",
@@ -57,7 +56,5 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "gulp-clone": "^2.0.1",
-    "gulp-merge": "^0.1.1"
   }
 }
