@@ -2,6 +2,7 @@ module.exports = {
     "files": [
         ".github",
         "docs",
+        "build",
         "workdocs",
         "jest.config.json",
         "tests",
@@ -10,7 +11,8 @@ module.exports = {
         "nodemon.json",
         "package-lock.json",
         "gulpfile.babel.js",
-        ".clean-publish.js"
+        ".clean-publish.js",
+        "tsconfig.json"
     ],
     "packageManager": "npm",
     "access": "public"
