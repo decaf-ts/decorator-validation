@@ -1,7 +1,6 @@
 .github
 /bin
 /docs
-/src
 /tests
 /workdocs
 .gitignore
