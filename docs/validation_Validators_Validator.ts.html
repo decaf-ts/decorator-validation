@@ -123,7 +123,7 @@ import {DEFAULT_ERROR_MESSAGES} from "../constants";
  */
 export default abstract class Validator implements Validatable{
     readonly validationKey: string;
-    protected message: string;
+    readonly message: string;
 
 
     protected constructor(validationKey: string, message: string = DEFAULT_ERROR_MESSAGES.DEFAULT) {
