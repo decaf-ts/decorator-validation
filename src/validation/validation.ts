@@ -1,7 +1,6 @@
 import Model from "../Model/Model";
 import {Errors, Registry} from "./types";
 import {getPropertyDecorators} from '../utils'
-import * as Validators from './Validators'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
 
@@ -27,12 +26,16 @@ function ValRegistry(...initial: any[]) : Registry {
         self.register = function(...validator: any[]) : void{
             validator.forEach(v => {
                 if (v instanceof Validator){
+                    if (v.validationKey in cache)
+                        return;
                     cache[v.validationKey] = v;
                 } else {
                     // @ts-ignore
                     const constructorMethod = v.default || v;
                     // @ts-ignore
                     const instance: Validator = new constructorMethod();
+                    if (instance.validationKey in cache)
+                        return;
                     cache[instance.validationKey] = instance;
                 }
             });
@@ -58,7 +61,7 @@ function ValRegistry(...initial: any[]) : Registry {
  * @constant
  * @memberOf Validation
  */
-export const ValidatorRegistry = ValRegistry(...Object.values(Validators));
+export const ValidatorRegistry = ValRegistry();
 
 /**
  * Analyses the decorations of the properties and validates the obj according to them

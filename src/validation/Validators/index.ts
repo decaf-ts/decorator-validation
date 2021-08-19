@@ -3,7 +3,7 @@
  * @memberOf Validation
  */
 
-
+export * as Validator from './Validator';
 export * as EmailValidator from './EmailValidator';
 export * as RequiredValidator from './RequiredValidator';
 export * as MaxLengthValidator from './MaxLengthValidator';

@@ -112,7 +112,7 @@ describe('Validation by decorators test', function() {
     });
 
     it('Test all non required Validators for undefined values pass', function() {
-        Object.values(Validators).forEach(v => {
+        Object.values(Validators).filter(v => v.default.name !== 'Validator').forEach(v => {
             // @ts-ignore
             const validator: Validator = new (v.default)();
             if (validator.validationKey === ValidationKeys.REQUIRED)
