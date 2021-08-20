@@ -14,6 +14,7 @@ import MinValidator from './Validators/MinValidator';
 import MinLengthValidator from './Validators/MinLengthValidator';
 import URLValidator from "./Validators/URLValidator";
 import PatternValidator from "./Validators/PatternValidator";
+import {ValidatorDefinition} from "./types";
 
 /**
  * @param {string} key
@@ -42,7 +43,7 @@ export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) => (
         target,
         propertyKey
     );
-    ValidatorRegistry.register(RequiredValidator);
+    ValidatorRegistry.register({validator: RequiredValidator, validationKey: ValidationKeys.REQUIRED});
 }
 
 /**
@@ -66,7 +67,7 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
         target,
         propertyKey
     );
-    ValidatorRegistry.register(MinValidator);
+    ValidatorRegistry.register({validator: MinValidator, validationKey: ValidationKeys.MIN});
 }
 
 /**
@@ -90,7 +91,8 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
         target,
         propertyKey
     );
-    ValidatorRegistry.register(MaxValidator);
+
+    ValidatorRegistry.register({validator: MaxValidator, validationKey: ValidationKeys.MAX});
 }
 
 /**
@@ -114,7 +116,7 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         target,
         propertyKey
     );
-    ValidatorRegistry.register(MinLengthValidator);
+    ValidatorRegistry.register({validator: MinLengthValidator, validationKey: ValidationKeys.MIN_LENGTH});
 }
 
 /**
@@ -138,7 +140,7 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         target,
         propertyKey
     );
-    ValidatorRegistry.register(MaxLengthValidator);
+    ValidatorRegistry.register({validator: MaxLengthValidator, validationKey: ValidationKeys.MAX_LENGTH});
 }
 
 /**
@@ -162,7 +164,7 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
         target,
         propertyKey
     );
-    ValidatorRegistry.register(PatternValidator);
+    ValidatorRegistry.register({validator: PatternValidator, validationKey: ValidationKeys.PATTERN});
 }
 
 /**
@@ -184,7 +186,7 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL) => (target
         target,
         propertyKey
     );
-    ValidatorRegistry.register(EmailValidator);
+    ValidatorRegistry.register({validator: EmailValidator, validationKey: ValidationKeys.EMAIL});
 }
 
 /**
@@ -206,5 +208,5 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
         target,
         propertyKey
     );
-    ValidatorRegistry.register(URLValidator);
+    ValidatorRegistry.register({validator: URLValidator, validationKey: ValidationKeys.URL});
 }

@@ -73,6 +73,8 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any
         target,
         propertyKey
     );
+    ValidatorRegistry.register({validator: GtinValidator, validationKey: CUSTOM_VALIDATION_KEY});
+
 }
 
 class TestModel extends Model {
@@ -89,20 +91,11 @@ class TestModel extends Model {
 describe('Validation with custom decorators test', function() {
     const validGtin = generateGtin();
     const invalidGtin = '0000000000000';
-    it('Validator not found test', function() {
-        const dm = new TestModel({
-            customProp: validGtin
-        });
-
-        expect(dm.hasErrors.bind(dm)).toThrow(/^Could not find Matching validator/g);
-    });
 
     it('Invalid test', function() {
         const dm = new TestModel({
             customProp: invalidGtin
         });
-
-        ValidatorRegistry.register(GtinValidator);
 
         const errors = dm.hasErrors();
         expect(errors).toBeDefined();

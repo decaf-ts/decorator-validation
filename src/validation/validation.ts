@@ -1,5 +1,5 @@
 import Model from "../Model/Model";
-import {Errors, Registry} from "./types";
+import {Errors, Registry, ValidatorDefinition} from "./types";
 import {getPropertyDecorators} from '../utils'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
@@ -23,20 +23,17 @@ function ValRegistry(...initial: any[]) : Registry {
          * @param validator
          * @memberOf ValidatorRegistry
          */
-        self.register = function(...validator: any[]) : void{
+        self.register = function(...validator: (Validator | ValidatorDefinition)[]) : void{
             validator.forEach(v => {
                 if (v instanceof Validator){
                     if (v.validationKey in cache)
                         return;
                     cache[v.validationKey] = v;
                 } else {
-                    // @ts-ignore
-                    const constructorMethod = v.default || v;
-                    // @ts-ignore
-                    const instance: Validator = new constructorMethod();
-                    if (instance.validationKey in cache)
+                    const {validationKey, validator} = v;
+                    if (validationKey in cache)
                         return;
-                    cache[instance.validationKey] = instance;
+                    cache[validationKey] = validator;
                 }
             });
         }
@@ -47,10 +44,17 @@ function ValRegistry(...initial: any[]) : Registry {
          * @return {*}
          * @memberOf ValidatorRegistry
          */
-        self.getValidator = function(validatorKey: string){
+        self.getValidator = function(validatorKey: string) : Validator | undefined{
             if (!(validatorKey in cache))
                 return;
-            return cache[validatorKey];
+
+            const classOrInstance = cache[validatorKey];
+            if (classOrInstance instanceof Validator)
+                return classOrInstance;
+            const constructor = classOrInstance.default || classOrInstance;
+            const instance = new constructor();
+            cache[validatorKey] = instance;
+            return instance;
         }
     }()
     registry.register(...initial);
