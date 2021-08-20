@@ -122,8 +122,13 @@ export type Errors = string | string[] | undefined;
  * @typedef Registry
  */
 export type Registry = {
-    register(...validator: { new(): Validator }[] | Validator[]) : void;
+    register(...validator: (Validator | ValidatorDefinition)[]) : void;
     getValidator(name: string): Validator;
+}
+
+export type ValidatorDefinition = {
+    validator: {new(): Validator},
+    validationKey: string
 }
 
 /**
