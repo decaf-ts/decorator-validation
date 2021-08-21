@@ -10,7 +10,7 @@ import {DEFAULT_ERROR_MESSAGES} from "../constants";
  * @implements Validatable
  * @memberOf Validators
  */
-export default abstract class Validator implements Validatable{
+export default abstract class Validator{
     readonly validationKey: string;
     readonly message: string;
 
@@ -24,6 +24,5 @@ export default abstract class Validator implements Validatable{
         return stringFormat(message, ...args);
     }
 
-    // @ts-ignore
     abstract hasErrors(value: any, ...args: any[]): Errors;
 }
