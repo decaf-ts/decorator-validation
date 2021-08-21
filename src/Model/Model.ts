@@ -1,5 +1,5 @@
-import {validate} from "../validation";
-import Validatable, {Errors} from "../validation/types";
+import { validate} from "../validation";
+import Validatable, {ModelErrors} from "../validation/types";
 import {isEqual} from "../utils";
 
 /**
@@ -17,6 +17,7 @@ import {isEqual} from "../utils";
  * @memberOf Model
  */
 export default abstract class Model implements Validatable {
+    [indexer: string]: any;
     /**
      * @param {Model | {}} model base object from which to populate properties from
      * @constructor
@@ -34,7 +35,7 @@ export default abstract class Model implements Validatable {
      * @memberOf Model
      * @see validate
      */
-    public hasErrors(...args: any[]): Errors{
+    public hasErrors(...args: any[]): ModelErrors | undefined{
         return validate(this);
     }
 

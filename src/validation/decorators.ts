@@ -14,7 +14,6 @@ import MinValidator from './Validators/MinValidator';
 import MinLengthValidator from './Validators/MinLengthValidator';
 import URLValidator from "./Validators/URLValidator";
 import PatternValidator from "./Validators/PatternValidator";
-import {ValidatorDefinition} from "./types";
 
 /**
  * @param {string} key

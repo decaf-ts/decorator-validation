@@ -1,6 +1,6 @@
 import Model from "../src/Model/Model";
 import "reflect-metadata";
-import {Errors, ValidationKeys, ValidatorRegistry} from "../src/validation";
+import {Errors, ValidatorRegistry} from "../src/validation";
 import Validator from "../src/validation/Validators/Validator";
 import {Decorators} from "../src/validation";
 
@@ -99,8 +99,10 @@ describe('Validation with custom decorators test', function() {
 
         const errors = dm.hasErrors();
         expect(errors).toBeDefined();
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors && errors.length).toBe(1);
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(errors && Object.keys(errors).length).toBe(1);
+        }
     });
 
     it('Valid test', function() {

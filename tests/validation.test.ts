@@ -95,8 +95,10 @@ describe('Validation by decorators test', function() {
 
         const errors = dm.hasErrors();
         expect(errors).toBeDefined();
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors && errors.length).toBe(7);
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(errors && Object.values(errors).length).toBe(7);
+        }
     });
 
     it('Pass with non required undefined values', function() {
@@ -107,8 +109,11 @@ describe('Validation by decorators test', function() {
 
         const errors = dm.hasErrors();
         expect(errors).toBeDefined();
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors && errors.length).toBe(2);
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(errors && Object.keys(errors).length).toBe(2);
+        }
+
     });
 
     it('Test all non required Validators for undefined values pass', function() {
