@@ -1,4 +1,5 @@
 import Validator from "./Validators/Validator";
+import ModelErrorDefinition from "../Model/ModelErrorDefinition";
 
 /**
  * @memberOf Validation
@@ -29,7 +30,7 @@ export default interface Validatable {
      * @param {any} [args]
      * @memberOf Validatable
      */
-    hasErrors(...args: any[]) : ModelErrors | undefined;
+    hasErrors(...args: any[]) : ModelErrorDefinition | undefined;
 }
 
 export type ValidationPropertyDecoratorDefinition = {

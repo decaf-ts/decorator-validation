@@ -98,6 +98,9 @@ describe('Validation by decorators test', function() {
         if (errors){
             expect(Object.keys(errors)).toBeInstanceOf(Array);
             expect(errors && Object.values(errors).length).toBe(7);
+            expect(errors.toString()).toBe("This field is required\nThe maximum value is 100\n" +
+                "The minimum length is 5\nThe value does not match the pattern\n" +
+                "The value is not a valid email\nThe value does not match the pattern\nThe value is not a valid URL");
         }
     });
 
@@ -112,6 +115,7 @@ describe('Validation by decorators test', function() {
         if (errors){
             expect(Object.keys(errors)).toBeInstanceOf(Array);
             expect(errors && Object.keys(errors).length).toBe(2);
+            expect(errors.toString()).toBe("This field is required\nThe maximum value is 100");
         }
 
     });

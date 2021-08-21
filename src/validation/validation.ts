@@ -9,6 +9,7 @@ import {
 import {getPropertyDecorators} from '../utils'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
+import ModelErrorDefinition from "../Model/ModelErrorDefinition";
 
 /**
  * Returns
@@ -78,13 +79,13 @@ export const ValidatorRegistry = ValRegistry();
  * @function validate
  * @memberOf Validation
  */
-export function validate<T extends Model>(obj: T) : ModelErrors | undefined{
+export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undefined{
     const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
     for (let prop in obj)
         if (obj.hasOwnProperty(prop))
             decoratedProperties.push(getPropertyDecorators(ValidationKeys.REFLECT, obj, prop));
 
-    return decoratedProperties.reduce((accum: undefined | ModelErrors, decoratedProperty: ValidationPropertyDecoratorDefinition) => {
+    const result =  decoratedProperties.reduce((accum: undefined | ModelErrors, decoratedProperty: ValidationPropertyDecoratorDefinition) => {
         const {prop, decorators} = decoratedProperty;
         if (!decorators || !decorators.length)
             return accum;
@@ -111,4 +112,5 @@ export function validate<T extends Model>(obj: T) : ModelErrors | undefined{
 
         return accum;
     }, undefined);
+    return result ? new ModelErrorDefinition(result) : undefined;
 }

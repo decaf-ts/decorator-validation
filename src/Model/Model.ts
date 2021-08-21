@@ -1,6 +1,7 @@
 import { validate} from "../validation";
-import Validatable, {ModelErrors} from "../validation/types";
+import Validatable from "../validation/types";
 import {isEqual} from "../utils";
+import ModelErrorDefinition from "./ModelErrorDefinition";
 
 /**
  * Abstract class representing a Validatable Model object
@@ -35,7 +36,7 @@ export default abstract class Model implements Validatable {
      * @memberOf Model
      * @see validate
      */
-    public hasErrors(...args: any[]): ModelErrors | undefined{
+    public hasErrors(...args: any[]): ModelErrorDefinition | undefined{
         return validate(this);
     }
 

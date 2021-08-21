@@ -101,7 +101,8 @@ describe('Validation with custom decorators test', function() {
         expect(errors).toBeDefined();
         if (errors){
             expect(Object.keys(errors)).toBeInstanceOf(Array);
-            expect(errors && Object.keys(errors).length).toBe(1);
+            expect(Object.keys(errors).length).toBe(1);
+            expect(errors.toString()).toBe("Not a valid Gtin");
         }
     });
 
