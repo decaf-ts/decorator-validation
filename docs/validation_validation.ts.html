@@ -110,7 +110,13 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import Model from "../Model/Model";
-import {Errors, Registry, ValidatorDefinition} from "./types";
+import {
+    Errors,
+    Registry,
+    ValidationPropertyDecoratorDefinition,
+    ValidatorDefinition,
+    ModelErrors
+} from "./types";
 import {getPropertyDecorators} from '../utils'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
@@ -183,29 +189,26 @@ export const ValidatorRegistry = ValRegistry();
  * @function validate
  * @memberOf Validation
  */
-export function validate&lt;T extends Model>(obj: T) : Errors{
-    const decoratedProperties = [];
+export function validate&lt;T extends Model>(obj: T) : ModelErrors | undefined{
+    const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
     for (let prop in obj)
         if (obj.hasOwnProperty(prop))
             decoratedProperties.push(getPropertyDecorators(ValidationKeys.REFLECT, obj, prop));
 
-    return decoratedProperties.reduce((accum, decoratedProperty) => {
+    return decoratedProperties.reduce((accum: undefined | ModelErrors, decoratedProperty: ValidationPropertyDecoratorDefinition) => {
         const {prop, decorators} = decoratedProperty;
         if (!decorators || !decorators.length)
             return accum;
 
-        const errs = decorators.reduce((acc, decorator: {key: string, props: {}}) => {
+        const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
             const validator = ValidatorRegistry.getValidator(decorator.key);
             if (!validator){
                 throw new Error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`)
             }
 
-            // @ts-ignore
-            const err = validator.hasErrors(obj[prop], ...Object.values(decorator.props));
+            const err: Errors = validator.hasErrors(obj[prop.toString()], ...Object.values(decorator.props));
             if (err){
-                // @ts-ignore
                 acc = acc || {};
-                // @ts-ignore
                 acc[decorator.key] = err;
             }
 
@@ -213,14 +216,8 @@ export function validate&lt;T extends Model>(obj: T) : Errors{
         }, undefined);
 
         if (errs){
-            const propErrors = {
-                property: decoratedProperty.prop,
-                errors: errs
-            }
-            // @ts-ignore
-            accum = accum || [];
-            // @ts-ignore
-            accum.push(propErrors);
+            accum = accum || {};
+            accum[decoratedProperty.prop.toString()] = errs;
         }
 
         return accum;
