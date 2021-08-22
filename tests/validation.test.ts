@@ -59,7 +59,6 @@ describe('Model Test', function() {
         const equality = dm.equals(dm2);
         const reverseEquality = dm2.equals(dm);
         const identity = dm === dm2;
-
         expect(equality).toBe(true);
         expect(reverseEquality).toBe(true);
         expect(identity).toBe(false)
