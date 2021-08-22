@@ -45,8 +45,25 @@ describe('Model Test', function() {
         expect(keys.length).toBe(8);
     });
 
+    it('outputs to string nicely', function() {
+        const dm = new TestModel({
+            id: 'id',
+            prop1: 23,
+            prop2: "tests",
+            prop3: "asdasfsdfsda",
+            prop4: "test@pdm.com"
+        });
 
-    it('Create & Equality', function() {
+        const output = dm.toString();
+        expect(output).toBe("TestModel: {\n" +
+            "  \"id\": \"id\",\n" +
+            "  \"prop1\": 23,\n" +
+            "  \"prop2\": \"tests\",\n" +
+            "  \"prop3\": \"asdasfsdfsda\",\n" +
+            "  \"prop4\": \"test@pdm.com\"\n" +
+            "}");});
+
+    it('Create & Equality & Hash', function() {
         const dm = new TestModel({
             id: 'id',
             prop1: 23,
@@ -60,6 +77,7 @@ describe('Model Test', function() {
         const reverseEquality = dm2.equals(dm);
         const identity = dm === dm2;
         expect(equality).toBe(true);
+        expect(dm.toHash()).toEqual(dm2.toHash());
         expect(reverseEquality).toBe(true);
         expect(identity).toBe(false)
     });

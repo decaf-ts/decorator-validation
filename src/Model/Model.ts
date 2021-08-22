@@ -1,6 +1,6 @@
 import { validate} from "../validation";
 import Validatable from "../validation/types";
-import {isEqual} from "../utils";
+import {isEqual, hash, lastXDigitsOf} from "../utils";
 import ModelErrorDefinition from "./ModelErrorDefinition";
 
 /**
@@ -48,6 +48,29 @@ export default abstract class Model implements Validatable {
      */
     public equals(obj: any, ...exceptions: string[]): boolean {
         return isEqual(this, obj, ...exceptions);
+    }
+
+    /**
+     * Override the implementation for js's 'toString()' which sucks...
+     */
+    public toString(){
+        return this.constructor.name +": " + JSON.stringify(this, undefined, 2);
+    }
+
+    /**
+     * Default implementation. Relies on Java's string hash implementation underneath
+     */
+    public toHash() : string{
+
+        const hashFunction = function(value: any){
+            if (['string', 'char', 'number', 'date', 'symbol'].indexOf(typeof value) !== -1)
+                return hash(value);
+            return hash(JSON.stringify(value));
+        }
+
+        return Object.values(this).reduce((ac, v) =>{
+            return lastXDigitsOf(ac + 31 * hashFunction(v), 32);
+        }, 0) + '';
     }
 
     /**

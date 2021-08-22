@@ -70,3 +70,22 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
     if (keys.length !== Object.keys(b).filter(k => propsToIgnore.indexOf(k) === -1).length) return false;
     return keys.every(k => propsToIgnore.indexOf(k) !== -1 || isEqual(a[k], b[k], ...propsToIgnore));
 }
+
+/**
+ * Mimicks Java's String's Hash implementation
+ * @param {string | number | symbol | Date} obj
+ */
+export function hash(obj: string | number | symbol | Date){
+    obj = String(obj);
+    var hash = 0;
+    for (var i = 0; i < obj.length; i++) {
+        var character = obj.charCodeAt(i);
+        hash = ((hash<<5)-hash)+character;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+export function lastXDigitsOf(number: number, x: number){
+    return Number.isInteger(number) ? number % (x * 10) : number.toString().slice(- x);
+}
