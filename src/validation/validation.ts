@@ -93,7 +93,8 @@ export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undef
         const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
             const validator = ValidatorRegistry.getValidator(decorator.key);
             if (!validator){
-                throw new Error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`)
+                console.error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`);
+                return acc;
             }
 
             const err: Errors = validator.hasErrors(obj[prop.toString()], ...Object.values(decorator.props));

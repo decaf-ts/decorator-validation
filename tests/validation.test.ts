@@ -40,7 +40,6 @@ class TestModel extends Model {
 describe('Model Test', function() {
 
     it('Create with required properties as undefined', function() {
-
         const empty = new TestModel();
         const keys = Object.keys(empty);
         expect(keys.length).toBe(8);
@@ -60,6 +59,7 @@ describe('Model Test', function() {
         const equality = dm.equals(dm2);
         const reverseEquality = dm2.equals(dm);
         const identity = dm === dm2;
+
         expect(equality).toBe(true);
         expect(reverseEquality).toBe(true);
         expect(identity).toBe(false)

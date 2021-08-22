@@ -30,8 +30,6 @@ export function getPropertyDecorators(annotationPrefix: string, target: any, pro
     };
 }
 
-
-
 /**
  * Util function to provide string format functionality similar to C#'s string.format
  *
