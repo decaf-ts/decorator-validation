@@ -1,5 +1,6 @@
 .github
 /bin
+/src
 /docs
 /tests
 /workdocs

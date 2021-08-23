@@ -1,5 +1,5 @@
 import {stringFormat} from "../../utils";
-import Validatable, {Errors} from "../types";
+import {Errors} from "../types";
 import {DEFAULT_ERROR_MESSAGES} from "../constants";
 
 /**

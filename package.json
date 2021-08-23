@@ -6,8 +6,8 @@
   "module": "./dist/esm/index.min.esm.js",
   "scripts": {
     "start:dev": "nodemon",
-    "start": "npm run build && node build/index.js",
-    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node lib/index.js",
+    "build": "rimraf ./lib && tsc",
     "build:prod": "rimraf ./build && rimraf ./dist && tsc && npm run minify",
     "minify": "npm install gulp gulp-babel gulp-rename gulp-concat gulp-sourcemaps gulp-typescript gulp-uglify @babel/preset-env && npx gulp && npm uninstall gulp gulp-babel gulp-rename gulp-sourcemaps gulp-typescript gulp-uglify gulp-concat",
     "test": "jest --coverage",

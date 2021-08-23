@@ -1,9 +1,7 @@
 import Model from "../src/Model/Model";
 import "reflect-metadata";
-import {Errors, ValidatorRegistry} from "../src/validation";
+import {Errors, ValidatorRegistry, Decorators} from "../src";
 import Validator from "../src/validation/Validators/Validator";
-import {Decorators} from "../src/validation";
-
 const {getValidationKey} = Decorators;
 
 function generateGtin(){
