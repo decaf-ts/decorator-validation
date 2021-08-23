@@ -1,7 +1,8 @@
 import { validate} from "../validation";
 import Validatable from "../validation/types";
-import {isEqual, hash, lastXDigitsOf} from "../utils";
+import {isEqual, hashObj} from "../utils";
 import ModelErrorDefinition from "./ModelErrorDefinition";
+
 
 /**
  * Abstract class representing a Validatable Model object
@@ -58,19 +59,10 @@ export default abstract class Model implements Validatable {
     }
 
     /**
-     * Default implementation. Relies on Java's string hash implementation underneath
+     * Default implementation. Relies on a very basic implementation based on Java's string hash;
      */
     public toHash() : string{
-
-        const hashFunction = function(value: any){
-            if (['string', 'char', 'number', 'date', 'symbol'].indexOf(typeof value) !== -1)
-                return hash(value);
-            return hash(JSON.stringify(value));
-        }
-
-        return Object.values(this).reduce((ac, v) =>{
-            return lastXDigitsOf(ac + 31 * hashFunction(v), 32);
-        }, 0) + '';
+        return hashObj(this).toString();
     }
 
     /**

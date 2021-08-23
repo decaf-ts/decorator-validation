@@ -1,5 +1,9 @@
 import {Errors, ModelErrors} from "../validation";
 
+/**
+ * Helper Class to hold the error results in an 'indexable' manner
+ * while still providing the same result on toString
+ */
 export default class ModelErrorDefinition{
     [indexer: string]: {[indexer: string]: Errors} | (() => Errors);
 
@@ -30,7 +34,7 @@ export default class ModelErrorDefinition{
                 if (!accum)
                     accum = propError;
                 else
-                    accum = accum += `\n${propError}`
+                    accum += `\n${propError}`
             return accum;
         }, undefined);
     }

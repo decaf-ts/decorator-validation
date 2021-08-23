@@ -75,15 +75,37 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
  * Mimicks Java's String's Hash implementation
  * @param {string | number | symbol | Date} obj
  */
-export function hash(obj: string | number | symbol | Date){
+export function hashCode(obj: string | number | symbol | Date){
     obj = String(obj);
     var hash = 0;
     for (var i = 0; i < obj.length; i++) {
         var character = obj.charCodeAt(i);
-        hash = ((hash<<5)-hash)+character;
+        hash = ((hash << 5) - hash) + character;
         hash = hash & hash; // Convert to 32bit integer
     }
     return hash;
+}
+
+export function hashObj(obj: {} | []){
+
+    const hashReducer = function(h: number, el: any){
+        h = ((h<<5) -h) + hashFunction(el);
+        return h & h;
+    }
+
+    const hashFunction = function(value: any){
+        if (typeof value === 'undefined')
+            return 0;
+        if (['string', 'number', 'symbol'].indexOf(typeof value) !== -1)
+            return hashCode(value.toString());
+        if (value instanceof Date)
+            return hashCode(value.getTime());
+        if (Array.isArray(value))
+            return value.reduce(hashReducer, 0);
+        return Object.values(value).reduce(hashReducer, 0)
+    }
+
+    return Math.abs(Object.values(obj).reduce(hashReducer, 0));
 }
 
 export function lastXDigitsOf(number: number, x: number){

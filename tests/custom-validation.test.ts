@@ -74,7 +74,6 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any
         propertyKey
     );
     ValidatorRegistry.register({validator: GtinValidator, validationKey: CUSTOM_VALIDATION_KEY});
-
 }
 
 class TestModel extends Model {
