@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#hash">hash</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
                 
             </nav>
         </div>
@@ -186,15 +186,37 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
  * Mimicks Java's String's Hash implementation
  * @param {string | number | symbol | Date} obj
  */
-export function hash(obj: string | number | symbol | Date){
+export function hashCode(obj: string | number | symbol | Date){
     obj = String(obj);
     var hash = 0;
     for (var i = 0; i &lt; obj.length; i++) {
         var character = obj.charCodeAt(i);
-        hash = ((hash&lt;&lt;5)-hash)+character;
+        hash = ((hash &lt;&lt; 5) - hash) + character;
         hash = hash &amp; hash; // Convert to 32bit integer
     }
     return hash;
+}
+
+export function hashObj(obj: {} | []){
+
+    const hashReducer = function(h: number, el: any){
+        h = ((h&lt;&lt;5) -h) + hashFunction(el);
+        return h &amp; h;
+    }
+
+    const hashFunction = function(value: any){
+        if (typeof value === 'undefined')
+            return 0;
+        if (['string', 'number', 'symbol'].indexOf(typeof value) !== -1)
+            return hashCode(value.toString());
+        if (value instanceof Date)
+            return hashCode(value.getTime());
+        if (Array.isArray(value))
+            return value.reduce(hashReducer, 0);
+        return Object.values(value).reduce(hashReducer, 0)
+    }
+
+    return Math.abs(Object.values(obj).reduce(hashReducer, 0));
 }
 
 export function lastXDigitsOf(number: number, x: number){

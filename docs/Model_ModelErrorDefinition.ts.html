@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine validation/validation.ts</title>
+  <title>Decorator Validation Engine Model/ModelErrorDefinition.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>validation/validation.ts</h1>
+                    <h1>Model/ModelErrorDefinition.ts</h1>
                 </header>
                 
 
@@ -109,122 +109,46 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Model from "../Model/Model";
-import {
-    Errors,
-    Registry,
-    ValidationPropertyDecoratorDefinition,
-    ValidatorDefinition,
-    ModelErrors
-} from "./types";
-import {getPropertyDecorators} from '../utils'
-import {ValidationKeys} from "./constants";
-import Validator from "./Validators/Validator";
-import ModelErrorDefinition from "../Model/ModelErrorDefinition";
+            <pre class="prettyprint source linenums"><code>import {Errors, ModelErrors} from "../validation";
 
 /**
- * Returns
- * @return {*}
- * @constructor
- * @function ValRegistry
- * @memberOf Validation
+ * Helper Class to hold the error results in an 'indexable' manner
+ * while still providing the same result on toString
  */
-function ValRegistry(...initial: any[]) : Registry {
-    // @ts-ignore
-    const registry: Registry =  new function(){
-        const cache: any = {};
-        // @ts-ignore
-        const self: any = this;
+export default class ModelErrorDefinition{
+    [indexer: string]: {[indexer: string]: Errors} | (() => Errors);
 
-        /**
-         *
-         * @param validator
-         * @memberOf ValidatorRegistry
-         */
-        self.register = function(...validator: (Validator | ValidatorDefinition)[]) : void{
-            validator.forEach(v => {
-                if (v instanceof Validator){
-                    if (v.validationKey in cache)
-                        return;
-                    cache[v.validationKey] = v;
-                } else {
-                    const {validationKey, validator} = v;
-                    if (validationKey in cache)
-                        return;
-                    cache[validationKey] = validator;
-                }
-            });
+    constructor(errors: ModelErrors) {
+        for(let prop in errors){
+            if (errors.hasOwnProperty(prop) &amp;&amp; errors[prop])
+                Object.defineProperty(this, prop, {
+                    enumerable: true,
+                    configurable: false,
+                    value: errors[prop],
+                    writable: false
+                });
         }
+    }
 
-        /**
-         *
-         * @param validatorKey
-         * @return {*}
-         * @memberOf ValidatorRegistry
-         */
-        self.getValidator = function(validatorKey: string) : Validator | undefined{
-            if (!(validatorKey in cache))
-                return;
+    toString(): Errors{
+        const self = this;
+        return Object.keys(self).filter(k => self.hasOwnProperty(k) &amp;&amp; typeof self[k] !== 'function').reduce((accum: undefined | string, prop) => {
+            const propError: string | undefined = Object.keys(self[prop]).reduce((propAccum: undefined | string, key) => {
+                if (!propAccum) // @ts-ignore
+                    propAccum = self[prop][key];
+                else // @ts-ignore
+                    propAccum += `\n${self[prop][key]}`;
+                return propAccum;
+            }, undefined);
 
-            const classOrInstance = cache[validatorKey];
-            if (classOrInstance instanceof Validator)
-                return classOrInstance;
-            const constructor = classOrInstance.default || classOrInstance;
-            const instance = new constructor();
-            cache[validatorKey] = instance;
-            return instance;
-        }
-    }()
-    registry.register(...initial);
-    return registry;
-}
-
-/**
- * @constant
- * @memberOf Validation
- */
-export const ValidatorRegistry = ValRegistry();
-
-/**
- * Analyses the decorations of the properties and validates the obj according to them
- * @function validate
- * @memberOf Validation
- */
-export function validate&lt;T extends Model>(obj: T) : ModelErrorDefinition | undefined{
-    const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
-    for (let prop in obj)
-        if (obj.hasOwnProperty(prop))
-            decoratedProperties.push(getPropertyDecorators(ValidationKeys.REFLECT, obj, prop));
-
-    const result =  decoratedProperties.reduce((accum: undefined | ModelErrors, decoratedProperty: ValidationPropertyDecoratorDefinition) => {
-        const {prop, decorators} = decoratedProperty;
-        if (!decorators || !decorators.length)
+            if (propError)
+                if (!accum)
+                    accum = propError;
+                else
+                    accum += `\n${propError}`
             return accum;
-
-        const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
-            const validator = ValidatorRegistry.getValidator(decorator.key);
-            if (!validator){
-                console.error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`);
-                return acc;
-            }
-
-            const err: Errors = validator.hasErrors(obj[prop.toString()], ...Object.values(decorator.props));
-            if (err){
-                acc = acc || {};
-                acc[decorator.key] = err;
-            }
-
-            return acc;
         }, undefined);
-
-        if (errs){
-            accum = accum || {};
-            accum[decoratedProperty.prop.toString()] = errs;
-        }
-
-        return accum;
-    }, undefined);
-    return result ? new ModelErrorDefinition(result) : undefined;
+    }
 }</code></pre>
         </article>
     </section>
