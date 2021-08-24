@@ -4,4 +4,4 @@
 
 export * from './validation';
 export * from './Model';
-export * from  './utils';
+export * from './utils';

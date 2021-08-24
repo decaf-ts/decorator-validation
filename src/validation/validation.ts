@@ -6,7 +6,7 @@ import {
     ValidatorDefinition,
     ModelErrors
 } from "./types";
-import {getPropertyDecorators} from '../utils'
+import {getPropertyDecorators} from '../utils/utils'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";

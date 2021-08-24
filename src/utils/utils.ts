@@ -3,6 +3,9 @@
  * @memberOf decorator-validation
  */
 
+import Model from "../Model/Model";
+import {ModelKeys} from "../../lib";
+
 /**
  * Util function to retrieve the decorators for the provided Property
  *
@@ -108,6 +111,42 @@ export function hashObj(obj: {} | []){
     return Math.abs(Object.values(obj).reduce(hashReducer, 0));
 }
 
-export function lastXDigitsOf(number: number, x: number){
-    return Number.isInteger(number) ? number % (x * 10) : number.toString().slice(- x);
+/**
+ * Helper Function to override constructors
+ * @param {Function} constructor
+ * @param {any[]} args
+ * @return {T} the new instance
+ */
+export function construct<T extends Model>(constructor: any, ...args: any[]) {
+    const _constr = (...argz: any[]) => new constructor(...argz);
+    _constr.prototype = constructor.prototype;
+    return _constr(...args);
+}
+
+export function isModel(target: {[indexer: string]: any}){
+    if (target.prototype && target.constructor)
+        return !!getClassDecorators(ModelKeys.REFLECT, target)
+        .find(dec => dec.key === ModelKeys.MODEL && dec.props && dec.props.class);
+    return !!target[ModelKeys.ANCHOR];
+}
+
+/**
+ * Util function to retrieve the decorators for the provided Property
+ *
+ * @function getPropertyDecorators
+ * @memberOf utils
+ */
+export function getClassDecorators(annotationPrefix: string, target: any): {key: string, props: any}[] {
+
+    const keys: any[] = Reflect.getOwnMetadataKeys(target.constructor);
+
+    return keys.filter(key => key.toString().startsWith(annotationPrefix))
+        .reduce((values, key) => {
+            // get metadata value
+            const currValues = {
+                key: key.substring(annotationPrefix.length),
+                props: Reflect.getMetadata(key, target.constructor)
+            };
+            return values.concat(currValues);
+        }, []);
 }

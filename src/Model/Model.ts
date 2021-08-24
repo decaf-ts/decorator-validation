@@ -1,6 +1,6 @@
 import { validate} from "../validation";
 import Validatable from "../validation/types";
-import {isEqual, hashObj} from "../utils";
+import {isEqual, hashObj} from "../utils/utils";
 import ModelErrorDefinition from "./ModelErrorDefinition";
 
 
@@ -53,13 +53,14 @@ export default abstract class Model implements Validatable {
 
     /**
      * Override the implementation for js's 'toString()' which sucks...
+     * @override
      */
     public toString(){
         return this.constructor.name +": " + JSON.stringify(this, undefined, 2);
     }
 
     /**
-     * Default implementation. Relies on a very basic implementation based on Java's string hash;
+     * Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
      */
     public toHash() : string{
         return hashObj(this).toString();

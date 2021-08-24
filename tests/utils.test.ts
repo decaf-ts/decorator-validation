@@ -1,4 +1,4 @@
-import {hashCode, hashObj} from '../src/utils';
+import {hashCode, hashObj} from '../src/utils/utils';
 
 describe('Hashing methods', function() {
     it('hashes a string', function() {

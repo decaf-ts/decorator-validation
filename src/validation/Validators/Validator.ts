@@ -1,4 +1,4 @@
-import {stringFormat} from "../../utils";
+import {stringFormat} from "../../utils/utils";
 import {Errors} from "../types";
 import {DEFAULT_ERROR_MESSAGES} from "../constants";
 
