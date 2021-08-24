@@ -1,7 +1,7 @@
 import {model} from "../src";
 import Model from "../src/Model/Model";
 import ModelRegistry from "../src/Model/Registry";
-import {ModelKeys} from "../lib";
+import ModelKeys from "../src/Model/constants";
 
 @model()
 class TestModel extends Model {
@@ -15,6 +15,13 @@ class TestModel extends Model {
 }
 
 describe('Model Registry', () => {
+
+    it('Handles missing arguments properly', () => {
+        // @ts-ignore
+        expect(() => ModelRegistry.register(undefined, "random stuff, not a constructor")).toThrowError(`Model registering failed. Missing Class name or constructor`);
+        expect(() => ModelRegistry.register('name', undefined)).toThrowError(`Model registering failed. Missing Class name or constructor`);
+        expect(() => ModelRegistry.build()).toThrowError(`Provided obj is not a Model object`);
+    })
 
     it("Defines the correct information", () => {
 

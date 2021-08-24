@@ -1,4 +1,17 @@
-import {hashCode, hashObj} from '../src/utils/utils';
+import {hashCode, hashObj, isModel} from '../src';
+import {model} from "../src";
+import Model from "../src/Model/Model";
+
+@model()
+class TestModel extends Model {
+
+    name?: string = undefined;
+
+    constructor(model?: TestModel | {}){
+        super(model);
+        Model.constructFromObject<TestModel>(this, model);
+    }
+}
 
 describe('Hashing methods', function() {
     it('hashes a string', function() {
@@ -27,5 +40,14 @@ describe('Hashing methods', function() {
         const h = hashObj(obj);
 
         expect(h).toBe(1400398082);
+    });
+});
+
+describe('Model Verification', function() {
+    it('Detects a model', function() {
+        const tm = new TestModel();
+        expect(isModel(tm)).toBe(true);
+        expect(isModel(JSON.parse(JSON.stringify(tm)))).toBe(true);
+        expect(isModel({})).toBe(false);
     });
 });

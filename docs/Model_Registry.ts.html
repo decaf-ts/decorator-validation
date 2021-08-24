@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine Validation</title>
+  <title>Decorator Validation Engine Model/Registry.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,191 +99,45 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Namespace</p>
-                    <h1>Validation</h1>
+                    <p>Source</p>
+                    <h1>Model/Registry.ts</h1>
                 </header>
                 
 
 
 
-
-<section>
-
-<header>
-    
-        <h2>Validation</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="validation_constants.ts.html" class="button">View Source</a>
-            <span>
-                <a href="validation_constants.ts.html">validation/constants.ts</a>, <a href="validation_constants.ts.html#line2">line 2</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>Validation</h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
     
-
-    
-    
-
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="validation_constants.ts.html" class="button">View Source</a>
-            <span>
-                <a href="validation_constants.ts.html">validation/constants.ts</a>, <a href="validation_constants.ts.html#line18">line 18</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Model from "./Model";
+import {isModel} from "../utils";
+import ModelKeys from "./constants";
+
+/**
+ * Util class to enable serialization and correct rebuilding
+ */
+class ModelRegistryManager {
+  private cache: {[indexer: string]: any} = {};
+
+  register(name: string, constructor: any): void {
+      if (!name || typeof constructor !== 'function')
+          throw new Error(`Model registering failed. Missing Class name or constructor`)
+      this.cache[name] = constructor;
+  }
+
+  build&lt;T extends Model>(obj: {[indexer: string]: any} = {}): any {
+      if (!isModel(obj))
+          throw new Error(`Provided obj is not a Model object`);
+      const name = obj[ModelKeys.ANCHOR].class;
+      return new this.cache[name](obj);
+  }
+}
+
+const ModelRegistry = new ModelRegistryManager();
+
+export default ModelRegistry;</code></pre>
+        </article>
+    </section>
 
 
 

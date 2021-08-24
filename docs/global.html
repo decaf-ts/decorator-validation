@@ -90,7 +90,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#construct">construct</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
                 
             </nav>
         </div>
@@ -174,11 +174,370 @@
     
 
     
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+<h4 class="name" id="ModelKeys">
+    <a class="href-link" href="#ModelKeys">#</a>
+    
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        ModelKeys
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>REFLECT</code></td>
+    
+
+    <td class="type">
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>MODEL</code></td>
+    
+
+    <td class="type">
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>ANCHOR</code></td>
+    
+
+    <td class="type">
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="Model_constants.ts.html" class="button">View Source</a>
+            <span>
+                <a href="Model_constants.ts.html">Model/constants.ts</a>, <a href="Model_constants.ts.html#line6">line 6</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
 
     
         <div class='vertical-section'>
             <h1>Methods</h1>
             <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="construct">
+        <a class="href-link" href="#construct">#</a>
+        
+        <span class="code-name">
+            
+                construct<span class="signature">(constructor, args)</span><span class="type-signature"> &rarr; {T}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Helper Function to override constructors</p>.</p>
+    
+    
+    <div class="description">
+        <p>Helper Function to override constructors</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>constructor</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>args</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Array.&lt;any></span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="utils_utils.ts.html" class="button">View Source</a>
+            <span>
+                <a href="utils_utils.ts.html">utils/utils.ts</a>, <a href="utils_utils.ts.html#line111">line 111</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>the new instance</p></div>
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<span class="param-type">T</span>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
             
                 <div class="member">
 
@@ -309,9 +668,9 @@
 
     
         <p class="tag-source">
-            <a href="utils.ts.html" class="button">View Source</a>
+            <a href="utils_utils.ts.html" class="button">View Source</a>
             <span>
-                <a href="utils.ts.html">utils.ts</a>, <a href="utils.ts.html#line80">line 80</a>
+                <a href="utils_utils.ts.html">utils/utils.ts</a>, <a href="utils_utils.ts.html#line77">line 77</a>
             </span>
         </p>
     
@@ -355,11 +714,11 @@
     
 
     
-    <p class="summary">Default implementation.</p>
+    <p class="summary">Defines a default implementation for object hash.</p>
     
     
     <div class="description">
-        <p>Default implementation. Relies on a very basic implementation based on Java's string hash;</p>
+        <p>Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;</p>
     </div>
     
 
@@ -410,7 +769,7 @@
         <p class="tag-source">
             <a href="Model_Model.ts.html" class="button">View Source</a>
             <span>
-                <a href="Model_Model.ts.html">Model/Model.ts</a>, <a href="Model_Model.ts.html#line56">line 56</a>
+                <a href="Model_Model.ts.html">Model/Model.ts</a>, <a href="Model_Model.ts.html#line57">line 57</a>
             </span>
         </p>
     
@@ -509,7 +868,7 @@
         <p class="tag-source">
             <a href="Model_Model.ts.html" class="button">View Source</a>
             <span>
-                <a href="Model_Model.ts.html">Model/Model.ts</a>, <a href="Model_Model.ts.html#line50">line 50</a>
+                <a href="Model_Model.ts.html">Model/Model.ts</a>, <a href="Model_Model.ts.html#line51">line 51</a>
             </span>
         </p>
     

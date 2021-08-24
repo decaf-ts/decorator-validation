@@ -1,6 +1,6 @@
 import Model from "./Model";
 import {isModel} from "../utils";
-import {ModelKeys} from "../../lib";
+import ModelKeys from "./constants";
 
 /**
  * Util class to enable serialization and correct rebuilding
@@ -9,8 +9,8 @@ class ModelRegistryManager {
   private cache: {[indexer: string]: any} = {};
 
   register(name: string, constructor: any): void {
-      if (!name || !constructor)
-          return console.error(`Model registering failed. Missing Class name or constructor`)
+      if (!name || typeof constructor !== 'function')
+          throw new Error(`Model registering failed. Missing Class name or constructor`)
       this.cache[name] = constructor;
   }
 

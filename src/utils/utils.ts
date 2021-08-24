@@ -4,7 +4,7 @@
  */
 
 import Model from "../Model/Model";
-import {ModelKeys} from "../../lib";
+import ModelKeys from "../Model/constants";
 
 /**
  * Util function to retrieve the decorators for the provided Property
@@ -124,10 +124,7 @@ export function construct<T extends Model>(constructor: any, ...args: any[]) {
 }
 
 export function isModel(target: {[indexer: string]: any}){
-    if (target.prototype && target.constructor)
-        return !!getClassDecorators(ModelKeys.REFLECT, target)
-        .find(dec => dec.key === ModelKeys.MODEL && dec.props && dec.props.class);
-    return !!target[ModelKeys.ANCHOR];
+    return !!target[ModelKeys.ANCHOR] || !!getClassDecorators(ModelKeys.REFLECT, target).find(dec => dec.key === ModelKeys.MODEL && dec.props && dec.props.class);
 }
 
 /**

@@ -1,8 +1,8 @@
 import {model} from "../src";
 import Model from "../src/Model/Model";
-import {ModelKeys} from "../src";
 import {getClassDecorators} from "../src";
 import ModelRegistry from "../src/Model/Registry";
+import ModelKeys from "../src/Model/constants";
 
 @model()
 class TestModel extends Model {
@@ -36,7 +36,7 @@ describe('Class Decorators', () => {
 
     it('Register the model to the registry', () => {
         const tm = new TestModel();
-        const tmFromRegistry = ModelRegistry.build(tm.constructor.name)
+        const tmFromRegistry = ModelRegistry.build(JSON.parse(JSON.stringify(tm)));
         expect(tmFromRegistry).toBeDefined();
     });
 })
