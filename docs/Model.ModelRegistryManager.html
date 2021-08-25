@@ -90,7 +90,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#construct">construct</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#construct">construct</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,9 +109,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ModelRegistryManager<span class="signature">(anchorKey)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description"><p>Util class to enable serialization and correct rebuilding</p></div>
+        <h2><span class="attribs"><span class="type-signature"></span></span>ModelRegistryManager<span class="signature">(anchorKey, testFunction)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -135,13 +133,19 @@
         
         <span class="code-name">
             
-                new ModelRegistryManager<span class="signature">(anchorKey)</span><span class="type-signature"></span>
+                new ModelRegistryManager<span class="signature">(anchorKey, testFunction)</span><span class="type-signature"></span>
             
         </span>
     </h4>
     
 
     
+    <p class="summary"><p>Util class to enable serialization and correct rebuilding</p>.</p>
+    
+    
+    <div class="description">
+        <p>Util class to enable serialization and correct rebuilding</p>
+    </div>
     
 
 
@@ -203,10 +207,15 @@
             
 <tr class="deep-level-0">
   
-      <td class="name"><code></code></td>
+      <td class="name"><code>testFunction</code></td>
   
 
   <td class="type">
+  
+      
+<span class="param-type">function</span>
+
+
   
   </td>
 
@@ -214,7 +223,7 @@
 
   
 
-  <td class="description last"></td>
+  <td class="description last"><p>method to test if the provided object is a Model Object. defaults to <code>isModel</code></p></td>
 </tr>
 
 
@@ -262,7 +271,7 @@
         <p class="tag-source">
             <a href="Model_Registry.ts.html" class="button">View Source</a>
             <span>
-                <a href="Model_Registry.ts.html">Model/Registry.ts</a>, <a href="Model_Registry.ts.html#line9">line 9</a>
+                <a href="Model_Registry.ts.html">Model/Registry.ts</a>, <a href="Model_Registry.ts.html#line4">line 4</a>
             </span>
         </p>
     
@@ -300,13 +309,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="ModelRegistryManager.html">ModelRegistryManager</a></dt>
-            <dd></dd>
-        </dl>
     
 
     

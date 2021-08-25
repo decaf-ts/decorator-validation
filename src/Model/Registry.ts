@@ -5,7 +5,9 @@ import ModelKeys from "./constants";
 /**
  * Util class to enable serialization and correct rebuilding
  * @param {string} anchorKey defaults to {@link ModelKeys.ANCHOR}. The property name where the registered class name is stored;
- * @param {function(obj: {}): boolean} testFunction method to test if the provided object is a Model Object. defaults to {@link isModel}
+ * @param {function({}): boolean} testFunction method to test if the provided object is a Model Object. defaults to {@link isModel}
+ * @class ModelRegistryManager
+ * @memberOf Model
  */
 export class ModelRegistryManager {
   private cache: {[indexer: string]: any} = {};
