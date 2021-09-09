@@ -1,7 +1,7 @@
 import {model} from "../src";
 import Model from "../src/Model/Model";
 import ModelRegistry from "../src/Model/Registry";
-import ModelKeys from "../src/Model/constants";
+import {ModelKeys} from "../src/Model/constants";
 
 @model()
 class TestModel extends Model {
