@@ -47,7 +47,5 @@ export default class TypeValidator extends Validator {
                     }
                 break;
         }
-
-        console.log(`Received an unidentifiable type. For proper type checking use @type decorator`);
     }
 }

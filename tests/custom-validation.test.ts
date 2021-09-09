@@ -2,7 +2,7 @@ import Model from "../src/Model/Model";
 import "reflect-metadata";
 import {Errors, ValidatorRegistry, Decorators} from "../src";
 import Validator from "../src/validation/Validators/Validator";
-const {getValidationKey} = Decorators;
+const {getValidationKey, type} = Decorators;
 
 function generateGtin(){
     function pad(num: number, width: number, padding: string = '0') {
@@ -76,8 +76,9 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any
 
 class TestModel extends Model {
 
+    @type(['number', 'string'])
     @gtin()
-    customProp?: number = undefined;
+    customProp?: number | string = undefined;
 
     constructor(model?: TestModel | {}) {
         super(model);

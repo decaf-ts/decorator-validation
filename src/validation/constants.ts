@@ -31,5 +31,6 @@ export const DEFAULT_ERROR_MESSAGES = {
     EMAIL: "The value is not a valid email",
     URL: "The value is not a valid URL",
     TYPE: "Invalid Type. Expected {0}, received {1}",
+    STEP: "Invalid Value. Not a step of {0}",
     DEFAULT: "There is an Error"
 }

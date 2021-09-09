@@ -96,6 +96,31 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
 }
 
 /**
+ * Defines a maximum value for the property
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.MAX}
+ *
+ * @param {number | Date} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
+ * @decorator
+ * @namespace Decorators
+ * @memberOf Validation
+ */
+export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.MAX),
+        {
+            value: value,
+            message: message
+        },
+        target,
+        propertyKey
+    );
+
+    ValidatorRegistry.register({validator: MaxValidator, validationKey: ValidationKeys.MAX});
+}
+
+/**
  * Defines a minimum length for the property
  *
  * Validators to validate a decorated property must use key {@link ValidationKeys.MIN_LENGTH}

@@ -4,7 +4,7 @@
  */
 
 import Model from "../Model/Model";
-import {ModelKeys} from "../Model";
+import {ModelKeys} from "../Model/constants";
 
 /**
  * Util function to retrieve the decorators for the provided Property

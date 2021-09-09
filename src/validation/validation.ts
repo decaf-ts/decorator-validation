@@ -10,6 +10,8 @@ import {getPropertyDecorators} from '../utils/utils'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";
+import {ModelKeys} from "../Model";
+import TypeValidator from "./Validators/TypeValidator";
 
 /**
  * Returns
@@ -72,14 +74,14 @@ function ValRegistry(...initial: any[]) : Registry {
  * @constant
  * @memberOf Validation
  */
-export const ValidatorRegistry = ValRegistry();
+export const ValidatorRegistry = ValRegistry({validator: TypeValidator, validationKey: ModelKeys.TYPE});
 
 /**
  * Analyses the decorations of the properties and validates the obj according to them
  * @function validate
  * @memberOf Validation
  */
-export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undefined{
+export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undefined {
     const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
     for (let prop in obj)
         if (obj.hasOwnProperty(prop))
@@ -87,8 +89,12 @@ export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undef
 
     const result =  decoratedProperties.reduce((accum: undefined | ModelErrors, decoratedProperty: ValidationPropertyDecoratorDefinition) => {
         const {prop, decorators} = decoratedProperty;
+
         if (!decorators || !decorators.length)
             return accum;
+
+        if (decorators.find(d => d.key === ValidationKeys.TYPE))
+            decorators.shift(); // remove the design:type decorator, since the type will already be checked
 
         const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
             const validator = ValidatorRegistry.getValidator(decorator.key);
@@ -97,7 +103,7 @@ export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undef
                 return acc;
             }
 
-            const err: Errors = validator.hasErrors(obj[prop.toString()], ...Object.values(decorator.props));
+            const err: Errors = validator.hasErrors(obj[prop.toString()], ...(decorator.key === ModelKeys.TYPE ? [decorator.props] : Object.values(decorator.props)));
             if (err){
                 acc = acc || {};
                 acc[decorator.key] = err;

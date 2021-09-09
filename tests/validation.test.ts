@@ -2,10 +2,11 @@ import Model from "../src/Model/Model";
 import {Decorators, ValidationKeys} from '../src';
 import {Validators} from '../src';
 import Validator from "../src/validation/Validators/Validator";
-const {email, max, maxlength, min, minlength, pattern, required, url} = Decorators;
+const {email, max, maxlength, min, minlength, pattern, required, url, type} = Decorators;
 
 class TestModel extends Model {
 
+    @type(['string', 'number'])
     @required()
     id?: string | number = undefined;
 
