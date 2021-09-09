@@ -1,4 +1,4 @@
-import ModelKeys from './constants';
+import {ModelKeys} from './constants';
 import {construct} from "../utils";
 import ModelRegistry from "./Registry";
 

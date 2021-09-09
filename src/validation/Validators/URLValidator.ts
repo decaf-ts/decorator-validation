@@ -20,7 +20,7 @@ export default class URLValidator extends PatternValidator {
     }
 
     // @ts-ignore
-    hasErrors(value: string, message?: string): Errors {
+    public hasErrors(value: string, message?: string): Errors {
         return super.hasErrors(value, URLValidator.urlPattern, message);
     }
 }

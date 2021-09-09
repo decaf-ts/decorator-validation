@@ -14,7 +14,7 @@ export default class MinValidator extends Validator {
         super(ValidationKeys.MIN, message)
     }
 
-    hasErrors(value: number, min: number, message?: string): Errors {
+    public hasErrors(value: number, min: number, message?: string): Errors {
         if (value === undefined)
             return;
         return value < min ? this.getMessage(message || this.message, min) : undefined;

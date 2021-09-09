@@ -12,3 +12,4 @@ export * as MinLengthValidator from './MinLengthValidator';
 export * as MinValidator from './MinValidator';
 export * as PatternValidator from './PatternValidator';
 export * as URLValidator from './URLValidator';
+export * as TypeValidator from './TypeValidator';

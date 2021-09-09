@@ -1,6 +1,6 @@
 import Model from "./Model";
 import {isModel} from "../utils";
-import ModelKeys from "./constants";
+import {ModelKeys} from "./constants";
 
 /**
  * Util class to enable serialization and correct rebuilding

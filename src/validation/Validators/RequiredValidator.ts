@@ -14,7 +14,7 @@ export default class RequiredValidator extends Validator {
         super(ValidationKeys.REQUIRED, message)
     }
 
-    hasErrors(value: any, message?: string): Errors {
+    public hasErrors(value: any, message?: string): Errors {
         return !value ? this.getMessage(message || this.message) : undefined;
     }
 }

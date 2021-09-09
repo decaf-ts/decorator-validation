@@ -14,6 +14,7 @@ import MinValidator from './Validators/MinValidator';
 import MinLengthValidator from './Validators/MinLengthValidator';
 import URLValidator from "./Validators/URLValidator";
 import PatternValidator from "./Validators/PatternValidator";
+import TypeValidator from "./Validators/TypeValidator";
 
 /**
  * @param {string} key
@@ -208,4 +209,28 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
         propertyKey
     );
     ValidatorRegistry.register({validator: URLValidator, validationKey: ValidationKeys.URL});
+}
+
+/**
+ * Enforces type verification
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.TYPE}
+ *
+ * @param {string[]} types accepted types
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.TYPE}
+ * @decorator
+ * @namespace Decorators
+ * @memberOf Validation
+ */
+export const type = (types: string[] | string, message: string = DEFAULT_ERROR_MESSAGES.TYPE) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.TYPE),
+        {
+            types: types,
+            message: message
+        },
+        target,
+        propertyKey
+    );
+    ValidatorRegistry.register({validator: TypeValidator, validationKey: ValidationKeys.TYPE});
 }

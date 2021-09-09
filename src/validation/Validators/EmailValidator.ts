@@ -17,7 +17,7 @@ export default class EmailValidator extends PatternValidator {
     }
 
     // @ts-ignore
-    hasErrors(value: string, message?: string): Errors {
+    public hasErrors(value: string, message?: string): Errors {
         return super.hasErrors(value, EmailValidator.emailPat, message);
     }
 }

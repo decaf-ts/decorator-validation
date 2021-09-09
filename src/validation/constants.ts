@@ -12,7 +12,8 @@ export const ValidationKeys = {
     MAX_LENGTH: 'maxlength',
     PATTERN: 'pattern',
     EMAIL: "email",
-    URL: "url"
+    URL: "url",
+    TYPE: "type"
 }
 
 /**
@@ -29,5 +30,6 @@ export const DEFAULT_ERROR_MESSAGES = {
     PATTERN: 'The value does not match the pattern',
     EMAIL: "The value is not a valid email",
     URL: "The value is not a valid URL",
+    TYPE: "Invalid Type. Expected {0}, received {1}",
     DEFAULT: "There is an Error"
 }

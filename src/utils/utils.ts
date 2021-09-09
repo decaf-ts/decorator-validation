@@ -4,7 +4,7 @@
  */
 
 import Model from "../Model/Model";
-import ModelKeys from "../Model/constants";
+import {ModelKeys} from "../Model";
 
 /**
  * Util function to retrieve the decorators for the provided Property
@@ -17,11 +17,11 @@ export function getPropertyDecorators(annotationPrefix: string, target: any, pro
     const keys: any[] = Reflect.getMetadataKeys(target, propertyName);
     const decorators = keys
         // filter your custom decorators
-        .filter(key => key.toString().startsWith(annotationPrefix))
+        .filter(key => key === ModelKeys.TYPE || key.toString().startsWith(annotationPrefix))
         .reduce((values, key) => {
             // get metadata value.
             const currValues = {
-                key: key.substring(annotationPrefix.length),
+                key: key.substring(annotationPrefix.length) || key,
                 props: Reflect.getMetadata(key, target, propertyName)
             };
             return values.concat(currValues);

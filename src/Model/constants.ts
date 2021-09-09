@@ -3,10 +3,10 @@
  * @enum
  * @subcategory Model
  */
-const ModelKeys = {
+export const ModelKeys = {
   REFLECT: 'model.definition.',
+  TYPE: 'design:type',
   MODEL: 'model',
   ANCHOR: '__modelDefinition'
 }
 
-export default ModelKeys;

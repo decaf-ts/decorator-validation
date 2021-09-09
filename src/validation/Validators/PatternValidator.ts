@@ -16,17 +16,17 @@ export default class PatternValidator extends Validator {
         super(key, message);
     }
 
-    private getPattern(pattern: string): RegExp {
+    private static getPattern(pattern: string): RegExp {
         if (!PatternValidator.regexpParser.test(pattern))
             return new RegExp(pattern);
         const match: any = pattern.match(PatternValidator.regexpParser);
         return new RegExp(match[1], match[2]);
     }
 
-    hasErrors(value: string, pattern: RegExp | string, message?: string): Errors {
+    public hasErrors(value: string, pattern: RegExp | string, message?: string): Errors {
         if (!value)
             return;
-        pattern = typeof pattern === 'string' ? this.getPattern(pattern) : pattern;
+        pattern = typeof pattern === 'string' ? PatternValidator.getPattern(pattern) : pattern;
         return !pattern.test(value) ? this.getMessage(message || this.message) : undefined;
     }
 }

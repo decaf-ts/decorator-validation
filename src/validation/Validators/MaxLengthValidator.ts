@@ -14,7 +14,7 @@ export default class MaxLengthValidator extends Validator {
         super(ValidationKeys.MAX_LENGTH, message)
     }
 
-    hasErrors(value: string, maxlength: number, message?: string): Errors {
+    public hasErrors(value: string, maxlength: number, message?: string): Errors {
         if (value === undefined)
             return;
         return value.length > maxlength ? this.getMessage(message || this.message, maxlength) : undefined;

@@ -14,7 +14,7 @@ export default class MinLengthValidator extends Validator {
         super(ValidationKeys.MIN_LENGTH, message)
     }
 
-    hasErrors(value: string, minlength: number, message?: string): Errors {
+    public hasErrors(value: string, minlength: number, message?: string): Errors {
         if (value === undefined)
             return;
         return value.length < minlength ? this.getMessage(message || this.message, minlength) : undefined;

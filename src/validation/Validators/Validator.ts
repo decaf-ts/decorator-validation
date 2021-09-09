@@ -24,5 +24,5 @@ export default abstract class Validator{
         return stringFormat(message, ...args);
     }
 
-    abstract hasErrors(value: any, ...args: any[]): Errors;
+    public abstract hasErrors(value: any, ...args: any[]): Errors;
 }

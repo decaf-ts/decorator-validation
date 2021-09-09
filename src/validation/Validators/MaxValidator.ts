@@ -14,7 +14,7 @@ export default class MaxValidator extends Validator {
         super(ValidationKeys.MAX, message)
     }
 
-    hasErrors(value: number, max: number, message?: string): Errors {
+    public hasErrors(value: number, max: number, message?: string): Errors {
         if (value === undefined)
             return;
         return value > max ? this.getMessage(message || this.message, max) : undefined;
