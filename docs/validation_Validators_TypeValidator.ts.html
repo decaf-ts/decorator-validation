@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine Model/constants.ts</title>
+  <title>Decorator Validation Engine validation/Validators/TypeValidator.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>Model/constants.ts</h1>
+                    <h1>validation/Validators/TypeValidator.ts</h1>
                 </header>
                 
 
@@ -109,19 +109,55 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>
-/**
- * @enum
- * @subcategory Model
- */
-export const ModelKeys = {
-  REFLECT: 'model.definition.',
-  TYPE: 'design:type',
-  MODEL: 'model',
-  ANCHOR: '__modelDefinition'
-}
+            <pre class="prettyprint source linenums"><code>import Validator from "./Validator";
+import {DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Errors} from "../types";
+import {ModelKeys} from "../../Model";
 
-</code></pre>
+/**
+ * Required Validator
+ *
+ * @class RequiredValidator
+ * @extends Validator
+ * @memberOf Validators
+ */
+export default class TypeValidator extends Validator {
+    constructor(message: string = DEFAULT_ERROR_MESSAGES.TYPE){
+        super(ModelKeys.TYPE, message);
+    }
+
+    private checkType(value: any, typeName: string, message?: string){
+        if (typeof value === typeName)
+            return;
+        if (value.constructor &amp;&amp; value.constructor.name === typeName)
+            return;
+        return this.getMessage(message || this.message, typeName, typeof value);
+    }
+
+    public hasErrors(value: any, types: string | string[] | {name: string}, message?: string): Errors {
+        if (value === undefined)
+            return; // Dont try and enforce type if undefined
+
+        switch(typeof types){
+            case 'string':
+                return this.checkType(value, types, message);
+            case "object":
+                if (Array.isArray(types))
+                    { // @ts-ignore
+                        if (types.every(t => !!this.checkType(value,t)))
+                        { // @ts-ignore
+                            return this.getMessage(message || this.message, types.join(', '), typeof value);
+                        }
+                    }
+                break;
+            case "function":
+                // @ts-ignore
+                if (types.name &amp;&amp; types.name !== 'Object')
+                    { // @ts-ignore
+                        return this.checkType(value, types.name.toLowerCase(), message);                    }
+        }
+    }
+}</code></pre>
         </article>
     </section>
 

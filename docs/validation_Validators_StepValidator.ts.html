@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine Model/constants.ts</title>
+  <title>Decorator Validation Engine validation/Validators/StepValidator.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>Model/constants.ts</h1>
+                    <h1>validation/Validators/StepValidator.ts</h1>
                 </header>
                 
 
@@ -109,19 +109,26 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>
-/**
- * @enum
- * @subcategory Model
- */
-export const ModelKeys = {
-  REFLECT: 'model.definition.',
-  TYPE: 'design:type',
-  MODEL: 'model',
-  ANCHOR: '__modelDefinition'
-}
+            <pre class="prettyprint source linenums"><code>import Validator from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Errors} from "../types";
 
-</code></pre>
+/**
+ * Step Validator
+ *
+ * @class StepValidator
+ * @extends Validator
+ * @memberOf Validators
+ */
+export default class StepValidator extends Validator {
+    constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP){
+        super(ValidationKeys.STEP, message);
+    }
+
+    public hasErrors(value: number, step: number, message?: string): Errors {
+        return value % step !== 0 ? this.getMessage(message || this.message, step) : undefined;
+    }
+}</code></pre>
         </article>
     </section>
 
