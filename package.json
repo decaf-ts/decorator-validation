@@ -1,6 +1,6 @@
 {
   "name": "@tvenceslau/decorator-validation",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "Simple decorator based validation engine",
   "main": "./dist/index.min.js",
   "module": "./dist/esm/index.min.esm.js",
