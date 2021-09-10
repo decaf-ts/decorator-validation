@@ -15,6 +15,8 @@ export default class StepValidator extends Validator {
     }
 
     public hasErrors(value: number, step: number, message?: string): Errors {
+        if (value === undefined)
+            return;
         return value % step !== 0 ? this.getMessage(message || this.message, step) : undefined;
     }
 }
