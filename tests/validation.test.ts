@@ -1,8 +1,12 @@
 import Model from "../src/Model/Model";
-import {Decorators, ValidationKeys} from '../src';
+import {Decorators, step, ValidationKeys} from '../src';
 import {Validators} from '../src';
 import Validator from "../src/validation/Validators/Validator";
 const {email, max, maxlength, min, minlength, pattern, required, url, type} = Decorators;
+
+class InnerTestModel {
+
+}
 
 class TestModel extends Model {
 
@@ -14,6 +18,7 @@ class TestModel extends Model {
 
     @required()
     @max(100)
+    @step(5)
     @min(0)
     prop1?: number = undefined;
 
@@ -33,6 +38,9 @@ class TestModel extends Model {
     @url()
     prop6?: string = undefined;
 
+    @type(InnerTestModel.name)
+    prop7?: typeof InnerTestModel = undefined;
+
     constructor(model?: TestModel | {}){
         super(model);
         Model.constructFromObject<TestModel>(this, model);
@@ -44,7 +52,7 @@ describe('Model Test', function() {
     it('Create with required properties as undefined', function() {
         const empty = new TestModel();
         const keys = Object.keys(empty);
-        expect(keys.length).toBe(8);
+        expect(keys.length).toBe(9);
     });
 
     it('outputs to string nicely', function() {
@@ -89,12 +97,13 @@ describe('Validation by decorators test', function() {
     it('Success Validation', function() {
         const dm = new TestModel({
             id: 'id',
-            prop1: 23,
+            prop1: 25,
             prop2: "tests",
             prop3: "asdasfsdfsda",
             prop4: "test@pdm.com",
             prop5: "asdasdasd",
-            prop6: "http://www.thisisatest.com"
+            prop6: "http://www.thisisatest.com",
+            prop7: new InnerTestModel()
         });
 
         const errors = dm.hasErrors();
@@ -117,7 +126,7 @@ describe('Validation by decorators test', function() {
         if (errors){
             expect(Object.keys(errors)).toBeInstanceOf(Array);
             expect(errors && Object.values(errors).length).toBe(7);
-            expect(errors.toString()).toBe("This field is required\nThe maximum value is 100\n" +
+            expect(errors.toString()).toBe("This field is required\nInvalid Value. Not a step of 5\nThe maximum value is 100\n" +
                 "The minimum length is 5\nThe value does not match the pattern\n" +
                 "The value is not a valid email\nThe value does not match the pattern\nThe value is not a valid URL");
         }
@@ -126,7 +135,7 @@ describe('Validation by decorators test', function() {
     it('Pass with non required undefined values', function() {
 
         const dm = new TestModel({
-            prop1: 237
+            prop1: 235
         });
 
         const errors = dm.hasErrors();

@@ -2,9 +2,6 @@ import Model from "./Model";
 import {isModel} from "../utils/utils";
 import {ModelKeys} from "./constants";
 
-
-if (!isModel)
-    throw new Error(`sgfsegs`)
 /**
  * Util class to enable serialization and correct rebuilding
  * @param {string} anchorKey defaults to {@link ModelKeys.ANCHOR}. The property name where the registered class name is stored;

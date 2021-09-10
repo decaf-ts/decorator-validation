@@ -15,6 +15,7 @@ import MinLengthValidator from './Validators/MinLengthValidator';
 import URLValidator from "./Validators/URLValidator";
 import PatternValidator from "./Validators/PatternValidator";
 import TypeValidator from "./Validators/TypeValidator";
+import StepValidator from "./Validators/StepValidator";
 
 /**
  * @param {string} key
@@ -106,9 +107,9 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
  * @namespace Decorators
  * @memberOf Validation
  */
-export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX) => (target: Object, propertyKey: string) => {
+export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STEP) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
-        getValidationKey(ValidationKeys.MAX),
+        getValidationKey(ValidationKeys.STEP),
         {
             value: value,
             message: message
@@ -117,7 +118,7 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX
         propertyKey
     );
 
-    ValidatorRegistry.register({validator: MaxValidator, validationKey: ValidationKeys.MAX});
+    ValidatorRegistry.register({validator: StepValidator, validationKey: ValidationKeys.STEP});
 }
 
 /**

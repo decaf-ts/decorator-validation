@@ -8,6 +8,7 @@ export const ValidationKeys = {
     REQUIRED: 'required',
     MIN: 'min',
     MAX: 'max',
+    STEP: 'step',
     MIN_LENGTH: 'minlength',
     MAX_LENGTH: 'maxlength',
     PATTERN: 'pattern',

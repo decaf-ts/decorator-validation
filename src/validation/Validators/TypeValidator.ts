@@ -1,5 +1,5 @@
 import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {DEFAULT_ERROR_MESSAGES} from "../constants";
 import {Errors} from "../types";
 import {ModelKeys} from "../../Model";
 
@@ -12,7 +12,7 @@ import {ModelKeys} from "../../Model";
  */
 export default class TypeValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.TYPE){
-        super(ModelKeys.TYPE, message)
+        super(ModelKeys.TYPE, message);
     }
 
     private checkType(value: any, typeName: string, message?: string){
@@ -31,11 +31,11 @@ export default class TypeValidator extends Validator {
             case 'string':
                 return this.checkType(value, types, message);
             case "object":
-                if (Array.isArray(value))
+                if (Array.isArray(types))
                     { // @ts-ignore
-                        if (!types.every(t => !this.checkType(value,t)))
+                        if (types.every(t => !!this.checkType(value,t)))
                         { // @ts-ignore
-                            return this.getMessage(message || this.message, types.join(','), typeof value);
+                            return this.getMessage(message || this.message, types.join(', '), typeof value);
                         }
                     }
                 break;
@@ -43,9 +43,7 @@ export default class TypeValidator extends Validator {
                 // @ts-ignore
                 if (types.name && types.name !== 'Object')
                     { // @ts-ignore
-                        return this.checkType(value, types.name.toLowerCase(), message);
-                    }
-                break;
+                        return this.checkType(value, types.name.toLowerCase(), message);                    }
         }
     }
 }
