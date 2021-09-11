@@ -41,6 +41,9 @@ class TestModel extends Model {
     @type(InnerTestModel.name)
     prop7?: typeof InnerTestModel = undefined;
 
+
+    prop9?: Date = undefined;
+
     constructor(model?: TestModel | {}){
         super(model);
         Model.constructFromObject<TestModel>(this, model);
@@ -52,7 +55,7 @@ describe('Model Test', function() {
     it('Create with required properties as undefined', function() {
         const empty = new TestModel();
         const keys = Object.keys(empty);
-        expect(keys.length).toBe(9);
+        expect(keys.length).toBe(10);
     });
 
     it('outputs to string nicely', function() {

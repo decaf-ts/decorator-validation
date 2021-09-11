@@ -2,6 +2,7 @@ import Validator from "./Validator";
 import {DEFAULT_ERROR_MESSAGES} from "../constants";
 import {Errors} from "../types";
 import {ModelKeys} from "../../Model";
+import {checkType, checkTypes} from "../../utils";
 
 /**
  * Required Validator
@@ -16,11 +17,8 @@ export default class TypeValidator extends Validator {
     }
 
     private checkType(value: any, typeName: string, message?: string){
-        if (typeof value === typeName)
-            return;
-        if (value.constructor && value.constructor.name === typeName)
-            return;
-        return this.getMessage(message || this.message, typeName, typeof value);
+        if (!checkType(value, typeName))
+            return this.getMessage(message || this.message, typeName, typeof value);
     }
 
     public hasErrors(value: any, types: string | string[] | {name: string}, message?: string): Errors {
@@ -33,7 +31,7 @@ export default class TypeValidator extends Validator {
             case "object":
                 if (Array.isArray(types))
                     { // @ts-ignore
-                        if (types.every(t => !!this.checkType(value,t)))
+                        if (!checkTypes(value, types))
                         { // @ts-ignore
                             return this.getMessage(message || this.message, types.join(', '), typeof value);
                         }

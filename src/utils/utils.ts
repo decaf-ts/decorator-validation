@@ -147,3 +147,27 @@ export function getClassDecorators(annotationPrefix: string, target: any): {key:
             return values.concat(currValues);
         }, []);
 }
+
+/**
+ * Util function to check a type according to a typeName
+ * @param {any} value
+ * @param {string} acceptedType
+ * @return {boolean} true for a match, false otherwise
+ */
+export function checkType(value: any, acceptedType: string){
+    if (typeof value === acceptedType)
+        return true;
+    if (value.constructor && value.constructor.name === acceptedType)
+        return true;
+    return false;
+}
+
+/**
+ * Util function to check a type according multiple possibilities
+ * @param {any} value
+ * @param {string[]} acceptedTypes
+ * @return {boolean} true if any is a match, false otherwise
+ */
+export function checkTypes(value: any, acceptedTypes: string[]){
+    return !acceptedTypes.every(t => !checkType(value, t));
+}
