@@ -13,7 +13,7 @@ export default class PatternValidator extends Validator {
     private static readonly regexpParser: RegExp = new RegExp("^\/(.+)\/([gimus]*)$");
 
     constructor(key: string = ValidationKeys.PATTERN, message: string = DEFAULT_ERROR_MESSAGES.PATTERN){
-        super(key, message);
+        super(key, message, "string");
     }
 
     private static getPattern(pattern: string): RegExp {

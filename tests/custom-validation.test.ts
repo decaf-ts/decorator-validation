@@ -66,7 +66,8 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any
     Reflect.defineMetadata(
         getValidationKey(CUSTOM_VALIDATION_KEY),
         {
-            message: message
+            message: message,
+            types: ['string', 'number']
         },
         target,
         propertyKey
@@ -76,7 +77,6 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any
 
 class TestModel extends Model {
 
-    @type(['number', 'string'])
     @gtin()
     customProp?: number | string = undefined;
 

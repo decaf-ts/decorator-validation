@@ -46,7 +46,7 @@ export type ValidationDecoratorDefinition = {
 export type ValidationElementDefinition = {
     value?: string | number,
     message: string
-    ,
+    types?: string[],
 }
 
 export type ModelErrors = {

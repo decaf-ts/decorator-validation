@@ -27,7 +27,10 @@ export default abstract class Model implements Validatable {
      * @see Model#constructFromObject
      */
     protected constructor(model?: Model | {}){
-        Model.constructFromObject(this, model);
+        console.log(`entering MODEL constructor`)
+        Model.constructFromObject<Model>(this, model);
+        console.log(`exiting MODEL constructor`)
+
     }
 
     /**
@@ -76,8 +79,10 @@ export default abstract class Model implements Validatable {
      * @memberOf Model
      */
     public static constructFromObject<T extends Model>(self: T, obj?: T | {}){
+        if (!obj)
+            return;
         for (let prop in obj)
-            if(obj.hasOwnProperty(prop) && self.hasOwnProperty(prop))// @ts-ignore
+            if(obj.hasOwnProperty(prop) && (self.hasOwnProperty(prop) || (self.prototype && self.prototype.hasOwnProperty(prop))))// @ts-ignore
                 self[prop] = obj[prop];
         return self;
     }

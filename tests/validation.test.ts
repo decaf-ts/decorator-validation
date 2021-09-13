@@ -1,5 +1,5 @@
 import Model from "../src/Model/Model";
-import {Decorators, step, ValidationKeys} from '../src';
+import {date, Decorators, step, ValidationKeys} from '../src';
 import {Validators} from '../src';
 import Validator from "../src/validation/Validators/Validator";
 const {email, max, maxlength, min, minlength, pattern, required, url, type} = Decorators;
@@ -41,9 +41,6 @@ class TestModel extends Model {
     @type(InnerTestModel.name)
     prop7?: typeof InnerTestModel = undefined;
 
-
-    prop9?: Date = undefined;
-
     constructor(model?: TestModel | {}){
         super(model);
         Model.constructFromObject<TestModel>(this, model);
@@ -55,7 +52,7 @@ describe('Model Test', function() {
     it('Create with required properties as undefined', function() {
         const empty = new TestModel();
         const keys = Object.keys(empty);
-        expect(keys.length).toBe(10);
+        expect(keys.length).toBe(9);
     });
 
     it('outputs to string nicely', function() {
@@ -64,7 +61,8 @@ describe('Model Test', function() {
             prop1: 23,
             prop2: "tests",
             prop3: "asdasfsdfsda",
-            prop4: "test@pdm.com"
+            prop4: "test@pdm.com",
+            prop8: new Date()
         });
 
         const output = dm.toString();
@@ -159,5 +157,20 @@ describe('Validation by decorators test', function() {
                 return;
             expect(validator.hasErrors(undefined)).toBeUndefined();
         })
+    });
+
+    it("Handles Dates", function(){
+        const dm = new TestModel({
+            prop1: 235,
+            prop8: "test"
+        });
+
+        const errors = dm.hasErrors();
+        expect(errors).toBeDefined();
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(errors && Object.keys(errors).length).toBe(2);
+            expect(errors.toString()).toBe("This field is required\nThe maximum value is 100");
+        }
     });
 });

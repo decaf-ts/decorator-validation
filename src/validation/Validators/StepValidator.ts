@@ -11,7 +11,7 @@ import {Errors} from "../types";
  */
 export default class StepValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP){
-        super(ValidationKeys.STEP, message);
+        super(ValidationKeys.STEP, message, "number");
     }
 
     public hasErrors(value: number, step: number, message?: string): Errors {

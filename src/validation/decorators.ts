@@ -16,6 +16,8 @@ import URLValidator from "./Validators/URLValidator";
 import PatternValidator from "./Validators/PatternValidator";
 import TypeValidator from "./Validators/TypeValidator";
 import StepValidator from "./Validators/StepValidator";
+import DateValidator from "./Validators/DateValidator";
+import {formatDate} from "../utils";
 
 /**
  * @param {string} key
@@ -36,6 +38,9 @@ export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
  * @memberOf Validation
  */
 export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) => (target: any, propertyKey: string) => {
+
+    console.log(target, propertyKey)
+
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.REQUIRED),
         {
@@ -63,7 +68,8 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
         getValidationKey(ValidationKeys.MIN),
         {
             value: value,
-            message: message
+            message: message,
+            types: [Number.name, Date.name]
         },
         target,
         propertyKey
@@ -87,7 +93,8 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
         getValidationKey(ValidationKeys.MAX),
         {
             value: value,
-            message: message
+            message: message,
+            types: [Number.name, Date.name]
         },
         target,
         propertyKey
@@ -112,7 +119,8 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
         getValidationKey(ValidationKeys.STEP),
         {
             value: value,
-            message: message
+            message: message,
+            types: [Number.name]
         },
         target,
         propertyKey
@@ -137,7 +145,8 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         getValidationKey(ValidationKeys.MIN_LENGTH),
         {
             value: value,
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -161,7 +170,8 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         getValidationKey(ValidationKeys.MAX_LENGTH),
         {
             value: value,
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -185,7 +195,8 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
         getValidationKey(ValidationKeys.PATTERN),
         {
             value: typeof value === 'string' ? value : value.toString(),
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -207,7 +218,8 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL) => (target
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.EMAIL),
         {
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -229,7 +241,8 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.URL),
         {
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -252,11 +265,70 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.TYPE),
         {
-            types: types,
+            customTypes: types,
             message: message
         },
         target,
         propertyKey
     );
     ValidatorRegistry.register({validator: TypeValidator, validationKey: ValidationKeys.TYPE});
+}
+
+/**
+ * Enforces type verification
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.DATE}
+ *
+ * @param {string} format accepted format according to {@link }
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}
+ * @decorator
+ * @namespace Decorators
+ * @memberOf Validation
+ */
+export const date = (format: string = "dd/mm/YYYY", message: string = DEFAULT_ERROR_MESSAGES.DATE) => (target: {[indexer: string]: any}, propertyKey: string) => {
+    console.log(`entering date decorator`, target)
+
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.DATE),
+        {
+            format: format,
+            message: message,
+            types: [Date.name]
+        },
+        target,
+        propertyKey
+    );
+    ValidatorRegistry.register({validator: DateValidator, validationKey: ValidationKeys.DATE});
+
+    const propertyDescriptor: PropertyDescriptor  | undefined = Object.getOwnPropertyDescriptor(target, propertyKey);
+
+    let value = propertyDescriptor ? new Date(propertyDescriptor.value) : undefined;
+
+    console.log(value);
+
+    const bindDateToString = function(date: Date | undefined){
+        if (!date)
+            return;
+        date.toString = () => formatDate(date, format);
+    }
+
+    bindDateToString(value);
+
+    console.log(value);
+
+    Object.defineProperty(target, propertyKey, {
+        enumerable: true,
+        configurable: true,
+        get: function() {return value},
+        set: function(v) {
+            if (!v || v instanceof Date)
+                value = v;
+            else if (typeof v === 'string' || typeof v === 'number')
+                value = new Date(v);
+            else
+                throw new Error(`Invalid value provided ${v}`);
+
+            bindDateToString(value);
+        }
+    });
 }

@@ -14,6 +14,7 @@ export const ValidationKeys = {
     PATTERN: 'pattern',
     EMAIL: "email",
     URL: "url",
+    DATE: "date",
     TYPE: "type"
 }
 
@@ -33,5 +34,6 @@ export const DEFAULT_ERROR_MESSAGES = {
     URL: "The value is not a valid URL",
     TYPE: "Invalid Type. Expected {0}, received {1}",
     STEP: "Invalid Value. Not a step of {0}",
+    DATE: "Invalid value. not a valid Date",
     DEFAULT: "There is an Error"
 }

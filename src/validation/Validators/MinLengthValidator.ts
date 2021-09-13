@@ -11,7 +11,7 @@ import {Errors} from "../types";
  */
 export default class MinLengthValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH){
-        super(ValidationKeys.MIN_LENGTH, message)
+        super(ValidationKeys.MIN_LENGTH, message, "string")
     }
 
     public hasErrors(value: string, minlength: number, message?: string): Errors {

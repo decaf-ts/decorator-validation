@@ -11,7 +11,7 @@ import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
  */
 export default class MaxLengthValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH){
-        super(ValidationKeys.MAX_LENGTH, message)
+        super(ValidationKeys.MAX_LENGTH, message, "string")
     }
 
     public hasErrors(value: string, maxlength: number, message?: string): Errors {
