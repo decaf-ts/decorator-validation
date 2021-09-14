@@ -27,10 +27,7 @@ export default abstract class Model implements Validatable {
      * @see Model#constructFromObject
      */
     protected constructor(model?: Model | {}){
-        console.log(`entering MODEL constructor`)
         Model.constructFromObject<Model>(this, model);
-        console.log(`exiting MODEL constructor`)
-
     }
 
     /**
@@ -40,7 +37,7 @@ export default abstract class Model implements Validatable {
      * @memberOf Model
      * @see validate
      */
-    public hasErrors(...args: any[]): ModelErrorDefinition | undefined{
+    public hasErrors(...args: any[]): ModelErrorDefinition | undefined {
         return validate(this);
     }
 
@@ -58,14 +55,14 @@ export default abstract class Model implements Validatable {
      * Override the implementation for js's 'toString()' which sucks...
      * @override
      */
-    public toString(){
+    public toString(): string {
         return this.constructor.name +": " + JSON.stringify(this, undefined, 2);
     }
 
     /**
      * Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
      */
-    public toHash() : string{
+    public toHash(): string{
         return hashObj(this).toString();
     }
 

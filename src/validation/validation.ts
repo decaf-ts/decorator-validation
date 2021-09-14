@@ -6,7 +6,7 @@ import {
     ValidatorDefinition,
     ModelErrors
 } from "./types";
-import {checkTypes, getPropertyDecorators} from '../utils/utils'
+import {checkTypes, evaluateDesignTypes, getPropertyDecorators} from '../utils/utils'
 import {ValidationKeys} from "./constants";
 import Validator from "./Validators/Validator";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";
@@ -93,7 +93,17 @@ export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undef
         if (!decorators || !decorators.length)
             return accum;
 
-        if (decorators.find(d => d.key === ValidationKeys.TYPE))
+        // @ts-ignore
+        const defaultTypeDecorator: {key: string, props: {name: string}} = decorators[0];
+
+        // tries to find any type decorators or other decorators that already enforce type (the ones with the allowed types property defined). if so, skip the default type verification
+        if (decorators.find(d => {
+            if (d.key === ValidationKeys.TYPE)
+                return true;
+            if (d.props.types?.find(t => t === defaultTypeDecorator.props.name))
+                return true;
+            return false;
+        }))
             decorators.shift(); // remove the design:type decorator, since the type will already be checked
 
         const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {

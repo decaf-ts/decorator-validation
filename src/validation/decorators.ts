@@ -38,9 +38,6 @@ export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
  * @memberOf Validation
  */
 export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) => (target: any, propertyKey: string) => {
-
-    console.log(target, propertyKey)
-
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.REQUIRED),
         {
@@ -285,9 +282,7 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
  * @namespace Decorators
  * @memberOf Validation
  */
-export const date = (format: string = "dd/mm/YYYY", message: string = DEFAULT_ERROR_MESSAGES.DATE) => (target: {[indexer: string]: any}, propertyKey: string) => {
-    console.log(`entering date decorator`, target)
-
+export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE) => (target: {[indexer: string]: any}, propertyKey: string): any => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.DATE),
         {
@@ -300,35 +295,39 @@ export const date = (format: string = "dd/mm/YYYY", message: string = DEFAULT_ER
     );
     ValidatorRegistry.register({validator: DateValidator, validationKey: ValidationKeys.DATE});
 
-    const propertyDescriptor: PropertyDescriptor  | undefined = Object.getOwnPropertyDescriptor(target, propertyKey);
-
-    let value = propertyDescriptor ? new Date(propertyDescriptor.value) : undefined;
-
-    console.log(value);
-
     const bindDateToString = function(date: Date | undefined){
         if (!date)
             return;
-        date.toString = () => formatDate(date, format);
+        date.toISOString = () => formatDate(date, format);
+        return date;
     }
 
-    bindDateToString(value);
+    const parseDate = function(v?: string | Date | number){
+        let value: Date | undefined = undefined;
+        if (!v || v instanceof Date)
+        { // @ts-ignore
+            value = v;
+        }
+        else if (typeof v === 'string' || typeof v === 'number')
+            value = new Date(v);
+        else
+            throw new Error(`Invalid value provided ${v}`);
+        return bindDateToString(value);
+    }
 
-    console.log(value);
+    const values = new WeakMap();
 
     Object.defineProperty(target, propertyKey, {
-        enumerable: true,
-        configurable: true,
-        get: function() {return value},
-        set: function(v) {
-            if (!v || v instanceof Date)
-                value = v;
-            else if (typeof v === 'string' || typeof v === 'number')
-                value = new Date(v);
-            else
-                throw new Error(`Invalid value provided ${v}`);
+        set(this: any, newValue: string | Date){
 
-            bindDateToString(value);
+            Object.defineProperty(this, propertyKey, {
+                enumerable: true,
+                configurable: false,
+                get: () => values.get(this),
+                set: (newValue: string | Date) => values.set(this, parseDate(newValue))
+            });
+
+            this[propertyKey] = newValue;
         }
     });
 }

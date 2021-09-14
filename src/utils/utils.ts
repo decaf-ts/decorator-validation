@@ -173,6 +173,23 @@ export function checkTypes(value: any, acceptedTypes: string[]){
     return !acceptedTypes.every(t => !checkType(value, t));
 }
 
+export function evaluateDesignTypes(value: any, types: string | string[] | {name: string}){
+    switch(typeof types){
+        case 'string':
+            return checkType(value, types);
+        case "object":
+            if (Array.isArray(types))
+                return checkTypes(value, types);
+            return true;
+        case "function":
+            if (types.name && types.name !== 'Object')
+                return checkType(value, types.name.toLowerCase());
+            return true;
+        default:
+            return true;
+    }
+}
+
 /**
  * Date Format Handling
  * https://stackoverflow.com/questions/3552461/how-to-format-a-javascript-date
@@ -243,6 +260,6 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
     return patternStr;
 }
 
-function twoDigitPad(num: number): string {
+export function twoDigitPad(num: number): string {
     return num < 10 ? "0" + num : num.toString();
 }
