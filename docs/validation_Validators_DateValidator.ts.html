@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine validation/Validators/PatternValidator.ts</title>
+  <title>Decorator Validation Engine validation/Validators/DateValidator.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>validation/Validators/PatternValidator.ts</h1>
+                    <h1>validation/Validators/DateValidator.ts</h1>
                 </header>
                 
 
@@ -114,31 +114,26 @@ import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
 import {Errors} from "../types";
 
 /**
- * Pattern Validator
+ * Date Validator
  *
- * @class PatternValidator
+ * @class DateValidator
  * @extends Validator
  * @memberOf Validators
  */
-export default class PatternValidator extends Validator {
-    private static readonly regexpParser: RegExp = new RegExp("^\/(.+)\/([gimus]*)$");
-
-    constructor(key: string = ValidationKeys.PATTERN, message: string = DEFAULT_ERROR_MESSAGES.PATTERN){
-        super(key, message, "string");
+export default class DateValidator extends Validator {
+    constructor(message: string = DEFAULT_ERROR_MESSAGES.DATE){
+        super(ValidationKeys.DATE, message, Number.name, Date.name, String.name);
     }
 
-    private static getPattern(pattern: string): RegExp {
-        if (!PatternValidator.regexpParser.test(pattern))
-            return new RegExp(pattern);
-        const match: any = pattern.match(PatternValidator.regexpParser);
-        return new RegExp(match[1], match[2]);
-    }
-
-    public hasErrors(value: string, pattern: RegExp | string, message?: string): Errors {
-        if (!value)
+    public hasErrors(value: Date | string, format: string, message?: string): Errors {
+        if (value === undefined)
             return;
-        pattern = typeof pattern === 'string' ? PatternValidator.getPattern(pattern) : pattern;
-        return !pattern.test(value) ? this.getMessage(message || this.message) : undefined;
+
+        if (typeof value === 'string')
+            value = new Date(value);
+
+        if (isNaN(value.getDate()))
+            return this.getMessage(message || this.message);
     }
 }</code></pre>
         </article>

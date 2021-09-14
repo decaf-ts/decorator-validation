@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.StepValidator.html">StepValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#construct">construct</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.Validation.html">Validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="Validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.DateValidator.html">DateValidator</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.StepValidator.html">StepValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkType">checkType</a></li><li><a href="global.html#checkTypes">checkTypes</a></li><li><a href="global.html#construct">construct</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
                 
             </nav>
         </div>
@@ -127,6 +127,8 @@ import URLValidator from "./Validators/URLValidator";
 import PatternValidator from "./Validators/PatternValidator";
 import TypeValidator from "./Validators/TypeValidator";
 import StepValidator from "./Validators/StepValidator";
+import DateValidator from "./Validators/DateValidator";
+import {formatDate} from "../utils";
 
 /**
  * @param {string} key
@@ -174,7 +176,8 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
         getValidationKey(ValidationKeys.MIN),
         {
             value: value,
-            message: message
+            message: message,
+            types: [Number.name, Date.name]
         },
         target,
         propertyKey
@@ -198,7 +201,8 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
         getValidationKey(ValidationKeys.MAX),
         {
             value: value,
-            message: message
+            message: message,
+            types: [Number.name, Date.name]
         },
         target,
         propertyKey
@@ -208,12 +212,12 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
 }
 
 /**
- * Defines a maximum value for the property
+ * Defines a step value for the property
  *
- * Validators to validate a decorated property must use key {@link ValidationKeys.MAX}
+ * Validators to validate a decorated property must use key {@link ValidationKeys.STEP}
  *
- * @param {number | Date} value
- * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
+ * @param {number} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.STEP}
  * @decorator
  * @namespace Decorators
  * @memberOf Validation
@@ -223,7 +227,8 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
         getValidationKey(ValidationKeys.STEP),
         {
             value: value,
-            message: message
+            message: message,
+            types: [Number.name]
         },
         target,
         propertyKey
@@ -248,7 +253,8 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         getValidationKey(ValidationKeys.MIN_LENGTH),
         {
             value: value,
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -272,7 +278,8 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         getValidationKey(ValidationKeys.MAX_LENGTH),
         {
             value: value,
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -296,7 +303,8 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
         getValidationKey(ValidationKeys.PATTERN),
         {
             value: typeof value === 'string' ? value : value.toString(),
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -318,7 +326,8 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL) => (target
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.EMAIL),
         {
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -340,7 +349,8 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.URL),
         {
-            message: message
+            message: message,
+            types: [String.name]
         },
         target,
         propertyKey
@@ -363,13 +373,76 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.TYPE),
         {
-            types: types,
+            customTypes: types,
             message: message
         },
         target,
         propertyKey
     );
     ValidatorRegistry.register({validator: TypeValidator, validationKey: ValidationKeys.TYPE});
+}
+
+/**
+ * Date Handler Decorator
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.DATE}
+ *
+ * Will enforce serialization according to the selected format
+ *
+ * @param {string} format accepted format according to {@link }
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}
+ * @decorator
+ * @namespace Decorators
+ * @memberOf Validation
+ */
+export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE) => (target: {[indexer: string]: any}, propertyKey: string): any => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.DATE),
+        {
+            format: format,
+            message: message,
+            types: [Date.name]
+        },
+        target,
+        propertyKey
+    );
+    ValidatorRegistry.register({validator: DateValidator, validationKey: ValidationKeys.DATE});
+
+    const bindDateToString = function(date: Date | undefined){
+        if (!date)
+            return;
+        date.toISOString = () => formatDate(date, format);
+        return date;
+    }
+
+    const parseDate = function(v?: string | Date | number){
+        let value: Date | undefined = undefined;
+        if (!v || v instanceof Date)
+        { // @ts-ignore
+            value = v;
+        }
+        else if (typeof v === 'string' || typeof v === 'number')
+            value = new Date(v);
+        else
+            throw new Error(`Invalid value provided ${v}`);
+        return bindDateToString(value);
+    }
+
+    const values = new WeakMap();
+
+    Object.defineProperty(target, propertyKey, {
+        set(this: any, newValue: string | Date){
+
+            Object.defineProperty(this, propertyKey, {
+                enumerable: true,
+                configurable: false,
+                get: () => values.get(this),
+                set: (newValue: string | Date) => values.set(this, parseDate(newValue))
+            });
+
+            this[propertyKey] = newValue;
+        }
+    });
 }</code></pre>
         </article>
     </section>
