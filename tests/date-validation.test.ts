@@ -37,12 +37,40 @@ describe('Date Integration', function() {
         expect(JSON.stringify(dm)).toEqual(`{\"dateProp\":\"${expected}\"}`);
     });
 
-    it('Properly recognizes invalid types nad overrides the design:type default type checking', function() {
+    it('handles min decorators validation properly', () => {
         const dm2 = new TestModel({
+            dateProp: new Date(1998, 0, 1)
+        });
+        const errors = dm2.hasErrors();
+        expect(errors).toBeDefined();
+        if (!errors)
+            return;
+        const propErrors = errors.dateProp;
+        expect(Object.keys(propErrors).length).toEqual(1);
+        expect(Object.keys(propErrors)[0]).toEqual(ValidationKeys.MIN);
+
+    });
+
+    it('handles max decorators validation properly', () => {
+        const dm2 = new TestModel({
+            dateProp: new Date(2045, 0, 1)
+        });
+        const errors = dm2.hasErrors();
+        expect(errors).toBeDefined();
+        if (!errors)
+            return;
+        const propErrors = errors.dateProp;
+        expect(Object.keys(propErrors).length).toEqual(1);
+        expect(Object.keys(propErrors)[0]).toEqual(ValidationKeys.MAX);
+
+    });
+
+    it('Properly recognizes type verification from decorators and overrides the design:type default type checking', function() {
+        const dm3 = new TestModel({
             dateProp: "new Date()"
         });
 
-        const errors = dm2.hasErrors();
+        const errors = dm3.hasErrors();
         expect(errors).toBeDefined();
         if (!errors)
             return;
@@ -50,6 +78,7 @@ describe('Date Integration', function() {
         expect(Object.keys(errors).length).toEqual(1);
         const keys = Object.keys(errors[Object.keys(errors)[0]]);
         expect(keys.length).toEqual(1);
-        expect(keys[0]).toEqual(ValidationKeys.DATE)
+        expect(keys[0]).toEqual(ValidationKeys.DATE);
+        expect(Object.values(errors[Object.keys(errors)[0]])[0]).toEqual('Invalid value. not a valid Date')
     });
 });

@@ -101,12 +101,12 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
 }
 
 /**
- * Defines a maximum value for the property
+ * Defines a step value for the property
  *
- * Validators to validate a decorated property must use key {@link ValidationKeys.MAX}
+ * Validators to validate a decorated property must use key {@link ValidationKeys.STEP}
  *
- * @param {number | Date} value
- * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
+ * @param {number} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.STEP}
  * @decorator
  * @namespace Decorators
  * @memberOf Validation
@@ -272,9 +272,11 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
 }
 
 /**
- * Enforces type verification
+ * Date Handler Decorator
  *
  * Validators to validate a decorated property must use key {@link ValidationKeys.DATE}
+ *
+ * Will enforce serialization according to the selected format
  *
  * @param {string} format accepted format according to {@link }
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}

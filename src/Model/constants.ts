@@ -1,6 +1,6 @@
 
 /**
- * @enum
+ * @enum ModelKeys
  * @subcategory Model
  */
 export const ModelKeys = {

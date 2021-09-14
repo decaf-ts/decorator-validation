@@ -5,7 +5,7 @@ import ModelRegistry from "./Registry";
 const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 
 /**
- * Defines a class as a UI Model
+ * Defines a class as a Model class for serialization purposes
  *
  * @decorator
  * @namespace Decorators
