@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/TiagoVenceslau/decorator-validation#readme",
   "devDependencies": {
-    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-env": "^7.15.8",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.0.1",
     "jest": "^27.0.6",

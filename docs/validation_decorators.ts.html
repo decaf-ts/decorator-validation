@@ -411,7 +411,9 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
     const bindDateToString = function(date: Date | undefined){
         if (!date)
             return;
-        date.toISOString = () => formatDate(date, format);
+        const func = () => formatDate(date, format);
+        date.toISOString = func;
+        date.toString = func;
         return date;
     }
 
