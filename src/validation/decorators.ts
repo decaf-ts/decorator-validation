@@ -252,7 +252,7 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
  *
  * Validators to validate a decorated property must use key {@link ValidationKeys.TYPE}
  *
- * @param {string[]} types accepted types
+ * @param {string[] | string} types accepted types
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.TYPE}
  * @decorator
  * @namespace Decorators
@@ -300,7 +300,9 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
     const bindDateToString = function(date: Date | undefined){
         if (!date)
             return;
-        date.toISOString = () => formatDate(date, format);
+        const func = () => formatDate(date, format);
+        date.toISOString = func;
+        date.toString = func;
         return date;
     }
 
