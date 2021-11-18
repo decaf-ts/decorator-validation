@@ -5,7 +5,7 @@
 
 import "reflect-metadata";
 import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
-import {ValidatorRegistry} from "./validation";
+import {getValidatorRegistry} from "./validation";
 import RequiredValidator from './Validators/RequiredValidator';
 import EmailValidator from './Validators/EmailValidator';
 import MaxValidator from './Validators/MaxValidator';
@@ -18,6 +18,7 @@ import TypeValidator from "./Validators/TypeValidator";
 import StepValidator from "./Validators/StepValidator";
 import DateValidator from "./Validators/DateValidator";
 import {formatDate} from "../utils";
+import Validator from "./Validators/Validator";
 
 /**
  * @param {string} key
@@ -33,11 +34,12 @@ export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
  * Validators to validate a decorated property must use key {@link ValidationKeys.REQUIRED}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.REQUIRED}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
+ * @decorator required
  * @namespace Decorators
  * @memberOf Validation
  */
-export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) => (target: any, propertyKey: string) => {
+export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, validator: {new(): Validator} = RequiredValidator) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.REQUIRED),
         {
@@ -46,7 +48,7 @@ export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) => (
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: RequiredValidator, validationKey: ValidationKeys.REQUIRED});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.REQUIRED});
 }
 
 /**
@@ -56,11 +58,12 @@ export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) => (
  *
  * @param {number | Date} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MinValidator}
+ * @decorator min
  * @namespace Decorators
  * @memberOf Validation
  */
-export const min = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MIN) => (target: Object, propertyKey: string) => {
+export const min = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MIN, validator: {new(): Validator} = MinValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.MIN),
         {
@@ -71,7 +74,7 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: MinValidator, validationKey: ValidationKeys.MIN});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MIN});
 }
 
 /**
@@ -81,11 +84,12 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
  *
  * @param {number | Date} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MaxValidator}
+ * @decorator max
  * @namespace Decorators
  * @memberOf Validation
  */
-export const max = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MAX) => (target: Object, propertyKey: string) => {
+export const max = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MAX, validator: {new(): Validator} = MaxValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.MAX),
         {
@@ -97,7 +101,7 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
         propertyKey
     );
 
-    ValidatorRegistry.register({validator: MaxValidator, validationKey: ValidationKeys.MAX});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MAX});
 }
 
 /**
@@ -107,11 +111,12 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
  *
  * @param {number} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.STEP}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link StepValidator}
+ * @decorator step
  * @namespace Decorators
  * @memberOf Validation
  */
-export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STEP) => (target: Object, propertyKey: string) => {
+export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STEP, validator: {new(): Validator} = StepValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.STEP),
         {
@@ -123,7 +128,7 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
         propertyKey
     );
 
-    ValidatorRegistry.register({validator: StepValidator, validationKey: ValidationKeys.STEP});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.STEP});
 }
 
 /**
@@ -133,11 +138,12 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
  *
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN_LENGTH}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MinLengthValidator}
+ * @decorator minlength
  * @namespace Decorators
  * @memberOf Validation
  */
-export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH) => (target: Object, propertyKey: string) => {
+export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH, validator: {new(): Validator} = MinLengthValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.MIN_LENGTH),
         {
@@ -148,7 +154,7 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: MinLengthValidator, validationKey: ValidationKeys.MIN_LENGTH});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MIN_LENGTH});
 }
 
 /**
@@ -158,11 +164,12 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
  *
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX_LENGTH}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MaxLengthValidator}
+ * @decorator maxlength
  * @namespace Decorators
  * @memberOf Validation
  */
-export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH) => (target: Object, propertyKey: string) => {
+export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH, validator: {new(): Validator} = MaxLengthValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.MAX_LENGTH),
         {
@@ -173,7 +180,7 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: MaxLengthValidator, validationKey: ValidationKeys.MAX_LENGTH});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MAX_LENGTH});
 }
 
 /**
@@ -183,11 +190,12 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
  *
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.PATTERN}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link PatternValidator}
+ * @decorator pattern
  * @namespace Decorators
  * @memberOf Validation
  */
-export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_MESSAGES.PATTERN) => (target: Object, propertyKey: string) => {
+export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_MESSAGES.PATTERN, validator: {new(): Validator} = PatternValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.PATTERN),
         {
@@ -198,7 +206,7 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: PatternValidator, validationKey: ValidationKeys.PATTERN});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.PATTERN});
 }
 
 /**
@@ -207,11 +215,12 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
  * Validators to validate a decorated property must use key {@link ValidationKeys.EMAIL}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.EMAIL}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link EmailValidator}
+ * @decorator email
  * @namespace Decorators
  * @memberOf Validation
  */
-export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL) => (target: Object, propertyKey: string) => {
+export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator: {new(): Validator} = EmailValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.EMAIL),
         {
@@ -221,7 +230,7 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL) => (target
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: EmailValidator, validationKey: ValidationKeys.EMAIL});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.EMAIL});
 }
 
 /**
@@ -230,11 +239,12 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL) => (target
  * Validators to validate a decorated property must use key {@link ValidationKeys.URL}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.URL}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link URLValidator}
+ * @decorator url
  * @namespace Decorators
  * @memberOf Validation
  */
-export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Object, propertyKey: string) => {
+export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL, validator: {new(): Validator} = URLValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.URL),
         {
@@ -244,7 +254,7 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: URLValidator, validationKey: ValidationKeys.URL});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.URL});
 }
 
 /**
@@ -254,11 +264,12 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL) => (target: Ob
  *
  * @param {string[] | string} types accepted types
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.TYPE}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link TypeValidator}
+ * @decorator type
  * @namespace Decorators
  * @memberOf Validation
  */
-export const type = (types: string[] | string, message: string = DEFAULT_ERROR_MESSAGES.TYPE) => (target: Object, propertyKey: string) => {
+export const type = (types: string[] | string, message: string = DEFAULT_ERROR_MESSAGES.TYPE, validator: {new(): Validator} = TypeValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.TYPE),
         {
@@ -268,7 +279,7 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: TypeValidator, validationKey: ValidationKeys.TYPE});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.TYPE});
 }
 
 /**
@@ -280,11 +291,12 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
  *
  * @param {string} format accepted format according to {@link }
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}
- * @decorator
+ * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link DateValidator}
+ * @decorator date
  * @namespace Decorators
  * @memberOf Validation
  */
-export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE) => (target: {[indexer: string]: any}, propertyKey: string): any => {
+export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE, validator: {new(): Validator} = DateValidator) => (target: {[indexer: string]: any}, propertyKey: string): any => {
     Reflect.defineMetadata(
         getValidationKey(ValidationKeys.DATE),
         {
@@ -295,7 +307,7 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
         target,
         propertyKey
     );
-    ValidatorRegistry.register({validator: DateValidator, validationKey: ValidationKeys.DATE});
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.DATE});
 
     const bindDateToString = function(date: Date | undefined){
         if (!date)

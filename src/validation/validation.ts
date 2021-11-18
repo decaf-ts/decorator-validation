@@ -1,80 +1,47 @@
 import Model from "../Model/Model";
 import {
     Errors,
-    Registry,
     ValidationPropertyDecoratorDefinition,
-    ValidatorDefinition,
-    ModelErrors
+    ModelErrors, IValidatorRegistry
 } from "./types";
-import {checkTypes, evaluateDesignTypes, getPropertyDecorators} from '../utils/utils'
+import {ValidatorRegistry, ValidatorRegistry as ValidatorRegistryImp} from "./ValidatorRegistry";
+import {getPropertyDecorators} from '../utils/utils'
 import {ValidationKeys} from "./constants";
-import Validator from "./Validators/Validator";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";
 import {ModelKeys} from "../Model";
 import TypeValidator from "./Validators/TypeValidator";
+import Validator from "./Validators/Validator";
+
+let actingValidatorRegistry: IValidatorRegistry | undefined = undefined;
 
 /**
- * Returns
- * @return {*}
- * @constructor
- * @function ValRegistry
+ * Returns the current ValidatorRegistry
+ * @function getValidatorRegistry
+ * @return IValidatorRegistry, defaults to {@link ValidatorRegistryImp}
  * @memberOf Validation
  */
-function ValRegistry(...initial: any[]) : Registry {
-    // @ts-ignore
-    const registry: Registry =  new function(){
-        const cache: any = {};
-        // @ts-ignore
-        const self: any = this;
-
-        /**
-         *
-         * @param validator
-         * @memberOf ValidatorRegistry
-         */
-        self.register = function(...validator: (Validator | ValidatorDefinition)[]) : void{
-            validator.forEach(v => {
-                if (v instanceof Validator){
-                    if (v.validationKey in cache)
-                        return;
-                    cache[v.validationKey] = v;
-                } else {
-                    const {validationKey, validator} = v;
-                    if (validationKey in cache)
-                        return;
-                    cache[validationKey] = validator;
-                }
-            });
-        }
-
-        /**
-         *
-         * @param validatorKey
-         * @return {*}
-         * @memberOf ValidatorRegistry
-         */
-        self.getValidator = function(validatorKey: string) : Validator | undefined{
-            if (!(validatorKey in cache))
-                return;
-
-            const classOrInstance = cache[validatorKey];
-            if (classOrInstance instanceof Validator)
-                return classOrInstance;
-            const constructor = classOrInstance.default || classOrInstance;
-            const instance = new constructor();
-            cache[validatorKey] = instance;
-            return instance;
-        }
-    }()
-    registry.register(...initial);
-    return registry;
+export function getValidatorRegistry(){
+    if (!actingValidatorRegistry)
+        actingValidatorRegistry = new ValidatorRegistryImp({validator: TypeValidator, validationKey: ModelKeys.TYPE});
+    return actingValidatorRegistry;
 }
 
 /**
- * @constant
+ * Returns the current ValidatorRegistry
+ * @function getValidatorRegistry
+ * @prop {IValidatorRegistry} validatorRegistry the new implementation of the validator Registry
+ * @prop {(validator: Validator) => Validator} [migrationHandler] the method to map the validator if required;
  * @memberOf Validation
  */
-export const ValidatorRegistry = ValRegistry({validator: TypeValidator, validationKey: ModelKeys.TYPE});
+export function setValidatorRegistry(validatorRegistry: IValidatorRegistry, migrationHandler?: (validator: Validator) => Validator){
+    if (migrationHandler && actingValidatorRegistry)
+        actingValidatorRegistry.getKeys().forEach(k => {
+            const validator = validatorRegistry.getValidator(k);
+            if (validator)
+                validatorRegistry.register(migrationHandler(validator))
+        });
+    actingValidatorRegistry = validatorRegistry;
+}
 
 /**
  * Analyses the decorations of the properties and validates the obj according to them
@@ -107,7 +74,7 @@ export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undef
             decorators.shift(); // remove the design:type decorator, since the type will already be checked
 
         const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
-            const validator = ValidatorRegistry.getValidator(decorator.key);
+            const validator = getValidatorRegistry().getValidator(decorator.key);
             if (!validator){
                 console.error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`);
                 return acc;

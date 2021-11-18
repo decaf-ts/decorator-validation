@@ -1,5 +1,4 @@
-import {hashCode, hashObj, isModel} from '../src';
-import {model} from "../src";
+import {model, constructFromObject, hashCode, hashObj, isModel} from "../src";
 import Model from "../src/Model/Model";
 
 @model()
@@ -9,7 +8,7 @@ class TestModel extends Model {
 
     constructor(model?: TestModel | {}){
         super(model);
-        Model.constructFromObject<TestModel>(this, model);
+        constructFromObject<TestModel>(this, model);
     }
 }
 

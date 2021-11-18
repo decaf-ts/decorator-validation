@@ -2,7 +2,9 @@ import Model from "../src/Model/Model";
 import "reflect-metadata";
 import {Errors, getValidatorRegistry, Decorators, constructFromObject} from "../src";
 import Validator from "../src/validation/Validators/Validator";
-const {getValidationKey, type} = Decorators;
+import {required} from '../src/validation/decorators';
+const {getValidationKey} = Decorators;
+
 
 function generateGtin(){
     function pad(num: number, width: number, padding: string = '0') {
@@ -43,6 +45,7 @@ function calculateGtinCheckSum(digits: string) : string{
 
 const CUSTOM_VALIDATION_KEY = "gtin";
 const CUSTOM_VALIDATION_ERROR_MESSAGE = "Not a valid Gtin"
+const CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE = "Gtin is required"
 
 class GtinValidator extends Validator{
     constructor(message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) {
@@ -63,6 +66,7 @@ class GtinValidator extends Validator{
 }
 
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any, propertyKey: string) => {
+    required(CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE)(target, propertyKey);
     Reflect.defineMetadata(
         getValidationKey(CUSTOM_VALIDATION_KEY),
         {
@@ -81,7 +85,7 @@ class TestModel extends Model {
     customProp?: number | string = undefined;
 
     constructor(model?: TestModel | {}) {
-        super(model);
+        super();
         constructFromObject<TestModel>(this, model);
     }
 }
@@ -100,7 +104,19 @@ describe('Validation with custom decorators test', function() {
         if (errors){
             expect(Object.keys(errors)).toBeInstanceOf(Array);
             expect(Object.keys(errors).length).toBe(1);
-            expect(errors.toString()).toBe("Not a valid Gtin");
+            expect(errors.toString()).toBe(CUSTOM_VALIDATION_ERROR_MESSAGE);
+        }
+    });
+
+    it('Invalid inner required test', function() {
+        const dm = new TestModel();
+
+        const errors = dm.hasErrors();
+        expect(errors).toBeDefined();
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(Object.keys(errors).length).toBe(1);
+            expect(errors.toString()).toBe(CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE);
         }
     });
 

@@ -1,6 +1,6 @@
 import {required} from "../src/validation/decorators";
 import Model from "../src/Model/Model";
-
+import {constructFromObject} from "../src";
 
 class Test1 {
     @required()
@@ -8,7 +8,7 @@ class Test1 {
 
     constructor(obj: Test1 | {}) {
         // @ts-ignore
-        Model.constructFromObject(this, obj);
+        constructFromObject(this, obj);
     }
 }
 
@@ -19,7 +19,7 @@ class Test2 extends Test1{
     constructor(obj: Test2 | {}) {
         super({obj})
         // @ts-ignore
-        Model.constructFromObject(this, obj);
+        constructFromObject(this, obj);
     }
 }
 

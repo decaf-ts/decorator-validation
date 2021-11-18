@@ -1,4 +1,4 @@
-import {model} from "../src";
+import {constructFromObject, model} from "../src";
 import Model from "../src/Model/Model";
 import ModelRegistry from "../src/Model/Registry";
 import {ModelKeys} from "../src/Model/constants";
@@ -10,7 +10,7 @@ class TestModel extends Model {
 
     constructor(model?: TestModel | {}){
         super(model);
-        Model.constructFromObject<TestModel>(this, model);
+        constructFromObject<TestModel>(this, model);
     }
 }
 

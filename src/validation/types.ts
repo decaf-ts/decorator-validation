@@ -9,11 +9,12 @@ export type Errors = string | undefined;
 
 /**
  * @memberOf Validation
- * @typedef Registry
+ * @interface ValidatorRegistry
  */
-export type Registry = {
-    register(...validator: (Validator | ValidatorDefinition)[]) : void;
-    getValidator(name: string): Validator;
+export interface IValidatorRegistry {
+    getKeys(): string[];
+    register<T extends Validator>(...validator: (T | ValidatorDefinition)[]) : void;
+    getValidator<T extends Validator>(name: string): T | undefined;
 }
 
 export type ValidatorDefinition = {

@@ -263,3 +263,20 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
 export function twoDigitPad(num: number): string {
     return num < 10 ? "0" + num : num.toString();
 }
+
+/**
+ * repopulates the Object properties with the ones from the new object
+ *
+ * @param {T} self
+ * @param {T| {}} obj
+ * @function constructFromObject
+ * @memberOf utils
+ */
+export function constructFromObject<T extends Model>(self: T, obj?: T | {}){
+    if (!obj)
+        return;
+    for (let prop in obj)
+        if(obj.hasOwnProperty(prop) && (self.hasOwnProperty(prop) || (self.prototype && self.prototype.hasOwnProperty(prop))))// @ts-ignore
+            self[prop] = obj[prop];
+    return self;
+}

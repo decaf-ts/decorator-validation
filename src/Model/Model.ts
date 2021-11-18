@@ -1,6 +1,6 @@
 import { validate} from "../validation";
 import Validatable from "../validation/types";
-import {isEqual, hashObj} from "../utils/utils";
+import {isEqual, hashObj, constructFromObject} from "../utils/utils";
 import ModelErrorDefinition from "./ModelErrorDefinition";
 
 
@@ -27,7 +27,7 @@ export default abstract class Model implements Validatable {
      * @see Model#constructFromObject
      */
     protected constructor(model?: Model | {}){
-        Model.constructFromObject<Model>(this, model);
+       constructFromObject<Model>(this, model);
     }
 
     /**
@@ -64,23 +64,5 @@ export default abstract class Model implements Validatable {
      */
     public toHash(): string{
         return hashObj(this).toString();
-    }
-
-    /**
-     * repopulates the Object properties with the ones from the new object
-     *
-     * @param {T} self
-     * @param {T| {}} obj
-     * @static
-     * @function constructFromObject
-     * @memberOf Model
-     */
-    public static constructFromObject<T extends Model>(self: T, obj?: T | {}){
-        if (!obj)
-            return;
-        for (let prop in obj)
-            if(obj.hasOwnProperty(prop) && (self.hasOwnProperty(prop) || (self.prototype && self.prototype.hasOwnProperty(prop))))// @ts-ignore
-                self[prop] = obj[prop];
-        return self;
     }
 }

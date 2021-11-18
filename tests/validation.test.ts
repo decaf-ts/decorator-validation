@@ -1,5 +1,5 @@
 import Model from "../src/Model/Model";
-import {date, Decorators, step, ValidationKeys} from '../src';
+import {date, Decorators, step, ValidationKeys, constructFromObject} from '../src';
 import {Validators} from '../src';
 import Validator from "../src/validation/Validators/Validator";
 const {email, max, maxlength, min, minlength, pattern, required, url, type} = Decorators;
@@ -43,7 +43,7 @@ class TestModel extends Model {
 
     constructor(model?: TestModel | {}){
         super(model);
-        Model.constructFromObject<TestModel>(this, model);
+        constructFromObject<TestModel>(this, model);
     }
 }
 

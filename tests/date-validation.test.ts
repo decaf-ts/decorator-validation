@@ -1,6 +1,6 @@
 import Model from "../src/Model/Model";
 import {max, min, date} from "../src/validation/decorators";
-import {twoDigitPad} from "../src";
+import {twoDigitPad, constructFromObject} from "../src";
 import {ValidationKeys} from "../src/validation/constants";
 
 class TestModel extends Model {
@@ -12,7 +12,7 @@ class TestModel extends Model {
 
     constructor(model?: TestModel | {}) {
         super();
-        Model.constructFromObject<TestModel>(this, model);
+        constructFromObject<TestModel>(this, model);
     }
 }
 
