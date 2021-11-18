@@ -34,7 +34,7 @@ export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
  * Validators to validate a decorated property must use key {@link ValidationKeys.REQUIRED}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.REQUIRED}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
  * @decorator required
  * @namespace Decorators
  * @memberOf Validation
@@ -58,7 +58,7 @@ export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, vali
  *
  * @param {number | Date} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MinValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MinValidator}
  * @decorator min
  * @namespace Decorators
  * @memberOf Validation
@@ -84,7 +84,7 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
  *
  * @param {number | Date} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MaxValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MaxValidator}
  * @decorator max
  * @namespace Decorators
  * @memberOf Validation
@@ -111,7 +111,7 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
  *
  * @param {number} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.STEP}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link StepValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link StepValidator}
  * @decorator step
  * @namespace Decorators
  * @memberOf Validation
@@ -138,7 +138,7 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
  *
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN_LENGTH}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MinLengthValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MinLengthValidator}
  * @decorator minlength
  * @namespace Decorators
  * @memberOf Validation
@@ -164,7 +164,7 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
  *
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX_LENGTH}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link MaxLengthValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MaxLengthValidator}
  * @decorator maxlength
  * @namespace Decorators
  * @memberOf Validation
@@ -190,7 +190,7 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
  *
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.PATTERN}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link PatternValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link PatternValidator}
  * @decorator pattern
  * @namespace Decorators
  * @memberOf Validation
@@ -215,7 +215,7 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
  * Validators to validate a decorated property must use key {@link ValidationKeys.EMAIL}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.EMAIL}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link EmailValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link EmailValidator}
  * @decorator email
  * @namespace Decorators
  * @memberOf Validation
@@ -239,7 +239,7 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator:
  * Validators to validate a decorated property must use key {@link ValidationKeys.URL}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.URL}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link URLValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link URLValidator}
  * @decorator url
  * @namespace Decorators
  * @memberOf Validation
@@ -264,7 +264,7 @@ export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL, validator: {ne
  *
  * @param {string[] | string} types accepted types
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.TYPE}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link TypeValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link TypeValidator}
  * @decorator type
  * @namespace Decorators
  * @memberOf Validation
@@ -291,7 +291,7 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
  *
  * @param {string} format accepted format according to {@link }
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}
- * @param {{new(): Validator}} [validator] the Validator to be used. Defaults to {@link DateValidator}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link DateValidator}
  * @decorator date
  * @namespace Decorators
  * @memberOf Validation

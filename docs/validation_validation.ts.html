@@ -141,7 +141,7 @@ export function getValidatorRegistry(){
  * Returns the current ValidatorRegistry
  * @function getValidatorRegistry
  * @prop {IValidatorRegistry} validatorRegistry the new implementation of the validator Registry
- * @prop {(validator: Validator) => Validator} [migrationHandler] the method to map the validator if required;
+ * @prop {function(Validator): Validator} [migrationHandler] the method to map the validator if required;
  * @memberOf Validation
  */
 export function setValidatorRegistry(validatorRegistry: IValidatorRegistry, migrationHandler?: (validator: Validator) => Validator){
