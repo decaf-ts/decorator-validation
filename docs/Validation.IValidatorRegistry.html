@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine validation/Validators/MaxLengthValidator.ts</title>
+  <title>Decorator Validation Engine IValidatorRegistry</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -99,40 +97,99 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Source</p>
-                    <h1>validation/Validators/MaxLengthValidator.ts</h1>
+                    <p>Interface</p>
+                    <h1>IValidatorRegistry</h1>
                 </header>
                 
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import {Errors} from "../types";
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+        <h2>IValidatorRegistry</h2>
+        
+    
+</header>
 
-/**
- * Max Length Validator
- *
- * @class MaxLengthValidator
- * @extends Validator
- * @memberOf Validators
- */
-export default class MaxLengthValidator extends Validator {
-    constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH){
-        super(ValidationKeys.MAX_LENGTH, message, "string")
-    }
+<article>
+    <div class="container-overview">
+    
+        
 
-    public hasErrors(value: string, maxlength: number, message?: string): Errors {
-        if (value === undefined)
-            return;
-        return value.length > maxlength ? this.getMessage(message || this.message, maxlength) : undefined;
-    }
-}</code></pre>
-        </article>
-    </section>
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_types.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_types.ts.html">validation/types.ts</a>, <a href="validation_types.ts.html#line6">line 6</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
