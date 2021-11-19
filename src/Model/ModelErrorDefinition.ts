@@ -19,9 +19,9 @@ export default class ModelErrorDefinition{
         }
     }
 
-    toString(): Errors{
+    toString(): string {
         const self = this;
-        return Object.keys(self).filter(k => self.hasOwnProperty(k) && typeof self[k] !== 'function').reduce((accum: undefined | string, prop) => {
+        return Object.keys(self).filter(k => self.hasOwnProperty(k) && typeof self[k] !== 'function').reduce((accum: string, prop) => {
             const propError: string | undefined = Object.keys(self[prop]).reduce((propAccum: undefined | string, key) => {
                 if (!propAccum) // @ts-ignore
                     propAccum = self[prop][key];
@@ -34,8 +34,8 @@ export default class ModelErrorDefinition{
                 if (!accum)
                     accum = propError;
                 else
-                    accum += `\n${propError}`
+                    accum += `\n${propError}`;
             return accum;
-        }, undefined);
+        }, "");
     }
 }

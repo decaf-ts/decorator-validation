@@ -24,7 +24,7 @@ export default abstract class Model implements Validatable {
      * @param {Model | {}} model base object from which to populate properties from
      * @constructor
      * @protected
-     * @see Model#constructFromObject
+     * @see constructFromObject
      */
     protected constructor(model?: Model | {}){
        constructFromObject<Model>(this, model);
