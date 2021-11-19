@@ -115,8 +115,8 @@ import {
     ValidationPropertyDecoratorDefinition,
     ModelErrors, IValidatorRegistry
 } from "./types";
-import {ValidatorRegistry, ValidatorRegistry as ValidatorRegistryImp} from "./ValidatorRegistry";
-import {getPropertyDecorators} from '../utils/utils'
+import {ValidatorRegistry} from "./ValidatorRegistry";
+import {getPropertyDecorators} from '../utils'
 import {ValidationKeys} from "./constants";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";
 import {ModelKeys} from "../Model";
@@ -128,12 +128,12 @@ let actingValidatorRegistry: IValidatorRegistry | undefined = undefined;
 /**
  * Returns the current ValidatorRegistry
  * @function getValidatorRegistry
- * @return IValidatorRegistry, defaults to {@link ValidatorRegistryImp}
+ * @return IValidatorRegistry, defaults to {@link ValidatorRegistry}
  * @memberOf Validation
  */
 export function getValidatorRegistry(){
     if (!actingValidatorRegistry)
-        actingValidatorRegistry = new ValidatorRegistryImp({validator: TypeValidator, validationKey: ModelKeys.TYPE});
+        actingValidatorRegistry = new ValidatorRegistry({validator: TypeValidator, validationKey: ModelKeys.TYPE});
     return actingValidatorRegistry;
 }
 
