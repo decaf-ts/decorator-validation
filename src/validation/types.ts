@@ -22,9 +22,9 @@ export interface IValidatorRegistry {
      * Registers the provided validators onto the registry
      *
      * @typedef T extends Validator
-     * @param {(T | ValidatorDefinition)[]} validator
+     * @param {T[] | ValidatorDefinition[]} validator
      */
-    register<T extends Validator>(...validator: (T | ValidatorDefinition)[]) : void;
+    register<T extends Validator>(...validator: T[] | ValidatorDefinition[]) : void;
 
     /**
      * @typedef T extends Validator
