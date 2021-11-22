@@ -121,16 +121,23 @@ import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
 /**
  * Util function to retrieve the decorators for the provided Property
  *
+ * @prop {string} annotationPrefix
+ * @prop {any} target
+ * @prop {string | symbol} propertyName
+ * @prop {boolean} [ignoreType] defaults to false. decides if the {@link ModelKeys.TYPE} is ignored or not
  * @function getPropertyDecorators
  * @memberOf utils
  */
-export function getPropertyDecorators(annotationPrefix: string, target: any, propertyName: string | symbol): {prop: string | symbol, decorators: []} {
+export function getPropertyDecorators(annotationPrefix: string, target: any, propertyName: string | symbol, ignoreType: boolean = false): {prop: string | symbol, decorators: []} {
     // get info about keys that used in current property
     const keys: any[] = Reflect.getMetadataKeys(target, propertyName);
     const decorators = keys
         // filter your custom decorators
-        .filter(key => key === ModelKeys.TYPE || key.toString().startsWith(annotationPrefix))
-        .reduce((values, key) => {
+        .filter(key => {
+            if (ignoreType)
+                return key.toString().startsWith(annotationPrefix);
+            return key === ModelKeys.TYPE || key.toString().startsWith(annotationPrefix)
+        }).reduce((values, key) => {
             // get metadata value.
             const currValues = {
                 key: key !== ModelKeys.TYPE ? key.substring(annotationPrefix.length) : key,
