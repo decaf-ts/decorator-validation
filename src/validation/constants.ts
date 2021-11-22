@@ -1,6 +1,6 @@
 /**
  * @enum
- * @namespace Validation
+ * @namespace validation
  * @memberOf decorator-validation
  */
 export const ValidationKeys = {
@@ -20,7 +20,7 @@ export const ValidationKeys = {
 
 /**
  * @enum
- * @namespace Validation
+ * @namespace validation
  * @memberOf decorator-validation
  */
 export const DEFAULT_ERROR_MESSAGES = {

@@ -18,7 +18,7 @@ let actingValidatorRegistry: IValidatorRegistry | undefined = undefined;
  * Returns the current ValidatorRegistry
  * @function getValidatorRegistry
  * @return IValidatorRegistry, defaults to {@link ValidatorRegistry}
- * @memberOf Validation
+ * @memberOf validation
  */
 export function getValidatorRegistry(){
     if (!actingValidatorRegistry)
@@ -31,7 +31,7 @@ export function getValidatorRegistry(){
  * @function getValidatorRegistry
  * @prop {IValidatorRegistry} validatorRegistry the new implementation of the validator Registry
  * @prop {function(Validator): Validator} [migrationHandler] the method to map the validator if required;
- * @memberOf Validation
+ * @memberOf validation
  */
 export function setValidatorRegistry(validatorRegistry: IValidatorRegistry, migrationHandler?: (validator: Validator) => Validator){
     if (migrationHandler && actingValidatorRegistry)
@@ -46,7 +46,7 @@ export function setValidatorRegistry(validatorRegistry: IValidatorRegistry, migr
 /**
  * Analyses the decorations of the properties and validates the obj according to them
  * @function validate
- * @memberOf Validation
+ * @memberOf validation
  */
 export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undefined {
     const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];

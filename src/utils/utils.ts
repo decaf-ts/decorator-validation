@@ -22,7 +22,7 @@ export function getPropertyDecorators(annotationPrefix: string, target: any, pro
         .reduce((values, key) => {
             // get metadata value.
             const currValues = {
-                key: key.substring(annotationPrefix.length) || key,
+                key: key !== ModelKeys.TYPE ? key.substring(annotationPrefix.length) : key,
                 props: Reflect.getMetadata(key, target, propertyName)
             };
             return values.concat(currValues);

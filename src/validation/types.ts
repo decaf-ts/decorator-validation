@@ -1,20 +1,37 @@
 import Validator from "./Validators/Validator";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";
+import {ValidationKeys} from "./constants";
 
 /**
- * @memberOf Validation
+ * @memberOf validation
  * @typedef Errors
  */
 export type Errors = string | undefined;
 
 /**
- * @memberOf Validation
+ * @memberOf validation
  * @interface ValidatorRegistry
  */
 export interface IValidatorRegistry {
+    /**
+     * @return {string[]} the registered validators keys
+     */
     getKeys(): string[];
+
+    /**
+     * Registers the provided validators onto the registry
+     *
+     * @typedef T extends Validator
+     * @param {(T | ValidatorDefinition)[]} validator
+     */
     register<T extends Validator>(...validator: (T | ValidatorDefinition)[]) : void;
-    getValidator<T extends Validator>(name: string): T | undefined;
+
+    /**
+     * @typedef T extends Validator
+     * @param {string} key one of the {@link ValidationKeys}
+     * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
+     */
+    getValidator<T extends Validator>(key: string): T | undefined;
 }
 
 export type ValidatorDefinition = {
