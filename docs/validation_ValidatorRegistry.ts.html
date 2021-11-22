@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine validation/Validators/MaxValidator.ts</title>
+  <title>Decorator Validation Engine validation/ValidatorRegistry.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -100,7 +100,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>validation/Validators/MaxValidator.ts</h1>
+                    <h1>validation/ValidatorRegistry.ts</h1>
                 </header>
                 
 
@@ -109,32 +109,70 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
-import {Errors} from "../types";
+            <pre class="prettyprint source linenums"><code>import {ValidatorDefinition, IValidatorRegistry} from './types';
+import Validator from "./Validators/Validator";
+import {ValidationKeys} from "./constants";
 
 /**
- * Max Validator
+ * Base Implementation of a Validator Registry
  *
- * @class MaxValidator
- * @extends Validator
- * @memberOf Validators
+ * @prop {Validator[]} [validators] the initial validators to register
+ *
+ * @class ValidatorRegistry
+ * @namespace validation
+ * @memberOf decorator-validation
  */
-export default class MaxValidator extends Validator {
-    constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX){
-        super(ValidationKeys.MAX, message, "number", "Date");
+export class ValidatorRegistry implements IValidatorRegistry{
+    private cache: any = {};
+
+    constructor(...validators: (ValidatorDefinition | Validator)[]){
+        this.register(...validators);
     }
 
-    public hasErrors(value: number | Date, max: number | Date | string, message?: string): Errors {
-        if (value === undefined)
-            return;
-        if (value instanceof Date &amp;&amp; !(max instanceof Date)){
-            max = new Date(max);
-            if (isNaN(max.getDate()))
-                throw new Error(`Invalid Max param defined`)
-        }
+    /**
+     * @return {string[]} the registered validators keys
+     */
+    getKeys(): string[]{
+        return Object.keys(this.cache);
+    }
 
-        return value > max ? this.getMessage(message || this.message, max) : undefined;
+    /**
+     * @typedef T extends Validator
+     * @param {string} validatorKey one of the {@link ValidationKeys}
+     * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
+     */
+    getValidator&lt;T extends Validator>(validatorKey: string): T | undefined {
+        if (!(validatorKey in this.cache))
+            return undefined;
+
+        const classOrInstance = this.cache[validatorKey];
+        if (classOrInstance instanceof Validator)
+            return classOrInstance as T;
+        const constructor = classOrInstance.default || classOrInstance;
+        const instance = new constructor();
+        this.cache[validatorKey] = instance;
+        return instance;
+    }
+
+    /**
+     * Registers the provided validators onto the registry
+     *
+     * @typedef T extends Validator
+     * @param {(T | ValidatorDefinition)[]} validator
+     */
+    register&lt;T extends Validator>(...validator: (ValidatorDefinition | T)[]): void {
+        validator.forEach(v => {
+            if (v instanceof Validator){
+                if (v.validationKey in this.cache)
+                    return;
+                this.cache[v.validationKey] = v;
+            } else {
+                const {validationKey, validator} = v;
+                if (validationKey in this.cache)
+                    return;
+                this.cache[validationKey] = validator;
+            }
+        });
     }
 }</code></pre>
         </article>
