@@ -1,6 +1,8 @@
 import Validator from "./Validators/Validator";
 import ModelErrorDefinition from "../Model/ModelErrorDefinition";
 import {ValidationKeys} from "./constants";
+import {IRegistry} from "../utils/registry";
+import {ValidatorRegistry} from "./ValidatorRegistry";
 
 /**
  * @memberOf validation
@@ -12,7 +14,7 @@ export type Errors = string | undefined;
  * @memberOf validation
  * @interface ValidatorRegistry
  */
-export interface IValidatorRegistry {
+export interface IValidatorRegistry<T extends Validator> extends IRegistry<T>{
     /**
      * @return {string[]} the registered validators keys
      */
@@ -31,7 +33,7 @@ export interface IValidatorRegistry {
      * @param {string} key one of the {@link ValidationKeys}
      * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
      */
-    getValidator<T extends Validator>(key: string): T | undefined;
+    get<T extends Validator>(key: string): T | undefined;
 }
 
 export type ValidatorDefinition = {

@@ -1,6 +1,5 @@
-import {constructFromObject, model} from "../src";
+import {constructFromObject, getModelRegistry, model} from "../src";
 import Model from "../src/Model/Model";
-import ModelRegistry from "../src/Model/Registry";
 import {ModelKeys} from "../src/Model/constants";
 
 @model()
@@ -16,20 +15,23 @@ class TestModel extends Model {
 
 describe('Model Registry', () => {
 
+    const modelRegistry = getModelRegistry();
+
     it('Handles missing arguments properly', () => {
+
         // @ts-ignore
-        expect(() => ModelRegistry.register(undefined, "random stuff, not a constructor")).toThrowError(`Model registering failed. Missing Class name or constructor`);
-        expect(() => ModelRegistry.register('name', undefined)).toThrowError(`Model registering failed. Missing Class name or constructor`);
-        expect(() => ModelRegistry.build()).toThrowError(`Provided obj is not a Model object`);
+        expect(() => modelRegistry.register(undefined, "random stuff, not a constructor")).toThrowError(`Model registering failed. Missing Class name or constructor`);
+        expect(() => modelRegistry.register('name', undefined)).toThrowError(`Model registering failed. Missing Class name or constructor`);
+        expect(() => modelRegistry.build({})).toThrowError(`Provided obj is not a Model object`);
     })
 
     it("Defines the correct information", () => {
 
-        const mockRegister = jest.spyOn(ModelRegistry, 'register');
+        const mockRegister = jest.spyOn(modelRegistry, 'register');
 
         const tm = new TestModel();
 
-        const rebuiltTm = ModelRegistry.build(JSON.parse(JSON.stringify(tm)));
+        const rebuiltTm = modelRegistry.build(JSON.parse(JSON.stringify(tm)));
 
         expect(tm.equals(rebuiltTm)).toBe(true);
         expect(tm === rebuiltTm).toBe(false);

@@ -1,6 +1,10 @@
 import Model from "./Model";
 import {isModel} from "../utils/utils";
 import {ModelKeys} from "./constants";
+import {BuilderRegistry} from "../utils/registry";
+
+
+export type ModelRegistry = BuilderRegistry<Model>;
 
 /**
  * Util class to enable serialization and correct rebuilding
@@ -9,7 +13,7 @@ import {ModelKeys} from "./constants";
  * @class ModelRegistryManager
  * @memberOf Model
  */
-export class ModelRegistryManager {
+export class ModelRegistryManager<T extends Model> implements ModelRegistry{
   private cache: {[indexer: string]: any} = {};
   private readonly testFunction: (obj: {}) => boolean;
   private readonly anchorKey: string;
@@ -25,6 +29,14 @@ export class ModelRegistryManager {
       this.cache[name] = constructor;
   }
 
+  get(name: string): {new(): T} | undefined {
+      try{
+          return this.cache[name];
+      } catch (e) {
+          return undefined;
+      }
+  }
+
   build<T extends Model>(obj: {[indexer: string]: any} = {}): T {
       if (!this.testFunction(obj))
           throw new Error(`Provided obj is not a Model object`);
@@ -33,6 +45,26 @@ export class ModelRegistryManager {
   }
 }
 
-const ModelRegistry = new ModelRegistryManager();
+let actingModelRegistry: ModelRegistry;
 
-export default ModelRegistry;
+/**
+ * Returns the current {@link ModelRegistryManager}
+ * @function getModelRegistry
+ * @return ModelRegistry, defaults to {@link ModelRegistryManager}
+ * @memberOf model
+ */
+export function getModelRegistry(): ModelRegistry {
+    if (!actingModelRegistry)
+        actingModelRegistry = new ModelRegistryManager();
+    return actingModelRegistry;
+}
+
+/**
+ * Returns the current actingModelRegistry
+ * @function setModelRegistry
+ * @prop {ModelRegistry} operationsRegistry the new implementation of Registry
+ * @memberOf operations
+ */
+export function setModelRegistry(operationsRegistry: ModelRegistry){
+    actingModelRegistry = operationsRegistry;
+}

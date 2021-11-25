@@ -11,7 +11,7 @@ import {ValidationKeys} from "./constants";
  * @namespace validation
  * @memberOf decorator-validation
  */
-export class ValidatorRegistry implements IValidatorRegistry{
+export class ValidatorRegistry<T extends Validator> implements IValidatorRegistry<T>{
     private cache: any = {};
 
     constructor(...validators: (ValidatorDefinition | Validator)[]){
@@ -30,7 +30,7 @@ export class ValidatorRegistry implements IValidatorRegistry{
      * @param {string} validatorKey one of the {@link ValidationKeys}
      * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
      */
-    getValidator<T extends Validator>(validatorKey: string): T | undefined {
+    get<T extends Validator>(validatorKey: string): T | undefined {
         if (!(validatorKey in this.cache))
             return undefined;
 

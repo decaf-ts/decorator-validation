@@ -1,6 +1,6 @@
 import {ModelKeys} from './constants';
 import {construct} from "../utils";
-import ModelRegistry from "./Registry";
+import {getModelRegistry} from "./Registry";
 
 const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 
@@ -36,7 +36,7 @@ export const model = (modelKey = ModelKeys.MODEL, props?: {}) => (original: Func
       instance.constructor
     );
 
-    ModelRegistry.register(original.name, newConstructor);
+    getModelRegistry().register(original.name, newConstructor);
 
     return instance;
   }

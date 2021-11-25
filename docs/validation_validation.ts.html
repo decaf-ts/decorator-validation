@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.validation.html">validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.DateValidator.html">DateValidator</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.StepValidator.html">StepValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkType">checkType</a></li><li><a href="global.html#checkTypes">checkTypes</a></li><li><a href="global.html#construct">construct</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.validation.html">validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.DateValidator.html">DateValidator</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.StepValidator.html">StepValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="BuilderRegistry.html">BuilderRegistry</a></li><li><a href="IRegistry.html">IRegistry</a></li><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkType">checkType</a></li><li><a href="global.html#checkTypes">checkTypes</a></li><li><a href="global.html#construct">construct</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
                 
             </nav>
         </div>
@@ -123,7 +123,7 @@ import {ModelKeys} from "../Model";
 import TypeValidator from "./Validators/TypeValidator";
 import Validator from "./Validators/Validator";
 
-let actingValidatorRegistry: IValidatorRegistry | undefined = undefined;
+let actingValidatorRegistry: IValidatorRegistry&lt;Validator> | undefined = undefined;
 
 /**
  * Returns the current ValidatorRegistry
@@ -144,10 +144,10 @@ export function getValidatorRegistry(){
  * @prop {function(Validator): Validator} [migrationHandler] the method to map the validator if required;
  * @memberOf validation
  */
-export function setValidatorRegistry(validatorRegistry: IValidatorRegistry, migrationHandler?: (validator: Validator) => Validator){
+export function setValidatorRegistry(validatorRegistry: IValidatorRegistry&lt;Validator>, migrationHandler?: (validator: Validator) => Validator){
     if (migrationHandler &amp;&amp; actingValidatorRegistry)
         actingValidatorRegistry.getKeys().forEach(k => {
-            const validator = validatorRegistry.getValidator(k);
+            const validator = validatorRegistry.get(k);
             if (validator)
                 validatorRegistry.register(migrationHandler(validator))
         });
@@ -185,7 +185,7 @@ export function validate&lt;T extends Model>(obj: T) : ModelErrorDefinition | un
             decorators.shift(); // remove the design:type decorator, since the type will already be checked
 
         const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
-            const validator = getValidatorRegistry().getValidator(decorator.key);
+            const validator = getValidatorRegistry().get(decorator.key);
             if (!validator){
                 console.error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`);
                 return acc;

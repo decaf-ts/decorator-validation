@@ -12,7 +12,7 @@ import {ModelKeys} from "../Model";
 import TypeValidator from "./Validators/TypeValidator";
 import Validator from "./Validators/Validator";
 
-let actingValidatorRegistry: IValidatorRegistry | undefined = undefined;
+let actingValidatorRegistry: IValidatorRegistry<Validator> | undefined = undefined;
 
 /**
  * Returns the current ValidatorRegistry
@@ -33,10 +33,10 @@ export function getValidatorRegistry(){
  * @prop {function(Validator): Validator} [migrationHandler] the method to map the validator if required;
  * @memberOf validation
  */
-export function setValidatorRegistry(validatorRegistry: IValidatorRegistry, migrationHandler?: (validator: Validator) => Validator){
+export function setValidatorRegistry(validatorRegistry: IValidatorRegistry<Validator>, migrationHandler?: (validator: Validator) => Validator){
     if (migrationHandler && actingValidatorRegistry)
         actingValidatorRegistry.getKeys().forEach(k => {
-            const validator = validatorRegistry.getValidator(k);
+            const validator = validatorRegistry.get(k);
             if (validator)
                 validatorRegistry.register(migrationHandler(validator))
         });
@@ -74,7 +74,7 @@ export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undef
             decorators.shift(); // remove the design:type decorator, since the type will already be checked
 
         const errs: {[indexer: string]: Errors} | undefined = decorators.reduce((acc: undefined | {[indexer: string]: Errors}, decorator: {key: string, props: {}}) => {
-            const validator = getValidatorRegistry().getValidator(decorator.key);
+            const validator = getValidatorRegistry().get(decorator.key);
             if (!validator){
                 console.error(`Could not find Matching validator for ${decorator.key} for property ${String(decoratedProperty.prop)}`);
                 return acc;
