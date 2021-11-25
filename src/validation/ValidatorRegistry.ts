@@ -47,7 +47,7 @@ export class ValidatorRegistry implements IValidatorRegistry{
      * Registers the provided validators onto the registry
      *
      * @typedef T extends Validator
-     * @param {(T | ValidatorDefinition)[]} validator
+     * @param {T[] | ValidatorDefinition[]} validator
      */
     register<T extends Validator>(...validator: (ValidatorDefinition | T)[]): void {
         validator.forEach(v => {

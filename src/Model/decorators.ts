@@ -43,7 +43,13 @@ export const model = (modelKey = ModelKeys.MODEL, props?: {}) => (original: Func
 
   // copy prototype so instanceof operator still works
   newConstructor.prototype = original.prototype;
-
+  // Sets the proper constructor name for type verification
+  Object.defineProperty(newConstructor, "name", {
+    writable: false,
+    enumerable: true,
+    configurable: false,
+    value: original.prototype.constructor.name
+  });
   // return new constructor (will override original)
   return newConstructor;
 }

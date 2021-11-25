@@ -340,7 +340,7 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
                 enumerable: true,
                 configurable: false,
                 get: () => values.get(this),
-                set: (newValue: string | Date) => values.set(this, parseDate(newValue))
+                set: (newValue: string | Date | number) => values.set(this, parseDate(newValue))
             });
 
             this[propertyKey] = newValue;

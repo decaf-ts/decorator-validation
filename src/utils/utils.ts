@@ -85,6 +85,7 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
 /**
  * Mimicks Java's String's Hash implementation
  * @param {string | number | symbol | Date} obj
+ * @return {number} hash value of obj
  */
 export function hashCode(obj: string | number | symbol | Date){
     obj = String(obj);
@@ -165,7 +166,7 @@ export function getClassDecorators(annotationPrefix: string, target: any): {key:
 export function checkType(value: any, acceptedType: string){
     if (typeof value === acceptedType)
         return true;
-    if (value.constructor && value.constructor.name === acceptedType)
+    if (value.constructor && value.constructor.name.toLowerCase() === acceptedType.toLowerCase())
         return true;
     return false;
 }
