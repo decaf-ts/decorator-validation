@@ -125,9 +125,9 @@ export interface IRegistry&lt;T>{
  * @interface BuilderRegistry&lt;T>
  */
 export interface BuilderRegistry&lt;T>{
-    get(name: string): {new(): T} | undefined;
-    register(name: string, constructor: any): void;
-    build(obj: {[indexer: string]: any}): T
+    get(name: string, ...args: any[]): {new(): T} | undefined;
+    register(name: string, constructor: any, ...args: any[]): void;
+    build(obj: {[indexer: string]: any}, ...args: any[]): T;
 }</code></pre>
         </article>
     </section>
