@@ -14,7 +14,7 @@ export interface IRegistry<T>{
  * @interface BuilderRegistry<T>
  */
 export interface BuilderRegistry<T>{
-    get(name: string): {new(): T} | undefined;
-    register(name: string, constructor: any): void;
-    build(obj: {[indexer: string]: any}): T
+    get(name: string, ...args: any[]): {new(): T} | undefined;
+    register(name: string, constructor: any, ...args: any[]): void;
+    build(obj: {[indexer: string]: any, ...args: any[]}): T
 }
