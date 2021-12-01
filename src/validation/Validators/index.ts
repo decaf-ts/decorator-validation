@@ -1,6 +1,6 @@
 /**
  * @namespace Validators
- * @memberOf Validation
+ * @memberOf validation
  */
 
 export * as Validator from './Validator';

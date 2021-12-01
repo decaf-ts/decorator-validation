@@ -45,13 +45,18 @@ export function setValidatorRegistry(validatorRegistry: IValidatorRegistry<Valid
 
 /**
  * Analyses the decorations of the properties and validates the obj according to them
+ *
+ * @typedef T extends Model
+ * @prop {T} obj Model object to validate
+ * @prop {string[]} [propsToIgnore] object properties to ignore in the validation
+ *
  * @function validate
  * @memberOf validation
  */
-export function validate<T extends Model>(obj: T) : ModelErrorDefinition | undefined {
+export function validate<T extends Model>(obj: T, ...propsToIgnore: string[]) : ModelErrorDefinition | undefined {
     const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
     for (let prop in obj)
-        if (obj.hasOwnProperty(prop))
+        if (obj.hasOwnProperty(prop) && propsToIgnore.indexOf(prop) === -1)
             decoratedProperties.push(getPropertyDecorators(ValidationKeys.REFLECT, obj, prop));
 
     const result =  decoratedProperties.reduce((accum: undefined | ModelErrors, decoratedProperty: ValidationPropertyDecoratorDefinition) => {

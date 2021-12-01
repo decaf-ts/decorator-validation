@@ -133,6 +133,33 @@ describe('Validation by decorators test', function() {
         }
     });
 
+    it('Ignores Properties in validation when necessary', function() {
+
+        const dm = new TestModel({
+            prop1: 237,
+            prop2: "te",
+            prop3: "asdasfsdf  sda",
+            prop4: "asdasfsdf  sda",
+            prop5: "asdasfsdf  sda",
+            prop6: "asdasfsdf  sda"
+        });
+
+        let errors = dm.hasErrors();
+        expect(errors).toBeDefined();
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(errors && Object.values(errors).length).toBe(7);
+        }
+
+        errors = dm.hasErrors("prop4");
+        expect(errors).toBeDefined();
+        if (errors){
+            expect(Object.keys(errors)).toBeInstanceOf(Array);
+            expect(errors && Object.values(errors).length).toBe(6);
+        }
+    });
+
+
     it('Pass with non required undefined values', function() {
 
         const dm = new TestModel({

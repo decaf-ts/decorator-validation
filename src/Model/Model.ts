@@ -33,12 +33,12 @@ export default abstract class Model implements Validatable {
     /**
      * Validates the object according to its decorated properties
      *
-     * @param {any} [args]
+     * @param {any[]} [exceptions] properties in the object to be ignored for he validation. Marked as 'any' no allow for extension
      * @memberOf Model
      * @see validate
      */
-    public hasErrors(...args: any[]): ModelErrorDefinition | undefined {
-        return validate(this);
+    public hasErrors(...exceptions: any[]): ModelErrorDefinition | undefined {
+        return validate(this, ...exceptions);
     }
 
     /**
