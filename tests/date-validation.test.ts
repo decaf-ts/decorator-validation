@@ -16,19 +16,36 @@ class TestModel extends Model {
     }
 }
 
+class TestModel2 extends Model {
+
+    @date('dd/MM/yyyy HH:mm:ss:S')
+
+    dateProp?: Date = undefined;
+
+    constructor(model?: TestModel2 | {}) {
+        super();
+        constructFromObject<TestModel2>(this, model);
+    }
+}
+
 describe('Date Integration', function() {
 
-    const date = new Date();
-    const dm = new TestModel({
-        dateProp: date
-    });
-
     it('Properly overrides the value', function() {
+        const date = new Date();
+        const dm = new TestModel({
+            dateProp: date
+        });
+
         expect(dm.dateProp).toBeDefined();
         expect(dm.dateProp).toEqual(date);
     });
 
     it('properly overrides the serialization', () => {
+        const date = new Date();
+        const dm = new TestModel({
+            dateProp: date
+        });
+
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
@@ -80,5 +97,19 @@ describe('Date Integration', function() {
         expect(keys.length).toEqual(1);
         expect(keys[0]).toEqual(ValidationKeys.DATE);
         expect(Object.values(errors[Object.keys(errors)[0]])[0]).toEqual('Invalid value. not a valid Date')
+    });
+
+    it('handles confusing formats', () => {
+        const dm2 = new TestModel2({
+            dateProp: new Date(2021, 11, 8, 12, 36, 54, 45)
+        });
+        const errors = dm2.hasErrors();
+        expect(errors).toBeUndefined();
+
+        const obj = JSON.parse(JSON.stringify(dm2));
+        const md3 = new TestModel2(obj);
+
+        const result = md3.equals(dm2);
+        expect(result).toBeTruthy();
     });
 });

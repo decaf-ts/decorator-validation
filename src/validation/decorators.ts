@@ -17,7 +17,7 @@ import PatternValidator from "./Validators/PatternValidator";
 import TypeValidator from "./Validators/TypeValidator";
 import StepValidator from "./Validators/StepValidator";
 import DateValidator from "./Validators/DateValidator";
-import {formatDate} from "../utils";
+import {dateFromFormat, formatDate} from "../utils";
 import Validator from "./Validators/Validator";
 
 /**
@@ -313,6 +313,7 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
         if (!date)
             return;
         const func = () => formatDate(date, format);
+        const result = func();
         date.toISOString = func;
         date.toString = func;
         return date;
@@ -324,8 +325,8 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
         { // @ts-ignore
             value = v;
         }
-        else if (typeof v === 'string' || typeof v === 'number')
-            value = new Date(v);
+        else if (typeof v === 'string')
+            value = dateFromFormat(v, format);
         else
             throw new Error(`Invalid value provided ${v}`);
         return bindDateToString(value);
