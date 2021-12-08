@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="decorator-validation.validation.html">validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.DateValidator.html">DateValidator</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.StepValidator.html">StepValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="BuilderRegistry.html">BuilderRegistry</a></li><li><a href="IRegistry.html">IRegistry</a></li><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkType">checkType</a></li><li><a href="global.html#checkTypes">checkTypes</a></li><li><a href="global.html#construct">construct</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="decorator-validation.validation.html">validation</a></li><li><a href="Model.Decorators.html">Decorators</a></li><li><a href="Model.Model.html">Model</a></li><li><a href="validation.Decorators.html">Decorators</a></li></ul><h3>Classes</h3><ul><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="Validators.DateValidator.html">DateValidator</a></li><li><a href="Validators.EmailValidator.html">EmailValidator</a></li><li><a href="Validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="Validators.MaxValidator.html">MaxValidator</a></li><li><a href="Validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="Validators.MinValidator.html">MinValidator</a></li><li><a href="Validators.PatternValidator.html">PatternValidator</a></li><li><a href="Validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="Validators.StepValidator.html">StepValidator</a></li><li><a href="Validators.URLValidator.html">URLValidator</a></li><li><a href="Validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="BuilderRegistry.html">BuilderRegistry</a></li><li><a href="IRegistry.html">IRegistry</a></li><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#checkType">checkType</a></li><li><a href="global.html#checkTypes">checkTypes</a></li><li><a href="global.html#construct">construct</a></li><li><a href="global.html#dateFromFormat">dateFromFormat</a></li><li><a href="global.html#formatDate">formatDate</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#ModelKeys">ModelKeys</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
                 
             </nav>
         </div>
@@ -377,6 +377,106 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
             .replace('M', M.toString());
     }
     return patternStr;
+}
+
+/**
+ * Reverses the process from {@link formatDate}
+ *
+ * @param {string} date the date string to be converted back into date
+ * @param {string} format the date format
+ * @return {Date} the date from the format or the standard new Date({@prop date}) if the string couldn't be parsed (are you sure the format matches the string?)
+ */
+export function dateFromFormat(date: string, format: string){
+    let formatRegexp: string = format;
+
+    // Hour
+    if (formatRegexp.match(/hh/))
+        formatRegexp = formatRegexp.replace("hh", "(?&lt;hour>\\d{2})");
+    else if (formatRegexp.match(/h/))
+        formatRegexp = formatRegexp.replace("h", "(?&lt;hour>\\d{1,2})");
+    else if (formatRegexp.match(/HH/))
+        formatRegexp = formatRegexp.replace("HH", "(?&lt;hour>\\d{2})");
+    else if (formatRegexp.match(/H/))
+        formatRegexp = formatRegexp.replace("H", "(?&lt;hour>\\d{1,2})");
+
+    // Minutes
+    if (formatRegexp.match(/mm/))
+        formatRegexp = formatRegexp.replace("mm", "(?&lt;minutes>\\d{2})");
+    else if (formatRegexp.match(/m/))
+        formatRegexp = formatRegexp.replace("m", "(?&lt;minutes>\\d{1,2})");
+
+    // Seconds
+    if (formatRegexp.match(/ss/))
+        formatRegexp = formatRegexp.replace("ss", "(?&lt;seconds>\\d{2})");
+    else if (formatRegexp.match(/s/))
+        formatRegexp = formatRegexp.replace("s", "(?&lt;seconds>\\d{1,2})");
+
+    // Day
+    if (formatRegexp.match(/dd/))
+        formatRegexp = formatRegexp.replace("dd", "(?&lt;day>\\d{2})");
+    else if (formatRegexp.match(/d/))
+        formatRegexp = formatRegexp.replace("d", "(?&lt;day>\\d{1,2})");
+
+    // Day Of Week
+    if (formatRegexp.match(/EEEE/))
+        formatRegexp = formatRegexp.replace("EEEE", "(?&lt;dayofweek>\\w+)");
+    else if (formatRegexp.match(/EEEE/))
+        formatRegexp = formatRegexp.replace("EEE", "(?&lt;dayofweek>\\w+)");
+
+    // Year
+    if (formatRegexp.match(/yyyy/))
+        formatRegexp = formatRegexp.replace("yyyy", "(?&lt;year>\\d{4})");
+    else if (formatRegexp.match(/yy/))
+        formatRegexp = formatRegexp.replace("yy", "(?&lt;year>\\d{2})");
+
+    // Month
+    if (formatRegexp.match(/MMMM/))
+        formatRegexp = formatRegexp.replace("MMMM", "(?&lt;monthname>\\w+)");
+    else if (formatRegexp.match(/MMM/))
+        formatRegexp = formatRegexp.replace("MMM", "(?&lt;monthnamesmall>\\w+)");
+    if (formatRegexp.match(/MM/))
+        formatRegexp = formatRegexp.replace("MM", "(?&lt;month>\\d{2})");
+    else if (formatRegexp.match(/M/))
+        formatRegexp = formatRegexp.replace("M", "(?&lt;month>\\d{1,2})");
+
+    // Milis and Am Pm
+    formatRegexp = formatRegexp.replace("S", "(?&lt;milis>\\d{1,3})").replace('aaa', "(?&lt;ampm>\\w{2})");
+
+    const regexp = new RegExp(formatRegexp, 'g');
+
+    const match = regexp.exec(date);
+
+    if (!match || !match.groups)
+        return new Date(date);
+
+    const year = parseInt(match.groups.year);
+    const day = parseInt(match.groups.day);
+
+    const amPm = match.groups.ampm;
+    let hour = parseInt(match.groups.hour);
+
+    if (amPm)
+        hour = amPm === "PM" ? hour + 12 : hour;
+
+    const minutes = parseInt(match.groups.minutes);
+    const seconds = parseInt(match.groups.seconds);
+    const ms = parseInt(match.groups.milis);
+
+
+    const monthName = match.groups.monthname;
+    const monthNameSmall = match.groups.monthnamesmall;
+    let month: number | string = match.groups.month;
+    if (monthName)
+        month = MONTH_NAMES.indexOf(monthName)
+    else if (monthNameSmall){
+        const m = MONTH_NAMES.find(m => m.toLowerCase().startsWith(monthNameSmall.toLowerCase()))
+        if (!m)
+            return new Date(date);
+        month = MONTH_NAMES.indexOf(m);
+    } else
+        month = parseInt(month);
+
+    return new Date(year, month - 1, day, hour, minutes, seconds, ms);
 }
 
 export function twoDigitPad(num: number): string {
