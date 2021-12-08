@@ -313,7 +313,6 @@ export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
         if (!date)
             return;
         const func = () => formatDate(date, format);
-        const result = func();
         date.toISOString = func;
         date.toString = func;
         return date;
