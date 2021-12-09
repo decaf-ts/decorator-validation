@@ -118,13 +118,12 @@ const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 /**
  * Defines a class as a Model class for serialization purposes
  *
- * @prop {string} [modelKey] the model Key to be used. defaults to {@link ModelKeys.MODEL}. This should only be overridden the composing new decorators on top of this one.
  * @prop {{}} [props] additional properties to store as metadata
  * @decorator
  * @namespace Decorators
  * @memberOf Model
  */
-export const model = (modelKey = ModelKeys.MODEL, props?: {}) => (original: Function) => {
+export const model = (props?: {}) => (original: Function) => {
 
   // the new constructor behaviour
   const newConstructor : any = function (...args: any[]) {
@@ -142,7 +141,7 @@ export const model = (modelKey = ModelKeys.MODEL, props?: {}) => (original: Func
     });
 
     Reflect.defineMetadata(
-      getModelKey(modelKey),
+      getModelKey(ModelKeys.MODEL),
       metadata,
       instance.constructor
     );
