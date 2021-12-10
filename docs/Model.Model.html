@@ -122,9 +122,15 @@
 <p>Model objects must:</p>
 <ul>
 <li>Have all their properties defined as optional;</li>
-<li>Have all their properties initialized (only the '@required()' decorated properties
-<strong>need</strong> to be initialized, but all of them should be as good practice);</li>
-</ul></div>
+<li>Have all their properties initialized eg:</li>
+</ul>
+ <pre>
+     class ClassName {
+
+         propertyName?: PropertyType = undefined;
+
+     }
+ </pre></div>
         
 
         
