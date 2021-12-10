@@ -9,8 +9,15 @@ import ModelErrorDefinition from "./ModelErrorDefinition";
  *
  * Model objects must:
  *  - Have all their properties defined as optional;
- *  - Have all their properties initialized (only the '@required()' decorated properties
- *  <strong>need</strong> to be initialized, but all of them should be as good practice);
+ *  - Have all their properties initialized eg:
+ *
+ *  <pre>
+ *      class ClassName {
+ *
+ *          propertyName?: PropertyType = undefined;
+ *
+ *      }
+ *  </pre>
  *
  * @class Model
  * @abstract
@@ -33,7 +40,7 @@ export default abstract class Model implements Validatable {
     /**
      * Validates the object according to its decorated properties
      *
-     * @param {any[]} [exceptions] properties in the object to be ignored for he validation. Marked as 'any' no allow for extension
+     * @param {any[]} [exceptions] properties in the object to be ignored for he validation. Marked as 'any' to allow for extension but expects strings
      * @memberOf Model
      * @see validate
      */

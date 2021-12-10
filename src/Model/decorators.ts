@@ -20,7 +20,7 @@ export const model = (props?: {}) => (original: Function) => {
 
     const metadata = Object.assign({}, {
           class: original.name
-        }, props || {});
+        });
 
     Object.defineProperty(instance, ModelKeys.ANCHOR, {
       writable: false,
@@ -31,7 +31,7 @@ export const model = (props?: {}) => (original: Function) => {
 
     Reflect.defineMetadata(
       getModelKey(ModelKeys.MODEL),
-      metadata,
+      Object.assign(metadata, props || {}),
       instance.constructor
     );
 
