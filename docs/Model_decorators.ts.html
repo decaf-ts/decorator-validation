@@ -119,11 +119,13 @@ const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  * Defines a class as a Model class for serialization purposes
  *
  * @prop {{}} [props] additional properties to store as metadata
+ * @prop {{function(any): void}} [instanceCallback] optional callback that will be call with the instance upon instantiation. defaults to undefined
+ *
  * @decorator
  * @namespace Decorators
  * @memberOf Model
  */
-export const model = (props?: {}) => (original: Function) => {
+export const model = (props?: {}, instanceCallback?: (instance: any) => void) => (original: Function) => {
 
   // the new constructor behaviour
   const newConstructor : any = function (...args: any[]) {
@@ -147,6 +149,9 @@ export const model = (props?: {}) => (original: Function) => {
     );
 
     getModelRegistry().register(original.name, newConstructor);
+
+    if (instanceCallback)
+      instanceCallback(instance);
 
     return instance;
   }
