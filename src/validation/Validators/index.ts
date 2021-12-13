@@ -1,5 +1,5 @@
 /**
- * @namespace Validators
+ * @namespace validation.validators
  * @memberOf validation
  */
 

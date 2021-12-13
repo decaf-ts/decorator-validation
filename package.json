@@ -47,6 +47,7 @@
     "jest": "^27.0.6",
     "jsdoc": "^3.6.7",
     "markdown-include": "^0.4.3",
+    "jsdoc-mermaid": "^1.0.0",
     "nodemon": "^2.0.10",
     "np": "^7.5.0",
     "rimraf": "^3.0.2",

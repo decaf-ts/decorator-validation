@@ -1,8 +1,3 @@
-/**
- * @namespace utils
- * @memberOf decorator-validation
- */
-
 import Model from "../Model/Model";
 import {ModelKeys} from "../Model/constants";
 import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
@@ -14,7 +9,9 @@ import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
  * @prop {any} target
  * @prop {string | symbol} propertyName
  * @prop {boolean} [ignoreType] defaults to false. decides if the {@link ModelKeys.TYPE} is ignored or not
+ *
  * @function getPropertyDecorators
+ *
  * @memberOf utils
  */
 export function getPropertyDecorators(annotationPrefix: string, target: any, propertyName: string | symbol, ignoreType: boolean = false): {prop: string | symbol, decorators: []} {
@@ -47,7 +44,9 @@ export function getPropertyDecorators(annotationPrefix: string, target: any, pro
  * @param {string} string
  * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
  * @return {string} formatted string
+ *
  * @function stringFormat
+ *
  * @memberOf utils
  */
 export function stringFormat(string: string, ...args: string[]){
@@ -68,7 +67,9 @@ export function stringFormat(string: string, ...args: string[]){
  * @param {{}} b
  * @param {string} [propsToIgnore]
  * @return {boolean}
+ *
  * @function isEqual
+ *
  * @memberOf utils
  */
 export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
@@ -83,9 +84,14 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
 }
 
 /**
- * Mimicks Java's String's Hash implementation
+ * Mimics Java's String's Hash implementation
+ *
  * @param {string | number | symbol | Date} obj
  * @return {number} hash value of obj
+ *
+ * @function hashCode
+ *
+ * @memberOf utils
  */
 export function hashCode(obj: string | number | symbol | Date){
     obj = String(obj);
@@ -98,6 +104,16 @@ export function hashCode(obj: string | number | symbol | Date){
     return hash;
 }
 
+/**
+ * Hashes an object by combining the hash of all its properties
+ *
+ * @param {any} obj
+ * @return {string} the resulting hash
+ *
+ * @function hashObj
+ *
+ * @memberOf utils
+ */
 export function hashObj(obj: {} | []){
 
     const hashReducer = function(h: number, el: any){
@@ -122,9 +138,14 @@ export function hashObj(obj: {} | []){
 
 /**
  * Helper Function to override constructors
+ *
  * @param {Function} constructor
  * @param {any[]} args
  * @return {T} the new instance
+ *
+ * @function construct
+ *
+ * @memberOf utils
  */
 export function construct<T extends Model>(constructor: any, ...args: any[]) {
     const _constr = (...argz: any[]) => new constructor(...argz);
@@ -140,6 +161,7 @@ export function isModel(target: {[indexer: string]: any}){
  * Util function to retrieve the decorators for the provided Property
  *
  * @function getPropertyDecorators
+ *
  * @memberOf utils
  */
 export function getClassDecorators(annotationPrefix: string, target: any): {key: string, props: any}[] {
@@ -159,9 +181,14 @@ export function getClassDecorators(annotationPrefix: string, target: any): {key:
 
 /**
  * Util function to check a type according to a typeName
+ *
  * @param {any} value
  * @param {string} acceptedType
  * @return {boolean} true for a match, false otherwise
+ *
+ * @function checkType
+ *
+ * @memberOf utils
  */
 export function checkType(value: any, acceptedType: string){
     if (typeof value === acceptedType)
@@ -176,11 +203,24 @@ export function checkType(value: any, acceptedType: string){
  * @param {any} value
  * @param {string[]} acceptedTypes
  * @return {boolean} true if any is a match, false otherwise
+ *
+ * @function checkTypes
+ *
+ * @memberOf utils
  */
 export function checkTypes(value: any, acceptedTypes: string[]){
     return !acceptedTypes.every(t => !checkType(value, t));
 }
 
+/**
+ *
+ * @param {any} value
+ * @param {string | string[] | {name: string} types
+ *
+ * @function evaluateDesignTypes
+ *
+ * @memberOf utils
+ */
 export function evaluateDesignTypes(value: any, types: string | string[] | {name: string}){
     switch(typeof types){
         case 'string':
@@ -217,6 +257,14 @@ export function evaluateDesignTypes(value: any, types: string | string[] | {name
  *      s = seconds; ss = 2-digit seconds
  *      S = miliseconds
  * </pre>
+ *
+ * @param {Date} date
+ * @param {string} [patternStr] defaults to 'yyyy/MM/dd'
+ * @return {string} the formatted date
+ *
+ * @function formatDate
+ *
+ * @memberOf utils
  */
 export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
     const day: number = date.getDate(),
@@ -274,6 +322,10 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
  * @param {string} date the date string to be converted back into date
  * @param {string} format the date format
  * @return {Date} the date from the format or the standard new Date({@prop date}) if the string couldn't be parsed (are you sure the format matches the string?)
+ *
+ * @function dateFromFormat
+ *
+ * @memberOf utils
  */
 export function dateFromFormat(date: string, format: string){
     let formatRegexp: string = format;
@@ -368,6 +420,16 @@ export function dateFromFormat(date: string, format: string){
     return new Date(year, month - 1, day, hour, minutes, seconds, ms);
 }
 
+/**
+ *
+ * @param {number} num
+ *
+ * @return {string}
+ *
+ * @function twoDigitPad
+ *
+ * @memberOf utils
+ */
 export function twoDigitPad(num: number): string {
     return num < 10 ? "0" + num : num.toString();
 }
@@ -376,8 +438,10 @@ export function twoDigitPad(num: number): string {
  * repopulates the Object properties with the ones from the new object
  *
  * @param {T} self
- * @param {T| {}} obj
+ * @param {T | {}} obj
+ *
  * @function constructFromObject
+ *
  * @memberOf utils
  */
 export function constructFromObject<T extends Model>(self: T, obj?: T | {}){

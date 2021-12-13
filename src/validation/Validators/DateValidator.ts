@@ -7,7 +7,8 @@ import {Errors} from "../types";
  *
  * @class DateValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class DateValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.DATE){

@@ -7,7 +7,8 @@ import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
  *
  * @class MaxLengthValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class MaxLengthValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH){

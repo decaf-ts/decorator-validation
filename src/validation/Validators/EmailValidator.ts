@@ -7,7 +7,8 @@ import PatternValidator from "./PatternValidator";
  *
  * @class EmailValidator
  * @extends PatternValidator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class EmailValidator extends PatternValidator {
     private static readonly emailPat: RegExp = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;

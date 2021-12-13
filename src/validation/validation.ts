@@ -16,8 +16,11 @@ let actingValidatorRegistry: IValidatorRegistry<Validator> | undefined = undefin
 
 /**
  * Returns the current ValidatorRegistry
- * @function getValidatorRegistry
+ *
  * @return IValidatorRegistry, defaults to {@link ValidatorRegistry}
+ *
+ * @function getValidatorRegistry
+ *
  * @memberOf validation
  */
 export function getValidatorRegistry(){
@@ -28,9 +31,12 @@ export function getValidatorRegistry(){
 
 /**
  * Returns the current ValidatorRegistry
- * @function getValidatorRegistry
+ *
  * @prop {IValidatorRegistry} validatorRegistry the new implementation of the validator Registry
  * @prop {function(Validator): Validator} [migrationHandler] the method to map the validator if required;
+ *
+ * @function getValidatorRegistry
+ *
  * @memberOf validation
  */
 export function setValidatorRegistry(validatorRegistry: IValidatorRegistry<Validator>, migrationHandler?: (validator: Validator) => Validator){
@@ -51,6 +57,7 @@ export function setValidatorRegistry(validatorRegistry: IValidatorRegistry<Valid
  * @prop {string[]} [propsToIgnore] object properties to ignore in the validation
  *
  * @function validate
+ *
  * @memberOf validation
  */
 export function validate<T extends Model>(obj: T, ...propsToIgnore: string[]) : ModelErrorDefinition | undefined {

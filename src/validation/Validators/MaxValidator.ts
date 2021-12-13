@@ -7,7 +7,8 @@ import {Errors} from "../types";
  *
  * @class MaxValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class MaxValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX){

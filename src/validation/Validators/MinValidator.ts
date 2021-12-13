@@ -7,7 +7,8 @@ import {Errors} from "../types";
  *
  * @class MinValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class MinValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN){

@@ -7,7 +7,8 @@ import {Errors} from "../types";
  *
  * @class PatternValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class PatternValidator extends Validator {
     private static readonly regexpParser: RegExp = new RegExp("^\/(.+)\/([gimus]*)$");

@@ -7,7 +7,8 @@ import {Errors} from "../types";
  *
  * @class StepValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class StepValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP){

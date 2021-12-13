@@ -1,5 +1,5 @@
 /**
- * @namespace Decorators
+ * @namespace validation.decorators
  * @memberOf validation
  */
 
@@ -22,9 +22,10 @@ import Validator from "./Validators/Validator";
 
 /**
  * @param {string} key
- * @function
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function getValidationKey
+ *
+ * @memberOf validation.decorators
  */
 export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
 
@@ -35,9 +36,10 @@ export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.REQUIRED}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
- * @decorator required
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function required
+ *
+ * @memberOf validation.decorators
  */
 export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, validator: {new(): Validator} = RequiredValidator) => (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -59,9 +61,10 @@ export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, vali
  * @param {number | Date} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MinValidator}
- * @decorator min
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function min
+ *
+ * @memberOf validation.decorators
  */
 export const min = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MIN, validator: {new(): Validator} = MinValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -85,9 +88,10 @@ export const min = (value: number | Date | string, message: string = DEFAULT_ERR
  * @param {number | Date} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MaxValidator}
- * @decorator max
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function max
+ *
+ * @memberOf validation.decorators
  */
 export const max = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MAX, validator: {new(): Validator} = MaxValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -112,9 +116,10 @@ export const max = (value: number | Date | string, message: string = DEFAULT_ERR
  * @param {number} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.STEP}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link StepValidator}
- * @decorator step
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function step
+ *
+ * @memberOf validation.decorators
  */
 export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STEP, validator: {new(): Validator} = StepValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -139,9 +144,10 @@ export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN_LENGTH}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MinLengthValidator}
- * @decorator minlength
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function minlength
+ *
+ * @memberOf validation.decorators
  */
 export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH, validator: {new(): Validator} = MinLengthValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -165,9 +171,10 @@ export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX_LENGTH}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MaxLengthValidator}
- * @decorator maxlength
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function maxlength
+ *
+ * @memberOf validation.decorators
  */
 export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH, validator: {new(): Validator} = MaxLengthValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -191,9 +198,10 @@ export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGE
  * @param {string} value
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.PATTERN}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link PatternValidator}
- * @decorator pattern
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function pattern
+ *
+ * @memberOf validation.decorators
  */
 export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_MESSAGES.PATTERN, validator: {new(): Validator} = PatternValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -216,9 +224,10 @@ export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.EMAIL}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link EmailValidator}
- * @decorator email
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function email
+ *
+ * @memberOf validation.decorators
  */
 export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator: {new(): Validator} = EmailValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -240,9 +249,10 @@ export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator:
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.URL}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link URLValidator}
- * @decorator url
- * @namespace Decorators
- * @memberOf validation
+ *
+ * @function url
+ *
+ * @memberOf validation.decorators
  */
 export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL, validator: {new(): Validator} = URLValidator) => (target: Object, propertyKey: string) => {
     Reflect.defineMetadata(
@@ -292,9 +302,9 @@ export const type = (types: string[] | string, message: string = DEFAULT_ERROR_M
  * @param {string} format accepted format according to {@link }
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}
  * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link DateValidator}
- * @decorator date
- * @namespace Decorators
- * @memberOf validation
+ *
+ *
+ * @memberOf validation.decorators
  */
 export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE, validator: {new(): Validator} = DateValidator) => (target: {[indexer: string]: any}, propertyKey: string): any => {
     Reflect.defineMetadata(

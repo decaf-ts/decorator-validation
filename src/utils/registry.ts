@@ -2,6 +2,8 @@
  * Basic Registry Interface
  * @typedef T
  * @interface IRegistry<T>
+ *
+ * @memberOf utils
  */
 export interface IRegistry<T>{
     register(obj: T, ...args: any[]): void;
@@ -12,6 +14,8 @@ export interface IRegistry<T>{
  * Basic Builder Registry Interface
  * @typedef T
  * @interface BuilderRegistry<T>
+ *
+ * @memberOf utils
  */
 export interface BuilderRegistry<T>{
     get(name: string, ...args: any[]): {new(): T} | undefined;

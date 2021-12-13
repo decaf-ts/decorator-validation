@@ -9,7 +9,8 @@ import {evaluateDesignTypes} from "../../utils";
  *
  * @class RequiredValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class TypeValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.TYPE){
