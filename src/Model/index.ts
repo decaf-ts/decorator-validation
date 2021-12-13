@@ -1,5 +1,5 @@
 /**
- * @namespace Model
+ * @namespace model
  * @memberOf decorator-validation
  */
 

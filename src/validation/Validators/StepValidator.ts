@@ -8,13 +8,26 @@ import {Errors} from "../types";
  * @class StepValidator
  * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default class StepValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP){
         super(ValidationKeys.STEP, message, "number");
     }
 
+    /**
+     *
+     * @param {string} value
+     * @param {number} step
+     * @param {string} [message]
+     *
+     * @return Errors
+     *
+     * @memberOf StepValidator
+     * @override
+     *
+     * @see Validator#hasErrors
+     */
     public hasErrors(value: number, step: number, message?: string): Errors {
         if (value === undefined)
             return;

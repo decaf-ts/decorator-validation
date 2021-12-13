@@ -1,0 +1,494 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine validation/decorators.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="model.constants.html">constants</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="utils.constants.html">constants</a></li><li><a href="validation.constants.html">constants</a></li><li><a href="validation.decorators.html">decorators</a></li></ul><h3>Classes</h3><ul><li><a href="model.decorators.ModelErrorDefinition.html">ModelErrorDefinition</a></li><li><a href="model.Model.html">Model</a></li><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="validation.ValidatorRegistry.html">ValidatorRegistry</a></li></ul><h3>Interfaces</h3><ul><li><a href="utils.BuilderRegistry.html">BuilderRegistry</a></li><li><a href="utils.IRegistry.html">IRegistry</a></li><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3><a href="global.html">Global</a></h3></div><div class="category"><h2>Decorators</h2><h3>Global</h3><ul><li><a href="global.html#date">date</a></li><li><a href="global.html#email">email</a></li><li><a href="global.html#max">max</a></li><li><a href="global.html#maxlength">maxlength</a></li><li><a href="global.html#min">min</a></li><li><a href="global.html#minlength">minlength</a></li><li><a href="global.html#model">model</a></li><li><a href="global.html#pattern">pattern</a></li><li><a href="global.html#required">required</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#url">url</a></li></ul></div><div class="category"><h2>Validators</h2><h3>Classes</h3><ul><li><a href="DateValidator.html">DateValidator</a></li><li><a href="EmailValidator.html">EmailValidator</a></li><li><a href="MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="MaxValidator.html">MaxValidator</a></li><li><a href="MinLengthValidator.html">MinLengthValidator</a></li><li><a href="MinValidator.html">MinValidator</a></li><li><a href="PatternValidator.html">PatternValidator</a></li><li><a href="RequiredValidator.html">RequiredValidator</a></li><li><a href="StepValidator.html">StepValidator</a></li><li><a href="URLValidator.html">URLValidator</a></li><li><a href="Validator.html">Validator</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>validation/decorators.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace validation.decorators
+ * @memberOf validation
+ */
+
+import "reflect-metadata";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
+import {getValidatorRegistry} from "./validation";
+import RequiredValidator from './Validators/RequiredValidator';
+import EmailValidator from './Validators/EmailValidator';
+import MaxValidator from './Validators/MaxValidator';
+import MaxLengthValidator from './Validators/MaxLengthValidator';
+import MinValidator from './Validators/MinValidator';
+import MinLengthValidator from './Validators/MinLengthValidator';
+import URLValidator from "./Validators/URLValidator";
+import PatternValidator from "./Validators/PatternValidator";
+import TypeValidator from "./Validators/TypeValidator";
+import StepValidator from "./Validators/StepValidator";
+import DateValidator from "./Validators/DateValidator";
+import {dateFromFormat, formatDate} from "../utils";
+import Validator from "./Validators/Validator";
+
+/**
+ * @param {string} key
+ *
+ * @function getValidationKey
+ *
+ * @memberOf validation.decorators
+ */
+export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
+
+/**
+ * Marks the property as required.
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.REQUIRED}
+ *
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.REQUIRED}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
+ *
+ * @decorator required
+ *
+ * @category Decorators
+ */
+export const required = (message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, validator: {new(): Validator} = RequiredValidator) => (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.REQUIRED),
+        {
+            message: message
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.REQUIRED});
+}
+
+/**
+ * Defines a minimum value for the property
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.MIN}
+ *
+ * @param {number | Date} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MinValidator}
+ *
+ * @decorator min
+ *
+ * @category Decorators
+ */
+export const min = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MIN, validator: {new(): Validator} = MinValidator) => {
+    return (target: Object, propertyKey: string) => {
+        Reflect.defineMetadata(
+            getValidationKey(ValidationKeys.MIN),
+            {
+                value: value,
+                message: message,
+                types: [Number.name, Date.name]
+            },
+            target,
+            propertyKey
+        );
+        getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MIN});
+    }
+}
+
+/**
+ * Defines a maximum value for the property
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.MAX}
+ *
+ * @param {number | Date} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MaxValidator}
+ *
+ * @decorator max
+ *
+ * @category Decorators
+ */
+export const max = (value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MAX, validator: {new(): Validator} = MaxValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.MAX),
+        {
+            value: value,
+            message: message,
+            types: [Number.name, Date.name]
+        },
+        target,
+        propertyKey
+    );
+
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MAX});
+}
+
+/**
+ * Defines a step value for the property
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.STEP}
+ *
+ * @param {number} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.STEP}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link StepValidator}
+ *
+ * @decorator step
+ *
+ * @category Decorators
+ */
+export const step = (value: number, message: string = DEFAULT_ERROR_MESSAGES.STEP, validator: {new(): Validator} = StepValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.STEP),
+        {
+            value: value,
+            message: message,
+            types: [Number.name]
+        },
+        target,
+        propertyKey
+    );
+
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.STEP});
+}
+
+/**
+ * Defines a minimum length for the property
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.MIN_LENGTH}
+ *
+ * @param {string} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MIN_LENGTH}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MinLengthValidator}
+ *
+ * @decorator minlength
+ *
+ * @category Decorators
+ */
+export const minlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH, validator: {new(): Validator} = MinLengthValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.MIN_LENGTH),
+        {
+            value: value,
+            message: message,
+            types: [String.name]
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MIN_LENGTH});
+}
+
+/**
+ * Defines a maximum length for the property
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.MAX_LENGTH}
+ *
+ * @param {string} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.MAX_LENGTH}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link MaxLengthValidator}
+ *
+ * @decorator maxlength
+ *
+ * @category Decorators
+ */
+export const maxlength = (value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH, validator: {new(): Validator} = MaxLengthValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.MAX_LENGTH),
+        {
+            value: value,
+            message: message,
+            types: [String.name]
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.MAX_LENGTH});
+}
+
+/**
+ * Defines a RegExp pattern the property must respect
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.PATTERN}
+ *
+ * @param {string} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.PATTERN}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link PatternValidator}
+ *
+ * @decorator pattern
+ *
+ * @category Decorators
+ */
+export const pattern = (value: RegExp | string, message: string = DEFAULT_ERROR_MESSAGES.PATTERN, validator: {new(): Validator} = PatternValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.PATTERN),
+        {
+            value: typeof value === 'string' ? value : value.toString(),
+            message: message,
+            types: [String.name]
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.PATTERN});
+}
+
+/**
+ * Defines the property as an email
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.EMAIL}
+ *
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.EMAIL}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link EmailValidator}
+ *
+ * @decorator email
+ *
+ * @category Decorators
+ */
+export const email = (message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator: {new(): Validator} = EmailValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.EMAIL),
+        {
+            message: message,
+            types: [String.name]
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.EMAIL});
+}
+
+/**
+ * Defines the property as an URL
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.URL}
+ *
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.URL}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link URLValidator}
+ *
+ * @decorator url
+ *
+ * @category Decorators
+ */
+export const url = (message: string = DEFAULT_ERROR_MESSAGES.URL, validator: {new(): Validator} = URLValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.URL),
+        {
+            message: message,
+            types: [String.name]
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.URL});
+}
+
+/**
+ * Enforces type verification
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.TYPE}
+ *
+ * @param {string[] | string} types accepted types
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.TYPE}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link TypeValidator}
+ *
+ * @decorator type
+ *
+ * @category Decorators
+ */
+export const type = (types: string[] | string, message: string = DEFAULT_ERROR_MESSAGES.TYPE, validator: {new(): Validator} = TypeValidator) => (target: Object, propertyKey: string) => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.TYPE),
+        {
+            customTypes: types,
+            message: message
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.TYPE});
+}
+
+/**
+ * Date Handler Decorator
+ *
+ * Validators to validate a decorated property must use key {@link ValidationKeys.DATE}
+ *
+ * Will enforce serialization according to the selected format
+ *
+ * @param {string} format accepted format according to {@link }
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES.DATE}
+ * @param {{new: Validator}} [validator] the Validator to be used. Defaults to {@link DateValidator}
+ *
+ * @decorator date
+ *
+ * @category Decorators
+ */
+export const date = (format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE, validator: {new(): Validator} = DateValidator) => (target: {[indexer: string]: any}, propertyKey: string): any => {
+    Reflect.defineMetadata(
+        getValidationKey(ValidationKeys.DATE),
+        {
+            format: format,
+            message: message,
+            types: [Date.name]
+        },
+        target,
+        propertyKey
+    );
+    getValidatorRegistry().register({validator: validator, validationKey: ValidationKeys.DATE});
+
+    const bindDateToString = function(date: Date | undefined){
+        if (!date)
+            return;
+        const func = () => formatDate(date, format);
+        date.toISOString = func;
+        date.toString = func;
+        return date;
+    }
+
+    const parseDate = function(v?: string | Date | number){
+        let value: Date | undefined = undefined;
+        if (!v || v instanceof Date)
+        { // @ts-ignore
+            value = v;
+        }
+        else if (typeof v === 'string')
+            value = dateFromFormat(v, format);
+        else
+            throw new Error(`Invalid value provided ${v}`);
+        return bindDateToString(value);
+    }
+
+    const values = new WeakMap();
+
+    Object.defineProperty(target, propertyKey, {
+        set(this: any, newValue: string | Date){
+
+            Object.defineProperty(this, propertyKey, {
+                enumerable: true,
+                configurable: false,
+                get: () => values.get(this),
+                set: (newValue: string | Date | number) => values.set(this, parseDate(newValue))
+            });
+
+            this[propertyKey] = newValue;
+        }
+    });
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>

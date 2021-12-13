@@ -8,7 +8,7 @@ import {Errors} from "../types";
  * @class PatternValidator
  * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default class PatternValidator extends Validator {
     private static readonly regexpParser: RegExp = new RegExp("^\/(.+)\/([gimus]*)$");
@@ -24,6 +24,19 @@ export default class PatternValidator extends Validator {
         return new RegExp(match[1], match[2]);
     }
 
+    /**
+     *
+     * @param {string} value
+     * @param {RegExp | string} pattern
+     * @param {string} [message]
+     *
+     * @return Errors
+     *
+     * @memberOf PatternValidator
+     * @override
+     *
+     * @see Validator#hasErrors
+     */
     public hasErrors(value: string, pattern: RegExp | string, message?: string): Errors {
         if (!value)
             return;

@@ -8,13 +8,26 @@ import {Errors} from "../types";
  * @class DateValidator
  * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default class DateValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.DATE){
         super(ValidationKeys.DATE, message, Number.name, Date.name, String.name);
     }
 
+    /**
+     *
+     * @param {Date | string} value
+     * @param {string} format
+     * @param {string} [message]
+     *
+     * @return Errors
+     *
+     * @memberOf DateValidator
+     * @override
+     *
+     * @see Validator#hasErrors
+     */
     public hasErrors(value: Date | string, format: string, message?: string): Errors {
         if (value === undefined)
             return;

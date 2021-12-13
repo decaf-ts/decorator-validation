@@ -25,9 +25,9 @@ const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  * @prop {{}} [props] additional properties to store as metadata
  * @prop {function(any): void} [instanceCallback] optional callback that will be call with the instance upon instantiation. defaults to undefined
  *
- * @function model
+ * @decorator model
  *
- * @memberOf model.decorators
+ * @category Decorators
  */
 export const model = (props?: {}, instanceCallback?: (instance: any) => void) => (original: Function) => {
 

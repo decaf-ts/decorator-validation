@@ -8,16 +8,23 @@ import {checkTypes} from "../../utils/utils";
  *
  * @class Validator
  * @abstract
- * @implements Validatable
+ * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default abstract class Validator{
     readonly validationKey: string;
     readonly message: string;
     readonly acceptedTypes?: string[];
 
-
+    /**
+     *
+     * @param {string} validationKey
+     * @param {string} [message]
+     * @param {string[]} [acceptedTypes]
+     * @protected
+     * @constructor
+     */
     protected constructor(validationKey: string, message: string = DEFAULT_ERROR_MESSAGES.DEFAULT, ...acceptedTypes: string[])  {
         this.validationKey = validationKey;
         this.message = message;
@@ -28,10 +35,25 @@ export default abstract class Validator{
             this.hasErrors = this.checkTypeAndHasErrors(this.hasErrors.bind(this));
     }
 
+    /**
+     *
+     * @param {string} message
+     * @param {any[]} args
+     * @protected
+     *
+     * @memberOf Validator
+     */
     protected getMessage(message: string, ...args: any[]){
         return stringFormat(message, ...args);
     }
 
+    /**
+     *
+     * @param {any} unbound
+     * @private
+     *
+     * @memberOf Validator
+     */
     private checkTypeAndHasErrors(unbound: (value: string, ...args: any[]) => Errors){
         return function(this: Validator, value: any, ...args: any[]): Errors {
             if (value === undefined || !this.acceptedTypes)
@@ -42,5 +64,15 @@ export default abstract class Validator{
         }.bind(this);
     }
 
+    /**
+     *
+     * @param {any} value
+     * @param {any[]} args
+     *
+     * @abstract
+     * @memberOf validator
+     *
+     * @see Model#hasErrors
+     */
     public abstract hasErrors(value: any, ...args: any[]): Errors;
 }

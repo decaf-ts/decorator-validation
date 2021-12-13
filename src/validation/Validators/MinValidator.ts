@@ -8,13 +8,26 @@ import {Errors} from "../types";
  * @class MinValidator
  * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default class MinValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN){
         super(ValidationKeys.MIN, message, "number", "Date")
     }
 
+    /**
+     *
+     * @param {string} value
+     * @param {number | Date | string} min
+     * @param {string} [message]
+     *
+     * @return Errors
+     *
+     * @memberOf MinValidator
+     * @override
+     *
+     * @see Validator#hasErrors
+     */
     public hasErrors(value: number | Date, min: number | Date | string, message?: string): Errors {
         if (value === undefined)
             return;

@@ -61,6 +61,7 @@ export default abstract class Model implements Validatable {
     /**
      * Override the implementation for js's 'toString()' which sucks...
      * @override
+     * @memberOf Model
      */
     public toString(): string {
         return this.constructor.name +": " + JSON.stringify(this, undefined, 2);
@@ -68,6 +69,7 @@ export default abstract class Model implements Validatable {
 
     /**
      * Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
+     * @memberOf Model
      */
     public toHash(): string{
         return hashObj(this).toString();

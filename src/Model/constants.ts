@@ -3,7 +3,6 @@
  * @memberOf model
  */
 
-
 /**
  * @enum ModelKeys
  * @memberOf model.constants
