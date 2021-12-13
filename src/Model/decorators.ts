@@ -2,6 +2,21 @@ import {ModelKeys} from './constants';
 import {construct} from "../utils";
 import {getModelRegistry} from "./Registry";
 
+/**
+ * @namespace model.decorators
+ * @memberOf model
+ */
+
+
+/**
+ *
+ * @param {string} str
+ * @return {string}
+ *
+ * @function getModelKey
+ *
+ * @memberOf model.decorators
+ */
 const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 
 /**
@@ -10,9 +25,9 @@ const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  * @prop {{}} [props] additional properties to store as metadata
  * @prop {function(any): void} [instanceCallback] optional callback that will be call with the instance upon instantiation. defaults to undefined
  *
- * @decorator
- * @namespace Decorators
- * @memberOf Model
+ * @function model
+ *
+ * @memberOf model.decorators
  */
 export const model = (props?: {}, instanceCallback?: (instance: any) => void) => (original: Function) => {
 

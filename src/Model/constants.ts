@@ -1,7 +1,12 @@
+/**
+ * @namespace model.constants
+ * @memberOf model
+ */
+
 
 /**
  * @enum ModelKeys
- * @subcategory Model
+ * @memberOf model.constants
  */
 export const ModelKeys = {
   REFLECT: 'model.definition.',

@@ -22,8 +22,8 @@ import ModelErrorDefinition from "./ModelErrorDefinition";
  * @class Model
  * @abstract
  * @implements Validatable
- * @namespace Model
- * @memberOf Model
+ *
+ * @memberOf model
  */
 export default abstract class Model implements Validatable {
     [indexer: string]: any;

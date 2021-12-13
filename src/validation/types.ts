@@ -36,6 +36,10 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T>{
     get<T extends Validator>(key: string): T | undefined;
 }
 
+/**
+ * @typedef ValidatorDefinition
+ * @memberOf validation
+ */
 export type ValidatorDefinition = {
     validator: {new(): Validator},
     validationKey: string
@@ -53,22 +57,38 @@ export default interface Validatable {
     hasErrors(...args: any[]) : ModelErrorDefinition | undefined;
 }
 
+/**
+ * @typedef ValidationPropertyDecoratorDefinition
+ * @memberOf validation
+ */
 export type ValidationPropertyDecoratorDefinition = {
     prop: string | symbol,
     decorators: ValidationDecoratorDefinition[]
 }
 
+/**
+ * @typedef ValidationDecoratorDefinition
+ * @memberOf validation
+ */
 export type ValidationDecoratorDefinition = {
     key: string,
     props: ValidationElementDefinition
 }
 
+/**
+ * @typedef ValidationElementDefinition
+ * @memberOf validation
+ */
 export type ValidationElementDefinition = {
     value?: string | number,
     message: string
     types?: string[],
 }
 
+/**
+ * @typedef ModelErrors
+ * @memberOf validation
+ */
 export type ModelErrors = {
     [indexer: string]: {[indexer: string]: Errors, }
 }

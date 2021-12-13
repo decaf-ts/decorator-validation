@@ -7,7 +7,8 @@ import {Errors} from "../types";
  *
  * @class RequiredValidator
  * @extends Validator
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default class RequiredValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED){

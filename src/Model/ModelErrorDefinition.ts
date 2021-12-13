@@ -3,10 +3,19 @@ import {Errors, ModelErrors} from "../validation";
 /**
  * Helper Class to hold the error results in an 'indexable' manner
  * while still providing the same result on toString
+ *
+ * @class ModelErrorDefinition
+ *
+ * @memberOf model.decorators
  */
 export default class ModelErrorDefinition{
     [indexer: string]: {[indexer: string]: Errors} | (() => Errors);
 
+    /**
+     *
+     * @param {ModelErrors} errors
+     * @constructor
+     */
     constructor(errors: ModelErrors) {
         for(let prop in errors){
             if (errors.hasOwnProperty(prop) && errors[prop])

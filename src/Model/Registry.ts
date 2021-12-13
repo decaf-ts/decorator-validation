@@ -10,7 +10,9 @@ export type ModelRegistry = BuilderRegistry<Model>;
  * Util class to enable serialization and correct rebuilding
  * @param {string} anchorKey defaults to {@link ModelKeys.ANCHOR}. The property name where the registered class name is stored;
  * @param {function({}): boolean} testFunction method to test if the provided object is a Model Object. defaults to {@link isModel}
+ *
  * @class ModelRegistryManager
+ *
  * @memberOf Model
  */
 export class ModelRegistryManager<T extends Model> implements ModelRegistry{
@@ -49,8 +51,11 @@ let actingModelRegistry: ModelRegistry;
 
 /**
  * Returns the current {@link ModelRegistryManager}
- * @function getModelRegistry
+ *
  * @return ModelRegistry, defaults to {@link ModelRegistryManager}
+ *
+ * @function getModelRegistry
+ *
  * @memberOf model
  */
 export function getModelRegistry(): ModelRegistry {
@@ -61,9 +66,12 @@ export function getModelRegistry(): ModelRegistry {
 
 /**
  * Returns the current actingModelRegistry
- * @function setModelRegistry
+ *
  * @prop {ModelRegistry} operationsRegistry the new implementation of Registry
- * @memberOf operations
+ *
+ * @function setModelRegistry
+ *
+ * @memberOf model
  */
 export function setModelRegistry(operationsRegistry: ModelRegistry){
     actingModelRegistry = operationsRegistry;

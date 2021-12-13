@@ -9,7 +9,8 @@ import {checkTypes} from "../../utils/utils";
  * @class Validator
  * @abstract
  * @implements Validatable
- * @memberOf Validators
+ *
+ * @memberOf validation.validators
  */
 export default abstract class Validator{
     readonly validationKey: string;

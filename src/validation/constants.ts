@@ -1,7 +1,12 @@
 /**
- * @enum
- * @namespace validation
- * @memberOf decorator-validation
+ * @namespace validation.constants
+ * @memberOf validation
+ */
+
+/**
+ * @enum ValidationKeys
+ *
+ * @memberOf validation.constants
  */
 export const ValidationKeys = {
     REFLECT: 'model.validation.',
@@ -19,9 +24,9 @@ export const ValidationKeys = {
 }
 
 /**
- * @enum
- * @namespace validation
- * @memberOf decorator-validation
+ * @enum DEFAULT_ERROR_MESSAGES
+ *
+ * @memberOf validation.constants
  */
 export const DEFAULT_ERROR_MESSAGES = {
     REQUIRED: 'This field is required',

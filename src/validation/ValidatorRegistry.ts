@@ -8,8 +8,7 @@ import {ValidationKeys} from "./constants";
  * @prop {Validator[]} [validators] the initial validators to register
  *
  * @class ValidatorRegistry
- * @namespace validation
- * @memberOf decorator-validation
+ * @memberOf validation
  */
 export class ValidatorRegistry<T extends Validator> implements IValidatorRegistry<T>{
     private cache: any = {};
