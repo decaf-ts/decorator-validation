@@ -8,13 +8,26 @@ import {Errors} from "../types";
  * @class MaxValidator
  * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default class MaxValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX){
         super(ValidationKeys.MAX, message, "number", "Date");
     }
 
+    /**
+     *
+     * @param {string} value
+     * @param {number | Date | string} max
+     * @param {string} [message]
+     *
+     * @return Errors
+     *
+     * @memberOf MaxValidator
+     * @override
+     *
+     * @see Validator#hasErrors
+     */
     public hasErrors(value: number | Date, max: number | Date | string, message?: string): Errors {
         if (value === undefined)
             return;

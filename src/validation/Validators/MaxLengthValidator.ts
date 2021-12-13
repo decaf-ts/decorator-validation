@@ -8,13 +8,26 @@ import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
  * @class MaxLengthValidator
  * @extends Validator
  *
- * @memberOf validation.validators
+ * @category Validators
  */
 export default class MaxLengthValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH){
         super(ValidationKeys.MAX_LENGTH, message, "string")
     }
 
+    /**
+     *
+     * @param {string} value
+     * @param {number} maxlength
+     * @param {string} [message]
+     *
+     * @return Errors
+     *
+     * @memberOf MaxLengthValidator
+     * @override
+     *
+     * @see Validator#hasErrors
+     */
     public hasErrors(value: string, maxlength: number, message?: string): Errors {
         if (value === undefined)
             return;
