@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decorator Validation Engine decorators</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Decorator Validation Engine</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau/decorator-validation#readme"
+                        >
+                            Github Repository
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/TiagoVenceslau"
+                        >
+                            Github Profile
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="model.constants.html">constants</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="utils.constants.html">constants</a></li><li><a href="validation.constants.html">constants</a></li><li><a href="validation.decorators.html">decorators</a></li></ul><h3>Classes</h3><ul><li><a href="model.decorators.ModelErrorDefinition.html">ModelErrorDefinition</a></li><li><a href="model.Model.html">Model</a></li><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="validation.ValidatorRegistry.html">ValidatorRegistry</a></li><li><a href="validation.validators.DateValidator.html">DateValidator</a></li><li><a href="validation.validators.EmailValidator.html">EmailValidator</a></li><li><a href="validation.validators.MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="validation.validators.MaxValidator.html">MaxValidator</a></li><li><a href="validation.validators.MinLengthValidator.html">MinLengthValidator</a></li><li><a href="validation.validators.MinValidator.html">MinValidator</a></li><li><a href="validation.validators.PatternValidator.html">PatternValidator</a></li><li><a href="validation.validators.RequiredValidator.html">RequiredValidator</a></li><li><a href="validation.validators.StepValidator.html">StepValidator</a></li><li><a href="validation.validators.URLValidator.html">URLValidator</a></li><li><a href="validation.validators.Validator.html">Validator</a></li></ul><h3>Interfaces</h3><ul><li><a href="utils.BuilderRegistry.html">BuilderRegistry</a></li><li><a href="utils.IRegistry.html">IRegistry</a></li><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Namespace</p>
+                    <h1>decorators</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>decorators</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line2">line 2</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".date">
+        <a class="href-link" href="#.date">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                date<span class="signature">(format, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Date Handler Decorator</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.DATE</code></p>
+<p>Will enforce serialization according to the selected format</p>.</p>
+    
+    
+    <div class="description">
+        <p>Date Handler Decorator</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.DATE</code></p>
+<p>Will enforce serialization according to the selected format</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>format</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>accepted format according to </p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>DateValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line231">line 231</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".email">
+        <a class="href-link" href="#.email">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                email<span class="signature">(message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines the property as an email</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.EMAIL</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines the property as an email</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.EMAIL</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.EMAIL</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>EmailValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line173">line 173</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".getValidationKey">
+        <a class="href-link" href="#.getValidationKey">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                getValidationKey<span class="signature">(key)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>key</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line21">line 21</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".max">
+        <a class="href-link" href="#.max">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                max<span class="signature">(value, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines a maximum value for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MAX</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines a maximum value for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MAX</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>value</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">number</span>
+|
+
+<span class="param-type">Date</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.MAX</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>MaxValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line68">line 68</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".maxlength">
+        <a class="href-link" href="#.maxlength">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                maxlength<span class="signature">(value, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines a maximum length for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MAX_LENGTH</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines a maximum length for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MAX_LENGTH</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>value</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.MAX_LENGTH</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>MaxLengthValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line131">line 131</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".min">
+        <a class="href-link" href="#.min">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                min<span class="signature">(value, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines a minimum value for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MIN</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines a minimum value for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MIN</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>value</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">number</span>
+|
+
+<span class="param-type">Date</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.MIN</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>MinValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line47">line 47</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".minlength">
+        <a class="href-link" href="#.minlength">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                minlength<span class="signature">(value, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines a minimum length for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MIN_LENGTH</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines a minimum length for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.MIN_LENGTH</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>value</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.MIN_LENGTH</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>MinLengthValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line110">line 110</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".pattern">
+        <a class="href-link" href="#.pattern">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                pattern<span class="signature">(value, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines a RegExp pattern the property must respect</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.PATTERN</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines a RegExp pattern the property must respect</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.PATTERN</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>value</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.PATTERN</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>PatternValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line152">line 152</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".required">
+        <a class="href-link" href="#.required">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                required<span class="signature">(message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary">Marks the property as required.</p>
+    
+    
+    <div class="description">
+        <p>Marks the property as required.</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.REQUIRED</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.REQUIRED</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>RequiredValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".step">
+        <a class="href-link" href="#.step">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                step<span class="signature">(value, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines a step value for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.STEP</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines a step value for the property</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.STEP</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>value</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">number</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.STEP</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>StepValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line89">line 89</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".type">
+        <a class="href-link" href="#.type">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                type<span class="signature">(types, message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Enforces type verification</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.TYPE</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Enforces type verification</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.TYPE</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>types</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>accepted types</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.TYPE</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>TypeValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line211">line 211</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".url">
+        <a class="href-link" href="#.url">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                url<span class="signature">(message<span class="signature-attributes">opt</span>, validator<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Defines the property as an URL</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.URL</code></p>.</p>
+    
+    
+    <div class="description">
+        <p>Defines the property as an URL</p>
+<p>Validators to validate a decorated property must use key <code>ValidationKeys.URL</code></p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>message</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">string</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the error message. Defaults to <code>DEFAULT_ERROR_MESSAGES.URL</code></p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validator</code></td>
+  
+
+  <td class="type">
+  
+      
+<span class="param-type">Object</span>
+
+
+  
+  </td>
+
+  
+      <td class="attributes">
+      
+          &lt;optional><br>
+      
+
+      
+
+      
+      </td>
+  
+
+  
+
+  <td class="description last"><p>the Validator to be used. Defaults to <code>URLValidator</code></p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="validation_decorators.ts.html" class="button">View Source</a>
+            <span>
+                <a href="validation_decorators.ts.html">validation/decorators.ts</a>, <a href="validation_decorators.ts.html#line192">line 192</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
