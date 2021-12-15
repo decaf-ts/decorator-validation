@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine ModelRegistryManager</title>
+  <title>Decorator Validation Engine model</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -97,8 +97,8 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p>Class</p>
-                    <h1>ModelRegistryManager</h1>
+                    <p>Namespace</p>
+                    <h1>model</h1>
                 </header>
                 
 
@@ -109,7 +109,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ModelRegistryManager<span class="signature">(anchorKey, testFunction)</span><span class="type-signature"></span></h2>
+        <h2>model</h2>
         
     
 </header>
@@ -118,33 +118,131 @@
     <div class="container-overview">
     
         
-            <div class='vertical-section'>
-                <div class="members">
-                    <div class="member">
-                        <div class=name>
-                            <span class="tag">Constructor</span>
-                        </div>
-                        
+            <div class="description"><script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="model_index.ts.html" class="button">View Source</a>
+            <span>
+                <a href="model_index.ts.html">model/index.ts</a>, <a href="model_index.ts.html#line2">line 2</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="decorator-validation.model.Model.html">Model</a></dt>
+            <dd><p>Abstract class representing a Validatable Model object</p>
+<p>Model objects must:</p>
+<ul>
+<li>Have all their properties defined as optional;</li>
+<li>Have all their properties initialized eg:</li>
+</ul>
+ <pre>
+     class ClassName {
+
+         propertyName?: PropertyType = undefined;
+
+     }
+ </pre>.</dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="decorator-validation.model.constants.html">constants</a></dt>
+            <dd></dd>
+        
+            <dt><a href="decorator-validation.model.decorators.html">decorators</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
 
 
     
-    <h4 class="name" id="ModelRegistryManager">
-        <a class="href-link" href="#ModelRegistryManager">#</a>
+    <h4 class="name" id=".getModelRegistry">
+        <a class="href-link" href="#.getModelRegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
         
         <span class="code-name">
             
-                new ModelRegistryManager<span class="signature">(anchorKey, testFunction)</span><span class="type-signature"></span>
+                getModelRegistry<span class="signature">()</span><span class="type-signature"></span>
             
         </span>
     </h4>
     
 
     
-    <p class="summary"><p>Util class to enable serialization and correct rebuilding</p>.</p>
+    <p class="summary"><p>Returns the current <a href="ModelRegistryManager.html"><code>ModelRegistryManager</code></a></p>.</p>
     
     
     <div class="description">
-        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Util class to enable serialization and correct rebuilding</p>
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Returns the current <a href="ModelRegistryManager.html"><code>ModelRegistryManager</code></a></p>
     </div>
     
 
@@ -155,82 +253,6 @@
 
 
 
-
-    <h5>Parameters:</h5>
-    
-<div class="table-container">
-    <table class="params table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>anchorKey</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">string</span>
-
-
-  
-  </td>
-
-  
-
-  
-
-  <td class="description last"><p>defaults to <code>ModelKeys.ANCHOR</code>. The property name where the registered class name is stored;</p></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>testFunction</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">function</span>
-
-
-  
-  </td>
-
-  
-
-  
-
-  <td class="description last"><p>method to test if the provided object is a Model Object. defaults to <code>isModel</code></p></td>
-</tr>
-
-
-        
-        </tbody>
-    </table>
-</div>
 
 
 
@@ -271,7 +293,179 @@
         <p class="tag-source">
             <a href="model_Registry.ts.html" class="button">View Source</a>
             <span>
-                <a href="model_Registry.ts.html">model/Registry.ts</a>, <a href="model_Registry.ts.html#line4">line 4</a>
+                <a href="model_Registry.ts.html">model/Registry.ts</a>, <a href="model_Registry.ts.html#line68">line 68</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>ModelRegistry, defaults to <a href="ModelRegistryManager.html"><code>ModelRegistryManager</code></a></p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".setModelRegistry">
+        <a class="href-link" href="#.setModelRegistry">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                setModelRegistry<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    <p class="summary"><p>Returns the current actingModelRegistry</p>.</p>
+    
+    
+    <div class="description">
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Returns the current actingModelRegistry</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>operationsRegistry</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">ModelRegistry</span>
+
+
+    
+    </td>
+
+    
+
+    
+
+    <td class="description last"><p>the new implementation of Registry</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="model_Registry.ts.html" class="button">View Source</a>
+            <span>
+                <a href="model_Registry.ts.html">model/Registry.ts</a>, <a href="model_Registry.ts.html#line82">line 82</a>
             </span>
         </p>
     
@@ -297,28 +491,10 @@
 
 
 
-
-                    </div>
-                </div>
+</div>
+            
             </div>
-        
-    
-    </div>
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
+        </div>
     
 
     
