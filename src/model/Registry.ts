@@ -17,7 +17,6 @@ export type ModelRegistry = BuilderRegistry<Model>;
  *
  * @class ModelRegistryManager
  *
- * @memberOf decorator-validation.Model
  */
 export class ModelRegistryManager<T extends Model> implements ModelRegistry{
   private cache: {[indexer: string]: any} = {};
@@ -28,9 +27,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry{
      *
      * @param {string} anchorKey defaults to {@link ModelKeys.ANCHOR}
      * @param {function({}): boolean} [testFunction]
-     * @constructor
      *
-     * @memberOf ModelRegistryManager
      */
   constructor(anchorKey: string = ModelKeys.ANCHOR, testFunction: (obj: {}) => boolean = isModel){
       this.testFunction = testFunction;
@@ -42,7 +39,6 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry{
      * @param {string} name
      * @param {any} constructor
      *
-     * @memberOf ModelRegistryManager
      */
   register(name: string, constructor: any): void {
       if (!name || typeof constructor !== 'function')
@@ -51,10 +47,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry{
   }
 
     /**
-     *
      * @param {string} name
-     *
-     * @memberOf ModelRegistryManager
      */
   get(name: string): {new(): T} | undefined {
       try{
@@ -65,10 +58,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry{
   }
 
     /**
-     *
      * @param {{}} obj
-     *
-     * @memberOf ModelRegistryManager
      */
   build<T extends Model>(obj: {[indexer: string]: any} = {}): T {
       if (!this.testFunction(obj))

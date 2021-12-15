@@ -3,7 +3,6 @@
  * @typedef T
  * @interface IRegistry<T>
  *
- * @memberOf decorator-validation.utils
  */
 export interface IRegistry<T>{
     /**
@@ -30,7 +29,6 @@ export interface IRegistry<T>{
  * @typedef T
  * @interface BuilderRegistry<T>
  *
- * @memberOf decorator-validation.utils
  */
 export interface BuilderRegistry<T>{
     /**

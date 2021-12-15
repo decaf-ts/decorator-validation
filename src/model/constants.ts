@@ -1,11 +1,6 @@
 /**
- * @namespace decorator-validation.model.constants
- * @memberOf decorator-validation.model
- */
-
-/**
  * @enum ModelKeys
- * @memberOf decorator-validation.model.constants
+ * @category Constants
  */
 export const ModelKeys = {
   REFLECT: 'model.definition.',

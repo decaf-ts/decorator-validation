@@ -6,7 +6,6 @@ import {Errors, ModelErrors} from "../validation";
  *
  * @class ModelErrorDefinition
  *
- * @memberOf decorator-validation.model.decorators
  */
 export class ModelErrorDefinition{
     [indexer: string]: {[indexer: string]: Errors} | (() => Errors);
@@ -14,7 +13,6 @@ export class ModelErrorDefinition{
     /**
      *
      * @param {ModelErrors} errors
-     * @constructor
      */
     constructor(errors: ModelErrors) {
         for(let prop in errors){

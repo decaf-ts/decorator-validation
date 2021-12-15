@@ -23,13 +23,11 @@ import {ModelErrorDefinition} from "./ModelErrorDefinition";
  * @abstract
  * @implements Validatable
  *
- * @memberOf decorator-validation.model
  */
 export abstract class Model implements Validatable {
     [indexer: string]: any;
     /**
      * @param {Model | {}} model base object from which to populate properties from
-     * @constructor
      * @protected
      */
     protected constructor(model?: Model | {}){

@@ -12,7 +12,6 @@ export type Errors = string | undefined;
 
 /**
  * @interface ValidatorRegistry
- * @memberOf decorator-validation.validation
  */
 export interface IValidatorRegistry<T extends Validator> extends IRegistry<T>{
     /**
@@ -50,7 +49,6 @@ export type ValidatorDefinition = {
 
 /**
  * @interface Validatable
- * @memberOf decorator-validation.Validation
  */
 export default interface Validatable {
     /**
