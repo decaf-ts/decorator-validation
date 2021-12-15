@@ -5,7 +5,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Decorator Validation Engine MaxLengthValidator</title>
+  <title>Decorator Validation Engine ValidatorRegistry</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -98,7 +98,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Class</p>
-                    <h1>MaxLengthValidator</h1>
+                    <h1>ValidatorRegistry</h1>
                 </header>
                 
 
@@ -109,7 +109,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>MaxLengthValidator<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>ValidatorRegistry<span class="signature">()</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -128,23 +128,23 @@
 
 
     
-    <h4 class="name" id="MaxLengthValidator">
-        <a class="href-link" href="#MaxLengthValidator">#</a>
+    <h4 class="name" id="ValidatorRegistry">
+        <a class="href-link" href="#ValidatorRegistry">#</a>
         
         <span class="code-name">
             
-                new MaxLengthValidator<span class="signature">()</span><span class="type-signature"></span>
+                new ValidatorRegistry<span class="signature">()</span><span class="type-signature"></span>
             
         </span>
     </h4>
     
 
     
-    <p class="summary"><p>Max Length Validator</p>.</p>
+    <p class="summary"><p>Base Implementation of a Validator Registry</p>.</p>
     
     
     <div class="description">
-        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Max Length Validator</p>
+        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script><p>Base Implementation of a Validator Registry</p>
     </div>
     
 
@@ -157,6 +157,68 @@
 
 
 
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+<div class="table-container">
+    <table class="props table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+            <th>Attributes</th>
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+            
+<tr class="deep-level-0">
+    
+        <td class="name"><code>validators</code></td>
+    
+
+    <td class="type">
+    
+        
+<span class="param-type">Array.&lt;<a href="Validator.html">Validator</a>></span>
+
+
+    
+    </td>
+
+    
+        <td class="attributes">
+        
+            &lt;optional><br>
+        
+
+        
+        </td>
+    
+
+    
+
+    <td class="description last"><p>the initial validators to register</p></td>
+</tr>
+
+        
+        </tbody>
+    </table>
+</div>
 
 
 
@@ -193,9 +255,9 @@
 
     
         <p class="tag-source">
-            <a href="validation_Validators_MaxLengthValidator.ts.html" class="button">View Source</a>
+            <a href="validation_ValidatorRegistry.ts.html" class="button">View Source</a>
             <span>
-                <a href="validation_Validators_MaxLengthValidator.ts.html">validation/Validators/MaxLengthValidator.ts</a>, <a href="validation_Validators_MaxLengthValidator.ts.html#line4">line 4</a>
+                <a href="validation_ValidatorRegistry.ts.html">validation/ValidatorRegistry.ts</a>, <a href="validation_ValidatorRegistry.ts.html#line3">line 3</a>
             </span>
         </p>
     
@@ -230,15 +292,6 @@
     </div>
     
     
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li><a href="Validator.html">Validator</a></li>
-    </ul>
-
 
     
 
@@ -252,269 +305,6 @@
 
     
 
-    
-
-    
-        <div class='vertical-section'>
-            <h1>Methods</h1>
-            <div class="members">
-            
-                <div class="member">
-
-
-    
-    <h4 class="name" id=".hasErrors">
-        <a class="href-link" href="#.hasErrors">#</a>
-        
-            
-                <span class='tag'>static</span>
-            
-        
-        <span class="code-name">
-            
-                hasErrors<span class="signature">(value, maxlength, message<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
-            
-        </span>
-    </h4>
-    
-
-    
-    
-    <div class="description">
-        <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-<div class="table-container">
-    <table class="params table">
-        <thead>
-        <tr>
-            
-            <th>Name</th>
-            
-
-            <th>Type</th>
-
-            
-            <th>Attributes</th>
-            
-
-            
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>value</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">string</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>maxlength</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">number</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"></td>
-</tr>
-
-
-        
-
-            
-<tr class="deep-level-0">
-  
-      <td class="name"><code>message</code></td>
-  
-
-  <td class="type">
-  
-      
-<span class="param-type">string</span>
-
-
-  
-  </td>
-
-  
-      <td class="attributes">
-      
-          &lt;optional><br>
-      
-
-      
-
-      
-      </td>
-  
-
-  
-
-  <td class="description last"></td>
-</tr>
-
-
-        
-        </tbody>
-    </table>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>Validator#hasErrors</li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-        <p class="tag-source">
-            <a href="validation_Validators_MaxLengthValidator.ts.html" class="button">View Source</a>
-            <span>
-                <a href="validation_Validators_MaxLengthValidator.ts.html">validation/Validators/MaxLengthValidator.ts</a>, <a href="validation_Validators_MaxLengthValidator.ts.html#line29">line 29</a>
-            </span>
-        </p>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class='columns method-parameter'>
-        <div class="column is-2"><label>Returns:</label></div>
-        <div class="column is-10">
-            
-                    
-
-<div class="columns">
-    
-    <div class='param-desc column is-7'><p>Errors</p></div>
-    
-    
-</div>
-
-                
-        </div>
-    </div>
-
-
-
-
-</div>
-            
-            </div>
-        </div>
     
 
     

@@ -1,6 +1,6 @@
 /**
- * @namespace validation.decorators
- * @memberOf validation
+ * @namespace decorator-validation.validation.decorators
+ * @memberOf decorator-validation.validation
  */
 
 import "reflect-metadata";
@@ -25,7 +25,7 @@ import Validator from "./Validators/Validator";
  *
  * @function getValidationKey
  *
- * @memberOf validation.decorators
+ * @memberOf decorator-validation.validation.decorators
  */
 export const getValidationKey = (key: string) => ValidationKeys.REFLECT + key;
 

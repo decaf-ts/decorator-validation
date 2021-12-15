@@ -1,7 +1,7 @@
 import Validator from "./Validator";
 import {DEFAULT_ERROR_MESSAGES} from "../constants";
 import {Errors} from "../types";
-import {ModelKeys} from "../../Model";
+import {ModelKeys} from "../../model";
 import {evaluateDesignTypes} from "../../utils";
 
 /**

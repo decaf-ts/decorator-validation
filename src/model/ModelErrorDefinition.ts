@@ -6,9 +6,9 @@ import {Errors, ModelErrors} from "../validation";
  *
  * @class ModelErrorDefinition
  *
- * @memberOf model.decorators
+ * @memberOf decorator-validation.model.decorators
  */
-export default class ModelErrorDefinition{
+export class ModelErrorDefinition{
     [indexer: string]: {[indexer: string]: Errors} | (() => Errors);
 
     /**

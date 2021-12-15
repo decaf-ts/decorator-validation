@@ -1,5 +1,5 @@
 import {required} from "../src/validation/decorators";
-import Model from "../src/Model/Model";
+import {Model} from "../src/model/Model";
 import {constructFromObject} from "../src";
 
 class Test1 {

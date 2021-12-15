@@ -1,5 +1,5 @@
-import Model from "../Model/Model";
-import {ModelKeys} from "../Model/constants";
+import {Model} from "../model/Model";
+import {ModelKeys} from "../model/constants";
 import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
 
 /**
@@ -12,7 +12,7 @@ import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
  *
  * @function getPropertyDecorators
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function getPropertyDecorators(annotationPrefix: string, target: any, propertyName: string | symbol, ignoreType: boolean = false): {prop: string | symbol, decorators: []} {
     // get info about keys that used in current property
@@ -47,7 +47,7 @@ export function getPropertyDecorators(annotationPrefix: string, target: any, pro
  *
  * @function stringFormat
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function stringFormat(string: string, ...args: string[]){
     return string.replace(/{(\d+)}/g, function(match, number) {
@@ -70,7 +70,7 @@ export function stringFormat(string: string, ...args: string[]){
  *
  * @function isEqual
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
     if (a === b) return true;
@@ -91,7 +91,7 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
  *
  * @function hashCode
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function hashCode(obj: string | number | symbol | Date){
     obj = String(obj);
@@ -112,7 +112,7 @@ export function hashCode(obj: string | number | symbol | Date){
  *
  * @function hashObj
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function hashObj(obj: {} | []){
 
@@ -145,7 +145,7 @@ export function hashObj(obj: {} | []){
  *
  * @function construct
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function construct<T extends Model>(constructor: any, ...args: any[]) {
     const _constr = (...argz: any[]) => new constructor(...argz);
@@ -153,6 +153,15 @@ export function construct<T extends Model>(constructor: any, ...args: any[]) {
     return _constr(...args);
 }
 
+/**
+ * For Serialization/deserialization purposes.
+ *
+ * Reads the {@link ModelKeys.ANCHOR} property of a {@link Model} to discover the class to instantiate
+ *
+ * @function isModel
+ *
+ * @memberOf decorator-validation.utils
+ */
 export function isModel(target: {[indexer: string]: any}){
     return !!target[ModelKeys.ANCHOR] || !!getClassDecorators(ModelKeys.REFLECT, target).find(dec => dec.key === ModelKeys.MODEL && dec.props && dec.props.class);
 }
@@ -162,7 +171,7 @@ export function isModel(target: {[indexer: string]: any}){
  *
  * @function getPropertyDecorators
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function getClassDecorators(annotationPrefix: string, target: any): {key: string, props: any}[] {
 
@@ -188,7 +197,7 @@ export function getClassDecorators(annotationPrefix: string, target: any): {key:
  *
  * @function checkType
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function checkType(value: any, acceptedType: string){
     if (typeof value === acceptedType)
@@ -206,7 +215,7 @@ export function checkType(value: any, acceptedType: string){
  *
  * @function checkTypes
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function checkTypes(value: any, acceptedTypes: string[]){
     return !acceptedTypes.every(t => !checkType(value, t));
@@ -215,11 +224,11 @@ export function checkTypes(value: any, acceptedTypes: string[]){
 /**
  *
  * @param {any} value
- * @param {string | string[] | {name: string} types
+ * @param {string | string[] | {name: string}} types
  *
  * @function evaluateDesignTypes
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function evaluateDesignTypes(value: any, types: string | string[] | {name: string}){
     switch(typeof types){
@@ -264,7 +273,7 @@ export function evaluateDesignTypes(value: any, types: string | string[] | {name
  *
  * @function formatDate
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
     const day: number = date.getDate(),
@@ -325,7 +334,7 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
  *
  * @function dateFromFormat
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function dateFromFormat(date: string, format: string){
     let formatRegexp: string = format;
@@ -428,7 +437,7 @@ export function dateFromFormat(date: string, format: string){
  *
  * @function twoDigitPad
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function twoDigitPad(num: number): string {
     return num < 10 ? "0" + num : num.toString();
@@ -442,7 +451,7 @@ export function twoDigitPad(num: number): string {
  *
  * @function constructFromObject
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function constructFromObject<T extends Model>(self: T, obj?: T | {}){
     if (!obj)

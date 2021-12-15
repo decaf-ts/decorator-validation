@@ -1,5 +1,5 @@
-import Model from "../src/Model/Model";
-import {date, Decorators, step, ValidationKeys, constructFromObject} from '../src';
+import {Model} from "../src/model/Model";
+import {Decorators, step, ValidationKeys, constructFromObject} from '../src';
 import {Validators} from '../src';
 import Validator from "../src/validation/Validators/Validator";
 const {email, max, maxlength, min, minlength, pattern, required, url, type} = Decorators;

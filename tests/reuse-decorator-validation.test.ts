@@ -1,4 +1,4 @@
-import Model from "../src/Model/Model";
+import {Model} from "../src/model/Model";
 import "reflect-metadata";
 import {Errors, getValidatorRegistry, Decorators, constructFromObject} from "../src";
 import Validator from "../src/validation/Validators/Validator";

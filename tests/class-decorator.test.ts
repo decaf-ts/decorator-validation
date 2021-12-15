@@ -1,7 +1,7 @@
 import {getModelRegistry, model} from "../src";
-import Model from "../src/Model/Model";
+import {Model} from "../src/model/Model";
 import {getClassDecorators, constructFromObject} from "../src";
-import {ModelKeys} from "../src/Model/constants";
+import {ModelKeys} from "../src/model/constants";
 
 @model()
 class TestModel extends Model {

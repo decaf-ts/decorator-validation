@@ -92,7 +92,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="model.constants.html">constants</a></li><li><a href="model.decorators.html">decorators</a></li><li><a href="utils.constants.html">constants</a></li><li><a href="validation.constants.html">constants</a></li><li><a href="validation.decorators.html">decorators</a></li></ul><h3>Classes</h3><ul><li><a href="model.decorators.ModelErrorDefinition.html">ModelErrorDefinition</a></li><li><a href="model.Model.html">Model</a></li><li><a href="Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="validation.ValidatorRegistry.html">ValidatorRegistry</a></li></ul><h3>Interfaces</h3><ul><li><a href="utils.BuilderRegistry.html">BuilderRegistry</a></li><li><a href="utils.IRegistry.html">IRegistry</a></li><li><a href="validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="Validation.Validatable.html">Validatable</a></li></ul><h3><a href="global.html">Global</a></h3></div><div class="category"><h2>Decorators</h2><h3>Global</h3><ul><li><a href="global.html#date">date</a></li><li><a href="global.html#email">email</a></li><li><a href="global.html#max">max</a></li><li><a href="global.html#maxlength">maxlength</a></li><li><a href="global.html#min">min</a></li><li><a href="global.html#minlength">minlength</a></li><li><a href="global.html#model">model</a></li><li><a href="global.html#pattern">pattern</a></li><li><a href="global.html#required">required</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#url">url</a></li></ul></div><div class="category"><h2>Validators</h2><h3>Classes</h3><ul><li><a href="DateValidator.html">DateValidator</a></li><li><a href="EmailValidator.html">EmailValidator</a></li><li><a href="MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="MaxValidator.html">MaxValidator</a></li><li><a href="MinLengthValidator.html">MinLengthValidator</a></li><li><a href="MinValidator.html">MinValidator</a></li><li><a href="PatternValidator.html">PatternValidator</a></li><li><a href="RequiredValidator.html">RequiredValidator</a></li><li><a href="StepValidator.html">StepValidator</a></li><li><a href="URLValidator.html">URLValidator</a></li><li><a href="Validator.html">Validator</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-decorator-validation.html">decorator-validation</a></li></ul><h3>Namespaces</h3><ul><li><a href="decorator-validation.model.constants.html">constants</a></li><li><a href="decorator-validation.model.decorators.html">decorators</a></li><li><a href="decorator-validation.utils.html">utils</a></li><li><a href="decorator-validation.utils.constants.html">constants</a></li><li><a href="decorator-validation.validation.constants.html">constants</a></li><li><a href="decorator-validation.validation.decorators.html">decorators</a></li></ul><h3>Classes</h3><ul><li><a href="decorator-validation.model.decorators.ModelErrorDefinition.html">ModelErrorDefinition</a></li><li><a href="decorator-validation.model.Model.html">Model</a></li><li><a href="decorator-validation.Model.ModelRegistryManager.html">ModelRegistryManager</a></li><li><a href="decorator-validation.validation.ValidatorRegistry.html">ValidatorRegistry</a></li><li><a href="ModelRegistryManager.exports.ModelRegistryManager.html">exports.ModelRegistryManager</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Interfaces</h3><ul><li><a href="decorator-validation.utils.BuilderRegistry.html">BuilderRegistry</a></li><li><a href="decorator-validation.utils.IRegistry.html">IRegistry</a></li><li><a href="decorator-validation.validation.IValidatorRegistry.html">IValidatorRegistry</a></li><li><a href="decorator-validation.Validation.Validatable.html">Validatable</a></li></ul><h3>Global</h3><ul><li><a href="global.html#equals">equals</a></li><li><a href="global.html#hasErrors">hasErrors</a></li><li><a href="global.html#toHash">toHash</a></li><li><a href="global.html#toString">toString</a></li></ul></div><div class="category"><h2>Decorators</h2><h3>Global</h3><ul><li><a href="global.html#date">date</a></li><li><a href="global.html#email">email</a></li><li><a href="global.html#max">max</a></li><li><a href="global.html#maxlength">maxlength</a></li><li><a href="global.html#min">min</a></li><li><a href="global.html#minlength">minlength</a></li><li><a href="global.html#model">model</a></li><li><a href="global.html#pattern">pattern</a></li><li><a href="global.html#required">required</a></li><li><a href="global.html#step">step</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#url">url</a></li></ul></div><div class="category"><h2>Validators</h2><h3>Classes</h3><ul><li><a href="DateValidator.html">DateValidator</a></li><li><a href="EmailValidator.html">EmailValidator</a></li><li><a href="MaxLengthValidator.html">MaxLengthValidator</a></li><li><a href="MaxValidator.html">MaxValidator</a></li><li><a href="MinLengthValidator.html">MinLengthValidator</a></li><li><a href="MinValidator.html">MinValidator</a></li><li><a href="PatternValidator.html">PatternValidator</a></li><li><a href="RequiredValidator.html">RequiredValidator</a></li><li><a href="StepValidator.html">StepValidator</a></li><li><a href="URLValidator.html">URLValidator</a></li><li><a href="Validator.html">Validator</a></li></ul></div>
                 
             </nav>
         </div>
@@ -109,8 +109,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import Model from "../Model/Model";
-import {ModelKeys} from "../Model/constants";
+            <pre class="prettyprint source linenums"><code>import Model from "../model/Model";
+import {ModelKeys} from "../model/constants";
 import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
 
 /**
@@ -123,7 +123,7 @@ import {MONTH_NAMES, DAYS_OF_WEEK_NAMES} from "./constants";
  *
  * @function getPropertyDecorators
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function getPropertyDecorators(annotationPrefix: string, target: any, propertyName: string | symbol, ignoreType: boolean = false): {prop: string | symbol, decorators: []} {
     // get info about keys that used in current property
@@ -158,7 +158,7 @@ export function getPropertyDecorators(annotationPrefix: string, target: any, pro
  *
  * @function stringFormat
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function stringFormat(string: string, ...args: string[]){
     return string.replace(/{(\d+)}/g, function(match, number) {
@@ -181,7 +181,7 @@ export function stringFormat(string: string, ...args: string[]){
  *
  * @function isEqual
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
     if (a === b) return true;
@@ -202,7 +202,7 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
  *
  * @function hashCode
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function hashCode(obj: string | number | symbol | Date){
     obj = String(obj);
@@ -223,7 +223,7 @@ export function hashCode(obj: string | number | symbol | Date){
  *
  * @function hashObj
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function hashObj(obj: {} | []){
 
@@ -256,7 +256,7 @@ export function hashObj(obj: {} | []){
  *
  * @function construct
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function construct&lt;T extends Model>(constructor: any, ...args: any[]) {
     const _constr = (...argz: any[]) => new constructor(...argz);
@@ -264,6 +264,15 @@ export function construct&lt;T extends Model>(constructor: any, ...args: any[]) 
     return _constr(...args);
 }
 
+/**
+ * For Serialization/deserialization purposes.
+ *
+ * Reads the {@link ModelKeys.ANCHOR} property of a {@link Model} to discover the class to instantiate
+ *
+ * @function isModel
+ *
+ * @memberOf decorator-validation.utils
+ */
 export function isModel(target: {[indexer: string]: any}){
     return !!target[ModelKeys.ANCHOR] || !!getClassDecorators(ModelKeys.REFLECT, target).find(dec => dec.key === ModelKeys.MODEL &amp;&amp; dec.props &amp;&amp; dec.props.class);
 }
@@ -273,7 +282,7 @@ export function isModel(target: {[indexer: string]: any}){
  *
  * @function getPropertyDecorators
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function getClassDecorators(annotationPrefix: string, target: any): {key: string, props: any}[] {
 
@@ -299,7 +308,7 @@ export function getClassDecorators(annotationPrefix: string, target: any): {key:
  *
  * @function checkType
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function checkType(value: any, acceptedType: string){
     if (typeof value === acceptedType)
@@ -317,7 +326,7 @@ export function checkType(value: any, acceptedType: string){
  *
  * @function checkTypes
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function checkTypes(value: any, acceptedTypes: string[]){
     return !acceptedTypes.every(t => !checkType(value, t));
@@ -326,11 +335,11 @@ export function checkTypes(value: any, acceptedTypes: string[]){
 /**
  *
  * @param {any} value
- * @param {string | string[] | {name: string} types
+ * @param {string | string[] | {name: string}} types
  *
  * @function evaluateDesignTypes
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function evaluateDesignTypes(value: any, types: string | string[] | {name: string}){
     switch(typeof types){
@@ -375,7 +384,7 @@ export function evaluateDesignTypes(value: any, types: string | string[] | {name
  *
  * @function formatDate
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
     const day: number = date.getDate(),
@@ -436,7 +445,7 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
  *
  * @function dateFromFormat
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function dateFromFormat(date: string, format: string){
     let formatRegexp: string = format;
@@ -539,7 +548,7 @@ export function dateFromFormat(date: string, format: string){
  *
  * @function twoDigitPad
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function twoDigitPad(num: number): string {
     return num &lt; 10 ? "0" + num : num.toString();
@@ -553,7 +562,7 @@ export function twoDigitPad(num: number): string {
  *
  * @function constructFromObject
  *
- * @memberOf utils
+ * @memberOf decorator-validation.utils
  */
 export function constructFromObject&lt;T extends Model>(self: T, obj?: T | {}){
     if (!obj)

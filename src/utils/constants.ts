@@ -1,11 +1,13 @@
 /**
- * @namespace utils.constants
- * @memberOf utils
+ * @namespace decorator-validation.utils.constants
+ * @memberOf decorator-validation.utils
  */
 
 /**
- * @constant
- * @memberOf utils.constants
+ * Can be changed for localization purposes
+ *
+ * @constant MONTH_NAMES
+ * @memberOf decorator-validation.utils.constants
  */
 export const MONTH_NAMES = [
     "January", "February", "March", "April", "May", "June", "July",
@@ -13,8 +15,10 @@ export const MONTH_NAMES = [
 ];
 
 /**
- * @constant
- * @memberOf utils.constants
+ * Can be changed for localization purposes
+ *
+ * @constant DAYS_OF_WEEK_NAMES
+ * @memberOf decorator-validation.utils.constants
  */
 export const DAYS_OF_WEEK_NAMES = [
     "Sunday", "Monday", "Tuesday",

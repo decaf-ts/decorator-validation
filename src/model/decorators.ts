@@ -3,8 +3,8 @@ import {construct} from "../utils";
 import {getModelRegistry} from "./Registry";
 
 /**
- * @namespace model.decorators
- * @memberOf model
+ * @namespace decorator-validation.model.decorators
+ * @memberOf decorator-validation.model
  */
 
 
@@ -15,7 +15,7 @@ import {getModelRegistry} from "./Registry";
  *
  * @function getModelKey
  *
- * @memberOf model.decorators
+ * @memberOf decorator-validation.model.decorators
  */
 const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 

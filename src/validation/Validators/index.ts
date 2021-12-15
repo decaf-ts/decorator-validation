@@ -1,6 +1,6 @@
 /**
- * @namespace validation.validators
- * @memberOf validation
+ * @namespace decorator-validation.validation.validators
+ * @memberOf decorator-validation.validation
  */
 
 export * as Validator from './Validator';

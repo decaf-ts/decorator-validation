@@ -1,4 +1,4 @@
-import Model from "../src/Model/Model";
+import {Model} from "../src/model/Model";
 import {max, min, date} from "../src/validation/decorators";
 import {twoDigitPad, constructFromObject} from "../src";
 import {ValidationKeys} from "../src/validation/constants";

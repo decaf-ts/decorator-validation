@@ -1,11 +1,11 @@
 /**
- * @namespace model.constants
- * @memberOf model
+ * @namespace decorator-validation.model.constants
+ * @memberOf decorator-validation.model
  */
 
 /**
  * @enum ModelKeys
- * @memberOf model.constants
+ * @memberOf decorator-validation.model.constants
  */
 export const ModelKeys = {
   REFLECT: 'model.definition.',

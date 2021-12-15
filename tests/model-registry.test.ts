@@ -1,6 +1,6 @@
 import {constructFromObject, getModelRegistry, model} from "../src";
-import Model from "../src/Model/Model";
-import {ModelKeys} from "../src/Model/constants";
+import {Model} from "../src/model/Model";
+import {ModelKeys} from "../src/model/constants";
 
 @model()
 class TestModel extends Model {

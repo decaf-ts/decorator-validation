@@ -3,5 +3,6 @@
  */
 
 export * from './validation';
-export * from './Model';
+export * from './model';
 export * from './utils';
+export * from './model';

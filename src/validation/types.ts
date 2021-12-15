@@ -1,22 +1,23 @@
 import Validator from "./Validators/Validator";
-import ModelErrorDefinition from "../Model/ModelErrorDefinition";
+import {ModelErrorDefinition} from "../model/ModelErrorDefinition";
 import {ValidationKeys} from "./constants";
 import {IRegistry} from "../utils/registry";
 import {ValidatorRegistry} from "./ValidatorRegistry";
 
 /**
- * @memberOf validation
  * @typedef Errors
+ * @memberOf decorator-validation.validation
  */
 export type Errors = string | undefined;
 
 /**
- * @memberOf validation
  * @interface ValidatorRegistry
+ * @memberOf decorator-validation.validation
  */
 export interface IValidatorRegistry<T extends Validator> extends IRegistry<T>{
     /**
      * @return {string[]} the registered validators keys
+     * @memberOf IValidatorRegistry
      */
     getKeys(): string[];
 
@@ -25,6 +26,7 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T>{
      *
      * @typedef T extends Validator
      * @param {T[] | ValidatorDefinition[]} validator
+     * @memberOf IValidatorRegistry
      */
     register<T extends Validator>(...validator: T[] | ValidatorDefinition[]) : void;
 
@@ -32,13 +34,14 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T>{
      * @typedef T extends Validator
      * @param {string} key one of the {@link ValidationKeys}
      * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
+     * @memberOf IValidatorRegistry
      */
     get<T extends Validator>(key: string): T | undefined;
 }
 
 /**
  * @typedef ValidatorDefinition
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export type ValidatorDefinition = {
     validator: {new(): Validator},
@@ -47,7 +50,7 @@ export type ValidatorDefinition = {
 
 /**
  * @interface Validatable
- * @memberOf Validation
+ * @memberOf decorator-validation.Validation
  */
 export default interface Validatable {
     /**
@@ -59,7 +62,7 @@ export default interface Validatable {
 
 /**
  * @typedef ValidationPropertyDecoratorDefinition
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export type ValidationPropertyDecoratorDefinition = {
     prop: string | symbol,
@@ -68,7 +71,7 @@ export type ValidationPropertyDecoratorDefinition = {
 
 /**
  * @typedef ValidationDecoratorDefinition
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export type ValidationDecoratorDefinition = {
     key: string,
@@ -77,7 +80,7 @@ export type ValidationDecoratorDefinition = {
 
 /**
  * @typedef ValidationElementDefinition
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export type ValidationElementDefinition = {
     value?: string | number,
@@ -87,7 +90,7 @@ export type ValidationElementDefinition = {
 
 /**
  * @typedef ModelErrors
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export type ModelErrors = {
     [indexer: string]: {[indexer: string]: Errors, }

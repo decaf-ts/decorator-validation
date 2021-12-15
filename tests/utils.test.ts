@@ -1,5 +1,5 @@
 import {model, constructFromObject, hashCode, hashObj, isModel} from "../src";
-import Model from "../src/Model/Model";
+import {Model} from "../src/model/Model";
 
 @model()
 class TestModel extends Model {

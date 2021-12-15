@@ -1,4 +1,4 @@
-import Model from "../Model/Model";
+import {Model} from "../model/Model";
 import {
     Errors,
     ValidationPropertyDecoratorDefinition,
@@ -7,8 +7,8 @@ import {
 import {ValidatorRegistry} from "./ValidatorRegistry";
 import {getPropertyDecorators} from '../utils'
 import {ValidationKeys} from "./constants";
-import ModelErrorDefinition from "../Model/ModelErrorDefinition";
-import {ModelKeys} from "../Model";
+import {ModelErrorDefinition} from "../model/ModelErrorDefinition";
+import {ModelKeys} from "../model";
 import TypeValidator from "./Validators/TypeValidator";
 import Validator from "./Validators/Validator";
 
@@ -21,7 +21,7 @@ let actingValidatorRegistry: IValidatorRegistry<Validator> | undefined = undefin
  *
  * @function getValidatorRegistry
  *
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export function getValidatorRegistry(){
     if (!actingValidatorRegistry)
@@ -37,7 +37,7 @@ export function getValidatorRegistry(){
  *
  * @function getValidatorRegistry
  *
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export function setValidatorRegistry(validatorRegistry: IValidatorRegistry<Validator>, migrationHandler?: (validator: Validator) => Validator){
     if (migrationHandler && actingValidatorRegistry)
@@ -58,7 +58,7 @@ export function setValidatorRegistry(validatorRegistry: IValidatorRegistry<Valid
  *
  * @function validate
  *
- * @memberOf validation
+ * @memberOf decorator-validation.validation
  */
 export function validate<T extends Model>(obj: T, ...propsToIgnore: string[]) : ModelErrorDefinition | undefined {
     const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
