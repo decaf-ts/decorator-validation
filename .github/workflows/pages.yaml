@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - workdocs/**
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Push events to matching v*, i.e. v1.0.0
 
 jobs:
   # Single deploy job no building
@@ -14,7 +16,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
+#      url: ${{steps.deployment.outputs.page_url}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,5 +32,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v3
         with:
-          name: docs
-          path: docs
+          artifact_name: docs

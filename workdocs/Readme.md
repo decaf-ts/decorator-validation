@@ -9,5 +9,3 @@
 #include "./workdocs/6-Related.md"
 
 #include "./workdocs/7-Social.md"
-
-#include "./workdocs/99-Disclamer.md"

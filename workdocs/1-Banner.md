@@ -9,7 +9,7 @@
 #### Status
 [![Build](https://gitlab.com/glass-project1/wallet/decorator-validation/badges/master/pipeline.svg)](http://www.pdmfc.com)
 
-![coverage](https://gitlab.com/glass-project1/wallet/decorator-validation/badges/main/coverage.svg?job=coverage)
+![coverage](https://gitlab.com/glass-project1/wallet/decorator-validation/badges/master/coverage.svg?job=coverage)
 
 ![Main](https://github.com/TiagoVenceslau/decorator-validation/actions/workflows/main.yml/badge.svg)
 ![Docs](https://github.com/TiagoVenceslau/decorator-validation/actions/workflows/docs.yml/badge.svg)
