@@ -1,6 +1,6 @@
 name: Pages builder
 on:
-  tags:
+  workflow_dispatch: # on button click
   push:
     paths:
       - workdocs/**
