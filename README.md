@@ -9,7 +9,7 @@
 #### Status
 [![Build](https://gitlab.com/glass-project1/wallet/decorator-validation/badges/master/pipeline.svg)](http://www.pdmfc.com)
 
-![coverage](https://gitlab.com/glass-project1/wallet/decorator-validation/badges/main/coverage.svg?job=coverage)
+![coverage](https://gitlab.com/glass-project1/wallet/decorator-validation/badges/master/coverage.svg?job=coverage)
 
 ![Main](https://github.com/TiagoVenceslau/decorator-validation/actions/workflows/main.yml/badge.svg)
 ![Docs](https://github.com/TiagoVenceslau/decorator-validation/actions/workflows/docs.yml/badge.svg)
@@ -85,8 +85,4 @@ decorator-validation
 
 ### Social
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://pt.linkedin.com/company/pdmfc)
-
-#### Disclaimer:
-
-![Disclamer](https://static.wixstatic.com/media/2844e6_69acaab42d5a47c9a20a187b384741ef~mv2.png/v1/fill/w_531,h_65,al_c,q_85,usm_0.66_1.00_0.01/2021-01-21_11-27-05_edited.webp)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://pt.linkedin.com/in/tiagovenceslau)
