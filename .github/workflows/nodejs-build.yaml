@@ -4,6 +4,9 @@ on:
   workflow_dispatch: # on button click
   push:
     branches: [ master, main ]
+    paths:
+      - src/**
+      - tests/**
   pull_request:
     branches: [ master, main ]
 
