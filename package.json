@@ -1,6 +1,6 @@
 {
   "name": "@tvenceslau/decorator-validation",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Simple decorator based validation engine",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
