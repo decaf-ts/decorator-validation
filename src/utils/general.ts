@@ -108,6 +108,7 @@ export function isEqual(a: any, b: any,...propsToIgnore: string[]): boolean {
     if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
     if (!a || !b || (typeof a !== 'object' && typeof b !== 'object')) return a === b;
     if (a === null || a === undefined || b === null || b === undefined) return false;
+    if (typeof a !== typeof b) return false;
     if (a.prototype !== b.prototype) return false;
     let keys = Object.keys(a).filter(k => propsToIgnore.indexOf(k) === -1);
     if (keys.length !== Object.keys(b).filter(k => propsToIgnore.indexOf(k) === -1).length) return false;

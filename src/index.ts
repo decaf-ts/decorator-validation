@@ -3,11 +3,13 @@
  */
 
 /**
+ * @summary Defines the Model object
  * @namespace Model
  * @memberOf module:decorator-validation
  */
 
 /**
+ * @summary Holds all the supported decorators
  * @namespace Decorators
  * @memberOf module:decorator-validation
  */
