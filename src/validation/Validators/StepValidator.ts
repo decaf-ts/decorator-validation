@@ -1,21 +1,24 @@
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Validator} from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
 import {Errors} from "../types";
 
 /**
- * Step Validator
+ * @summary Step Validator
+ *
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#STEP}
  *
  * @class StepValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class StepValidator extends Validator {
+export class StepValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP){
-        super(ValidationKeys.STEP, message, "number");
+        super(ValidationKeys.STEP, message, "number", "string");
     }
 
     /**
+     * @summary Validates a model
      *
      * @param {string} value
      * @param {number} step
@@ -23,14 +26,13 @@ export default class StepValidator extends Validator {
      *
      * @return Errors
      *
-     * @memberOf StepValidator
      * @override
      *
      * @see Validator#hasErrors
      */
-    public hasErrors(value: number, step: number, message?: string): Errors {
+    public hasErrors(value: number | string, step: number | string, message?: string): Errors {
         if (value === undefined)
             return;
-        return value % step !== 0 ? this.getMessage(message || this.message, step) : undefined;
+        return Number(value) % Number(step) !== 0 ? this.getMessage(message || this.message, step) : undefined;
     }
 }

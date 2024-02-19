@@ -1,21 +1,24 @@
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Validator} from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
 import {Errors} from "../types";
 
 /**
- * Date Validator
+ * @summary Date Validator
+ *
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#DATE}
  *
  * @class DateValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class DateValidator extends Validator {
+export class DateValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.DATE){
         super(ValidationKeys.DATE, message, Number.name, Date.name, String.name);
     }
 
     /**
+     * @summary Validates a model
      *
      * @param {Date | string} value
      * @param {string} format
@@ -23,7 +26,6 @@ export default class DateValidator extends Validator {
      *
      * @return Errors
      *
-     * @memberOf DateValidator
      * @override
      *
      * @see Validator#hasErrors

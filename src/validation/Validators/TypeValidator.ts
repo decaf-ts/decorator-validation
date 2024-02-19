@@ -1,31 +1,30 @@
-import Validator from "./Validator";
-import {DEFAULT_ERROR_MESSAGES} from "../constants";
 import {Errors} from "../types";
-import {ModelKeys} from "../../model";
+import {Validator} from "./Validator";
 import {evaluateDesignTypes} from "../../utils";
+import {DEFAULT_ERROR_MESSAGES} from "./constants";
+import {ModelKeys} from "../../utils/constants";
 
 /**
- * Required Validator
+ * @summary Required Validator
  *
  * @class RequiredValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class TypeValidator extends Validator {
+export class TypeValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.TYPE){
         super(ModelKeys.TYPE, message);
     }
 
     /**
-     *
+     * @summary Validates a model
      * @param {string} value
      * @param {string | string[] | {name: string}} types
      * @param {string} [message]
      *
      * @return Errors
      *
-     * @memberOf StepValidator
      * @override
      *
      * @see Validator#hasErrors

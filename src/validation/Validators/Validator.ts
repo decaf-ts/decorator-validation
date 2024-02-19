@@ -1,30 +1,24 @@
-import {stringFormat} from "../../utils/utils";
+import {checkTypes, ModelKeys, stringFormat} from "../../utils";
 import {Errors} from "../types";
-import {DEFAULT_ERROR_MESSAGES} from "../constants";
-import {checkTypes} from "../../utils/utils";
+import {DEFAULT_ERROR_MESSAGES} from "./constants";
 
 /**
- * Base Implementation for Validators
+ * @summary Base Implementation for Validators
+ * @description Provides the underlying functionality for {@link Validator}s
+ *
+ * @param {string} validationKey the key to register the validator under
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#DEFAULT}
+ * @param {string[]} [acceptedTypes] defines the value types this validator can validate
  *
  * @class Validator
  * @abstract
- * @extends Validator
- *
  * @category Validators
  */
-export default abstract class Validator{
+export abstract class Validator{
     readonly validationKey: string;
     readonly message: string;
     readonly acceptedTypes?: string[];
 
-    /**
-     *
-     * @param {string} validationKey
-     * @param {string} [message]
-     * @param {string[]} [acceptedTypes]
-     * @protected
-     * @constructor
-     */
     protected constructor(validationKey: string, message: string = DEFAULT_ERROR_MESSAGES.DEFAULT, ...acceptedTypes: string[])  {
         this.validationKey = validationKey;
         this.message = message;
@@ -36,23 +30,19 @@ export default abstract class Validator{
     }
 
     /**
-     *
+     * @summary builds the error message
      * @param {string} message
      * @param {any[]} args
      * @protected
-     *
-     * @memberOf Validator
      */
     protected getMessage(message: string, ...args: any[]){
         return stringFormat(message, ...args);
     }
 
     /**
-     *
+     * @summary Validates type
      * @param {any} unbound
      * @private
-     *
-     * @memberOf Validator
      */
     private checkTypeAndHasErrors(unbound: (value: string, ...args: any[]) => Errors){
         return function(this: Validator, value: any, ...args: any[]): Errors {
@@ -65,12 +55,11 @@ export default abstract class Validator{
     }
 
     /**
-     *
+     * @summary Validates an attribute
      * @param {any} value
      * @param {any[]} args
      *
      * @abstract
-     * @memberOf validator
      *
      * @see Model#hasErrors
      */

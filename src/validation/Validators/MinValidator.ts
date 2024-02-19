@@ -1,21 +1,24 @@
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Validator} from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
 import {Errors} from "../types";
 
 /**
- * Min Validator
+ * @summary Min Validator
+ *
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#MIN}
  *
  * @class MinValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class MinValidator extends Validator {
+export class MinValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN){
-        super(ValidationKeys.MIN, message, "number", "Date")
+        super(ValidationKeys.MIN, message, "number", "Date", "string")
     }
 
     /**
+     * @summary Validates Model
      *
      * @param {string} value
      * @param {number | Date | string} min
@@ -23,12 +26,11 @@ export default class MinValidator extends Validator {
      *
      * @return Errors
      *
-     * @memberOf MinValidator
      * @override
      *
      * @see Validator#hasErrors
      */
-    public hasErrors(value: number | Date, min: number | Date | string, message?: string): Errors {
+    public hasErrors(value: number | Date | string, min: number | Date | string, message?: string): Errors {
         if (value === undefined)
             return;
 

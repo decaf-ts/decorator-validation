@@ -1,33 +1,41 @@
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Validator} from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
 import {Errors} from "../types";
 
 /**
- * Required Validator
+ * @summary Required Validator
+ *
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#REQUIRED}
  *
  * @class RequiredValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class RequiredValidator extends Validator {
+export class RequiredValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED){
         super(ValidationKeys.REQUIRED, message)
     }
 
     /**
+     * @summary Validates a model
      *
      * @param {string} value
      * @param {string} [message]
      *
      * @return Errors
      *
-     * @memberOf RequiredValidator
      * @override
      *
      * @see Validator#hasErrors
      */
     public hasErrors(value: any, message?: string): Errors {
-        return !value ? this.getMessage(message || this.message) : undefined;
+        switch (typeof value){
+            case "boolean":
+            case "number":
+                return typeof value === 'undefined' ? this.getMessage(message || this.message) : undefined;
+            default:
+                return !value ? this.getMessage(message || this.message) : undefined;
+        }
     }
 }

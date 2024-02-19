@@ -1,22 +1,31 @@
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Validator} from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
 import {Errors} from "../types";
 
 /**
- * Pattern Validator
+ * @summary Pattern Validator
+ *
+ * @param {string} [key] defaults to {@link ValidationKeys#PATTERN}
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#PATTERN}
  *
  * @class PatternValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class PatternValidator extends Validator {
+export class PatternValidator extends Validator {
     private static readonly regexpParser: RegExp = new RegExp("^\/(.+)\/([gimus]*)$");
 
     constructor(key: string = ValidationKeys.PATTERN, message: string = DEFAULT_ERROR_MESSAGES.PATTERN){
         super(key, message, "string");
     }
 
+    /**
+     * @summary parses and validates a pattern
+     *
+     * @param {string} pattern
+     * @private
+     */
     private static getPattern(pattern: string): RegExp {
         if (!PatternValidator.regexpParser.test(pattern))
             return new RegExp(pattern);
@@ -25,6 +34,7 @@ export default class PatternValidator extends Validator {
     }
 
     /**
+     * @summary Validates a Model
      *
      * @param {string} value
      * @param {RegExp | string} pattern
@@ -32,7 +42,6 @@ export default class PatternValidator extends Validator {
      *
      * @return Errors
      *
-     * @memberOf PatternValidator
      * @override
      *
      * @see Validator#hasErrors
@@ -41,6 +50,7 @@ export default class PatternValidator extends Validator {
         if (!value)
             return;
         pattern = typeof pattern === 'string' ? PatternValidator.getPattern(pattern) : pattern;
+        pattern.lastIndex = 0; // resets pattern position for repeat validation requests
         return !pattern.test(value) ? this.getMessage(message || this.message) : undefined;
     }
 }

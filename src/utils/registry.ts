@@ -1,62 +1,73 @@
+import {Constructor} from "../model/types";
+
 /**
- * Basic Registry Interface
- * @typedef T
- * @interface IRegistry<T>
+ * @summary Basic interface for Registries
  *
+ * @interface IRegistry
+ *
+ * @category Utilities
  */
 export interface IRegistry<T>{
     /**
-     * Registers an Object
+     * @summary Registers an Object
      *
      * @param {T} obj
      * @param {any[]} args
+     *
+     * @method
      */
-    register(obj: T, ...args: any[]): void;
+    register(obj: T | any, ...args: any[]): void;
 
     /**
-     * Retrieves an Object if it can find it
+     * @summary Retrieves an Object if it can find it
      *
      * @param {any} key
      * @param {any[]} args
      * @return {T | undefined}
+     *
+     * @method
      */
     get(key: any, ...args: any[]): T | undefined;
 }
 
 /**
- * Basic Builder Registry Interface
+ * @summary Basic Builder Registry Interface
  *
  * @typedef T
  * @interface BuilderRegistry<T>
  *
+ * @category Construction
  */
-export interface BuilderRegistry<T>{
+export interface BuilderRegistry<T> extends IRegistry<Constructor<T>>{
     /**
-     * Retrieves an Builder Object by name if it can
+     * @summary Retrieves an Builder Object by name if it can
      *
      * @param {string} name
      * @param {any[]} args
-     * @memberOf BuilderRegistry
-     */
-    get(name: string, ...args: any[]): {new(): T} | undefined;
-
-    /**
-     * Registers a constructor by name
      *
-     * @param {name} name
-     * @param {any} constructor
-     * @param {any[]} args
-     * @memberOf BuilderRegistry
+     * @method
      */
-    register(name: string, constructor: any, ...args: any[]): void;
+    get(name: string, ...args: any[]): Constructor<T> | undefined;
 
     /**
-     * Builds an Object by name
+     * @summary Registers a constructor by name
+     *
+     * @param {Constructor<T>} [constructor]
+     * @param {name} name
+     * @param {any[]} args
+     *
+     * @method
+     */
+    register(constructor: Constructor<T>, name?: string, ...args: any[]): void;
+
+    /**
+     * @summary Builds an Object by name
      *
      * @param {{}} obj
      * @param {any[]} args
      * @return T
-     * @memberOf BuilderRegistry
+     *
+     * @method
      */
-    build(obj: {[indexer: string]: any}, ...args: any[]): T;
+    build(obj: Record<string, any> | T, ...args: any[]): T;
 }

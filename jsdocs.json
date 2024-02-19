@@ -29,12 +29,12 @@
             "hideGenerator": true,
             "navLinks": [
                 {
-                    "label": "Github Repository",
-                    "href": "https://github.com/TiagoVenceslau/decorator-validation#readme"
+                    "label": "Test Results",
+                    "href": "coverage"
                 },
                 {
-                    "label": "Github Profile",
-                    "href": "https://github.com/TiagoVenceslau"
+                    "label": "Gitlab Repository",
+                    "href": "https://github.com/TiagoVenceslau/decorator-validation#readme"
                 }
             ]
         },
@@ -49,6 +49,6 @@
         "readme": "./README.md",
         "recurse": true,
         "verbose": true,
-        "tutorials": "./tests"
+        "tutorials": "./workdocs/tutorials"
     }
 }

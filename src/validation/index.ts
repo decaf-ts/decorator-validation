@@ -1,19 +1,17 @@
+
+
+export * from './types';
+export * from './Validators';
+
+import {ValidatorRegistry} from './Validators';
 /**
- * @namespace decorator-validation.validation
- * @memberOf decorator-validation
+ * @summary exports the Validator Registry
+ * @constant ValidatorRegistryImp
+ * @memberOf module:decorator-validation.Validation
+ * @category Validation
  */
+export const ValidatorRegistryImp = ValidatorRegistry;
 
 export * as Decorators from './decorators';
 export * from './decorators';
-export * from './types';
-export * from './validation';
-export * from './constants';
-export * as Validators from './Validators';
-export * from './Validators';
-import {ValidatorRegistry} from './ValidatorRegistry';
-
-/**
- * @constant ValidatorRegistryImp
- * @memberOf decorator-validation.validation
- */
-export const ValidatorRegistryImp = ValidatorRegistry;
+export * from './Validation'

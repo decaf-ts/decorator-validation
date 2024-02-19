@@ -1,21 +1,24 @@
-import Validator from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "../constants";
+import {Validator} from "./Validator";
+import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
 import {Errors} from "../types";
 
 /**
- * Max Validator
+ * @summary Max Validator
+ *
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#MAX}
  *
  * @class MaxValidator
  * @extends Validator
  *
  * @category Validators
  */
-export default class MaxValidator extends Validator {
+export class MaxValidator extends Validator {
     constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX){
-        super(ValidationKeys.MAX, message, "number", "Date");
+        super(ValidationKeys.MAX, message, "number", "Date", "string");
     }
 
     /**
+     * @summary Validates a Model
      *
      * @param {string} value
      * @param {number | Date | string} max
@@ -23,14 +26,14 @@ export default class MaxValidator extends Validator {
      *
      * @return Errors
      *
-     * @memberOf MaxValidator
      * @override
      *
      * @see Validator#hasErrors
      */
-    public hasErrors(value: number | Date, max: number | Date | string, message?: string): Errors {
+    public hasErrors(value: number | Date | string, max: number | Date | string, message?: string): Errors {
         if (value === undefined)
             return;
+
         if (value instanceof Date && !(max instanceof Date)){
             max = new Date(max);
             if (isNaN(max.getDate()))

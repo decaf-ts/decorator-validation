@@ -1,17 +1,53 @@
-/**
- * @namespace decorator-validation.validation.validators
- * @memberOf decorator-validation.validation
- */
 
-export * as Validator from './Validator';
-export * as EmailValidator from './EmailValidator';
-export * as RequiredValidator from './RequiredValidator';
-export * as MaxLengthValidator from './MaxLengthValidator';
-export * as MaxValidator from './MaxValidator';
-export * as MinLengthValidator from './MinLengthValidator';
-export * as MinValidator from './MinValidator';
-export * as PatternValidator from './PatternValidator';
-export * as URLValidator from './URLValidator';
-export * as StepValidator from './StepValidator';
-export * as DateValidator from './DateValidator';
-export * as TypeValidator from './TypeValidator';
+import {DateValidator} from "./DateValidator";
+import {TypeValidator} from "./TypeValidator";
+import {PasswordValidator} from "./PasswordValidator";
+import {StepValidator} from "./StepValidator";
+import {URLValidator} from "./URLValidator";
+import {PatternValidator} from "./PatternValidator";
+import {MinValidator} from "./MinValidator";
+import {MinLengthValidator} from "./MinLengthValidator";
+import {MaxValidator} from "./MaxValidator";
+import {MaxLengthValidator} from "./MaxLengthValidator";
+import {RequiredValidator} from "./RequiredValidator";
+import {EmailValidator} from "./EmailValidator";
+import {ListValidator} from "./ListValidator";
+import {Validator} from "./Validator";
+
+export * from './constants';
+export * from './Validator';
+export * from "./types";
+export * from './ValidatorRegistry';
+export * from './EmailValidator';
+export * from './RequiredValidator';
+export * from './MaxLengthValidator';
+export * from './MaxValidator';
+export * from './MinLengthValidator';
+export * from './MinValidator';
+export * from './PatternValidator';
+export * from './URLValidator';
+export * from './StepValidator';
+export * from './DateValidator';
+export * from './TypeValidator';
+export * from './PasswordValidator';
+/**
+ * @summary constant holding all {@link Validator}s
+ * @constant Validators
+ * @memberOf module:decorator-validation.Validation.Validators
+ * @category Validation
+ */
+export const Validators = {
+    EmailValidator,
+    RequiredValidator,
+    MaxLengthValidator,
+    MaxValidator,
+    MinLengthValidator,
+    MinValidator,
+    PatternValidator,
+    URLValidator,
+    StepValidator,
+    DateValidator,
+    TypeValidator,
+    PasswordValidator,
+    ListValidator
+}

@@ -1,9 +1,11 @@
+/tests/web/bundles/
+# Created by https://www.toptal.com/developers/gitignore/api/webstorm+all,vim,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=webstorm+all,vim,node
 
 /lib
 /dist
-
-# Created by https://www.toptal.com/developers/gitignore/api/webstorm+all,vim,node
-# Edit at https://www.toptal.com/developers/gitignore?templates=webstorm+all,vim,node
+/docs
+/workdocs/badges
 
 ### Node ###
 # Logs

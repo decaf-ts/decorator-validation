@@ -1,19 +1,19 @@
-/**
- * Can be changed for localization purposes
- *
- * @constant MONTH_NAMES
- */
-export const MONTH_NAMES = [
-    "January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"
-];
 
 /**
- * Can be changed for localization purposes
+ * @summary Defines the various Model keys used for reflection
  *
- * @constant DAYS_OF_WEEK_NAMES
+ * @property {string} REFLECT prefix to all other keys
+ * @property {string} TYPE type key
+ * @property {string} MODEL model key
+ * @property {string} ANCHOR anchor key. will serve as a ghost property in the model
+ *
+ * @constant ModelKeys
+ * @memberOf module:decorator-validation.Model
+ * @category Model
  */
-export const DAYS_OF_WEEK_NAMES = [
-    "Sunday", "Monday", "Tuesday",
-    "Wednesday", "Thursday", "Friday", "Saturday"
-];
+export enum ModelKeys  {
+    REFLECT = 'model.definition.',
+    TYPE = 'design:type',
+    MODEL = 'model',
+    ANCHOR = '__modelDefinition'
+}
