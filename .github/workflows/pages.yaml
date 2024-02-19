@@ -24,8 +24,11 @@ jobs:
       - name: Setup Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire docs folder
-          path: './docs'
+          name: docs
+          path: docs
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3
+        with:
+          name: docs
+          path: docs
