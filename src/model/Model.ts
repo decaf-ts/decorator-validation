@@ -80,7 +80,7 @@ export function validate<T extends Model>(obj: T, ...propsToIgnore: string[]) : 
                 let err: Errors;
                 // if a nested Model
                 const allDecorators = getPropertyDecorators(ValidationKeys.REFLECT, obj, prop).decorators
-                const decorators = getPropertyDecorators(ValidationKeys.REFLECT, obj, prop).decorators.filter(d => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1);
+                const decorators = allDecorators.filter(d => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1);
                 if (!decorators || !decorators.length)
                     return acc;
                 const dec = decorators.pop() as DecoratorMetadata;
