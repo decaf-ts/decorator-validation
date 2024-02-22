@@ -1,6 +1,5 @@
 import {constructFromObject, isModel, model, Model} from "../../src";
-import {HashingFunction, setHashingFunction} from "../../src";
-import {getHashingFunction} from "../../src";
+import {HashingFunction} from "../../src";
 
 @model()
 class TestModel extends Model {
@@ -16,7 +15,7 @@ class TestModel extends Model {
 describe('Hashing methods', function() {
     it('hashes a string', function() {
         const testString = "this is test string";
-        const h = getHashingFunction()(testString);
+        const h = Model.hash(testString);
         expect(h).toBe(1579028267);
     });
 
@@ -37,7 +36,7 @@ describe('Hashing methods', function() {
             arr: otherDummyArr
         }
 
-        const h = getHashingFunction()(obj);
+        const h = Model.hash(obj);
 
         expect(h).toBe(1603681539);
     });
@@ -47,7 +46,7 @@ describe('Hashing methods', function() {
             return "AAAA"
         };
 
-        setHashingFunction(func);
+        Model.setHashingFunction(func);
 
         const d = new Date(Date.UTC(2021,1,1));
         const dummyObj = {key: 1};
@@ -65,7 +64,7 @@ describe('Hashing methods', function() {
             arr: otherDummyArr
         }
 
-        const h = getHashingFunction()(obj);
+        const h = Model.hash(obj);
         expect(typeof h).toBe("string")
         expect(h).toBe("AAAA");
     })

@@ -37,7 +37,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T>{
     /**
      * @summary register new Models
      * @param {any} constructor
-     * @param {string} [name] when not defined, the name of he construcor will be used
+     * @param {string} [name] when not defined, the name of the constructor will be used
      */
   register(constructor: ModelConstructor<T>, name?: string): void {
       if (typeof constructor !== 'function')

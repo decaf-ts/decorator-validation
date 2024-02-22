@@ -3,12 +3,11 @@ import {
     Errors,
     ModelErrors,
     ValidationKeys,
-    ValidationPropertyDecoratorDefinition, Validator
+    ValidationPropertyDecoratorDefinition
 } from "../validation";
 import {
     BuilderRegistry,
-    getHashingFunction,
-    getPropertyDecorators,
+    getPropertyDecorators, HashingFunction, hashObj,
     isEqual, JSONSerializer,
     Serializer,
     stringFormat
@@ -134,6 +133,7 @@ export function validate<T extends Model>(obj: T, ...propsToIgnore: string[]) : 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
 let serializer: Serializer<any>;
+let hashingFunction: any;
 
 /**
  * @summary Abstract class representing a Validatable Model object
@@ -200,7 +200,7 @@ export abstract class Model implements Validatable, Serializable {
      * @summary Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
      */
     public toHash(): string{
-        return getHashingFunction()(this).toString();
+        return Model.getHashingFunction()(this).toString();
     }
 
     /**
@@ -221,10 +221,24 @@ export abstract class Model implements Validatable, Serializable {
         return Model.getSerializer().serialize(model);
     }
 
+    static hash(obj: any): string {
+        return Model.getHashingFunction()(obj);
+    }
+
+    /**
+     * @summary Wrapper around {@link constructFromObject}
+     * @param {T} self
+     * @param {T | Record<string, any>} obj
+     */
     static fromObject<T extends Model>(self: T, obj?: T | Record<string, any>): T{
         return constructFromObject<T>(self, obj);
     }
 
+    /**
+     * @summary Wrapper around {@link constructFromModel}
+     * @param {T} self
+     * @param {T | Record<string, any>} obj
+     */
     static fromModel<T extends Model>(self: T, obj?: T | Record<string, any>): T{
         return constructFromModel<T>(self, obj);
     }
@@ -261,15 +275,33 @@ export abstract class Model implements Validatable, Serializable {
     static setRegistry(modelRegistry: BuilderRegistry<any>){
         actingModelRegistry = modelRegistry;
     }
-
+    /**
+     * @summary register new Models
+     * @param {any} constructor
+     * @param {string} [name] when not defined, the name of the constructor will be used
+     *
+     * @see ModelRegistry
+     */
     static register<T extends Model>(constructor: ModelConstructor<T>, name?: string): void{
         return Model.getRegistry().register(constructor, name);
     }
-
+    /**
+     * @summary Gets a registered Model {@link ModelConstructor}
+     * @param {string} name
+     *
+     * @see ModelRegistry
+     */
     static get<T extends Model>(name: string): ModelConstructor<T> | undefined {
         return Model.getRegistry().get(name);
     }
-
+    /**
+     * @param {Record<string, any>} obj
+     * @param {string} [clazz] when provided, it will attempt to find the matching constructor
+     *
+     * @throws Error If clazz is not found, or obj is not a {@link Model} meaning it has no {@link ModelKeys.ANCHOR} property
+     *
+     * @see ModelRegistry
+     */
     static build<T extends Model>(obj: Record<string, any> = {}, clazz?: string): T {
         return Model.getRegistry().build(obj, clazz);
     }
@@ -290,5 +322,23 @@ export abstract class Model implements Validatable, Serializable {
         if (!serializer)
             serializer = new JSONSerializer();
         return serializer;
+    }
+
+    /**
+     * @summary Sets the {@link HashingFunction}
+     *
+     * @param {HashingFunction} hasher
+     */
+    static setHashingFunction(hasher: HashingFunction){
+        hashingFunction = hasher;
+    }
+    /**
+     * @summary Retrieves the current defined {@link HashingFunction}
+     *
+     */
+    private static getHashingFunction(){
+        if (!hashingFunction)
+            hashingFunction = hashObj
+        return hashingFunction;
     }
 }

@@ -235,32 +235,6 @@ export function hashCode(obj: string | number | symbol | Date){
  */
 export type HashingFunction = (value: any) => string | number;
 
-let currentHashingImplementation: HashingFunction | undefined = undefined;
-
-/**
- * @summary Sets the used hashing implementation
- * @param {HashingFunction} func
- *
- * @function setHashingFunction
- * @memberOf module:decorator-validation.Utils.Hashing
- * @category Hashing
- */
-export function setHashingFunction(func: HashingFunction){
-    currentHashingImplementation = func;
-}
-
-/**
- * @summary Retrieves the current Hashing implementation. defaults to {@link hashCode}
- *
- * @function getHashingFunction
- * @memberOf module:decorator-validation.Utils.Hashing
- * @category Hashing
- */
-export function getHashingFunction(): HashingFunction{
-    if (!currentHashingImplementation)
-        setHashingFunction(hashObj)
-    return currentHashingImplementation as HashingFunction;
-}
 
 /**
  * @summary Hashes an object serializing it and then hashing the string
