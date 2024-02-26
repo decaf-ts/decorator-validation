@@ -1,4 +1,4 @@
-import {ModelKeys, Model} from "../../lib"; // at least one import is needed so the file is considered a module byt jest
+import {ModelKeys, Model} from "../../src"; // at least one import is needed so the file is considered a module byt jest
 const a = ModelKeys.MODEL
 
 describe("Distribution Tests", () => {

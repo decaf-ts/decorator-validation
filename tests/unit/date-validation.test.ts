@@ -40,7 +40,7 @@ const format = "dd-MM-yyyy";
 
 class TestModelInner extends Model {
 
-    @date(format)
+    @date("dd-MM-yyyy")
     dateProp?: Date = undefined;
 
     constructor(model?: TestModelInner | {}) {
@@ -144,6 +144,8 @@ describe('Date Integration', function() {
         const dm = new TestModelInner({
             dateProp: date
         });
+
+        dm.dateProp = date
 
         expect(dm.dateProp).toBeDefined();
         expect(dm.dateProp?.toString()).toEqual(formatDate(date, "dd-MM-yyyy"));

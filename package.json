@@ -2,8 +2,12 @@
   "name": "@tvenceslau/decorator-validation",
   "version": "2.1.0",
   "description": "Simple decorator based validation engine",
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
+  "type": "module",
+  "exports": {
+    "require": "./lib/index.js",
+    "import": "./lib/esm/index.js"
+  },
+  "main": "lib/index.js",
   "scripts": {
     "build": "rimraf ./lib && rimraf ./dist && gulp dev",
     "build:prod": "rimraf ./lib && rimraf ./dist && gulp prod",

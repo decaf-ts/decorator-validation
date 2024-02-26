@@ -330,8 +330,17 @@ export function bindDateToString(date: Date | undefined, format: string){
     if (!date)
         return;
     const func = () => formatDate(date, format);
-    date.toISOString = func;
-    date.toString = func;
+    Object.defineProperty(date, "toISOString", {
+        enumerable: false,
+        configurable: false,
+        value: func
+    })
+    Object.defineProperty(date, "toString", {
+        enumerable: false,
+        configurable: false,
+        value: func
+    })
+
     return date;
 }
 /**
@@ -527,6 +536,10 @@ export function date(format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
                         }
                     });
                 this[propertyKey] = newValue;
+            },
+            get(){
+                console.log("here")
+
             }
         });
     }
