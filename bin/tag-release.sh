@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 function ask_yes_or_no(){
     # Test if there are enough arguments
@@ -43,12 +43,8 @@ function ask(){
     echo "$real_answer"
 }
 
-
-echo "Setting node to 14"
-nvm use 14
-
 echo "Listing existing tags..."
-git tag --sort=taggerdate
+git tag --sort=-taggerdate | head -n 5
 
 TAG=""
 
