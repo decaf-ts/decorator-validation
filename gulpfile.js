@@ -91,8 +91,10 @@ function exportDefault(isDev, mode){
         function createLib(){
             const tsProject = createProject('tsconfig.json', {
                 module: mode,
-                declaration: true,                         /* Generates corresponding '.d.ts' file. */
-                declarationMap: true
+                declaration: true,
+                declarationMap: true,
+                emitDeclarationOnly: false,
+                isolatedModules: false
             });
 
             const stream =  src('./src/**/*.ts')
