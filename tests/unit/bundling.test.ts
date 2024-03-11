@@ -4,7 +4,7 @@ const a = ModelKeys.MODEL
 describe("Distribution Tests", () => {
     it ("reads lib", () => {
         try {
-            const {ValidationKeys} = require("../../lib");
+            const {ValidationKeys} = require("../../lib/index.cjs");
             expect(ValidationKeys).toBeDefined();
         } catch (e) {
             expect(e).toBeUndefined();
