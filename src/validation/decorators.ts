@@ -1,31 +1,31 @@
 import "reflect-metadata";
 import {
-    ValidationKeys,
-    DEFAULT_ERROR_MESSAGES,
-    PasswordPatterns,
-    ValidatorDefinition,
-    MONTH_NAMES,
-    DAYS_OF_WEEK_NAMES
+  ValidationKeys,
+  DEFAULT_ERROR_MESSAGES,
+  PasswordPatterns,
+  ValidatorDefinition,
+  MONTH_NAMES,
+  DAYS_OF_WEEK_NAMES,
 } from "./Validators";
 import {
-    DateValidator,
-    EmailValidator,
-    MaxLengthValidator,
-    MaxValidator,
-    MinLengthValidator,
-    MinValidator,
-    PasswordValidator,
-    PatternValidator,
-    RequiredValidator,
-    StepValidator,
-    TypeValidator,
-    URLValidator,
-    Validator
-} from './Validators';
-import {dateFromFormat, stringFormat} from "../utils";
-import {Constructor, ModelConstructor} from "../model";
-import {ListValidator} from "./Validators/ListValidator";
-import {Validation} from "./Validation";
+  DateValidator,
+  EmailValidator,
+  MaxLengthValidator,
+  MaxValidator,
+  MinLengthValidator,
+  MinValidator,
+  PasswordValidator,
+  PatternValidator,
+  RequiredValidator,
+  StepValidator,
+  TypeValidator,
+  URLValidator,
+  Validator,
+} from "./Validators";
+import { dateFromFormat, stringFormat } from "../utils";
+import { Constructor, ModelConstructor } from "../model";
+import { ListValidator } from "./Validators/ListValidator";
+import { Validation } from "./Validation";
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -38,7 +38,7 @@ import {Validation} from "./Validation";
  * @category Utilities
  */
 export function getValidationKey(key: string) {
-    return ValidationKeys.REFLECT + key;
+  return ValidationKeys.REFLECT + key;
 }
 
 /**
@@ -52,22 +52,25 @@ export function getValidationKey(key: string) {
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, validator: Constructor<Validator> = RequiredValidator) {
-    return (target: any, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.REQUIRED),
-            {
-                message: message
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({
-            validator: validator,
-            validationKey: ValidationKeys.REQUIRED,
-            save: true
-        } as ValidatorDefinition);
-    }
+export function required(
+  message: string = DEFAULT_ERROR_MESSAGES.REQUIRED,
+  validator: Constructor<Validator> = RequiredValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.REQUIRED),
+      {
+        message: message,
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.REQUIRED,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -82,20 +85,28 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED, vali
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function min(value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MIN, validator: Constructor<Validator> = MinValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.MIN),
-            {
-                value: value,
-                message: message,
-                types: [Number.name, Date.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.MIN, save:true} as ValidatorDefinition);
-    }
+export function min(
+  value: number | Date | string,
+  message: string = DEFAULT_ERROR_MESSAGES.MIN,
+  validator: Constructor<Validator> = MinValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.MIN),
+      {
+        value: value,
+        message: message,
+        types: [Number.name, Date.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.MIN,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -110,21 +121,29 @@ export function min(value: number | Date | string, message: string = DEFAULT_ERR
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function max(value: number | Date | string, message: string = DEFAULT_ERROR_MESSAGES.MAX, validator: Constructor<Validator> = MaxValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.MAX),
-            {
-                value: value,
-                message: message,
-                types: [Number.name, Date.name]
-            },
-            target,
-            propertyKey
-        );
+export function max(
+  value: number | Date | string,
+  message: string = DEFAULT_ERROR_MESSAGES.MAX,
+  validator: Constructor<Validator> = MaxValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.MAX),
+      {
+        value: value,
+        message: message,
+        types: [Number.name, Date.name],
+      },
+      target,
+      propertyKey,
+    );
 
-        Validation.register({validator: validator, validationKey: ValidationKeys.MAX, save:true} as ValidatorDefinition);
-    }
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.MAX,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -139,21 +158,29 @@ export function max(value: number | Date | string, message: string = DEFAULT_ERR
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function step(value: number, message: string = DEFAULT_ERROR_MESSAGES.STEP, validator: Constructor<Validator> = StepValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.STEP),
-            {
-                value: value,
-                message: message,
-                types: [Number.name]
-            },
-            target,
-            propertyKey
-        );
+export function step(
+  value: number,
+  message: string = DEFAULT_ERROR_MESSAGES.STEP,
+  validator: Constructor<Validator> = StepValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.STEP),
+      {
+        value: value,
+        message: message,
+        types: [Number.name],
+      },
+      target,
+      propertyKey,
+    );
 
-        Validation.register({validator: validator, validationKey: ValidationKeys.STEP, save:true} as ValidatorDefinition);
-    }
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.STEP,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -168,20 +195,28 @@ export function step(value: number, message: string = DEFAULT_ERROR_MESSAGES.STE
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function minlength(value: number, message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH, validator: Constructor<Validator> = MinLengthValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.MIN_LENGTH),
-            {
-                value: value,
-                message: message,
-                types: [String.name, Array.name, Set.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.MIN_LENGTH, save:true} as ValidatorDefinition);
-    }
+export function minlength(
+  value: number,
+  message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH,
+  validator: Constructor<Validator> = MinLengthValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.MIN_LENGTH),
+      {
+        value: value,
+        message: message,
+        types: [String.name, Array.name, Set.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.MIN_LENGTH,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -196,20 +231,28 @@ export function minlength(value: number, message: string = DEFAULT_ERROR_MESSAGE
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function maxlength(value: number, message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH, validator: Constructor<Validator> = MaxLengthValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.MAX_LENGTH),
-            {
-                value: value,
-                message: message,
-                types: [String.name, Array.name, Set.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.MAX_LENGTH, save:true} as ValidatorDefinition);
-    }
+export function maxlength(
+  value: number,
+  message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH,
+  validator: Constructor<Validator> = MaxLengthValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.MAX_LENGTH),
+      {
+        value: value,
+        message: message,
+        types: [String.name, Array.name, Set.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.MAX_LENGTH,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -224,20 +267,28 @@ export function maxlength(value: number, message: string = DEFAULT_ERROR_MESSAGE
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function pattern(value: RegExp | string, message: string = DEFAULT_ERROR_MESSAGES.PATTERN, validator: Constructor<Validator> = PatternValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.PATTERN),
-            {
-                value: typeof value === 'string' ? value : value.toString(),
-                message: message,
-                types: [String.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.PATTERN, save:true} as ValidatorDefinition);
-    }
+export function pattern(
+  value: RegExp | string,
+  message: string = DEFAULT_ERROR_MESSAGES.PATTERN,
+  validator: Constructor<Validator> = PatternValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.PATTERN),
+      {
+        value: typeof value === "string" ? value : value.toString(),
+        message: message,
+        types: [String.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.PATTERN,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -251,19 +302,26 @@ export function pattern(value: RegExp | string, message: string = DEFAULT_ERROR_
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator: Constructor<Validator> = EmailValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.EMAIL),
-            {
-                message: message,
-                types: [String.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.EMAIL, save:true} as ValidatorDefinition);
-    }
+export function email(
+  message: string = DEFAULT_ERROR_MESSAGES.EMAIL,
+  validator: Constructor<Validator> = EmailValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.EMAIL),
+      {
+        message: message,
+        types: [String.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.EMAIL,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -277,19 +335,26 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL, validator:
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function url(message: string = DEFAULT_ERROR_MESSAGES.URL, validator: Constructor<Validator> = URLValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.URL),
-            {
-                message: message,
-                types: [String.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.URL, save:true} as ValidatorDefinition);
-    }
+export function url(
+  message: string = DEFAULT_ERROR_MESSAGES.URL,
+  validator: Constructor<Validator> = URLValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.URL),
+      {
+        message: message,
+        types: [String.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.URL,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -304,19 +369,27 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL, validator: Con
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function type(types: string[] | string, message: string = DEFAULT_ERROR_MESSAGES.TYPE, validator: Constructor<Validator> = TypeValidator) {
-    return (target: Object, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.TYPE),
-            {
-                customTypes: types,
-                message: message
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.TYPE, save:true} as ValidatorDefinition);
-    }
+export function type(
+  types: string[] | string,
+  message: string = DEFAULT_ERROR_MESSAGES.TYPE,
+  validator: Constructor<Validator> = TypeValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.TYPE),
+      {
+        customTypes: types,
+        message: message,
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.TYPE,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -326,23 +399,23 @@ export function type(types: string[] | string, message: string = DEFAULT_ERROR_M
  * @memberOf module:decorator-validation.Utils.Format
  * @category Utilities
  */
-export function bindDateToString(date: Date | undefined, format: string){
-    if (!date)
-        return;
-    const func = () => formatDate(date, format);
-    Object.defineProperty(date, "toISOString", {
-        enumerable: false,
-        configurable: false,
-        value: func
-    })
-    Object.defineProperty(date, "toString", {
-        enumerable: false,
-        configurable: false,
-        value: func
-    })
+export function bindDateToString(date: Date | undefined, format: string) {
+  if (!date) return;
+  const func = () => formatDate(date, format);
+  Object.defineProperty(date, "toISOString", {
+    enumerable: false,
+    configurable: false,
+    value: func,
+  });
+  Object.defineProperty(date, "toString", {
+    enumerable: false,
+    configurable: false,
+    value: func,
+  });
 
-    return date;
+  return date;
 }
+
 /**
  * @summary Helper function to be used instead of instanceOf Date
  * @param date
@@ -350,7 +423,11 @@ export function bindDateToString(date: Date | undefined, format: string){
  * @category Validation
  */
 export function isValidDate(date: any): boolean {
-    return date && Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date);
+  return (
+    date &&
+    Object.prototype.toString.call(date) === "[object Date]" &&
+    !isNaN(date)
+  );
 }
 
 /**
@@ -364,9 +441,8 @@ export function isValidDate(date: any): boolean {
  * @category Format
  */
 export function twoDigitPad(num: number): string {
-    return num < 10 ? "0" + num : num.toString();
+  return num < 10 ? "0" + num : num.toString();
 }
-
 
 /**
  * @summary Date Format Handling
@@ -396,54 +472,54 @@ export function twoDigitPad(num: number): string {
  * @memberOf module:decorator-validation.Utils.Dates
  * @category Format
  */
-export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
-    const day: number = date.getDate(),
-        month: number = date.getMonth(),
-        year: number = date.getFullYear(),
-        hour: number = date.getHours(),
-        minute: number = date.getMinutes(),
-        second: number = date.getSeconds(),
-        miliseconds: number = date.getMilliseconds(),
-        h: number = hour % 12,
-        hh: string = twoDigitPad(h),
-        HH: string = twoDigitPad(hour),
-        mm: string = twoDigitPad(minute),
-        ss: string = twoDigitPad(second),
-        aaa: string = hour < 12 ? 'AM' : 'PM',
-        EEEE: string = DAYS_OF_WEEK_NAMES[date.getDay()],
-        EEE: string = EEEE.substr(0, 3),
-        dd: string = twoDigitPad(day),
-        M: number = month + 1,
-        MM: string = twoDigitPad(M),
-        MMMM: string = MONTH_NAMES[month],
-        MMM : string= MMMM.substr(0, 3),
-        yyyy: string = year + "",
-        yy: string = yyyy.substr(2, 2)
-    ;
-    // checks to see if month name will be used
-    patternStr = patternStr
-        .replace('hh', hh).replace('h', h.toString())
-        .replace('HH', HH).replace('H', hour.toString())
-        .replace('mm', mm).replace('m', minute.toString())
-        .replace('ss', ss).replace('s', second.toString())
-        .replace('S', miliseconds.toString())
-        .replace('dd', dd).replace('d', day.toString())
+export function formatDate(date: Date, patternStr: string = "yyyy/MM/dd") {
+  const day: number = date.getDate(),
+    month: number = date.getMonth(),
+    year: number = date.getFullYear(),
+    hour: number = date.getHours(),
+    minute: number = date.getMinutes(),
+    second: number = date.getSeconds(),
+    miliseconds: number = date.getMilliseconds(),
+    h: number = hour % 12,
+    hh: string = twoDigitPad(h),
+    HH: string = twoDigitPad(hour),
+    mm: string = twoDigitPad(minute),
+    ss: string = twoDigitPad(second),
+    aaa: string = hour < 12 ? "AM" : "PM",
+    EEEE: string = DAYS_OF_WEEK_NAMES[date.getDay()],
+    EEE: string = EEEE.substr(0, 3),
+    dd: string = twoDigitPad(day),
+    M: number = month + 1,
+    MM: string = twoDigitPad(M),
+    MMMM: string = MONTH_NAMES[month],
+    MMM: string = MMMM.substr(0, 3),
+    yyyy: string = year + "",
+    yy: string = yyyy.substr(2, 2);
+  // checks to see if month name will be used
+  patternStr = patternStr
+    .replace("hh", hh)
+    .replace("h", h.toString())
+    .replace("HH", HH)
+    .replace("H", hour.toString())
+    .replace("mm", mm)
+    .replace("m", minute.toString())
+    .replace("ss", ss)
+    .replace("s", second.toString())
+    .replace("S", miliseconds.toString())
+    .replace("dd", dd)
+    .replace("d", day.toString())
 
-        .replace('EEEE', EEEE).replace('EEE', EEE)
-        .replace('yyyy', yyyy)
-        .replace('yy', yy)
-        .replace('aaa', aaa);
-    if (patternStr.indexOf('MMM') > -1) {
-        patternStr = patternStr
-            .replace('MMMM', MMMM)
-            .replace('MMM', MMM);
-    }
-    else {
-        patternStr = patternStr
-            .replace('MM', MM)
-            .replace('M', M.toString());
-    }
-    return patternStr;
+    .replace("EEEE", EEEE)
+    .replace("EEE", EEE)
+    .replace("yyyy", yyyy)
+    .replace("yy", yy)
+    .replace("aaa", aaa);
+  if (patternStr.indexOf("MMM") > -1) {
+    patternStr = patternStr.replace("MMMM", MMMM).replace("MMM", MMM);
+  } else {
+    patternStr = patternStr.replace("MM", MM).replace("M", M.toString());
+  }
+  return patternStr;
 }
 
 /**
@@ -453,35 +529,41 @@ export function formatDate(date: Date, patternStr: string = 'yyyy/MM/dd'){
  * @memberOf module:decorator-validation.Utils.Dates
  * @category Format
  */
-export function parseDate(format: string, v?: string | Date | number){
-    let value: Date | undefined = undefined;
+export function parseDate(format: string, v?: string | Date | number) {
+  let value: Date | undefined = undefined;
 
-    if (!v)
-        return undefined;
+  if (!v) return undefined;
 
-    if (v instanceof Date)
-        try {
-            value = dateFromFormat(formatDate(v as Date, format), format);
-        } catch (e: any) {
-            throw new Error(stringFormat(`Could not convert date {0} to format: {1}`, v.toString(), format));
-        }
-
-    else if (typeof v === 'string') {
-        value = dateFromFormat(v, format);
-    } else if (typeof v === 'number'){
-        const d = new Date(v);
-        value = dateFromFormat(formatDate(d, format), format);
-    } else if (isValidDate(v)) {
-        try {
-            const d = new Date(v);
-            value = dateFromFormat(formatDate(d, format), format);
-        }catch (e){
-            throw new Error(stringFormat(`Could not convert date {0} to format: {1}`,  v, format));
-        }
-    } else {
-        throw new Error(`Invalid value provided ${v}`);
+  if (v instanceof Date)
+    try {
+      value = dateFromFormat(formatDate(v as Date, format), format);
+    } catch (e: any) {
+      throw new Error(
+        stringFormat(
+          `Could not convert date {0} to format: {1}`,
+          v.toString(),
+          format,
+        ),
+      );
     }
-    return bindDateToString(value, format);
+  else if (typeof v === "string") {
+    value = dateFromFormat(v, format);
+  } else if (typeof v === "number") {
+    const d = new Date(v);
+    value = dateFromFormat(formatDate(d, format), format);
+  } else if (isValidDate(v)) {
+    try {
+      const d = new Date(v);
+      value = dateFromFormat(formatDate(d, format), format);
+    } catch (e) {
+      throw new Error(
+        stringFormat(`Could not convert date {0} to format: {1}`, v, format),
+      );
+    }
+  } else {
+    throw new Error(`Invalid value provided ${v}`);
+  }
+  return bindDateToString(value, format);
 }
 
 /**
@@ -499,52 +581,60 @@ export function parseDate(format: string, v?: string | Date | number){
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function date(format: string = "dd/MM/yyyy", message: string = DEFAULT_ERROR_MESSAGES.DATE, validator: Constructor<Validator> = DateValidator) {
-    return (target: Record<string, any>, propertyKey: string): any => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.DATE),
-            {
-                format: format,
-                message: message,
-                types: [Date.name]
-            },
-            target,
-            propertyKey
-        );
+export function date(
+  format: string = "dd/MM/yyyy",
+  message: string = DEFAULT_ERROR_MESSAGES.DATE,
+  validator: Constructor<Validator> = DateValidator,
+) {
+  return (target: Record<string, any>, propertyKey: string): any => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.DATE),
+      {
+        format: format,
+        message: message,
+        types: [Date.name],
+      },
+      target,
+      propertyKey,
+    );
 
-        Validation.register({validator: validator, validationKey: ValidationKeys.DATE, save: true} as ValidatorDefinition);
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.DATE,
+      save: true,
+    } as ValidatorDefinition);
 
-        const values = new WeakMap();
+    const values = new WeakMap();
 
-        Object.defineProperty(target, propertyKey, {
+    Object.defineProperty(target, propertyKey, {
+      configurable: false,
+      set(this: any, newValue: string | Date) {
+        const descriptor = Object.getOwnPropertyDescriptor(this, propertyKey);
+        if (!descriptor || descriptor.configurable)
+          Object.defineProperty(this, propertyKey, {
+            enumerable: true,
             configurable: false,
-            set(this: any, newValue: string | Date){
-                const descriptor = Object.getOwnPropertyDescriptor(this, propertyKey);
-                if (!descriptor || descriptor.configurable)
-                    Object.defineProperty(this, propertyKey, {
-                        enumerable: true,
-                        configurable: false,
-                        get: () => values.get(this),
-                        set: (newValue: string | Date | number) => {
-                            let val: Date | undefined;
-                            try {
-                                val = parseDate(format, newValue);
-                                values.set(this, val);
-                            } catch (e: any) {
-                                console.error(stringFormat("Failed to parse date: {0}", e.message || e))
-                            }
-                        }
-                    });
-                this[propertyKey] = newValue;
+            get: () => values.get(this),
+            set: (newValue: string | Date | number) => {
+              let val: Date | undefined;
+              try {
+                val = parseDate(format, newValue);
+                values.set(this, val);
+              } catch (e: any) {
+                console.error(
+                  stringFormat("Failed to parse date: {0}", e.message || e),
+                );
+              }
             },
-            get(){
-                console.log("here")
-
-            }
-        });
-    }
+          });
+        this[propertyKey] = newValue;
+      },
+      get() {
+        console.log("here");
+      },
+    });
+  };
 }
-
 
 /**
  * @summary Password Handler Decorator
@@ -559,20 +649,28 @@ export function date(format: string = "dd/MM/yyyy", message: string = DEFAULT_ER
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function password(pattern: RegExp = PasswordPatterns.CHAR8_ONE_OF_EACH, message: string = DEFAULT_ERROR_MESSAGES.PASSWORD, validator: Constructor<Validator> = PasswordValidator){
-    return (target: any, propertyKey: string) => {
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.PASSWORD),
-            {
-                pattern: pattern,
-                message: message,
-                types: [String.name]
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.PASSWORD, save: true} as ValidatorDefinition);
-    }
+export function password(
+  pattern: RegExp = PasswordPatterns.CHAR8_ONE_OF_EACH,
+  message: string = DEFAULT_ERROR_MESSAGES.PASSWORD,
+  validator: Constructor<Validator> = PasswordValidator,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.PASSWORD),
+      {
+        pattern: pattern,
+        message: message,
+        types: [String.name],
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.PASSWORD,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -589,21 +687,30 @@ export function password(pattern: RegExp = PasswordPatterns.CHAR8_ONE_OF_EACH, m
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function list(clazz: ModelConstructor<any>, collection: "Array" | "Set" = "Array", message: string = DEFAULT_ERROR_MESSAGES.LIST, validator: Constructor<Validator> = ListValidator) {
-    return (target: any, propertyKey: string): any => {
-        type(collection)(target, propertyKey)
-        Reflect.defineMetadata(
-            getValidationKey(ValidationKeys.LIST),
-            {
-                class: clazz.name,
-                type: collection,
-                message: message
-            },
-            target,
-            propertyKey
-        );
-        Validation.register({validator: validator, validationKey: ValidationKeys.LIST, save: true} as ValidatorDefinition);
-    }
+export function list(
+  clazz: ModelConstructor<any>,
+  collection: "Array" | "Set" = "Array",
+  message: string = DEFAULT_ERROR_MESSAGES.LIST,
+  validator: Constructor<Validator> = ListValidator,
+) {
+  return (target: any, propertyKey: string): any => {
+    type(collection)(target, propertyKey);
+    Reflect.defineMetadata(
+      getValidationKey(ValidationKeys.LIST),
+      {
+        class: clazz.name,
+        type: collection,
+        message: message,
+      },
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: ValidationKeys.LIST,
+      save: true,
+    } as ValidatorDefinition);
+  };
 }
 
 /**
@@ -619,8 +726,12 @@ export function list(clazz: ModelConstructor<any>, collection: "Array" | "Set" =
  * @memberOf module:decorator-validation.Decorators.Validation
  * @category Decorators
  */
-export function set(clazz: ModelConstructor<any>, message: string = DEFAULT_ERROR_MESSAGES.LIST, validator?: Constructor<Validator>) {
-    return (target: any, propertyKey: string): any => {
-        list(clazz, "Set", message, validator)(target, propertyKey)
-    }
+export function set(
+  clazz: ModelConstructor<any>,
+  message: string = DEFAULT_ERROR_MESSAGES.LIST,
+  validator?: Constructor<Validator>,
+) {
+  return (target: any, propertyKey: string): any => {
+    list(clazz, "Set", message, validator)(target, propertyKey);
+  };
 }

@@ -21,21 +21,21 @@
  * @category Validation
  */
 export const ValidationKeys = {
-    REFLECT: 'model.validation.',
-    REQUIRED: 'required',
-    MIN: 'min',
-    MAX: 'max',
-    STEP: 'step',
-    MIN_LENGTH: 'minlength',
-    MAX_LENGTH: 'maxlength',
-    PATTERN: 'pattern',
-    EMAIL: "email",
-    URL: "url",
-    DATE: "date",
-    TYPE: "type",
-    PASSWORD: "password",
-    LIST: "list",
-}
+  REFLECT: "model.validation.",
+  REQUIRED: "required",
+  MIN: "min",
+  MAX: "max",
+  STEP: "step",
+  MIN_LENGTH: "minlength",
+  MAX_LENGTH: "maxlength",
+  PATTERN: "pattern",
+  EMAIL: "email",
+  URL: "url",
+  DATE: "date",
+  TYPE: "type",
+  PASSWORD: "password",
+  LIST: "list",
+};
 
 /**
  * @summary list of month names
@@ -46,8 +46,18 @@ export const ValidationKeys = {
  * @category Validation
  */
 export const MONTH_NAMES = [
-    "January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 /**
@@ -59,10 +69,14 @@ export const MONTH_NAMES = [
  * @category Validation
  */
 export const DAYS_OF_WEEK_NAMES = [
-    "Sunday", "Monday", "Tuesday",
-    "Wednesday", "Thursday", "Friday", "Saturday"
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
-
 
 /**
  * @summary Defines the default error messages
@@ -89,23 +103,24 @@ export const DAYS_OF_WEEK_NAMES = [
  * @category Validation
  */
 export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
-    REQUIRED: 'This field is required',
-    MIN: 'The minimum value is {0}',
-    MAX: 'The maximum value is {0}',
-    MIN_LENGTH: 'The minimum length is {0}',
-    MAX_LENGTH: 'The maximum length is {0}',
-    PATTERN: 'The value does not match the pattern',
-    EMAIL: "The value is not a valid email",
-    URL: "The value is not a valid URL",
-    TYPE: "Invalid type. Expected {0}, received {1}",
-    STEP: "Invalid value. Not a step of {0}",
-    DATE: "Invalid value. not a valid Date",
-    DEFAULT: "There is an Error",
-    PASSWORD: "Must be at least 8 characters and contain one of number, lower and upper case letters, and special character (@$!%*?&_-.,)",
-    LIST: "Invalid list of {0}",
-    LIST_INSIDE: "Elements of list are invalid: {0}",
-    MODEL_NOT_FOUND: "No model registered under {0}"
-}
+  REQUIRED: "This field is required",
+  MIN: "The minimum value is {0}",
+  MAX: "The maximum value is {0}",
+  MIN_LENGTH: "The minimum length is {0}",
+  MAX_LENGTH: "The maximum length is {0}",
+  PATTERN: "The value does not match the pattern",
+  EMAIL: "The value is not a valid email",
+  URL: "The value is not a valid URL",
+  TYPE: "Invalid type. Expected {0}, received {1}",
+  STEP: "Invalid value. Not a step of {0}",
+  DATE: "Invalid value. not a valid Date",
+  DEFAULT: "There is an Error",
+  PASSWORD:
+    "Must be at least 8 characters and contain one of number, lower and upper case letters, and special character (@$!%*?&_-.,)",
+  LIST: "Invalid list of {0}",
+  LIST_INSIDE: "Elements of list are invalid: {0}",
+  MODEL_NOT_FOUND: "No model registered under {0}",
+};
 /**
  * @summary Defines a Password validation regexp
  *
@@ -114,5 +129,6 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
  * @category Validation
  */
 export const PasswordPatterns = {
-    CHAR8_ONE_OF_EACH: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-.,])[A-Za-z\d@$!%*?&_\-.,]{8,}$/g
-}
+  CHAR8_ONE_OF_EACH:
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-.,])[A-Za-z\d@$!%*?&_\-.,]{8,}$/g,
+};

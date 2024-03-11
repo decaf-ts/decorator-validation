@@ -1,4 +1,3 @@
-
 /**
  * @summary References the relevant JS primitives
  *
@@ -12,10 +11,10 @@
  * @category Model
  */
 export enum Primitives {
-    STRING = "string",
-    NUMBER = "number",
-    BOOLEAN = "boolean",
-    BIGINT = "bigint"
+  STRING = "string",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+  BIGINT = "bigint",
 }
 
 /**
@@ -33,10 +32,10 @@ export enum Primitives {
  * @category Construction
  */
 export enum ReservedModels {
-    STRING = "string",
-    OBJECT = "object",
-    NUMBER = "number",
-    BOOLEAN = "boolean",
-    BIGINT = "bigint",
-    DATE = "date"
+  STRING = "string",
+  OBJECT = "object",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+  BIGINT = "bigint",
+  DATE = "date",
 }

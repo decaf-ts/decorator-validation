@@ -1,7 +1,6 @@
-import {construct} from "./construction";
-import {ModelKeys} from "../utils/constants";
-import {Model} from "./Model";
-
+import { construct } from "./construction";
+import { ModelKeys } from "../utils/constants";
+import { Model } from "./Model";
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -18,7 +17,7 @@ export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  * @memberOf module:decorator-validation.Construction
  * @category Construction
  */
-export type InstanceCallback = (instance: any, ...args: any[]) => void
+export type InstanceCallback = (instance: any, ...args: any[]) => void;
 
 /**
  * @summary Defines a class as a Model class
@@ -36,39 +35,42 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void
  * @memberOf module:decorator-validation.Decorators.Model
  * @category Decorators
  */
-export function model(props?: Record<string, any>, instanceCallback?: InstanceCallback) {
-  return (original: Function) => {
-
+export function model(
+  props?: Record<string, any>,
+  instanceCallback?: InstanceCallback,
+) {
+  return (original: any) => {
     // the new constructor behaviour
-    const newConstructor : any = function (...args: any[]) {
+    const newConstructor: any = function (...args: any[]) {
       const instance = construct(original, ...args);
       // run a builder function if defined with the first argument (The ModelArg)
       const builder = Model.getBuilder();
-      if (builder)
-        builder(instance, args.length ? args[0] : undefined);
+      if (builder) builder(instance, args.length ? args[0] : undefined);
 
-      const metadata = Object.assign({}, {
-        class: original.name
-      });
+      const metadata = Object.assign(
+        {},
+        {
+          class: original.name,
+        },
+      );
 
       Object.defineProperty(instance, ModelKeys.ANCHOR, {
         writable: false,
         enumerable: false,
         configurable: false,
-        value: metadata
+        value: metadata,
       });
 
       Reflect.defineMetadata(
-          getModelKey(ModelKeys.MODEL),
-          Object.assign(metadata, props || {}),
-          instance.constructor
+        getModelKey(ModelKeys.MODEL),
+        Object.assign(metadata, props || {}),
+        instance.constructor,
       );
 
-      if (instanceCallback)
-        instanceCallback(instance, ...args);
+      if (instanceCallback) instanceCallback(instance, ...args);
 
       return instance;
-    }
+    };
 
     // copy prototype so instanceof operator still works
     newConstructor.prototype = original.prototype;
@@ -77,12 +79,12 @@ export function model(props?: Record<string, any>, instanceCallback?: InstanceCa
       writable: false,
       enumerable: true,
       configurable: false,
-      value: original.prototype.constructor.name
+      value: original.prototype.constructor.name,
     });
 
     Model.register(newConstructor);
 
     // return new constructor (will override original)
     return newConstructor;
-  }
+  };
 }

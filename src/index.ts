@@ -69,8 +69,8 @@
  * @memberOf module:decorator-validation.Utils
  */
 
-export * from './utils';
-export * from './validation';
-export * from './model';
+export * from "./utils";
+export * from "./validation";
+export * from "./model";
 
-export const VERSION = "##VERSION##"
+export const VERSION = "##VERSION##";

@@ -1,7 +1,7 @@
-import {Model} from "./Model";
-import {BuilderRegistry, isModel, stringFormat} from "../utils";
-import {Constructor, ModelConstructor} from "./types";
-import {ModelKeys} from "../utils/constants";
+import { Model } from "./Model";
+import { BuilderRegistry, isModel, stringFormat } from "../utils";
+import { Constructor, ModelConstructor } from "./types";
+import { ModelKeys } from "../utils/constants";
 
 /**
  * @summary ModelRegistry Interface
@@ -11,7 +11,7 @@ import {ModelKeys} from "../utils/constants";
  *
  * @category Model
  */
-export interface ModelRegistry<T extends Model> extends BuilderRegistry<T>{}
+export interface ModelRegistry<T extends Model> extends BuilderRegistry<T> {}
 
 /**
  * @summary Util class to enable serialization and correct rebuilding
@@ -24,53 +24,63 @@ export interface ModelRegistry<T extends Model> extends BuilderRegistry<T>{}
  *
  * @category Model
  */
-export class ModelRegistryManager<T extends Model> implements ModelRegistry<T>{
+export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
   private cache: Record<string, ModelConstructor<T>> = {};
-  private readonly testFunction: (obj: {}) => boolean;
+  private readonly testFunction: (obj: object) => boolean;
   private readonly anchorKey: string;
 
-  constructor(anchorKey: string = ModelKeys.ANCHOR, testFunction: (obj: Record<string, any>) => boolean = isModel){
-      this.testFunction = testFunction;
-      this.anchorKey = anchorKey;
+  constructor(
+    anchorKey: string = ModelKeys.ANCHOR,
+    testFunction: (obj: Record<string, any>) => boolean = isModel,
+  ) {
+    this.testFunction = testFunction;
+    this.anchorKey = anchorKey;
   }
 
-    /**
-     * @summary register new Models
-     * @param {any} constructor
-     * @param {string} [name] when not defined, the name of the constructor will be used
-     */
+  /**
+   * @summary register new Models
+   * @param {any} constructor
+   * @param {string} [name] when not defined, the name of the constructor will be used
+   */
   register(constructor: ModelConstructor<T>, name?: string): void {
-      if (typeof constructor !== 'function')
-          throw new Error(`Model registering failed. Missing Class name or constructor`);
-      name = name || constructor.name;
-      this.cache[name] = constructor;
+    if (typeof constructor !== "function")
+      throw new Error(
+        `Model registering failed. Missing Class name or constructor`,
+      );
+    name = name || constructor.name;
+    this.cache[name] = constructor;
   }
 
-    /**
-     * @summary Gets a registered Model {@link ModelConstructor}
-     * @param {string} name
-     */
+  /**
+   * @summary Gets a registered Model {@link ModelConstructor}
+   * @param {string} name
+   */
   get(name: string): ModelConstructor<T> | undefined {
-      try{
-          return this.cache[name];
-      } catch (e) {
-          return undefined;
-      }
+    try {
+      return this.cache[name];
+    } catch (e) {
+      return undefined;
+    }
   }
 
-    /**
-     * @param {Record<string, any>} obj
-     * @param {string} [clazz] when provided, it will attempt to find the matching constructor
-     *
-     * @throws Error If clazz is not found, or obj is not a {@link Model} meaning it has no {@link ModelKeys.ANCHOR} property
-     */
+  /**
+   * @param {Record<string, any>} obj
+   * @param {string} [clazz] when provided, it will attempt to find the matching constructor
+   *
+   * @throws Error If clazz is not found, or obj is not a {@link Model} meaning it has no {@link ModelKeys.ANCHOR} property
+   */
   build(obj: Record<string, any> = {}, clazz?: string): T {
-      if (!clazz && !this.testFunction(obj))
-          throw new Error(`Provided obj is not a Model object`);
-        const name = clazz || obj[this.anchorKey].class;
-        if (!(name in this.cache))
-            throw new Error(stringFormat(`Provided class {0} is not a registered Model object`, name));
-        return new this.cache[name](obj);
+    if (!clazz && !this.testFunction(obj))
+      throw new Error(`Provided obj is not a Model object`);
+    const name = clazz || obj[this.anchorKey].class;
+    if (!(name in this.cache))
+      throw new Error(
+        stringFormat(
+          `Provided class {0} is not a registered Model object`,
+          name,
+        ),
+      );
+    return new this.cache[name](obj);
   }
 }
 
@@ -83,9 +93,15 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T>{
  * @memberOf module:decorator-validation.Model
  * @category Model
  */
-export function bulkModelRegister<T extends Model>(...models: (Constructor<T> | {name: string, constructor: Constructor<T>})[]){
-    models.forEach((m: Constructor<T> | {name: string, constructor: Constructor<T>}) => {
-        const constructor: Constructor<T> = (m.constructor ? m.constructor : m) as Constructor<T>;
-        Model.register(constructor, (m as Constructor<T>).name)
-    })
+export function bulkModelRegister<T extends Model>(
+  ...models: (Constructor<T> | { name: string; constructor: Constructor<T> })[]
+) {
+  models.forEach(
+    (m: Constructor<T> | { name: string; constructor: Constructor<T> }) => {
+      const constructor: Constructor<T> = (
+        m.constructor ? m.constructor : m
+      ) as Constructor<T>;
+      Model.register(constructor, (m as Constructor<T>).name);
+    },
+  );
 }

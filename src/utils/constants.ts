@@ -1,4 +1,3 @@
-
 /**
  * @summary Defines the various Model keys used for reflection
  *
@@ -13,11 +12,11 @@
  * @memberOf module:decorator-validation.Model
  * @category Model
  */
-export enum ModelKeys  {
-    REFLECT = 'model.definition.',
-    TYPE = 'design:type',
-    PARAMS = 'design:paramtypes',
-    RETURN = 'design:returntype',
-    MODEL = 'model',
-    ANCHOR = '__modelDefinition'
+export enum ModelKeys {
+  REFLECT = "model.definition.",
+  TYPE = "design:type",
+  PARAMS = "design:paramtypes",
+  RETURN = "design:returntype",
+  MODEL = "model",
+  ANCHOR = "__modelDefinition",
 }

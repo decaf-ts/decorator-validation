@@ -10,7 +10,7 @@ export type Errors = string | undefined;
  * @memberOf module:decorator-validation.Reflection
  * @category Reflection
  */
-export type DecoratorMetadata = {key: string, props: Record<string, any>}
+export type DecoratorMetadata = { key: string; props: Record<string, any> };
 
 /**
  * @summary Type for a validator property decorator definition
@@ -18,9 +18,9 @@ export type DecoratorMetadata = {key: string, props: Record<string, any>}
  * @category Validation
  */
 export type ValidationPropertyDecoratorDefinition = {
-    prop: string | symbol,
-    decorators: ValidationDecoratorDefinition[]
-}
+  prop: string | symbol;
+  decorators: ValidationDecoratorDefinition[];
+};
 
 /**
  * @summary Type for a validator decorator definition
@@ -28,8 +28,8 @@ export type ValidationPropertyDecoratorDefinition = {
  * @category Validation
  */
 export type ValidationDecoratorDefinition = DecoratorMetadata & {
-    props: ValidationElementDefinition
-}
+  props: ValidationElementDefinition;
+};
 
 /**
  * @summary Type for a validator element metadata
@@ -37,12 +37,12 @@ export type ValidationDecoratorDefinition = DecoratorMetadata & {
  * @category Validation
  */
 export type ValidationElementDefinition = {
-    [indexer: string]: any;
+  [indexer: string]: any;
 
-    value?: string | number,
-    message: string
-    types?: string[],
-}
+  value?: string | number;
+  message: string;
+  types?: string[];
+};
 
 /**
  * @summary Type for a model errors
@@ -50,5 +50,5 @@ export type ValidationElementDefinition = {
  * @category Validation
  */
 export type ModelErrors = {
-    [indexer: string]: { [indexer: string]: Errors, }
-}
+  [indexer: string]: { [indexer: string]: Errors };
+};

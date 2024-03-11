@@ -1,9 +1,8 @@
+export * from "./types";
+export * from "./Validators";
 
+import { ValidatorRegistry } from "./Validators";
 
-export * from './types';
-export * from './Validators';
-
-import {ValidatorRegistry} from './Validators';
 /**
  * @summary exports the Validator Registry
  * @constant ValidatorRegistryImp
@@ -12,6 +11,6 @@ import {ValidatorRegistry} from './Validators';
  */
 export const ValidatorRegistryImp = ValidatorRegistry;
 
-export * as Decorators from './decorators';
-export * from './decorators';
-export * from './Validation'
+export * as Decorators from "./decorators";
+export * from "./decorators";
+export * from "./Validation";

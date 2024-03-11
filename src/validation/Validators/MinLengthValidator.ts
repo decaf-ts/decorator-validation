@@ -1,6 +1,6 @@
-import {Validator} from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
-import {Errors} from "../types";
+import { Validator } from "./Validator";
+import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Errors } from "../types";
 
 /**
  * @summary Minimum Length Validator
@@ -14,26 +14,31 @@ import {Errors} from "../types";
  * @category Validators
  */
 export class MinLengthValidator extends Validator {
-    constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH){
-        super(ValidationKeys.MIN_LENGTH, message, String.name, Array.name)
-    }
+  constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH) {
+    super(ValidationKeys.MIN_LENGTH, message, String.name, Array.name);
+  }
 
-    /**
-     *
-     * @param {string | Array} value
-     * @param {number} minlength
-     * @param {string} [message]
-     *
-     * @return Errors
-     *
-     * @memberOf MinLengthValidator
-     * @override
-     *
-     * @see Validator#hasErrors
-     */
-    public hasErrors(value: string | any[], minlength: number, message?: string): Errors {
-        if (value === undefined)
-            return;
-        return value.length < minlength ? this.getMessage(message || this.message, minlength) : undefined;
-    }
+  /**
+   *
+   * @param {string | Array} value
+   * @param {number} minlength
+   * @param {string} [message]
+   *
+   * @return Errors
+   *
+   * @memberOf MinLengthValidator
+   * @override
+   *
+   * @see Validator#hasErrors
+   */
+  public hasErrors(
+    value: string | any[],
+    minlength: number,
+    message?: string,
+  ): Errors {
+    if (value === undefined) return;
+    return value.length < minlength
+      ? this.getMessage(message || this.message, minlength)
+      : undefined;
+  }
 }

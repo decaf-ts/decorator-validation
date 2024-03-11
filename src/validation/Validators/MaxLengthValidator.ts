@@ -1,6 +1,6 @@
-import {Errors} from "../types";
-import {Validator} from "./Validator";
-import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
+import { Errors } from "../types";
+import { Validator } from "./Validator";
+import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 
 /**
  * @summary Maximum Length Validator
@@ -14,26 +14,31 @@ import {ValidationKeys, DEFAULT_ERROR_MESSAGES} from "./constants";
  * @category Validators
  */
 export class MaxLengthValidator extends Validator {
-    constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH){
-        super(ValidationKeys.MAX_LENGTH, message, String.name, Array.name)
-    }
+  constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH) {
+    super(ValidationKeys.MAX_LENGTH, message, String.name, Array.name);
+  }
 
-    /**
-     * @summary Validates a model
-     *
-     * @param {string} value
-     * @param {number} maxlength
-     * @param {string} [message]
-     *
-     * @return Errors
-     *
-     * @override
-     *
-     * @see Validator#hasErrors
-     */
-    public hasErrors(value: string | any[], maxlength: number, message?: string): Errors {
-        if (value === undefined)
-            return;
-        return value.length > maxlength ? this.getMessage(message || this.message, maxlength) : undefined;
-    }
+  /**
+   * @summary Validates a model
+   *
+   * @param {string} value
+   * @param {number} maxlength
+   * @param {string} [message]
+   *
+   * @return Errors
+   *
+   * @override
+   *
+   * @see Validator#hasErrors
+   */
+  public hasErrors(
+    value: string | any[],
+    maxlength: number,
+    message?: string,
+  ): Errors {
+    if (value === undefined) return;
+    return value.length > maxlength
+      ? this.getMessage(message || this.message, maxlength)
+      : undefined;
+  }
 }

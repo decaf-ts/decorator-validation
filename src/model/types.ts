@@ -1,5 +1,5 @@
-import {ModelErrorDefinition} from "./ModelErrorDefinition";
-import {Model} from "./Model";
+import { ModelErrorDefinition } from "./ModelErrorDefinition";
+import { Model } from "./Model";
 
 /**
  * @summary Definition of a Model Constructor Argument
@@ -9,7 +9,7 @@ import {Model} from "./Model";
  *
  * @see ModelConstructor
  */
-export type ModelArg<T> = T | Record<string, any>
+export type ModelArg<T> = T | Record<string, any>;
 
 /**
  * @summary Definition of a Class Constructor
@@ -22,8 +22,8 @@ export type ModelArg<T> = T | Record<string, any>
  * @category Model
  */
 export type Constructor<T> = {
-    new(...args: any[]): T
-}
+  new (...args: any[]): T;
+};
 
 /**
  * @summary Definition of a Model Constructor
@@ -37,8 +37,8 @@ export type Constructor<T> = {
  * @category Construction
  */
 export type ModelConstructor<T extends Model> = {
-    new(model?: ModelArg<T>, ...args: any[]): T
-}
+  new (model?: ModelArg<T>, ...args: any[]): T;
+};
 
 /**
  * @summary Defines the Validation API for validatable models
@@ -47,13 +47,13 @@ export type ModelConstructor<T extends Model> = {
  * @category Validation
  */
 export interface Validatable {
-    /**
-     * @summary Validates the model and returns the {@link ModelErrorDefinition} if any
-     * @param {any} [args]
-     *
-     * @method
-     */
-    hasErrors(...args: any[]): ModelErrorDefinition | undefined;
+  /**
+   * @summary Validates the model and returns the {@link ModelErrorDefinition} if any
+   * @param {any} [args]
+   *
+   * @method
+   */
+  hasErrors(...args: any[]): ModelErrorDefinition | undefined;
 }
 
 /**
@@ -64,9 +64,9 @@ export interface Validatable {
  * @category Serialization
  */
 export interface Serializable {
-    /**
-     * @summary serializes the model
-     * @method
-     */
-    serialize(): string;
+  /**
+   * @summary serializes the model
+   * @method
+   */
+  serialize(): string;
 }
