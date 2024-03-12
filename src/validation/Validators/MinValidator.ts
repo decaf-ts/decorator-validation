@@ -1,6 +1,7 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { Errors } from "../types";
+import { ValidationError } from "../../errors/ValidationError";
 
 /**
  * @summary Min Validator
@@ -39,7 +40,8 @@ export class MinValidator extends Validator {
 
     if (value instanceof Date && !(min instanceof Date)) {
       min = new Date(min);
-      if (isNaN(min.getDate())) throw new Error(`Invalid Min param defined`);
+      if (isNaN(min.getDate()))
+        throw new ValidationError(`Invalid Min param defined`);
     }
     return value < min
       ? this.getMessage(message || this.message, min)

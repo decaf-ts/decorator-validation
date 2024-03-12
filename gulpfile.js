@@ -120,20 +120,16 @@ function exportDefault(isDev, mode) {
             const fixCjsImports = function (match, ...groups) {
                 const renamedFile = groups[1] + ".cjs"
 
-                try {
-                    const fileName = groups[1] + ".ts"
+                const fileName = groups[1] + ".ts"
 
-                    const filePath = path.join(
-                        path.join(this.file.path.split(name)[0], name, "src"),
-                        this.file.path.split(name)[1].split("/").slice(1, this.file.path.split(name)[1].split("/").length - 1).join("/"),
-                        fileName
-                    )
+                const filePath = path.join(
+                    path.join(this.file.path.split(name)[0], name, "src"),
+                    this.file.path.split(name)[1].split("/").slice(1, this.file.path.split(name)[1].split("/").length - 1).join("/"),
+                    fileName
+                )
 
-                    if (!fs.existsSync(filePath))
-                        throw new Error()
-                } catch (e) {
+                if (!fs.existsSync(filePath))
                     return groups[0] + groups[1] + "/index.cjs" + groups[2]
-                }
 
                 return groups[0] + renamedFile + groups[2]
             }

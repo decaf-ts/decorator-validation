@@ -26,6 +26,7 @@ import { dateFromFormat, stringFormat } from "../utils";
 import { Constructor, ModelConstructor } from "../model";
 import { ListValidator } from "./Validators/ListValidator";
 import { Validation } from "./Validation";
+import { ValidationError } from "../errors/ValidationError";
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -561,7 +562,7 @@ export function parseDate(format: string, v?: string | Date | number) {
       );
     }
   } else {
-    throw new Error(`Invalid value provided ${v}`);
+    throw new ValidationError(`Invalid value provided ${v}`);
   }
   return bindDateToString(value, format);
 }

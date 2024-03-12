@@ -1,6 +1,7 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { Errors } from "../types";
+import { ValidationError } from "../../errors/ValidationError";
 
 /**
  * @summary Max Validator
@@ -39,7 +40,8 @@ export class MaxValidator extends Validator {
 
     if (value instanceof Date && !(max instanceof Date)) {
       max = new Date(max);
-      if (isNaN(max.getDate())) throw new Error(`Invalid Max param defined`);
+      if (isNaN(max.getDate()))
+        throw new ValidationError(`Invalid Max param defined`);
     }
 
     return value > max

@@ -1,5 +1,7 @@
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { SerializationError } from "../errors/SerializationError";
 
 /**
  * @summary Helper in serialization
@@ -14,7 +16,7 @@ export interface Serializer<T extends Model> {
    *
    * @method
    *
-   * @throws {Error}
+   * @throws {SerializationError}
    */
   serialize(model: T): string;
 
@@ -24,7 +26,7 @@ export interface Serializer<T extends Model> {
    *
    * @method
    *
-   * @throws {Error}
+   * @throws {SerializationError}
    */
   deserialize(str: string): T;
 }
