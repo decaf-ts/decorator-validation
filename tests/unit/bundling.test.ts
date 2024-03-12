@@ -1,7 +1,7 @@
 import {ModelKeys, Model} from "../../src"; // at least one import is needed so the file is considered a module byt jest
 const a = ModelKeys.MODEL
 
-describe.skip("Distribution Tests", () => {
+describe("Distribution Tests", () => {
   it("reads lib", () => {
     try {
       const {ValidationKeys} = require("../../lib/index.cjs");
