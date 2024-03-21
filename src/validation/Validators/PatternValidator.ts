@@ -53,10 +53,11 @@ export class PatternValidator extends Validator {
    */
   public hasErrors(
     value: string,
-    pattern: RegExp | string,
+    pattern?: RegExp | string,
     message?: string,
   ): Errors {
     if (!value) return;
+    if (!pattern) throw new Error("Missing Pattern");
     pattern =
       typeof pattern === "string"
         ? PatternValidator.getPattern(pattern)

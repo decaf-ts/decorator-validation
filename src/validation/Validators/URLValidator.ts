@@ -31,7 +31,6 @@ export class URLValidator extends PatternValidator {
    *
    * @see Validator#hasErrors
    */
-  // @ts-expect-error weird override
   public hasErrors(value: string, message?: string): Errors {
     return super.hasErrors(value, URLValidator.urlPattern, message);
   }

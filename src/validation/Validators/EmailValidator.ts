@@ -32,7 +32,6 @@ export class EmailValidator extends PatternValidator {
    *
    * @see Validator#hasErrors
    */
-  // @ts-expect-error Because of a weird override
   public hasErrors(value: string, message?: string): Errors {
     return super.hasErrors(value, EmailValidator.emailPat, message);
   }
