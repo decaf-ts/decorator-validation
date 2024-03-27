@@ -118,11 +118,19 @@ function exportDefault(isDev, mode){
                 const renamedFile = groups[1] + ".cjs"
                 const fileName = groups[1] + ".ts"
 
+                const resolvePath = function (path){
+                    const splits = path.split(name).slice(1).map(element => {
+                        return element === '/' ? element + name : element
+                    }).join("").split("/");
+
+                    return splits.slice(0, splits.length - 1).join('/')
+                }
+
                 const filePath = path.join(
                     this.file.path.split(name)[0],
                     name ,
                     "src",
-                    this.file.path.split(name)[1].split("/").slice(1, this.file.path.split(name)[1].split("/").length - 1).join("/"),
+                    resolvePath(this.file.path),
                     fileName
                 )
 
