@@ -1,6 +1,7 @@
 import { Model } from "./Model";
-import { getPropertyDecorators, isModel, stringFormat } from "../utils";
-import { DecoratorMetadata, ValidationKeys } from "../validation";
+import { getPropertyDecorators, isModel, stringFormat } from "../utils/general";
+import { DecoratorMetadata } from "../validation/types";
+import { ValidationKeys } from "../validation/Validators/constants";
 import { ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
 

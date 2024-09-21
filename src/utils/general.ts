@@ -1,7 +1,8 @@
 import "reflect-metadata";
-import { DecoratorMetadata, MONTH_NAMES } from "../validation";
+import { DecoratorMetadata } from "../validation/types";
+import { MONTH_NAMES } from "../validation/Validators/constants";
 import { ModelKeys } from "./constants";
-import { Model } from "../model";
+import { Model } from "../model/Model";
 
 /**
  * @summary Util function to retrieve the decorators for the provided Property

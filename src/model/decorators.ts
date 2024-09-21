@@ -22,17 +22,17 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
 /**
  * @summary Defines a class as a Model class
  * @description
+ *
  * - Registers the class under the model registry so it can be easily rebuilt;
  * - Overrides the class constructor;
  * - Runs the global {@link ModelBuilderFunction} if defined;
  * - Runs the optional {@link InstanceCallback} if provided;
  * - Defines an {@link ModelKeys#ANCHOR} property for serialization and model rebuilding purposes;
  *
- * @prop {Record<string, any>} [props] additional properties to store as metadata
- * @prop {InstanceCallback} [instanceCallback] optional callback that will be call with the instance upon instantiation. defaults to undefined
+ * @param {Record<string, any>} [props] additional properties to store as metadata
+ * @param {InstanceCallback} [instanceCallback] optional callback that will be called with the instance upon instantiation. defaults to undefined
  *
  * @function model
- * @memberOf module:decorator-validation.Decorators.Model
  * @category Decorators
  */
 export function model(
@@ -42,7 +42,10 @@ export function model(
   return (original: any) => {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {
-      const instance = construct(original, ...args);
+      const instance: ReturnType<typeof original> = construct(
+        original,
+        ...args,
+      );
       // run a builder function if defined with the first argument (The ModelArg)
       const builder = Model.getBuilder();
       if (builder) builder(instance, args.length ? args[0] : undefined);

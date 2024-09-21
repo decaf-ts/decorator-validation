@@ -6,6 +6,16 @@
 export type Errors = string | undefined;
 
 /**
+ * @summary Type for validation decorator metadata
+ * @memberOf module:decorator-validation.Reflection
+ * @category Reflection
+ */
+export type ValidationMetadata = {
+  message: string;
+  args?: any[];
+};
+
+/**
  * @summary Type for decorator metadata
  * @memberOf module:decorator-validation.Reflection
  * @category Reflection

@@ -1,21 +1,22 @@
 import {
-  DecoratorMetadata,
   DEFAULT_ERROR_MESSAGES,
+  ValidationKeys,
+} from "../validation/Validators/constants";
+import {
+  DecoratorMetadata,
   Errors,
   ModelErrors,
-  ValidationKeys,
   ValidationPropertyDecoratorDefinition,
-} from "../validation";
+} from "../validation/types";
 import {
-  BuilderRegistry,
   getPropertyDecorators,
   HashingFunction,
   hashObj,
   isEqual,
-  JSONSerializer,
-  Serializer,
   stringFormat,
-} from "../utils";
+} from "../utils/general";
+import { JSONSerializer, Serializer } from "../utils/serialization";
+import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { ModelArg, ModelConstructor, Serializable, Validatable } from "./types";
 import { ReservedModels } from "./constants";

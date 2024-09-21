@@ -1,11 +1,8 @@
-import {
-  IValidatorRegistry,
-  TypeValidator,
-  Validator,
-  ValidatorDefinition,
-  ValidatorRegistry,
-} from "./Validators";
-import { ModelKeys } from "../utils";
+import { Validator } from "./Validators/Validator";
+import { IValidatorRegistry, ValidatorDefinition } from "./Validators/types";
+import { TypeValidator } from "./Validators/TypeValidator";
+import { ValidatorRegistry } from "./Validators/ValidatorRegistry";
+import { ModelKeys } from "../utils/constants";
 
 /**
  * @summary Static class acting as a namespace for the Validation

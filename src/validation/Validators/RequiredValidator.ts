@@ -1,6 +1,7 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { Errors } from "../types";
+// import { validator } from "./decorators";
 
 /**
  * @summary Required Validator
@@ -12,6 +13,7 @@ import { Errors } from "../types";
  *
  * @category Validators
  */
+// @validator(ValidationKeys.REQUIRED)
 export class RequiredValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
     super(ValidationKeys.REQUIRED, message);

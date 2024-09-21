@@ -26,6 +26,28 @@ import { dateFromFormat, stringFormat } from "../utils";
 import { Constructor, ModelConstructor } from "../model";
 import { ListValidator } from "./Validators/ListValidator";
 import { Validation } from "./Validation";
+import { ValidationMetadata } from "./types";
+
+/**
+ * @summary Marks the class as a validator for a certain key.
+ * @description Registers the class in the {@link Validation} with the provided key
+ *
+ * @param {string} key the validation key
+ *
+ * @function validator
+ *
+ * @category Decorators
+ */
+export function validator(key: string) {
+  return (original: Constructor<Validator>) => {
+    Validation.register({
+      validator: original,
+      validationKey: key,
+      save: true,
+    } as ValidatorDefinition);
+    return original;
+  };
+}
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -42,6 +64,38 @@ export function getValidationKey(key: string) {
 }
 
 /**
+ * @summary Factory for validation decorators.
+ * @description generates model attribute validation decorators
+ *
+ * @param {string} key the validation key
+ * @param {ValidationMetadata} metadata the validator metadata
+ * @param {Constructor<Validator>} validator the {@link Validator} to be used
+ *
+ * @function validationDecorator
+ *
+ * @category Decorators
+ */
+export function validationDecorator(
+  key: string,
+  metadata: ValidationMetadata,
+  validator: Constructor<Validator>,
+) {
+  return (target: any, propertyKey: string) => {
+    Reflect.defineMetadata(
+      getValidationKey(key),
+      metadata,
+      target,
+      propertyKey,
+    );
+    Validation.register({
+      validator: validator,
+      validationKey: key,
+      save: true,
+    } as ValidatorDefinition);
+  };
+}
+
+/**
  * @summary Marks the property as required.
  * @description Validators to validate a decorated property must use key {@link ValidationKeys#REQUIRED}
  *
@@ -49,7 +103,7 @@ export function getValidationKey(key: string) {
  * @param {Constructor<Validator>} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
  *
  * @function required
- * @memberOf module:decorator-validation.Decorators.Validation
+ *
  * @category Decorators
  */
 export function required(

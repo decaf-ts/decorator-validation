@@ -1,5 +1,6 @@
 import { Model } from "./Model";
-import { BuilderRegistry, isModel, stringFormat } from "../utils";
+import { BuilderRegistry } from "../utils/registry";
+import { isModel, stringFormat } from "../utils/general";
 import { Constructor, ModelConstructor } from "./types";
 import { ModelKeys } from "../utils/constants";
 
