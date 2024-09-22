@@ -29,27 +29,6 @@ import { Validation } from "./Validation";
 import { ValidationMetadata } from "./types";
 
 /**
- * @summary Marks the class as a validator for a certain key.
- * @description Registers the class in the {@link Validation} with the provided key
- *
- * @param {string} key the validation key
- *
- * @function validator
- *
- * @category Decorators
- */
-export function validator(key: string) {
-  return (original: Constructor<Validator>) => {
-    Validation.register({
-      validator: original,
-      validationKey: key,
-      save: true,
-    } as ValidatorDefinition);
-    return original;
-  };
-}
-
-/**
  * @summary Builds the key to store as Metadata under Reflections
  * @description concatenates {@link ValidationKeys#REFLECT} with the provided key
  *
@@ -119,11 +98,6 @@ export function required(
       target,
       propertyKey,
     );
-    Validation.register({
-      validator: validator,
-      validationKey: ValidationKeys.REQUIRED,
-      save: true,
-    } as ValidatorDefinition);
   };
 }
 

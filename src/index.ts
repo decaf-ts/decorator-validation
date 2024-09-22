@@ -25,6 +25,11 @@
  */
 
 /**
+ * @namespace Reflections
+ * @memberOf module:decorator-validation.Reflections
+ */
+
+/**
  * @namespace Construction
  * @memberOf module:decorator-validation
  */
@@ -70,6 +75,7 @@
  */
 
 export * from "./utils";
+export * from "./reflection";
 export * from "./validation";
 export * from "./model";
 
