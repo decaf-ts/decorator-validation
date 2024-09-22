@@ -59,7 +59,8 @@ export function constructFromModel<T extends Model>(
       (self.hasOwnProperty(prop) ||
         (self.prototype && self.prototype.hasOwnProperty(prop)))
     ) {
-      (self as Record<string, any>)[prop] = (obj as Record<string, any>)[prop] || undefined;
+      (self as Record<string, any>)[prop] =
+        (obj as Record<string, any>)[prop] || undefined;
       if (typeof self[prop] !== "object") continue;
       if (isModel((self as Record<string, any>)[prop])) {
         try {
