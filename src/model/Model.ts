@@ -13,7 +13,7 @@ import {
   HashingFunction,
   hashObj,
   isEqual,
-  stringFormat,
+  sf,
 } from "../utils/general";
 import { JSONSerializer, Serializer } from "../utils/serialization";
 import { BuilderRegistry } from "../utils/registry";
@@ -152,7 +152,7 @@ export function validate<T extends Model>(
                                 .values()
                                 .find((c: Validatable) => c.hasErrors());
                         if (e)
-                          err = stringFormat(
+                          err = sf(
                             DEFAULT_ERROR_MESSAGES.LIST_INSIDE,
                             e.toString(),
                           );
@@ -165,7 +165,7 @@ export function validate<T extends Model>(
                         err = (obj as Record<string, any>)[prop].hasErrors();
                     } catch (e: any) {
                       console.warn(
-                        stringFormat("Model should be validatable but its not"),
+                        sf("Model should be validatable but its not"),
                       );
                     }
                 }

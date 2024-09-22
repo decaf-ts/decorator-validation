@@ -1,4 +1,4 @@
-import { checkTypes, stringFormat } from "../../utils";
+import { checkTypes, sf } from "../../utils";
 import { Errors } from "../types";
 import { DEFAULT_ERROR_MESSAGES } from "./constants";
 
@@ -39,7 +39,7 @@ export abstract class Validator {
    * @protected
    */
   protected getMessage(message: string, ...args: any[]) {
-    return stringFormat(message, ...args);
+    return sf(message, ...args);
   }
 
   /**

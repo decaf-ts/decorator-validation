@@ -1,35 +1,34 @@
 import "reflect-metadata";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type CustomDecorator<V> =
-  | MethodDecorator
-  | ClassDecorator
-  | PropertyDecorator;
+export type CustomDecorator<V> = MethodDecorator &
+  ClassDecorator &
+  PropertyDecorator;
 
 /**
- * Decorator that assigns metadata to the class/function using the
+ * @summary Decorator that assigns metadata to the class/method using the
  * specified `key`.
  *
- * Requires two parameters:
- * - `key` - a value defining the key under which the metadata is stored
- * - `value` - metadata to be associated with `key`
+ * @param {string} key a value defining the key under which the metadata is stored
+ * @param {any} value metadata to be associated with `key`
  *
- * This metadata can be reflected using the `Reflector` class.
+ * @function metadata
  *
- * Example: `@SetMetadata('roles', ['admin'])`
- *
- * @see [Reflection](https://docs.nestjs.com/fundamentals/execution-context#reflection-and-metadata)
- *
- * @publicApi
+ * @memberOf module:decorator-validation.Reflections
+ * @category Decorators
  */
 export function metadata<V>(key: string, value: V): CustomDecorator<V> {
-  const decoratorFactory = (target: object, key?: any, descriptor?: any) => {
+  return (
+    target: object,
+    propertyKey?: string | symbol,
+    descriptor?: PropertyDescriptor,
+  ) => {
     if (descriptor) {
-      Reflect.defineMetadata(key, value, descriptor.value);
-      return descriptor;
+      Reflect.defineMetadata(key, value, descriptor.value); // method
+    } else if (propertyKey) {
+      Reflect.defineMetadata(key, value, target, propertyKey); // property
+    } else {
+      Reflect.defineMetadata(key, value, target); // class
     }
-    Reflect.defineMetadata(key, value, target);
-    return target;
   };
-  return decoratorFactory;
 }

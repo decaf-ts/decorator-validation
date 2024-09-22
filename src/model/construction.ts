@@ -1,5 +1,5 @@
 import { Model } from "./Model";
-import { getPropertyDecorators, isModel, stringFormat } from "../utils/general";
+import { getPropertyDecorators, isModel, sf } from "../utils/general";
 import { DecoratorMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { ReservedModels } from "./constants";
@@ -85,9 +85,7 @@ export function constructFromModel<T extends Model>(
         (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
       );
       if (!decorators || !decorators.length)
-        throw new Error(
-          stringFormat("failed to find decorators for property {0}", prop),
-        );
+        throw new Error(sf("failed to find decorators for property {0}", prop));
       dec = decorators.pop() as DecoratorMetadata;
       const clazz = dec.props.name
         ? [dec.props.name]

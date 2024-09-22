@@ -1,6 +1,6 @@
 import { Model } from "./Model";
 import { BuilderRegistry } from "../utils/registry";
-import { isModel, stringFormat } from "../utils/general";
+import { isModel, sf } from "../utils/general";
 import { Constructor, ModelConstructor } from "./types";
 import { ModelKeys } from "../utils/constants";
 
@@ -76,10 +76,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
     const name = clazz || obj[this.anchorKey].class;
     if (!(name in this.cache))
       throw new Error(
-        stringFormat(
-          `Provided class {0} is not a registered Model object`,
-          name,
-        ),
+        sf(`Provided class {0} is not a registered Model object`, name),
       );
     return new this.cache[name](obj);
   }

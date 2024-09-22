@@ -76,7 +76,7 @@ export function getPropertyDecorators(
       if (item.key in cache) {
         if (!isEqual(item.props, cache[item.key]))
           console.log(
-            stringFormat(
+            sf(
               "Found a similar decorator for the {0} property of a {1} model but with different attributes. The original one will be kept",
               item.key,
               target.constructor.name,
@@ -226,6 +226,20 @@ export function stringFormat(string: string, ...args: string[]) {
     return typeof args[number] !== "undefined" ? args[number] : match;
   });
 }
+
+/**
+ * @summary Util function to provide string format functionality similar to C#'s string.format
+ * @description alias for {@link stringFormat}
+ *
+ * @param {string} string
+ * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
+ * @return {string} formatted string
+ *
+ * @function sf
+ * @memberOf module:decorator-validation.Utils.Format
+ * @category Format
+ */
+export const sf = stringFormat;
 
 /**
  * @summary Deep Object Comparison

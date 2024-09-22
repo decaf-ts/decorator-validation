@@ -22,7 +22,7 @@ import {
   URLValidator,
   Validator,
 } from "./Validators";
-import { dateFromFormat, stringFormat } from "../utils";
+import { dateFromFormat, sf } from "../utils";
 import { Constructor, ModelConstructor } from "../model";
 import { ListValidator } from "./Validators/ListValidator";
 import { Validation } from "./Validation";
@@ -567,11 +567,7 @@ export function parseDate(format: string, v?: string | Date | number) {
       value = dateFromFormat(formatDate(v as Date, format), format);
     } catch (e: any) {
       throw new Error(
-        stringFormat(
-          `Could not convert date {0} to format: {1}`,
-          v.toString(),
-          format,
-        ),
+        sf(`Could not convert date {0} to format: {1}`, v.toString(), format),
       );
     }
   else if (typeof v === "string") {
@@ -585,7 +581,7 @@ export function parseDate(format: string, v?: string | Date | number) {
       value = dateFromFormat(formatDate(d, format), format);
     } catch (e) {
       throw new Error(
-        stringFormat(`Could not convert date {0} to format: {1}`, v, format),
+        sf(`Could not convert date {0} to format: {1}`, v, format),
       );
     }
   } else {
@@ -649,9 +645,7 @@ export function date(
                 val = parseDate(format, newValue);
                 values.set(this, val);
               } catch (e: any) {
-                console.error(
-                  stringFormat("Failed to parse date: {0}", e.message || e),
-                );
+                console.error(sf("Failed to parse date: {0}", e.message || e));
               }
             },
           });
