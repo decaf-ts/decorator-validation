@@ -48,7 +48,7 @@ function getWebpackConfig(isESM, isDev){
                     use: [{
                         loader: 'ts-loader',
                         options: {
-                            configFile: 'tsconfig.json'
+                            configFile: path.join(process.cwd(), 'tsconfig.json')
                         }
                     }],
                     include:[

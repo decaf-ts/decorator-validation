@@ -24,8 +24,8 @@
     },
     "templates": {
         "better-docs": {
-            "name": "Decorator Validation Engine",
-            "title": "Decorator Validation Engine",
+            "name": "decorator-validation",
+            "title": "Decorator Validation",
             "hideGenerator": true,
             "navLinks": [
                 {
@@ -34,7 +34,7 @@
                 },
                 {
                     "label": "Gitlab Repository",
-                    "href": "https://github.com/TiagoVenceslau/decorator-validation#readme"
+                    "href": "https://github.com/decaf-ts/decorator-validation#readme"
                 }
             ]
         },
