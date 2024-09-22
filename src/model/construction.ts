@@ -28,8 +28,7 @@ export function constructFromObject<T extends Model>(
       (self.hasOwnProperty(prop) ||
         (self.prototype && self.prototype.hasOwnProperty(prop)))
     )
-      // @ts-expect-error cause i said so
-      self[prop] = obj[prop];
+      (self as any)[prop] = obj[prop];
   return self;
 }
 
@@ -51,10 +50,6 @@ export function constructFromModel<T extends Model>(
   obj?: T | Record<string, any>,
 ) {
   if (!obj) return self;
-  //
-  // function verifier(obj: Record<string, any>){
-  //     return isModel(obj)
-  // }
 
   let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
 
