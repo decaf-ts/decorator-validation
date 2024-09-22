@@ -1,4 +1,5 @@
 import {
+    model,
     Model,
     ModelErrorDefinition,
     step,
@@ -9,10 +10,14 @@ import {
 import {email, max, maxlength, min, minlength, password, pattern, required, type} from "../../src";
 import {url} from "../../src";
 
-class InnerTestModel {
-
+@model()
+class InnerTestModel extends Model{
+    constructor() {
+        super();
+    }
 }
 
+@model()
 class TestModel extends Model {
 
     @type(['string', 'number'])
@@ -48,20 +53,22 @@ class TestModel extends Model {
 
     constructor(model?: TestModel | {}){
         super(model);
-        Model.fromObject<TestModel>(this, model);
+        Model.fromModel<TestModel>(this, model);
     }
 }
 
+@model()
 class PasswordTestModel extends Model {
     @password()
     password?: string = undefined;
 
     constructor(model?: PasswordTestModel | {}) {
         super();
-        Model.fromObject(this, model);
+        Model.fromModel(this, model);
     }
 }
 
+@model()
 class ListModelTest extends Model{
 
     // @list(String)
@@ -72,7 +79,7 @@ class ListModelTest extends Model{
 
     constructor(model?: ListModelTest | {}) {
         super();
-        Model.fromObject(this, model);
+        Model.fromModel(this, model);
     }
 }
 
