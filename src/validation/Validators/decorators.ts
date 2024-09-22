@@ -1,7 +1,7 @@
-import { Constructor } from "../../model";
 import { Validator } from "./Validator";
 import { Validation } from "../Validation";
 import { ValidatorDefinition } from "./types";
+import { Constructor } from "../../model/types";
 
 /**
  * @summary Marks the class as a validator for a certain key.

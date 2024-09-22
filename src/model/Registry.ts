@@ -1,8 +1,9 @@
 import { Model } from "./Model";
 import { BuilderRegistry } from "../utils/registry";
-import { isModel, sf } from "../utils/general";
 import { Constructor, ModelConstructor } from "./types";
 import { ModelKeys } from "../utils/constants";
+import { isModel } from "../reflection/utils";
+import { sf } from "../utils/strings";
 
 /**
  * @summary ModelRegistry Interface

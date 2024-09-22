@@ -1,5 +1,4 @@
 import {
-    Decorators,
     Model,
     ModelErrorDefinition,
     step,
@@ -7,7 +6,8 @@ import {
     Validator,
     Validators
 } from "../../src";
-const {email, max, maxlength, min, minlength, pattern, required, url, type, password} = Decorators;
+import {email, max, maxlength, min, minlength, password, pattern, required, type} from "../../src";
+import {url} from "../../src";
 
 class InnerTestModel {
 

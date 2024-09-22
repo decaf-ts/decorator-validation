@@ -8,13 +8,6 @@ import {
   ModelErrors,
   ValidationPropertyDecoratorDefinition,
 } from "../validation/types";
-import {
-  getPropertyDecorators,
-  HashingFunction,
-  hashObj,
-  isEqual,
-  sf,
-} from "../utils/general";
 import { JSONSerializer, Serializer } from "../utils/serialization";
 import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
@@ -28,6 +21,10 @@ import {
 } from "./construction";
 import { ModelRegistryManager } from "./Registry";
 import { Validation } from "../validation/Validation";
+import { getPropertyDecorators } from "../reflection/utils";
+import { HashingFunction, hashObj } from "../utils/hashing";
+import { sf } from "../utils/strings";
+import { isEqual } from "../utils/equality";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them

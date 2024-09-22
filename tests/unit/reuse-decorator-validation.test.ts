@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import {constructFromObject, Decorators, Errors, Model, required, Validator} from "../../src";
+import {constructFromObject, Errors, Model, required, Validator} from "../../src";
 import {Validation} from "../../src/validation/Validation";
 import {ValidatorDefinition} from "../../src";
-const {getValidationKey} = Decorators;
+import {getValidationKey} from "../../src";
 
 
 function generateGtin(){

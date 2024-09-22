@@ -1,6 +1,6 @@
 import { Validator } from "./Validator";
-import { IRegistry } from "../../utils";
-import { Constructor } from "../../model";
+import { IRegistry } from "../../utils/registry";
+import { Constructor } from "../../model/types";
 
 /**
  * @summary Util type for {@link Validator} configuration

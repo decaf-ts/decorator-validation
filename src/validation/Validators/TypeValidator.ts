@@ -1,8 +1,8 @@
 import { Errors } from "../types";
 import { Validator } from "./Validator";
-import { evaluateDesignTypes } from "../../utils";
 import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { ModelKeys } from "../../utils/constants";
+import { evaluateDesignTypes } from "../../reflection/utils";
 
 /**
  * @summary Required Validator

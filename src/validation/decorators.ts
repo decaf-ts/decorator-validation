@@ -1,32 +1,31 @@
 import "reflect-metadata";
-import {
-  ValidationKeys,
-  DEFAULT_ERROR_MESSAGES,
-  PasswordPatterns,
-  ValidatorDefinition,
-  MONTH_NAMES,
-  DAYS_OF_WEEK_NAMES,
-} from "./Validators";
-import {
-  DateValidator,
-  EmailValidator,
-  MaxLengthValidator,
-  MaxValidator,
-  MinLengthValidator,
-  MinValidator,
-  PasswordValidator,
-  PatternValidator,
-  RequiredValidator,
-  StepValidator,
-  TypeValidator,
-  URLValidator,
-  Validator,
-} from "./Validators";
-import { dateFromFormat, sf } from "../utils";
-import { Constructor, ModelConstructor } from "../model";
 import { ListValidator } from "./Validators/ListValidator";
 import { Validation } from "./Validation";
 import { ValidationMetadata } from "./types";
+import { metadata } from "../reflection/decorators";
+import { DateValidator } from "./Validators/DateValidator";
+import { MaxValidator } from "./Validators/MaxValidator";
+import { MaxLengthValidator } from "./Validators/MaxLengthValidator";
+import { EmailValidator } from "./Validators/EmailValidator";
+import { StepValidator } from "./Validators/StepValidator";
+import {
+  DAYS_OF_WEEK_NAMES,
+  DEFAULT_ERROR_MESSAGES,
+  MONTH_NAMES,
+  PasswordPatterns,
+  ValidationKeys,
+} from "./Validators/constants";
+import { TypeValidator } from "./Validators/TypeValidator";
+import { dateFromFormat } from "../utils/dates";
+import { sf } from "../utils/strings";
+import { Constructor, ModelConstructor } from "../model/types";
+import { URLValidator } from "./Validators/URLValidator";
+import { MinValidator } from "./Validators/MinValidator";
+import { PasswordValidator } from "./Validators/PasswordValidator";
+import { ValidatorDefinition } from "./Validators/types";
+import { MinLengthValidator } from "./Validators/MinLengthValidator";
+import { PatternValidator } from "./Validators/PatternValidator";
+import { Validator } from "./Validators/Validator";
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -43,52 +42,16 @@ export function getValidationKey(key: string) {
 }
 
 /**
- * @summary Factory for validation decorators.
- * @description generates model attribute validation decorators
- *
- * @param {string} key the validation key
- * @param {ValidationMetadata} metadata the validator metadata
- * @param {Constructor<Validator>} validator the {@link Validator} to be used
- *
- * @function validationDecorator
- *
- * @category Decorators
- */
-export function validationDecorator(
-  key: string,
-  metadata: ValidationMetadata,
-  validator: Constructor<Validator>,
-) {
-  return (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(
-      getValidationKey(key),
-      metadata,
-      target,
-      propertyKey,
-    );
-    Validation.register({
-      validator: validator,
-      validationKey: key,
-      save: true,
-    } as ValidatorDefinition);
-  };
-}
-
-/**
  * @summary Marks the property as required.
  * @description Validators to validate a decorated property must use key {@link ValidationKeys#REQUIRED}
  *
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#REQUIRED}
- * @param {Constructor<Validator>} [validator] the Validator to be used. Defaults to {@link RequiredValidator}
  *
  * @function required
  *
  * @category Decorators
  */
-export function required(
-  message: string = DEFAULT_ERROR_MESSAGES.REQUIRED,
-  validator: Constructor<Validator> = RequiredValidator,
-) {
+export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
   return (target: any, propertyKey: string) => {
     Reflect.defineMetadata(
       getValidationKey(ValidationKeys.REQUIRED),

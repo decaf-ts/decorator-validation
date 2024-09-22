@@ -1,9 +1,10 @@
 import { Model } from "./Model";
-import { getPropertyDecorators, isModel, sf } from "../utils/general";
 import { DecoratorMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
+import { getPropertyDecorators, isModel } from "../reflection/utils";
+import { sf } from "../utils/strings";
 
 /**
  * @summary Repopulates the Object properties with the ones from the new object
@@ -76,13 +77,14 @@ export function constructFromModel<T extends Model>(
         continue;
       }
 
-      const allDecorators = getPropertyDecorators(
+      const allDecorators: DecoratorMetadata[] = getPropertyDecorators(
         ValidationKeys.REFLECT,
         self,
         prop,
       ).decorators;
       decorators = allDecorators.filter(
-        (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
+        (d: DecoratorMetadata) =>
+          [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
       );
       if (!decorators || !decorators.length)
         throw new Error(sf("failed to find decorators for property {0}", prop));
