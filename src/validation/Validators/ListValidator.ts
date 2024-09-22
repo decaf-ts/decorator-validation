@@ -1,6 +1,7 @@
 import { Validator } from "./Validator";
 import { Errors } from "../types";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
+import { validator } from "./decorators";
 
 /**
  * @summary List Validator
@@ -12,6 +13,7 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
  *
  * @category Validators
  */
+@validator(ValidationKeys.LIST)
 export class ListValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LIST) {
     super(ValidationKeys.LIST, message, Array.name, Set.name);

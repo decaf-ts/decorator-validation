@@ -13,8 +13,8 @@ import { Constructor } from "../../model/types";
  *
  * @category Decorators
  */
-export function validator(key: string) {
-  return (original: Constructor<Validator>) => {
+export function validator<T extends Validator>(key: string) {
+  return (original: Constructor<T>) => {
     Validation.register({
       validator: original,
       validationKey: key,

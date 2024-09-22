@@ -1,6 +1,7 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { Errors } from "../types";
+import { validator } from "./decorators";
 
 /**
  * @summary Step Validator
@@ -12,6 +13,7 @@ import { Errors } from "../types";
  *
  * @category Validators
  */
+@validator(ValidationKeys.STEP)
 export class StepValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP) {
     super(ValidationKeys.STEP, message, "number", "string");

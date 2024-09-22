@@ -1,10 +1,11 @@
 import { PatternValidator } from "./PatternValidator";
 import {
   DEFAULT_ERROR_MESSAGES,
-  PasswordPatterns,
+  DEFAULT_PATTERNS,
   ValidationKeys,
 } from "./constants";
 import { Errors } from "../types";
+import { validator } from "./decorators";
 
 /**
  * @summary Handles Password Validation
@@ -17,12 +18,13 @@ import { Errors } from "../types";
  *
  * @category Validators
  */
+@validator(ValidationKeys.PASSWORD)
 export class PasswordValidator extends PatternValidator {
   readonly pattern: RegExp;
 
   constructor(
     errorMessage = DEFAULT_ERROR_MESSAGES.PASSWORD,
-    passwordPattern: RegExp = PasswordPatterns.CHAR8_ONE_OF_EACH,
+    passwordPattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
   ) {
     super(ValidationKeys.PASSWORD, errorMessage);
     this.pattern = passwordPattern;

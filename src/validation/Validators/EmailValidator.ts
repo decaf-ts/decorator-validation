@@ -1,6 +1,11 @@
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import {
+  ValidationKeys,
+  DEFAULT_ERROR_MESSAGES,
+  DEFAULT_PATTERNS,
+} from "./constants";
 import { Errors } from "../types";
 import { PatternValidator } from "./PatternValidator";
+import { validator } from "./decorators";
 
 /**
  * @summary Email Validator
@@ -12,10 +17,8 @@ import { PatternValidator } from "./PatternValidator";
  *
  * @category Validators
  */
+@validator(ValidationKeys.EMAIL)
 export class EmailValidator extends PatternValidator {
-  private static readonly emailPat: RegExp =
-    /[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/;
-
   constructor(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
     super(ValidationKeys.EMAIL, message);
   }
@@ -33,6 +36,6 @@ export class EmailValidator extends PatternValidator {
    * @see Validator#hasErrors
    */
   public hasErrors(value: string, message?: string): Errors {
-    return super.hasErrors(value, EmailValidator.emailPat, message);
+    return super.hasErrors(value, DEFAULT_PATTERNS.EMAIL, message);
   }
 }

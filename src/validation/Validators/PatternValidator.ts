@@ -1,6 +1,9 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { Errors } from "../types";
+import { validator } from "./decorators";
+
+export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
 
 /**
  * @summary Pattern Validator
@@ -13,11 +16,8 @@ import { Errors } from "../types";
  *
  * @category Validators
  */
+@validator(ValidationKeys.PATTERN)
 export class PatternValidator extends Validator {
-  private static readonly regexpParser: RegExp = new RegExp(
-    "^/(.+)/([gimus]*)$",
-  );
-
   constructor(
     key: string = ValidationKeys.PATTERN,
     message: string = DEFAULT_ERROR_MESSAGES.PATTERN,
@@ -31,10 +31,9 @@ export class PatternValidator extends Validator {
    * @param {string} pattern
    * @private
    */
-  private static getPattern(pattern: string): RegExp {
-    if (!PatternValidator.regexpParser.test(pattern))
-      return new RegExp(pattern);
-    const match: any = pattern.match(PatternValidator.regexpParser);
+  private getPattern(pattern: string): RegExp {
+    if (!regexpParser.test(pattern)) return new RegExp(pattern);
+    const match: any = pattern.match(regexpParser);
     return new RegExp(match[1], match[2]);
   }
 
@@ -58,10 +57,7 @@ export class PatternValidator extends Validator {
   ): Errors {
     if (!value) return;
     if (!pattern) throw new Error("Missing Pattern");
-    pattern =
-      typeof pattern === "string"
-        ? PatternValidator.getPattern(pattern)
-        : pattern;
+    pattern = typeof pattern === "string" ? this.getPattern(pattern) : pattern;
     pattern.lastIndex = 0; // resets pattern position for repeat validation requests
     return !pattern.test(value)
       ? this.getMessage(message || this.message)

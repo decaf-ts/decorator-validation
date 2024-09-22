@@ -1,6 +1,7 @@
 import { Errors } from "../types";
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { validator } from "./decorators";
 
 /**
  * @summary Maximum Length Validator
@@ -13,6 +14,7 @@ import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
  *
  * @category Validators
  */
+@validator(ValidationKeys.MAX_LENGTH)
 export class MaxLengthValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH) {
     super(ValidationKeys.MAX_LENGTH, message, String.name, Array.name);

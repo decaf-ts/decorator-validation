@@ -1,8 +1,9 @@
 import { Errors } from "../types";
 import { Validator } from "./Validator";
-import { DEFAULT_ERROR_MESSAGES } from "./constants";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { ModelKeys } from "../../utils/constants";
 import { evaluateDesignTypes } from "../../reflection/utils";
+import { validator } from "./decorators";
 
 /**
  * @summary Required Validator
@@ -12,6 +13,7 @@ import { evaluateDesignTypes } from "../../reflection/utils";
  *
  * @category Validators
  */
+// @validator(ValidationKeys.TYPE)
 export class TypeValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.TYPE) {
     super(ModelKeys.TYPE, message);

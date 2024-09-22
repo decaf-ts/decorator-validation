@@ -11,8 +11,10 @@ export type Errors = string | undefined;
  * @category Reflection
  */
 export type ValidationMetadata = {
-  message: string;
+  [indexer: string]: any;
   args?: any[];
+  message: string;
+  types?: string[];
 };
 
 /**
