@@ -16,16 +16,13 @@ import { checkTypes } from "../../reflection/utils";
  * @category Validators
  */
 export abstract class Validator {
-  readonly validationKey: string;
   readonly message: string;
   readonly acceptedTypes?: string[];
 
   protected constructor(
-    validationKey: string,
     message: string = DEFAULT_ERROR_MESSAGES.DEFAULT,
     ...acceptedTypes: string[]
   ) {
-    this.validationKey = validationKey;
     this.message = message;
 
     if (acceptedTypes.length) this.acceptedTypes = acceptedTypes;

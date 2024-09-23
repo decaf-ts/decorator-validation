@@ -215,7 +215,7 @@ describe('Validation by decorators test', function() {
         Object.values(Validators).filter(v => v.name !== 'Validator').forEach(v => {
             // @ts-ignore
             const validator: Validator = new (v)();
-            if (validator.validationKey === ValidationKeys.REQUIRED)
+            if (validator.constructor.name === "RequiredValidator")
                 return;
             expect(validator.hasErrors(undefined)).toBeUndefined();
         })

@@ -20,7 +20,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.EMAIL)
 export class EmailValidator extends PatternValidator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
-    super(ValidationKeys.EMAIL, message);
+    super(message);
   }
 
   /**

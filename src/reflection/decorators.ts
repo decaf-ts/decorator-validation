@@ -32,3 +32,37 @@ export function metadata<V>(key: string, value: V): CustomDecorator<V> {
     }
   };
 }
+
+
+/**
+ * @summary Decorator that assigns metadata to the class/method using the
+ * specified `key`.
+ *
+ * @param {Array<ClassDecorator | MethodDecorator | PropertyDecorator>} decorators a value defining the key under which the metadata is stored
+ *
+ * @function apply
+ *
+ * @memberOf module:decorator-validation.Reflections
+ * @category Decorators
+ */
+export function apply(
+    ...decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator>
+) {
+  return <TFunction extends Function, Y>(
+      target: TFunction | object,
+      propertyKey?: string | symbol,
+      descriptor?: TypedPropertyDescriptor<Y>,
+  ) => {
+    for (const decorator of decorators) {
+      if (target instanceof Function && !descriptor) {
+        (decorator as ClassDecorator)(target);
+        continue;
+      }
+      (decorator as MethodDecorator | PropertyDecorator)(
+          target,
+          propertyKey as string | symbol,
+          descriptor as TypedPropertyDescriptor<Y>,
+      );
+    }
+  };
+}

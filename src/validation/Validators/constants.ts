@@ -22,6 +22,7 @@
  */
 export const ValidationKeys = {
   REFLECT: "model.validation.",
+  VALIDATOR: "validator",
   REQUIRED: "required",
   MIN: "min",
   MAX: "max",

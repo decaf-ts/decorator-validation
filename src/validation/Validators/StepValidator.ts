@@ -16,7 +16,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.STEP)
 export class StepValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP) {
-    super(ValidationKeys.STEP, message, "number", "string");
+    super(message, "number", "string");
   }
 
   /**

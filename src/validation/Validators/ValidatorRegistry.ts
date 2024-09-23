@@ -25,10 +25,10 @@ export class ValidatorRegistry<T extends Validator>
   implements IValidatorRegistry<T>
 {
   private cache: any = {};
-  private customKeyChache: Record<string, string>;
+  private customKeyCache: Record<string, string>;
 
   constructor(...validators: (ValidatorDefinition | Validator)[]) {
-    this.customKeyChache = {};
+    this.customKeyCache = {};
     this.register(...validators);
   }
 
@@ -36,7 +36,7 @@ export class ValidatorRegistry<T extends Validator>
    * @summary retrieves the custom keys
    */
   getCustomKeys(): { [indexer: string]: string } {
-    return Object.assign({}, this.customKeyChache);
+    return Object.assign({}, this.customKeyCache);
   }
 
   /**
@@ -73,8 +73,10 @@ export class ValidatorRegistry<T extends Validator>
   ): void {
     validator.forEach((v) => {
       if (isValidator(v)) {
-        if (v.validationKey in this.cache) return;
-        this.cache[v.validationKey] = v;
+        // const k =
+
+        if ((v as ValidatorDefinition).validationKey in this.cache) return;
+        this.cache[(v as ValidatorDefinition).validationKey] = v;
       } else {
         const { validationKey, validator, save } = v as ValidatorDefinition;
         if (validationKey in this.cache) return;
@@ -83,7 +85,7 @@ export class ValidatorRegistry<T extends Validator>
         const obj: Record<string, string> = {};
         obj[validationKey.toUpperCase()] = validationKey;
 
-        this.customKeyChache = Object.assign({}, this.customKeyChache, obj);
+        this.customKeyCache = Object.assign({}, this.customKeyCache, obj);
       }
     });
   }

@@ -16,7 +16,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.LIST)
 export class ListValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LIST) {
-    super(ValidationKeys.LIST, message, Array.name, Set.name);
+    super(message, Array.name, Set.name);
   }
 
   /**

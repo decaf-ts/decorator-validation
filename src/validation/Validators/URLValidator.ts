@@ -19,7 +19,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.URL)
 export class URLValidator extends PatternValidator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.URL) {
-    super(ValidationKeys.URL, message);
+    super(message);
   }
 
   /**

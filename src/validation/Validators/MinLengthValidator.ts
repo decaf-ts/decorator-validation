@@ -17,7 +17,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.MIN_LENGTH)
 export class MinLengthValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH) {
-    super(ValidationKeys.MIN_LENGTH, message, String.name, Array.name);
+    super(message, String.name, Array.name);
   }
 
   /**

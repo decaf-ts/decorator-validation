@@ -17,7 +17,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.MAX_LENGTH)
 export class MaxLengthValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH) {
-    super(ValidationKeys.MAX_LENGTH, message, String.name, Array.name);
+    super(message, String.name, Array.name);
   }
 
   /**

@@ -16,7 +16,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.REQUIRED)
 export class RequiredValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
-    super(ValidationKeys.REQUIRED, message);
+    super(message);
   }
 
   /**

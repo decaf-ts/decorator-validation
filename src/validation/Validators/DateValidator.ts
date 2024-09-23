@@ -16,7 +16,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.DATE)
 export class DateValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.DATE) {
-    super(ValidationKeys.DATE, message, Number.name, Date.name, String.name);
+    super(message, Number.name, Date.name, String.name);
   }
 
   /**

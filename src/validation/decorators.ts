@@ -14,20 +14,8 @@ import { PasswordValidator } from "./Validators/PasswordValidator";
 import { ValidatorDefinition } from "./Validators/types";
 import { Validator } from "./Validators/Validator";
 import { parseDate } from "../utils";
+import {getValidationKey} from "./utils";
 
-/**
- * @summary Builds the key to store as Metadata under Reflections
- * @description concatenates {@link ValidationKeys#REFLECT} with the provided key
- *
- * @param {string} key
- *
- * @function getModelKey
- * @memberOf module:decorator-validation.Utils
- * @category Utilities
- */
-export function getValidationKey(key: string) {
-  return ValidationKeys.REFLECT + key;
-}
 
 /**
  * @summary Marks the property as required.

@@ -26,7 +26,7 @@ export class PasswordValidator extends PatternValidator {
     errorMessage = DEFAULT_ERROR_MESSAGES.PASSWORD,
     passwordPattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
   ) {
-    super(ValidationKeys.PASSWORD, errorMessage);
+    super(errorMessage);
     this.pattern = passwordPattern;
   }
 

@@ -16,7 +16,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.MIN)
 export class MinValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN) {
-    super(ValidationKeys.MIN, message, "number", "Date", "string");
+    super(message, "number", "Date", "string");
   }
 
   /**

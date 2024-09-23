@@ -1,5 +1,14 @@
 import "reflect-metadata";
-import {constructFromObject, Errors, Model, Validator} from "../../src";
+import {
+    constructFromObject,
+    Errors,
+    metadata,
+    Model,
+    ValidationKeys,
+    ValidationMetadata,
+    validator,
+    Validator
+} from "../../src";
 import {Validation} from "../../src/validation/Validation";
 import {ValidatorDefinition} from "../../src";
 import {getValidationKey} from "../../src";
@@ -44,9 +53,10 @@ function calculateGtinCheckSum(digits: string) : string{
 const CUSTOM_VALIDATION_KEY = "gtin";
 const CUSTOM_VALIDATION_ERROR_MESSAGE = "Not a valid Gtin"
 
+@validator(CUSTOM_VALIDATION_KEY)
 class GtinValidator extends Validator{
     constructor(message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) {
-        super(CUSTOM_VALIDATION_KEY, message);
+        super(message);
     }
 
     hasErrors(value: number | string, message?: string): Errors{
@@ -62,17 +72,14 @@ class GtinValidator extends Validator{
     }
 }
 
-const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(
+const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
+    return metadata<ValidationMetadata>(
         getValidationKey(CUSTOM_VALIDATION_KEY),
         {
             message: message,
             types: ['string', 'number']
         },
-        target,
-        propertyKey
     );
-    Validation.register({validator: GtinValidator, validationKey: CUSTOM_VALIDATION_KEY, save: false} as unknown as ValidatorDefinition);
 }
 
 class TestModel extends Model {

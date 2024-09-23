@@ -1,8 +1,6 @@
 import { Validator } from "./Validators/Validator";
 import { IValidatorRegistry, ValidatorDefinition } from "./Validators/types";
-import { TypeValidator } from "./Validators/TypeValidator";
 import { ValidatorRegistry } from "./Validators/ValidatorRegistry";
-import { ModelKeys } from "../utils/constants";
 
 /**
  * @summary Static class acting as a namespace for the Validation
@@ -43,11 +41,7 @@ export class Validation {
    */
   private static getRegistry() {
     if (!Validation.actingValidatorRegistry)
-      Validation.actingValidatorRegistry = new ValidatorRegistry({
-        validator: TypeValidator,
-        validationKey: ModelKeys.TYPE,
-        save: false,
-      });
+      Validation.actingValidatorRegistry = new ValidatorRegistry();
     return Validation.actingValidatorRegistry;
   }
 

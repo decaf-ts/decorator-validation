@@ -16,7 +16,7 @@ import { validator } from "./decorators";
 @validator(ValidationKeys.MAX)
 export class MaxValidator extends Validator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX) {
-    super(ValidationKeys.MAX, message, "number", "Date", "string");
+    super(message, "number", "Date", "string");
   }
 
   /**
