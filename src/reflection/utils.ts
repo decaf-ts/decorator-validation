@@ -153,7 +153,7 @@ export function getAllPropertyDecorators<T extends Model>(
     accum: Record<string, DecoratorMetadata[]>,
     key: string,
     decorators: DecoratorMetadata[],
-  ): Record<string, DecoratorMetadata[]> {
+  ): void {
     if (!decorators || !decorators.length) return;
     if (!accum[key]) accum[key] = [];
     accum[key].push(...decorators);
