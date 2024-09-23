@@ -75,8 +75,8 @@ fi
 npm version "$TAG" -m "$MESSAGE"
 
 git push --follow-tags
-
-if [[ "$MESSAGE" =~ -no-ci$ ]]; then
-  TOKEN=$(cat .token) npm publish
-fi
+#
+#if [[ "$MESSAGE" =~ -no-ci$ ]]; then
+#  TOKEN=$(cat .token) npm publish
+#fi
 
