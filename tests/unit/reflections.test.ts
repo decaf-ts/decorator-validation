@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import {metadata} from "../../src/reflection/decorators";
+import {metadata} from "@decaf-ts/reflection";
 
 describe("reflections", () => {
     describe("@metadata", () => {

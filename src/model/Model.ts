@@ -3,9 +3,9 @@ import {
   ValidationKeys,
 } from "../validation/Validators/constants";
 import {
-  DecoratorMetadata,
   Errors,
   ModelErrors,
+  ValidationDecoratorDefinition,
   ValidationPropertyDecoratorDefinition,
 } from "../validation/types";
 import { JSONSerializer, Serializer } from "../utils/serialization";
@@ -21,10 +21,13 @@ import {
 } from "./construction";
 import { ModelRegistryManager } from "./Registry";
 import { Validation } from "../validation/Validation";
-import { getPropertyDecorators } from "../reflection/utils";
 import { HashingFunction, hashObj } from "../utils/hashing";
 import { sf } from "../utils/strings";
-import { isEqual } from "../utils/equality";
+import {
+  getPropertyDecorators,
+  isEqual,
+  DecoratorMetadata,
+} from "@decaf-ts/reflection";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
@@ -61,15 +64,17 @@ export function validate<T extends Model>(
 
       if (!decorators || !decorators.length) return accum;
 
-      // @ts-expect-error due to type casting in decorators
-      const defaultTypeDecorator: { key: string; props: { name: string } } =
-        decorators[0];
+      const defaultTypeDecorator: ValidationDecoratorDefinition = decorators[0];
 
       // tries to find any type decorators or other decorators that already enforce type (the ones with the allowed types property defined). if so, skip the default type verification
       if (
-        decorators.find((d) => {
+        decorators.find((d: ValidationDecoratorDefinition) => {
           if (d.key === ValidationKeys.TYPE) return true;
-          if (d.props.types?.find((t) => t === defaultTypeDecorator.props.name))
+          if (
+            d.props.types?.find(
+              (t: string) => t === defaultTypeDecorator.props.name,
+            )
+          )
             return true;
           return false;
         })

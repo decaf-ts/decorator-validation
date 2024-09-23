@@ -1,3 +1,4 @@
+import { DecoratorMetadata } from "@decaf-ts/reflection";
 /**
  * @summary Validator Error type
  * @memberOf module:decorator-validation.Validation
@@ -16,13 +17,6 @@ export type ValidationMetadata = {
   message: string;
   types?: string[];
 };
-
-/**
- * @summary Type for decorator metadata
- * @memberOf module:decorator-validation.Reflection
- * @category Reflection
- */
-export type DecoratorMetadata = { key: string; props: Record<string, any> };
 
 /**
  * @summary Type for a validator property decorator definition

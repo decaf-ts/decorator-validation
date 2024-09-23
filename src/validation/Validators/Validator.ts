@@ -1,7 +1,7 @@
 import { Errors } from "../types";
 import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { sf } from "../../utils/strings";
-import { checkTypes } from "../../reflection/utils";
+import { checkTypes } from "@decaf-ts/reflection";
 
 /**
  * @summary Base Implementation for Validators

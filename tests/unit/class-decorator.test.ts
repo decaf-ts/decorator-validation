@@ -1,4 +1,5 @@
-import {getClassDecorators, model, Model, ModelKeys} from "../../src";
+import {model, Model, ModelKeys} from "../../src";
+import {getClassDecorators} from "@decaf-ts/reflection";
 
 @model()
 class TestModel extends Model {

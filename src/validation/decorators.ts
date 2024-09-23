@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { ListValidator } from "./Validators/ListValidator";
 import { Validation } from "./Validation";
 import { ValidationMetadata } from "./types";
-import { metadata } from "../reflection/decorators";
 import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
@@ -15,6 +14,7 @@ import { ValidatorDefinition } from "./Validators/types";
 import { Validator } from "./Validators/Validator";
 import { parseDate } from "../utils";
 import { getValidationKey } from "./utils";
+import { metadata } from "@decaf-ts/reflection";
 
 /**
  * @summary Marks the property as required.

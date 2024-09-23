@@ -1,5 +1,6 @@
 import {constructFromObject, required, Model, model} from "../../src";
-import {getPropertyDecorators, hashObj} from "../../src";
+import {hashObj} from "../../src";
+import {getPropertyDecorators} from "@decaf-ts/reflection";
 
 type Callback = (...args: any) => void;
 

@@ -92,6 +92,7 @@
     "webpack-stream": "^7.0.0"
   },
   "peerDependencies": {
+    "@decaf-ts/reflection": "latest",
     "reflect-metadata": "^0.2.1"
   }
 }

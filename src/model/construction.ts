@@ -1,10 +1,10 @@
 import { Model } from "./Model";
-import { DecoratorMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
-import { getPropertyDecorators, isModel } from "../reflection/utils";
 import { sf } from "../utils/strings";
+import { getPropertyDecorators, DecoratorMetadata } from "@decaf-ts/reflection";
+import { isModel } from "./utils";
 
 /**
  * @summary Repopulates the Object properties with the ones from the new object

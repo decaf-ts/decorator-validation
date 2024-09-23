@@ -2,7 +2,6 @@ import "reflect-metadata";
 import {
     constructFromObject,
     Errors,
-    metadata,
     Model,
     ValidationKeys,
     ValidationMetadata,
@@ -10,8 +9,8 @@ import {
     Validator
 } from "../../src";
 import {Validation} from "../../src/validation/Validation";
-import {ValidatorDefinition} from "../../src";
 import {getValidationKey} from "../../src";
+import {metadata} from "@decaf-ts/reflection";
 
 function generateGtin(){
     function pad(num: number, width: number, padding: string = '0') {
