@@ -61,6 +61,4 @@ export type ValidationElementDefinition = {
  * @memberOf module:decorator-validation.Validation
  * @category Validation
  */
-export type ModelErrors = {
-  [indexer: string]: { [indexer: string]: Errors };
-};
+export type ModelErrors = Record<string, Record<string, Errors>>;

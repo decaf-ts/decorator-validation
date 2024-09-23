@@ -143,27 +143,29 @@ export function getTypeFromDecorator(
  *
  * @memberOf module:db-decorators.Reflection
  */
-export const getAllPropertyDecorators = function <T extends Model>(
+export function getAllPropertyDecorators<T extends Model>(
   model: T,
   ...prefixes: string[]
-): Record<string, any> | undefined {
+): Record<string, DecoratorMetadata[]> | undefined {
   if (!prefixes || !prefixes.length) return;
 
-  const pushOrCreate = function (
-    accum: Record<string, Record<string, any>>,
+  function pushOrCreate(
+    accum: Record<string, DecoratorMetadata[]>,
     key: string,
-    decorators: any[],
-  ) {
+    decorators: DecoratorMetadata[],
+  ): Record<string, DecoratorMetadata[]> {
     if (!decorators || !decorators.length) return;
     if (!accum[key]) accum[key] = [];
     accum[key].push(...decorators);
-  };
+  }
 
   return Object.getOwnPropertyNames(model).reduce(
     (accum: Record<string, any> | undefined, propKey) => {
       prefixes.forEach((p, index) => {
-        const decorators: { prop: string | symbol; decorators: any[] } =
-          getPropertyDecorators(p, model, propKey, index !== 0);
+        const decorators: {
+          prop: string;
+          decorators: DecoratorMetadata[];
+        } = getPropertyDecorators(p, model, propKey, index !== 0);
         if (!accum) accum = {};
         pushOrCreate(accum, propKey, decorators.decorators);
       });
@@ -171,7 +173,7 @@ export const getAllPropertyDecorators = function <T extends Model>(
     },
     undefined,
   );
-};
+}
 
 /**
  * @summary Retrieves all properties of an object
