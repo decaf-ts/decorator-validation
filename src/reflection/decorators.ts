@@ -33,7 +33,6 @@ export function metadata<V>(key: string, value: V): CustomDecorator<V> {
   };
 }
 
-
 /**
  * @summary Decorator that assigns metadata to the class/method using the
  * specified `key`.
@@ -46,12 +45,13 @@ export function metadata<V>(key: string, value: V): CustomDecorator<V> {
  * @category Decorators
  */
 export function apply(
-    ...decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator>
+  ...decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator>
 ) {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   return <TFunction extends Function, Y>(
-      target: TFunction | object,
-      propertyKey?: string | symbol,
-      descriptor?: TypedPropertyDescriptor<Y>,
+    target: TFunction | object,
+    propertyKey?: string | symbol,
+    descriptor?: TypedPropertyDescriptor<Y>,
   ) => {
     for (const decorator of decorators) {
       if (target instanceof Function && !descriptor) {
@@ -59,9 +59,9 @@ export function apply(
         continue;
       }
       (decorator as MethodDecorator | PropertyDecorator)(
-          target,
-          propertyKey as string | symbol,
-          descriptor as TypedPropertyDescriptor<Y>,
+        target,
+        propertyKey as string | symbol,
+        descriptor as TypedPropertyDescriptor<Y>,
       );
     }
   };

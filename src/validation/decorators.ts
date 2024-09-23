@@ -14,8 +14,7 @@ import { PasswordValidator } from "./Validators/PasswordValidator";
 import { ValidatorDefinition } from "./Validators/types";
 import { Validator } from "./Validators/Validator";
 import { parseDate } from "../utils";
-import {getValidationKey} from "./utils";
-
+import { getValidationKey } from "./utils";
 
 /**
  * @summary Marks the property as required.

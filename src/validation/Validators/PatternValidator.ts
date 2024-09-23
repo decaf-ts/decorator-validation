@@ -18,9 +18,7 @@ export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
  */
 @validator(ValidationKeys.PATTERN)
 export class PatternValidator extends Validator {
-  constructor(
-    message: string = DEFAULT_ERROR_MESSAGES.PATTERN,
-  ) {
+  constructor(message: string = DEFAULT_ERROR_MESSAGES.PATTERN) {
     super(message, "string");
   }
 

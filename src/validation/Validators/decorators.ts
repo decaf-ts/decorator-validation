@@ -18,16 +18,16 @@ import { getValidationKey } from "../utils";
  */
 export function validator<T extends Validator>(...keys: string[]) {
   return apply(
-      ((original: Constructor<T>) => {
-          keys.forEach((k: string) => {
-              Validation.register({
-                  validator: original,
-                  validationKey: k,
-                  save: true,
-              } as ValidatorDefinition);
-          })
-        return original;
-      }) as ClassDecorator,
-      metadata(getValidationKey(ValidationKeys.VALIDATOR), keys)
-  )
+    ((original: Constructor<T>) => {
+      keys.forEach((k: string) => {
+        Validation.register({
+          validator: original,
+          validationKey: k,
+          save: true,
+        } as ValidatorDefinition);
+      });
+      return original;
+    }) as ClassDecorator,
+    metadata(getValidationKey(ValidationKeys.VALIDATOR), keys),
+  );
 }

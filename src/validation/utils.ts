@@ -1,4 +1,4 @@
-import {ValidationKeys} from "./Validators/constants";
+import { ValidationKeys } from "./Validators/constants";
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -11,5 +11,5 @@ import {ValidationKeys} from "./Validators/constants";
  * @category Utilities
  */
 export function getValidationKey(key: string) {
-    return ValidationKeys.REFLECT + key;
+  return ValidationKeys.REFLECT + key;
 }
