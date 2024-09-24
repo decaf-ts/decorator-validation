@@ -26,7 +26,7 @@ export class TypeValidator extends Validator {
    * @param {string | string[] | {name: string}} types
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

@@ -36,7 +36,7 @@ export class PasswordValidator extends PatternValidator {
    * @param {RegExp} [pattern]
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

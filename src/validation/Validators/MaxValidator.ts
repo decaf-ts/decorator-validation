@@ -25,7 +25,7 @@ export class MaxValidator extends Validator {
    * @param {number | Date | string} max
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

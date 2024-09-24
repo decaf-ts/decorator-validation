@@ -40,7 +40,7 @@ export class PatternValidator extends Validator {
    * @param {RegExp | string} pattern
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

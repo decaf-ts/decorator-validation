@@ -25,7 +25,7 @@ export class StepValidator extends Validator {
    * @param {number} step
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

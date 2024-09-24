@@ -25,7 +25,7 @@ export class MinValidator extends Validator {
    * @param {number | Date | string} min
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

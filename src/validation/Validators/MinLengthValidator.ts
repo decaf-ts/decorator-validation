@@ -25,7 +25,7 @@ export class MinLengthValidator extends Validator {
    * @param {number} minlength
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @memberOf MinLengthValidator
    * @override

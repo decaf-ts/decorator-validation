@@ -2,7 +2,7 @@
  * @summary Util function to provide string format functionality similar to C#'s string.format
  *
  * @param {string} string
- * @param {(string | number)[]} [args] replacements made by order of appearance (replacement0 wil replace {0} and so on)
+ * @param {Array<string | number>} [args] replacements made by order of appearance (replacement0 wil replace {0} and so on)
  * @return {string} formatted string
  *
  * @function stringFormat

@@ -28,7 +28,7 @@ export class EmailValidator extends PatternValidator {
    * @param {string} value
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

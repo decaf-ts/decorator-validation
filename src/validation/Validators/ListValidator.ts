@@ -25,7 +25,7 @@ export class ListValidator extends Validator {
    * @param {string} clazz
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

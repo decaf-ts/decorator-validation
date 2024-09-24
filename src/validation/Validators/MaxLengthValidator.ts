@@ -26,7 +26,7 @@ export class MaxLengthValidator extends Validator {
    * @param {number} maxlength
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

@@ -24,7 +24,7 @@ export class RequiredValidator extends Validator {
    * @param {string} value
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *

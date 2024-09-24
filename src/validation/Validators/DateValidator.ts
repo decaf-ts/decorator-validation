@@ -25,7 +25,7 @@ export class DateValidator extends Validator {
    * @param {string} format
    * @param {string} [message]
    *
-   * @return Errors
+   * @return {string | undefined}
    *
    * @override
    *
