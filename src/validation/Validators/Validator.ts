@@ -46,7 +46,7 @@ export abstract class Validator {
    * @private
    */
   private checkTypeAndHasErrors(
-    unbound: (value: string, ...args: any[]) => Errors,
+    unbound: (value: any, ...args: any[]) => string | undefined,
   ) {
     return function (
       this: Validator,
