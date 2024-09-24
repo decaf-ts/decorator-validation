@@ -3,7 +3,6 @@ import {
   ValidationKeys,
 } from "../validation/Validators/constants";
 import {
-  Errors,
   ModelErrors,
   ValidationDecoratorDefinition,
   ValidationPropertyDecoratorDefinition,
@@ -81,39 +80,40 @@ export function validate<T extends Model>(
       )
         decorators.shift(); // remove the design:type decorator, since the type will already be checked
 
-      let errs: { [indexer: string]: Errors } | undefined = decorators.reduce(
-        (
-          acc: undefined | { [indexer: string]: Errors },
-          decorator: { key: string; props: object },
-        ) => {
-          const validator = Validation.get(decorator.key);
-          if (!validator) {
+      let errs: { [indexer: string]: string | undefined } | undefined =
+        decorators.reduce(
+          (
+            acc: undefined | { [indexer: string]: string | undefined },
+            decorator: { key: string; props: object },
+          ) => {
+            const validator = Validation.get(decorator.key);
+            if (!validator) {
+              return acc;
+            }
+
+            const err: string | undefined = validator.hasErrors(
+              obj[prop.toString()],
+              ...(decorator.key === ModelKeys.TYPE
+                ? [decorator.props]
+                : Object.values(decorator.props)),
+            );
+
+            if (err) {
+              acc = acc || {};
+              acc[decorator.key] = err;
+            }
+
             return acc;
-          }
-
-          const err: Errors = validator.hasErrors(
-            obj[prop.toString()],
-            ...(decorator.key === ModelKeys.TYPE
-              ? [decorator.props]
-              : Object.values(decorator.props)),
-          );
-
-          if (err) {
-            acc = acc || {};
-            acc[decorator.key] = err;
-          }
-
-          return acc;
-        },
-        undefined,
-      );
+          },
+          undefined,
+        );
 
       errs =
         errs ||
         Object.keys(obj)
           .filter((k) => !errs || !errs[k])
           .reduce((acc: Record<string, any> | undefined, prop) => {
-            let err: Errors;
+            let err: string | undefined;
             // if a nested Model
             const allDecorators = getPropertyDecorators(
               ValidationKeys.REFLECT,

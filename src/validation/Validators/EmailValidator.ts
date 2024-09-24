@@ -3,7 +3,6 @@ import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
 } from "./constants";
-import { Errors } from "../types";
 import { PatternValidator } from "./PatternValidator";
 import { validator } from "./decorators";
 
@@ -35,7 +34,7 @@ export class EmailValidator extends PatternValidator {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(value: string, message?: string): Errors {
+  public hasErrors(value: string, message?: string): string | undefined {
     return super.hasErrors(value, DEFAULT_PATTERNS.EMAIL, message);
   }
 }

@@ -1,4 +1,3 @@
-import { Errors } from "../types";
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { validator } from "./decorators";
@@ -37,7 +36,7 @@ export class MaxLengthValidator extends Validator {
     value: string | any[],
     maxlength: number,
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (value === undefined) return;
     return value.length > maxlength
       ? this.getMessage(message || this.message, maxlength)

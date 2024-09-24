@@ -1,5 +1,4 @@
 import { Validator } from "./Validator";
-import { Errors } from "../types";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 
@@ -32,7 +31,11 @@ export class ListValidator extends Validator {
    *
    * @see Validator#hasErrors
    */
-  hasErrors(value: any[] | Set<any>, clazz: string, message?: string): Errors {
+  hasErrors(
+    value: any[] | Set<any>,
+    clazz: string,
+    message?: string,
+  ): string | undefined {
     if (!value || (Array.isArray(value) ? !value.length : !value.size)) return;
 
     let val;

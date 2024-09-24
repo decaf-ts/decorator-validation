@@ -4,7 +4,6 @@ import {
   DEFAULT_PATTERNS,
   ValidationKeys,
 } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 /**
@@ -43,7 +42,11 @@ export class PasswordValidator extends PatternValidator {
    *
    * @see PatternValidator#hasErrors
    */
-  public hasErrors(value: string, pattern: RegExp, message?: string): Errors {
+  public hasErrors(
+    value: string,
+    pattern: RegExp,
+    message?: string,
+  ): string | undefined {
     return super.hasErrors(
       value,
       pattern || this.pattern,

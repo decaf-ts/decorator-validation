@@ -1,6 +1,5 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 /**
@@ -36,7 +35,7 @@ export class DateValidator extends Validator {
     value: Date | string,
     format: string,
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (value === undefined) return;
 
     if (typeof value === "string") value = new Date(value);

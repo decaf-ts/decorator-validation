@@ -1,6 +1,5 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
@@ -51,7 +50,7 @@ export class PatternValidator extends Validator {
     value: string,
     pattern?: RegExp | string,
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (!value) return;
     if (!pattern) throw new Error("Missing Pattern");
     pattern = typeof pattern === "string" ? this.getPattern(pattern) : pattern;

@@ -1,6 +1,5 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 /**
@@ -36,7 +35,7 @@ export class StepValidator extends Validator {
     value: number | string,
     step: number | string,
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (value === undefined) return;
     return Number(value) % Number(step) !== 0
       ? this.getMessage(message || this.message, step)

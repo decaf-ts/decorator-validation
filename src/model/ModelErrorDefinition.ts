@@ -1,4 +1,4 @@
-import { Errors, ModelErrors } from "../validation/types";
+import { ModelErrors } from "../validation/types";
 
 /**
  * @summary Helper Class to hold the error results
@@ -12,7 +12,9 @@ import { Errors, ModelErrors } from "../validation/types";
  * @category Model
  */
 export class ModelErrorDefinition {
-  [indexer: string]: Record<string, Errors> | (() => Errors);
+  [indexer: string]:
+    | Record<string, string | undefined>
+    | (() => string | undefined);
 
   constructor(errors: ModelErrors) {
     for (const prop in errors) {

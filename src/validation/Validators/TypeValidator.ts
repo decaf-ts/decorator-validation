@@ -1,4 +1,3 @@
-import { Errors } from "../types";
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
@@ -37,7 +36,7 @@ export class TypeValidator extends Validator {
     value: any,
     types: string | string[] | { name: string },
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (value === undefined) return; // Dont try and enforce type if undefined
     if (!evaluateDesignTypes(value, types))
       return this.getMessage(

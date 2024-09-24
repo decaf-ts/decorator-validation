@@ -1,10 +1,4 @@
 import { DecoratorMetadata } from "@decaf-ts/reflection";
-/**
- * @summary Validator Error type
- * @memberOf module:decorator-validation.Validation
- * @category Validation
- */
-export type Errors = string | undefined;
 
 /**
  * @summary Type for validation decorator metadata
@@ -55,4 +49,4 @@ export type ValidationElementDefinition = {
  * @memberOf module:decorator-validation.Validation
  * @category Validation
  */
-export type ModelErrors = Record<string, Record<string, Errors>>;
+export type ModelErrors = Record<string, Record<string, string | undefined>>;

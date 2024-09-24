@@ -1,6 +1,5 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 /**
@@ -31,7 +30,7 @@ export class RequiredValidator extends Validator {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(value: any, message?: string): Errors {
+  public hasErrors(value: any, message?: string): string | undefined {
     switch (typeof value) {
       case "boolean":
       case "number":

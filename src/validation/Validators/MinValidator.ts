@@ -1,6 +1,5 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 /**
@@ -36,7 +35,7 @@ export class MinValidator extends Validator {
     value: number | Date | string,
     min: number | Date | string,
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (value === undefined) return;
 
     if (value instanceof Date && !(min instanceof Date)) {

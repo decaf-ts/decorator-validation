@@ -1,6 +1,5 @@
 import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
-import { Errors } from "../types";
 import { validator } from "./decorators";
 
 /**
@@ -37,7 +36,7 @@ export class MinLengthValidator extends Validator {
     value: string | any[],
     minlength: number,
     message?: string,
-  ): Errors {
+  ): string | undefined {
     if (value === undefined) return;
     return value.length < minlength
       ? this.getMessage(message || this.message, minlength)

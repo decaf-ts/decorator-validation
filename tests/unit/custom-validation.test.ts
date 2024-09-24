@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import {
     constructFromObject,
-    Errors,
     Model,
     ValidationKeys,
     ValidationMetadata,
@@ -58,7 +57,7 @@ class GtinValidator extends Validator{
         super(message);
     }
 
-    hasErrors(value: number | string, message?: string): Errors{
+    hasErrors(value: number | string, message?: string): string | undefined {
         if (value === undefined)
             return;
         const gtin = value + '';
