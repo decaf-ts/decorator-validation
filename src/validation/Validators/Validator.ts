@@ -48,7 +48,11 @@ export abstract class Validator {
   private checkTypeAndHasErrors(
     unbound: (value: string, ...args: any[]) => Errors,
   ) {
-    return function (this: Validator, value: any, ...args: any[]): Errors {
+    return function (
+      this: Validator,
+      value: any,
+      ...args: any[]
+    ): string | undefined {
       if (value === undefined || !this.acceptedTypes)
         return unbound(value, ...args);
       if (!checkTypes(value, this.acceptedTypes))
@@ -70,5 +74,5 @@ export abstract class Validator {
    *
    * @see Model#hasErrors
    */
-  public abstract hasErrors(value: any, ...args: any[]): Errors;
+  public abstract hasErrors(value: any, ...args: any[]): string | undefined;
 }
