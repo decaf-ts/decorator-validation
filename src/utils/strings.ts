@@ -2,14 +2,14 @@
  * @summary Util function to provide string format functionality similar to C#'s string.format
  *
  * @param {string} string
- * @param {string} args replacements made by order of appearance (replacement0 wil replace {0} and so on)
+ * @param {(string | number)[]} [args] replacements made by order of appearance (replacement0 wil replace {0} and so on)
  * @return {string} formatted string
  *
  * @function stringFormat
  * @memberOf module:decorator-validation.Utils.Format
  * @category Format
  */
-export function stringFormat(string: string, ...args: string[]) {
+export function stringFormat(string: string, ...args: (string | number)[]) {
   return string.replace(/{(\d+)}/g, function (match, number) {
     return typeof args[number] !== "undefined" ? args[number] : match;
   });
