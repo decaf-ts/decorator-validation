@@ -6,3 +6,4 @@ export * from "./ModelErrorDefinition";
 export * from "./Registry";
 export * from "./types";
 export * from "./utils";
+export * from "./validation";
