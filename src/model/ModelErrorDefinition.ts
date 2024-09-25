@@ -1,4 +1,4 @@
-import { ModelErrors } from "../validation/types";
+import { ModelErrors } from "../validation";
 
 /**
  * @summary Helper Class to hold the error results
@@ -19,7 +19,7 @@ export class ModelErrorDefinition {
   constructor(errors: ModelErrors) {
     for (const prop in errors) {
       if (errors.hasOwnProperty(prop) && errors[prop])
-        Object.defineProperty(this, prop, {
+        Object.defineProperty(this as any, prop, {
           enumerable: true,
           configurable: false,
           value: errors[prop],
@@ -34,16 +34,13 @@ export class ModelErrorDefinition {
    * @override
    */
   toString(): string {
-    const self = this;
+    const self: any = this as any;
     return Object.keys(self)
       .filter((k) => self.hasOwnProperty(k) && typeof self[k] !== "function")
       .reduce((accum: string, prop) => {
         let propError: string | undefined = Object.keys(self[prop]).reduce(
           (propAccum: undefined | string, key) => {
-            if (!propAccum)
-              // @ts-expect-error because i said so
-              propAccum = self[prop][key];
-            // @ts-expect-error because i said so
+            if (!propAccum) propAccum = self[prop][key];
             else propAccum += `\n${self[prop][key]}`;
             return propAccum;
           },

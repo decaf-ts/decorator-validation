@@ -1,6 +1,6 @@
 import { Model } from "./Model";
 import { ValidationKeys } from "../validation/Validators/constants";
-import { ReservedModels } from "./constants";
+import { jsTypes, ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { getPropertyDecorators, DecoratorMetadata } from "@decaf-ts/reflection";
@@ -59,8 +59,7 @@ export function constructFromModel<T extends Model>(
       (self.hasOwnProperty(prop) ||
         (self.prototype && self.prototype.hasOwnProperty(prop)))
     ) {
-      (self as Record<string, any>)[prop] =
-        (obj as Record<string, any>)[prop] || undefined;
+      (self as Record<string, any>)[prop] = (obj as Record<string, any>)[prop];
       if (typeof self[prop] !== "object") continue;
       if (isModel((self as Record<string, any>)[prop])) {
         try {
@@ -68,7 +67,7 @@ export function constructFromModel<T extends Model>(
             (self as Record<string, any>)[prop],
           );
         } catch (e: any) {
-          console.error(e);
+          console.log(e);
         }
         continue;
       }
@@ -105,16 +104,24 @@ export function constructFromModel<T extends Model>(
                     (d) => d.key === ValidationKeys.LIST,
                   );
                   if (listDec) {
+                    const clazzName = listDec.props.class.find(
+                      (t: string) => !jsTypes.includes(t.toLowerCase()),
+                    );
                     if (c === "Array")
                       (self as Record<string, any>)[prop] = (
                         self as Record<string, any>
-                      )[prop].map((el: any) =>
-                        Model.build(el, listDec.props.class),
-                      );
+                      )[prop].map((el: any) => {
+                        return ["object", "function"].includes(typeof el) &&
+                          clazzName
+                          ? Model.build(el, clazzName)
+                          : el;
+                      });
                     if (c === "Set") {
                       const s = new Set();
                       for (const v of (self as Record<string, any>)[prop]) {
-                        s.add(Model.build(v, listDec.props.class));
+                        ["object", "function"].includes(typeof v) && clazzName
+                          ? s.add(Model.build(v, clazzName))
+                          : s.add(v);
                       }
                       (self as Record<string, any>)[prop] = s;
                     }

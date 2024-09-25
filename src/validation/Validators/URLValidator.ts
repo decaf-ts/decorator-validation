@@ -33,7 +33,11 @@ export class URLValidator extends PatternValidator {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(value: string, message?: string): string | undefined {
-    return super.hasErrors(value, DEFAULT_PATTERNS.URL, message);
+  public hasErrors(
+    value: string,
+    pattern?: RegExp,
+    message?: string,
+  ): string | undefined {
+    return super.hasErrors(value, pattern || DEFAULT_PATTERNS.URL, message);
   }
 }

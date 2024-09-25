@@ -39,3 +39,16 @@ export enum ReservedModels {
   BIGINT = "bigint",
   DATE = "date",
 }
+
+export const jsTypes = [
+  "string",
+  "array",
+  "number",
+  "boolean",
+  "symbol",
+  "function",
+  "object",
+  "undefined",
+  "null",
+  "bigint",
+];

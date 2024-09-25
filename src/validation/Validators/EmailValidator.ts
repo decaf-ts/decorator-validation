@@ -26,6 +26,7 @@ export class EmailValidator extends PatternValidator {
    * @summary Validates a model
    *
    * @param {string} value
+   * @param {RegExp} [pattern]
    * @param {string} [message]
    *
    * @return {string | undefined}
@@ -34,7 +35,11 @@ export class EmailValidator extends PatternValidator {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(value: string, message?: string): string | undefined {
-    return super.hasErrors(value, DEFAULT_PATTERNS.EMAIL, message);
+  public hasErrors(
+    value: string,
+    pattern?: RegExp,
+    message?: string,
+  ): string | undefined {
+    return super.hasErrors(value, pattern || DEFAULT_PATTERNS.EMAIL, message);
   }
 }

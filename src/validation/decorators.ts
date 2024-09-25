@@ -14,7 +14,7 @@ import { ValidatorDefinition } from "./Validators/types";
 import { Validator } from "./Validators/Validator";
 import { parseDate } from "../utils";
 import { getValidationKey } from "./utils";
-import { metadata } from "@decaf-ts/reflection";
+import { apply, metadata } from "@decaf-ts/reflection";
 
 /**
  * @summary Marks the property as required.
@@ -188,6 +188,7 @@ export function pattern(
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
   return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.EMAIL), {
+    pattern: DEFAULT_PATTERNS.EMAIL,
     message: message,
     types: [String.name],
   });
@@ -205,6 +206,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
   return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.URL), {
+    pattern: DEFAULT_PATTERNS.URL,
     message: message,
     types: [String.name],
   });
@@ -251,16 +253,11 @@ export function date(
   message: string = DEFAULT_ERROR_MESSAGES.DATE,
 ) {
   return (target: Record<string, any>, propertyKey: string): any => {
-    Reflect.defineMetadata(
-      getValidationKey(ValidationKeys.DATE),
-      {
-        format: format,
-        message: message,
-        types: [Date.name],
-      },
-      target,
-      propertyKey,
-    );
+    metadata(getValidationKey(ValidationKeys.DATE), {
+      format: format,
+      message: message,
+      types: [Date.name],
+    })(target, propertyKey);
 
     const values = new WeakMap();
 
@@ -308,25 +305,12 @@ export function date(
 export function password(
   pattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
   message: string = DEFAULT_ERROR_MESSAGES.PASSWORD,
-  validator: Constructor<Validator> = PasswordValidator,
 ) {
-  return (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(
-      getValidationKey(ValidationKeys.PASSWORD),
-      {
-        pattern: pattern,
-        message: message,
-        types: [String.name],
-      },
-      target,
-      propertyKey,
-    );
-    Validation.register({
-      validator: validator,
-      validationKey: ValidationKeys.PASSWORD,
-      save: true,
-    } as ValidatorDefinition);
-  };
+  return metadata(getValidationKey(ValidationKeys.PASSWORD), {
+    pattern: pattern,
+    message: message,
+    types: [String.name],
+  });
 }
 
 /**
@@ -344,29 +328,15 @@ export function password(
  * @category Decorators
  */
 export function list(
-  clazz: ModelConstructor<any>,
+  clazz: ModelConstructor<any> | ModelConstructor<any>[],
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST,
-  validator: Constructor<Validator> = ListValidator,
 ) {
-  return (target: any, propertyKey: string): any => {
-    type(collection)(target, propertyKey);
-    Reflect.defineMetadata(
-      getValidationKey(ValidationKeys.LIST),
-      {
-        class: clazz.name,
-        type: collection,
-        message: message,
-      },
-      target,
-      propertyKey,
-    );
-    Validation.register({
-      validator: validator,
-      validationKey: ValidationKeys.LIST,
-      save: true,
-    } as ValidatorDefinition);
-  };
+  return metadata(getValidationKey(ValidationKeys.LIST), {
+    class: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
+    type: collection,
+    message: message,
+  });
 }
 
 /**
@@ -385,9 +355,6 @@ export function list(
 export function set(
   clazz: ModelConstructor<any>,
   message: string = DEFAULT_ERROR_MESSAGES.LIST,
-  validator?: Constructor<Validator>,
 ) {
-  return (target: any, propertyKey: string): any => {
-    list(clazz, "Set", message, validator)(target, propertyKey);
-  };
+  return list(clazz, "Set", message);
 }

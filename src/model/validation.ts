@@ -3,7 +3,6 @@ import {
   DEFAULT_ERROR_MESSAGES,
   ModelErrors,
   Validation,
-  ValidationDecoratorDefinition,
   ValidationKeys,
   ValidationPropertyDecoratorDefinition,
 } from "../validation";
@@ -49,17 +48,13 @@ export function validate<T extends Model>(
 
       if (!decorators || !decorators.length) return accum;
 
-      const defaultTypeDecorator: ValidationDecoratorDefinition = decorators[0];
+      const defaultTypeDecorator: DecoratorMetadata = decorators[0];
 
       // tries to find any type decorators or other decorators that already enforce type (the ones with the allowed types property defined). if so, skip the default type verification
       if (
-        decorators.find((d: ValidationDecoratorDefinition) => {
+        decorators.find((d) => {
           if (d.key === ValidationKeys.TYPE) return true;
-          if (
-            d.props.types?.find(
-              (t: string) => t === defaultTypeDecorator.props.name,
-            )
-          )
+          if (d.props.types?.find((t) => t === defaultTypeDecorator.props.name))
             return true;
           return false;
         })
@@ -70,7 +65,7 @@ export function validate<T extends Model>(
         decorators.reduce(
           (
             acc: undefined | { [indexer: string]: string | undefined },
-            decorator: { key: string; props: object },
+            decorator: DecoratorMetadata,
           ) => {
             const validator = Validation.get(decorator.key);
             if (!validator) {
@@ -106,7 +101,11 @@ export function validate<T extends Model>(
               obj,
               prop,
             ).decorators;
-            const decorators = allDecorators.filter(
+            const decorators = getPropertyDecorators(
+              ValidationKeys.REFLECT,
+              obj,
+              prop,
+            ).decorators.filter(
               (d) =>
                 [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
             );
@@ -123,6 +122,37 @@ export function validate<T extends Model>(
 
             clazz.forEach((c: string) => {
               if (reserved.indexOf(c.toLowerCase()) === -1) {
+                const typeDecoratorKey = Array.isArray(obj[prop])
+                  ? ValidationKeys.LIST
+                  : ValidationKeys.TYPE;
+                const types: any =
+                  allDecorators.find((d) => d.key === typeDecoratorKey) || {};
+                let allowedTypes: string[] = [];
+                if (types && types.props) {
+                  const customTypes = Array.isArray(obj[prop])
+                    ? types.props.class
+                    : types.props.customTypes;
+                  if (customTypes)
+                    allowedTypes = Array.isArray(customTypes)
+                      ? customTypes.map((t) => `${t}`.toLowerCase())
+                      : [customTypes.toLowerCase()];
+                }
+
+                const validate = (
+                  prop: string,
+                  idx: number,
+                  value: any,
+                ): string | undefined => {
+                  const atIndex = idx >= 0 ? `at index ${idx} ` : "";
+                  if (typeof value === "object" || typeof value === "function")
+                    return !!value.hasErrors
+                      ? value.hasErrors()
+                      : `Value in prop ${prop} ${atIndex}is not validatable`;
+                  return allowedTypes.includes(typeof value)
+                    ? undefined
+                    : `Value in prop ${prop} ${atIndex}has no valid type`;
+                };
+
                 switch (c) {
                   case "Array":
                   case "Set":
@@ -134,11 +164,14 @@ export function validate<T extends Model>(
                         const e =
                           c === "Array"
                             ? (obj as Record<string, any>)[prop].find(
-                                (c: Validatable) => c.hasErrors(),
+                                (v: Validatable, idx: number) =>
+                                  validate(prop, idx, v),
                               )
                             : (obj as Record<string, any>)[prop]
                                 .values()
-                                .find((c: Validatable) => c.hasErrors());
+                                .find((v: Validatable, idx: number) =>
+                                  validate(prop, idx, v),
+                                );
                         if (e)
                           err = sf(
                             DEFAULT_ERROR_MESSAGES.LIST_INSIDE,
@@ -150,7 +183,7 @@ export function validate<T extends Model>(
                   default:
                     try {
                       if ((obj as Record<string, any>)[prop])
-                        err = (obj as Record<string, any>)[prop].hasErrors();
+                        err = validate(prop, -1, obj[prop]);
                     } catch (e: any) {
                       console.warn(
                         sf("Model should be validatable but its not"),

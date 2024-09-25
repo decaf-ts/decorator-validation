@@ -147,7 +147,7 @@ export function bindDateToString(date: Date | undefined, format: string) {
     configurable: false,
     value: func,
   });
-
+  // Object.setPrototypeOf(date, Date.prototype);
   return date;
 }
 

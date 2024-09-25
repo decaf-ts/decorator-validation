@@ -33,12 +33,14 @@ export class ListValidator extends Validator {
    */
   hasErrors(
     value: any[] | Set<any>,
-    clazz: string,
+    clazz: string[],
     message?: string,
   ): string | undefined {
     if (!value || (Array.isArray(value) ? !value.length : !value.size)) return;
 
-    let val;
+    clazz = Array.isArray(clazz) ? clazz : [clazz];
+    let val: any,
+      isValid = true;
     for (
       let i = 0;
       i < (Array.isArray(value) ? value.length : value.size);
@@ -48,18 +50,16 @@ export class ListValidator extends Validator {
       switch (typeof val) {
         case "object":
         case "function":
-          if (
-            !(val as object).constructor ||
-            (val as object).constructor.name !== clazz
-          )
-            return this.getMessage(message || this.message, clazz);
+          isValid = clazz.includes((val as object).constructor?.name);
           break;
         default:
-          if (typeof val !== clazz)
-            return this.getMessage(message || this.message, clazz);
+          isValid = clazz.some((c) => typeof val === c.toLowerCase());
+          break;
       }
     }
 
-    return undefined;
+    return isValid
+      ? undefined
+      : this.getMessage(message || this.message, clazz);
   }
 }

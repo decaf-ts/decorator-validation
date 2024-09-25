@@ -19,14 +19,8 @@ import { validator } from "./decorators";
  */
 @validator(ValidationKeys.PASSWORD)
 export class PasswordValidator extends PatternValidator {
-  readonly pattern: RegExp;
-
-  constructor(
-    errorMessage = DEFAULT_ERROR_MESSAGES.PASSWORD,
-    passwordPattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
-  ) {
-    super(errorMessage);
-    this.pattern = passwordPattern;
+  constructor(message = DEFAULT_ERROR_MESSAGES.PASSWORD) {
+    super(message);
   }
 
   /**
@@ -44,12 +38,12 @@ export class PasswordValidator extends PatternValidator {
    */
   public hasErrors(
     value: string,
-    pattern: RegExp,
+    pattern?: RegExp,
     message?: string,
   ): string | undefined {
     return super.hasErrors(
       value,
-      pattern || this.pattern,
+      pattern || DEFAULT_ERROR_MESSAGES.PASSWORD,
       message || this.message,
     );
   }
