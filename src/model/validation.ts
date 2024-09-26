@@ -91,8 +91,6 @@ export function validate<T extends Model>(
   // tests nested classes
   for (const prop of Object.keys(obj).filter((k) => !result || !result[k])) {
     let err: string | undefined;
-    let errs: Record<string, string | undefined> | undefined = undefined;
-
     // if a nested Model
     const allDecorators = getPropertyDecorators(
       ValidationKeys.REFLECT,
@@ -179,17 +177,11 @@ export function validate<T extends Model>(
               console.warn(sf("Model should be validatable but its not"));
             }
         }
-
-        if (err) {
-          errs = errs || {};
-          errs[prop] = err;
-        }
       }
-    }
-
-    if (errs) {
-      result = result || {};
-      result[prop] = errs;
+      if (err) {
+        result = result || {};
+        result[prop] = err as any;
+      }
     }
   }
 

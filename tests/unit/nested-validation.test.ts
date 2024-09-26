@@ -75,16 +75,20 @@ describe("Nested Validation", () => {
     it("Fails the nested validation", async () => {
 
       let model = new OuterTestModel({
-        id: Date.now().toString(),
-        name: "any",
         child: {
-          id: Date.now().toString(),
-          value: undefined
         }
       })
 
-      const errs = model.hasErrors();
-      expect(errs).toBeDefined();
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors).toEqual(new ModelErrorDefinition({
+        id: {required: "This field is required"},
+        name: {required: "This field is required"},
+        child: new ModelErrorDefinition({
+          id: {required: "This field is required"},
+          value: {required: "This field is required"},
+        })
+      } as any));
     })
 
     it("Passes nested validation", async () => {
