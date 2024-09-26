@@ -6,10 +6,7 @@ import { ReservedModels } from "./constants";
 import { Validatable } from "./types";
 import { Model } from "./Model";
 import { Validation } from "../validation/Validation";
-import {
-  DEFAULT_ERROR_MESSAGES,
-  ValidationKeys,
-} from "../validation/Validators/constants";
+import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
   ValidationPropertyDecoratorDefinition,
