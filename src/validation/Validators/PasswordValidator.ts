@@ -1,9 +1,5 @@
 import { PatternValidator } from "./PatternValidator";
-import {
-  DEFAULT_ERROR_MESSAGES,
-  DEFAULT_PATTERNS,
-  ValidationKeys,
-} from "./constants";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 
 /**

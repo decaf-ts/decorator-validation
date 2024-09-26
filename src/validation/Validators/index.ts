@@ -37,17 +37,17 @@ export * from "./ValidatorRegistry";
  * @category Validation
  */
 export const Validators = {
+  DateValidator,
   EmailValidator,
-  RequiredValidator,
+  ListValidator,
   MaxLengthValidator,
   MaxValidator,
   MinLengthValidator,
   MinValidator,
-  PatternValidator,
-  URLValidator,
-  StepValidator,
-  DateValidator,
-  TypeValidator,
   PasswordValidator,
-  ListValidator,
+  PatternValidator,
+  RequiredValidator,
+  StepValidator,
+  TypeValidator,
+  URLValidator,
 };

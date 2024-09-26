@@ -1,10 +1,10 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import { ModelKeys } from "../../utils";
 import { Validation } from "../Validation";
 import { ValidatorDefinition } from "./types";
 import { evaluateDesignTypes } from "@decaf-ts/reflection";
+import { ModelKeys } from "../../utils/constants";
 
 /**
  * @summary Required Validator
