@@ -11,6 +11,8 @@ import { ModelRegistryManager } from "./Registry";
 import { isEqual } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
+import { getModelKey } from "./utils";
+import { ModelKeys } from "../utils";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -66,6 +68,17 @@ export abstract class Model implements Validatable, Serializable {
    * @summary Returns the serialized model according to the currently defined {@link Serializer}
    */
   serialize(): string {
+    const metadata = Reflect.getMetadata(
+      getModelKey(ModelKeys.SERIALIZATION),
+      this.constructor,
+    );
+
+    if (metadata && metadata.serializer)
+      return Serialization.serialize(
+        this,
+        metadata.serializer,
+        ...(metadata.args || []),
+      );
     return Serialization.serialize(this);
   }
 
@@ -81,6 +94,13 @@ export abstract class Model implements Validatable, Serializable {
    * @summary Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
    */
   public toHash(): string {
+    const metadata = Reflect.getMetadata(
+      getModelKey(ModelKeys.HASHING),
+      this.constructor,
+    );
+
+    if (metadata && metadata.algorithm)
+      return Hashing.hash(this, metadata.algorithm, ...(metadata.args || []));
     return Hashing.hash(this);
   }
 
@@ -88,9 +108,21 @@ export abstract class Model implements Validatable, Serializable {
    * @summary Deserializes a Model
    * @param {string} str
    *
+   * @param args
    * @throws {Error} If it fails to parse the string, or if it fails to build the model
    */
   static deserialize(str: string) {
+    const metadata = Reflect.getMetadata(
+      getModelKey(ModelKeys.SERIALIZATION),
+      this.constructor,
+    );
+
+    if (metadata && metadata.serializer)
+      return Serialization.deserialize(
+        str,
+        metadata.serializer,
+        ...(metadata.args || []),
+      );
     return Serialization.deserialize(str);
   }
 

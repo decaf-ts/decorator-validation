@@ -13,21 +13,23 @@ export interface Serializer<T extends Model> {
    * @summary Serializes a model
    * @param {T} model
    *
+   * @param args
    * @method
    *
    * @throws {Error}
    */
-  serialize(model: T): string;
+  serialize(model: T, ...args: any[]): string;
 
   /**
    * @summary Rebuilds a model from serialization
    * @param {string} str
    *
+   * @param args
    * @method
    *
    * @throws {Error}
    */
-  deserialize(str: string): T;
+  deserialize(str: string, ...args: any[]): T;
 }
 
 /**
@@ -111,14 +113,14 @@ export class Serialization {
     if (setDefault) this.current = key;
   }
 
-  static serialize(obj: any, method?: string) {
-    if (!method) return this.get(this.current).serialize(obj);
-    return this.get(method).serialize(obj);
+  static serialize(obj: any, method?: string, ...args: any[]) {
+    if (!method) return this.get(this.current).serialize(obj, ...args);
+    return this.get(method).serialize(obj, ...args);
   }
 
-  static deserialize(obj: string, method?: string) {
-    if (!method) return this.get(this.current).deserialize(obj);
-    return this.get(method).deserialize(obj);
+  static deserialize(obj: string, method?: string, ...args: any[]) {
+    if (!method) return this.get(this.current).deserialize(obj, ...args);
+    return this.get(method).deserialize(obj, ...args);
   }
 
   static setDefault(method: string) {

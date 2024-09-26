@@ -27,7 +27,7 @@ export function hashCode(obj: string | number | symbol | Date): string {
  * @memberOf module:decorator-validation.Utils.Hashing
  * @category Hashing
  */
-export type HashingFunction = (value: any) => string;
+export type HashingFunction = (value: any, ...args: any[]) => string;
 
 /**
  * @summary Hashes an object serializing it and then hashing the string
@@ -114,9 +114,9 @@ export class Hashing {
     if (setDefault) this.current = key;
   }
 
-  static hash(obj: any, method?: string) {
-    if (!method) return this.get(this.current)(obj);
-    return this.get(method)(obj);
+  static hash(obj: any, method?: string, ...args: any[]) {
+    if (!method) return this.get(this.current)(obj, ...args);
+    return this.get(method)(obj, ...args);
   }
 
   static setDefault(method: string) {

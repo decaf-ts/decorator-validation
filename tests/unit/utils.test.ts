@@ -1,4 +1,4 @@
-import {constructFromObject, Hashing, isModel, model, Model} from "../../src";
+import {constructFromObject, hashedBy, Hashing, isModel, model, Model, ModelArg, required} from "../../src";
 import {HashingFunction} from "../../src";
 
 @model()
@@ -68,6 +68,57 @@ describe('Hashing methods', function() {
         expect(typeof h).toBe("string")
         expect(h).toBe("AAAA");
     })
+
+    const hashIt: HashingFunction = (arg: HashModel1 | HashModel2) => {
+        return `this is a hash of ${arg.hashMe}`
+    };
+
+    Hashing.register("hash", hashIt)
+
+    @model()
+    @hashedBy("hash")
+    class HashModel1 extends Model {
+        @required()
+        hashMe?: string = undefined;
+
+        constructor(arg?: ModelArg<HashModel1>) {
+            super();
+            constructFromObject(this, arg)
+        }
+
+    }
+
+    @hashedBy("hash")
+    class HashModel2 extends Model {
+        @required()
+        hashMe?: string = undefined;
+
+        constructor(arg?: ModelArg<HashModel2>) {
+            super();
+            constructFromObject(this, arg)
+        }
+
+    }
+
+    afterEach(() => {
+        jest.resetAllMocks();
+        jest.clearAllMocks();
+    })
+
+    it("Properly tags the hashing function on model decorated classes", () => {
+        const model = new HashModel1({
+            hashMe: "hash"
+        });
+        expect(model.toHash()).toEqual(`this is a hash of hash`)
+    })
+
+    it("Properly tags the hashing function non model decorated classes classes", () => {
+        const model = new HashModel2({
+            hashMe: "hash"
+        });
+        expect(model.toHash()).toEqual(`this is a hash of hash`)
+    })
+
 });
 
 describe('Model Verification', function() {

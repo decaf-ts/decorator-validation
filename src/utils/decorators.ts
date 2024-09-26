@@ -1,22 +1,16 @@
-import { HashingFunction } from "./hashing";
 import { metadata } from "@decaf-ts/reflection";
-import { getModelKey } from "../model/decorators";
 import { ModelKeys } from "./constants";
-import { Constructor } from "../model/types";
-import { Serializer } from "./serialization";
+import { getModelKey } from "../model/utils";
 
-export function hashedBy(func: HashingFunction, ...args: any[]) {
+export function hashedBy(algorithm: string, ...args: any[]) {
   return metadata(getModelKey(ModelKeys.HASHING), {
-    func: func,
+    algorithm: algorithm,
     args: args,
   });
 }
 
-export function serializedBy(
-  serializer: Constructor<Serializer<any>>,
-  ...args: any[]
-) {
-  return metadata(getModelKey(ModelKeys.HASHING), {
+export function serializedBy(serializer: string, ...args: any[]) {
+  return metadata(getModelKey(ModelKeys.SERIALIZATION), {
     serializer: serializer,
     args: args,
   });

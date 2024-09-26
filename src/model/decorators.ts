@@ -1,17 +1,8 @@
 import { construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
+import { getModelKey } from "./utils";
 
-/**
- * @summary Builds the key to store as Metadata under Reflections
- * @description concatenates {@link ModelKeys#REFLECT} with the provided key
- * @param {string} str
- *
- * @function getModelKey
- * @memberOf module:decorator-validation.Model
- * @category Utilities
- */
-export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 /**
  * @summary defines the tpe os an InstanceCallback function
  * @memberOf module:decorator-validation.Construction
