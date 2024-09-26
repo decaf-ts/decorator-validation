@@ -1,7 +1,14 @@
 import { Serialization } from "../utils/serialization";
 import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
-import { ModelArg, ModelConstructor, Serializable, Validatable } from "./types";
+import {
+  Comparable,
+  Hashable,
+  ModelArg,
+  ModelConstructor,
+  Serializable,
+  Validatable,
+} from "./types";
 import {
   constructFromModel,
   constructFromObject,
@@ -40,7 +47,9 @@ let actingModelRegistry: BuilderRegistry<any>;
  *
  * @category Model
  */
-export abstract class Model implements Validatable, Serializable {
+export abstract class Model
+  implements Validatable, Serializable, Hashable, Comparable<Model>
+{
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected constructor(arg?: ModelArg<Model>) {}
 

@@ -70,3 +70,11 @@ export interface Serializable {
    */
   serialize(): string;
 }
+
+export interface Hashable {
+  toHash(): string;
+}
+
+export interface Comparable<T> {
+  equals(other: T, ...args: any[]): boolean;
+}
