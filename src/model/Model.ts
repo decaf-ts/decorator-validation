@@ -41,10 +41,8 @@ let actingModelRegistry: BuilderRegistry<any>;
  * @category Model
  */
 export abstract class Model implements Validatable, Serializable {
-  [indexer: string]: any;
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected constructor(model?: ModelArg<Model>) {}
+  protected constructor(arg?: ModelArg<Model>) {}
 
   /**
    * @summary Validates the object according to its decorated properties
@@ -218,5 +216,17 @@ export abstract class Model implements Validatable, Serializable {
     clazz?: string,
   ): T {
     return Model.getRegistry().build(obj, clazz);
+  }
+
+  static getMetadata<V extends Model>(model: V) {
+    const metadata = Reflect.getMetadata(
+      getModelKey(ModelKeys.MODEL),
+      model.constructor,
+    );
+    if (!metadata)
+      throw new Error(
+        "could not find metadata for provided " + model.constructor.name,
+      );
+    return metadata;
   }
 }

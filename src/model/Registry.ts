@@ -3,7 +3,7 @@ import { BuilderRegistry } from "../utils/registry";
 import { Constructor, ModelConstructor } from "./types";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
-import { isModel } from "./utils";
+import { getModelKey, isModel } from "./utils";
 
 /**
  * @summary ModelRegistry Interface
@@ -29,14 +29,9 @@ export interface ModelRegistry<T extends Model> extends BuilderRegistry<T> {}
 export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
   private cache: Record<string, ModelConstructor<T>> = {};
   private readonly testFunction: (obj: object) => boolean;
-  private readonly anchorKey: string;
 
-  constructor(
-    anchorKey: string = ModelKeys.ANCHOR,
-    testFunction: (obj: Record<string, any>) => boolean = isModel,
-  ) {
+  constructor(testFunction: (obj: Record<string, any>) => boolean = isModel) {
     this.testFunction = testFunction;
-    this.anchorKey = anchorKey;
   }
 
   /**
@@ -74,7 +69,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
   build(obj: Record<string, any> = {}, clazz?: string): T {
     if (!clazz && !this.testFunction(obj))
       throw new Error(`Provided obj is not a Model object`);
-    const name = clazz || obj[this.anchorKey].class;
+    const name = clazz || Model.getMetadata(obj as any);
     if (!(name in this.cache))
       throw new Error(
         sf(`Provided class {0} is not a registered Model object`, name),

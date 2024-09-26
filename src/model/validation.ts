@@ -68,7 +68,7 @@ export function validate<T extends Model>(
         throw new Error(`Missing validator for ${decorator.key}`);
       }
       const err: string | undefined = validator.hasErrors(
-        obj[prop.toString()],
+        (obj as any)[prop.toString()],
         ...(decorator.key === ModelKeys.TYPE
           ? [decorator.props]
           : Object.values(decorator.props)),
@@ -117,14 +117,14 @@ export function validate<T extends Model>(
 
     for (const c of clazz) {
       if (reserved.indexOf(c.toLowerCase()) === -1) {
-        const typeDecoratorKey = Array.isArray(obj[prop])
+        const typeDecoratorKey = Array.isArray((obj as any)[prop])
           ? ValidationKeys.LIST
           : ValidationKeys.TYPE;
         const types: any =
           allDecorators.find((d) => d.key === typeDecoratorKey) || {};
         let allowedTypes: string[] = [];
         if (types && types.props) {
-          const customTypes = Array.isArray(obj[prop])
+          const customTypes = Array.isArray((obj as any)[prop])
             ? types.props.class
             : types.props.customTypes;
           if (customTypes)
@@ -172,7 +172,7 @@ export function validate<T extends Model>(
           default:
             try {
               if ((obj as Record<string, any>)[prop])
-                err = validate(prop, -1, obj[prop]);
+                err = validate(prop, -1, (obj as any)[prop]);
             } catch (e: any) {
               console.warn(sf("Model should be validatable but its not"));
             }

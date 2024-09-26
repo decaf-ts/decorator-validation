@@ -1,4 +1,5 @@
-import {model, Model, ModelKeys} from "../../src";
+import {model, Model} from "../../src";
+import "reflect-metadata"
 
 @model()
 class TestModel extends Model {
@@ -37,8 +38,8 @@ describe('Model Registry', () => {
 
         expect(tm.equals(rebuiltTm)).toBe(true);
         expect(tm === rebuiltTm).toBe(false);
-        expect(tm.prototype).toBe(rebuiltTm.prototype);
-        expect(rebuiltTm[ModelKeys.ANCHOR]).toBeDefined();
+        expect((tm as any).prototype).toBe(rebuiltTm.prototype);
+        expect(Model.getMetadata(tm)).toEqual(TestModel.name)
 
     })
 })

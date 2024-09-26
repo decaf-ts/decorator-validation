@@ -1,5 +1,6 @@
 import { ModelKeys } from "../utils/constants";
 import { getClassDecorators } from "@decaf-ts/reflection";
+import { Model } from "./Model";
 
 /**
  * @summary Builds the key to store as Metadata under Reflections
@@ -21,10 +22,9 @@ export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  * @category Validation
  */
 export function isModel(target: Record<string, any>) {
-  return (
-    !!target[ModelKeys.ANCHOR] ||
-    !!getClassDecorators(ModelKeys.REFLECT, target).find(
-      (dec) => dec.key === ModelKeys.MODEL && dec.props && dec.props.class,
-    )
-  );
+  try {
+    return !!Model.getMetadata(target as any);
+  } catch (e: any) {
+    return false;
+  }
 }

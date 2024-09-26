@@ -26,9 +26,10 @@ export function constructFromObject<T extends Model>(
     if (
       obj.hasOwnProperty(prop) &&
       (self.hasOwnProperty(prop) ||
-        (self.prototype && self.prototype.hasOwnProperty(prop)))
+        ((self as any).prototype &&
+          (self as any).prototype.hasOwnProperty(prop)))
     )
-      (self as any)[prop] = obj[prop] || undefined;
+      (self as any)[prop] = (obj as any)[prop] || undefined;
   return self;
 }
 
@@ -57,10 +58,11 @@ export function constructFromModel<T extends Model>(
     if (
       obj.hasOwnProperty(prop) &&
       (self.hasOwnProperty(prop) ||
-        (self.prototype && self.prototype.hasOwnProperty(prop)))
+        ((self as any).prototype &&
+          (self as any).prototype.hasOwnProperty(prop)))
     ) {
       (self as Record<string, any>)[prop] = (obj as Record<string, any>)[prop];
-      if (typeof self[prop] !== "object") continue;
+      if (typeof (self as any)[prop] !== "object") continue;
       if (isModel((self as Record<string, any>)[prop])) {
         try {
           (self as Record<string, any>)[prop] = Model.build(
@@ -131,7 +133,7 @@ export function constructFromModel<T extends Model>(
               default:
                 if ((self as Record<string, any>)[prop])
                   (self as Record<string, any>)[prop] = Model.build(
-                    self[prop],
+                    (self as any)[prop],
                     c,
                   );
             }

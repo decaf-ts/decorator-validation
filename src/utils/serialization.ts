@@ -1,6 +1,7 @@
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
 import { Constructor } from "../model/types";
+import { getModelKey } from "../model";
 
 /**
  * @summary Helper in serialization
@@ -56,10 +57,9 @@ export class JSONSerializer<T extends Model> implements Serializer<T> {
    */
   protected preSerialize(model: T) {
     // TODO: nested preserialization (so increase performance when deserializing)
-    const toSerialize = Object.assign({}, model);
-    (toSerialize as Record<string, any>)[ModelKeys.ANCHOR] = (
-      model as Record<string, any>
-    )[ModelKeys.ANCHOR];
+    const toSerialize: Record<string, any> = Object.assign({}, model);
+    const metadata = Model.getMetadata(model);
+    toSerialize[ModelKeys.ANCHOR] = metadata || model.constructor.name;
     return toSerialize;
   }
 
@@ -71,7 +71,10 @@ export class JSONSerializer<T extends Model> implements Serializer<T> {
    */
   deserialize(str: string): T {
     const deserialization = JSON.parse(str);
-    const model: T = Model.build(deserialization) as unknown as T;
+    const className = deserialization[ModelKeys.ANCHOR];
+    if (!className)
+      throw new Error("Could not find class reference in serialized model");
+    const model: T = Model.build(deserialization, className) as unknown as T;
     return model;
   }
 
