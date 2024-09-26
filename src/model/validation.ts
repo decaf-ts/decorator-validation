@@ -80,116 +80,116 @@ export function validate<T extends Model>(
       }
     }
 
-    if (!errs) {
-      // tests nested classes
-      for (const prop of Object.keys(obj).filter((k) => !errs || !errs[k])) {
-        let err: string | undefined;
-        // if a nested Model
-        const allDecorators = getPropertyDecorators(
-          ValidationKeys.REFLECT,
-          obj,
-          prop,
-        ).decorators;
-        const decorators = getPropertyDecorators(
-          ValidationKeys.REFLECT,
-          obj,
-          prop,
-        ).decorators.filter(
-          (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
-        );
-        if (!decorators || !decorators.length) continue;
-        const dec = decorators.pop() as DecoratorMetadata;
-        const clazz = dec.props.name
-          ? [dec.props.name]
-          : Array.isArray(dec.props.customTypes)
-            ? dec.props.customTypes
-            : [dec.props.customTypes];
-        const reserved = Object.values(ReservedModels).map((v) =>
-          v.toLowerCase(),
-        ) as string[];
+    if (errs) {
+      result = result || {};
+      result[decoratedProperty.prop.toString()] = errs;
+    }
+  }
 
-        for (const c of clazz) {
-          if (reserved.indexOf(c.toLowerCase()) === -1) {
-            const typeDecoratorKey = Array.isArray(obj[prop])
-              ? ValidationKeys.LIST
-              : ValidationKeys.TYPE;
-            const types: any =
-              allDecorators.find((d) => d.key === typeDecoratorKey) || {};
-            let allowedTypes: string[] = [];
-            if (types && types.props) {
-              const customTypes = Array.isArray(obj[prop])
-                ? types.props.class
-                : types.props.customTypes;
-              if (customTypes)
-                allowedTypes = Array.isArray(customTypes)
-                  ? customTypes.map((t) => `${t}`.toLowerCase())
-                  : [customTypes.toLowerCase()];
-            }
+  // tests nested classes
+  for (const prop of Object.keys(obj).filter((k) => !result || !result[k])) {
+    let err: string | undefined;
+    let errs: Record<string, string | undefined> | undefined = undefined;
 
-            const validate = (
-              prop: string,
-              idx: number,
-              value: any,
-            ): string | undefined => {
-              const atIndex = idx >= 0 ? `at index ${idx} ` : "";
-              if (typeof value === "object" || typeof value === "function")
-                return !!value.hasErrors
-                  ? value.hasErrors()
-                  : `Value in prop ${prop} ${atIndex}is not validatable`;
-              return allowedTypes.includes(typeof value)
-                ? undefined
-                : `Value in prop ${prop} ${atIndex}has no valid type`;
-            };
+    // if a nested Model
+    const allDecorators = getPropertyDecorators(
+      ValidationKeys.REFLECT,
+      obj,
+      prop,
+    ).decorators;
+    const decorators = getPropertyDecorators(
+      ValidationKeys.REFLECT,
+      obj,
+      prop,
+    ).decorators.filter(
+      (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
+    );
+    if (!decorators || !decorators.length) continue;
+    const dec = decorators.pop() as DecoratorMetadata;
+    const clazz = dec.props.name
+      ? [dec.props.name]
+      : Array.isArray(dec.props.customTypes)
+        ? dec.props.customTypes
+        : [dec.props.customTypes];
+    const reserved = Object.values(ReservedModels).map((v) =>
+      v.toLowerCase(),
+    ) as string[];
 
-            switch (c) {
-              case "Array":
-              case "Set":
-                if (allDecorators.length) {
-                  const listDec = allDecorators.find(
-                    (d) => d.key === ValidationKeys.LIST,
+    for (const c of clazz) {
+      if (reserved.indexOf(c.toLowerCase()) === -1) {
+        const typeDecoratorKey = Array.isArray(obj[prop])
+          ? ValidationKeys.LIST
+          : ValidationKeys.TYPE;
+        const types: any =
+          allDecorators.find((d) => d.key === typeDecoratorKey) || {};
+        let allowedTypes: string[] = [];
+        if (types && types.props) {
+          const customTypes = Array.isArray(obj[prop])
+            ? types.props.class
+            : types.props.customTypes;
+          if (customTypes)
+            allowedTypes = Array.isArray(customTypes)
+              ? customTypes.map((t) => `${t}`.toLowerCase())
+              : [customTypes.toLowerCase()];
+        }
+
+        const validate = (
+          prop: string,
+          idx: number,
+          value: any,
+        ): string | undefined => {
+          const atIndex = idx >= 0 ? `at index ${idx} ` : "";
+          if (typeof value === "object" || typeof value === "function")
+            return !!value.hasErrors
+              ? value.hasErrors()
+              : `Value in prop ${prop} ${atIndex}is not validatable`;
+          return allowedTypes.includes(typeof value)
+            ? undefined
+            : `Value in prop ${prop} ${atIndex}has no valid type`;
+        };
+
+        switch (c) {
+          case Array.name:
+          case Set.name:
+            if (allDecorators.length) {
+              const listDec = allDecorators.find(
+                (d) => d.key === ValidationKeys.LIST,
+              );
+              if (listDec) {
+                const e =
+                  c ===
+                  (Array.name
+                    ? (obj as Record<string, any>)[prop]
+                    : (obj as Record<string, any>)[prop].values()
+                  ).find((v: Validatable, idx: number) =>
+                    validate(prop, idx, v),
                   );
-                  if (listDec) {
-                    const e =
-                      c === "Array"
-                        ? (obj as Record<string, any>)[prop].find(
-                            (v: Validatable, idx: number) =>
-                              validate(prop, idx, v),
-                          )
-                        : (obj as Record<string, any>)[prop]
-                            .values()
-                            .find((v: Validatable, idx: number) =>
-                              validate(prop, idx, v),
-                            );
-                    if (e)
-                      err = sf(
-                        DEFAULT_ERROR_MESSAGES.LIST_INSIDE,
-                        e.toString(),
-                      );
-                  }
-                }
-                break;
-              default:
-                try {
-                  if ((obj as Record<string, any>)[prop])
-                    err = validate(prop, -1, obj[prop]);
-                } catch (e: any) {
-                  console.warn(sf("Model should be validatable but its not"));
-                }
+                if (e)
+                  err = sf(DEFAULT_ERROR_MESSAGES.LIST_INSIDE, e.toString());
+              }
             }
+            break;
+          default:
+            try {
+              if ((obj as Record<string, any>)[prop])
+                err = validate(prop, -1, obj[prop]);
+            } catch (e: any) {
+              console.warn(sf("Model should be validatable but its not"));
+            }
+        }
 
-            if (err) {
-              errs = errs || {};
-              errs[prop] = err;
-            }
-          }
+        if (err) {
+          errs = errs || {};
+          errs[prop] = err;
         }
       }
     }
 
     if (errs) {
       result = result || {};
-      result[decoratedProperty.prop.toString()] = errs;
+      result[prop] = errs;
     }
   }
+
   return result ? new ModelErrorDefinition(result) : undefined;
 }

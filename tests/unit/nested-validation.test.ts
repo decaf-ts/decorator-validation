@@ -25,6 +25,9 @@ class OuterTestModel extends Model {
   id?: string = undefined;
 
   @required()
+  name?: string = undefined;
+
+  @required()
   child?: InnerTestModel = undefined;
 
   constructor(arg: ModelArg<OuterTestModel>) {
@@ -73,6 +76,7 @@ describe("Nested Validation", () => {
 
       let model = new OuterTestModel({
         id: Date.now().toString(),
+        name: "any",
         child: {
           id: Date.now().toString(),
           value: undefined
@@ -86,6 +90,7 @@ describe("Nested Validation", () => {
     it("Passes nested validation", async () => {
       const model: OuterTestModel = new OuterTestModel({
         id: Date.now().toString(),
+        name: "any",
         child: {
           id: Date.now().toString(),
           value: "value"
@@ -115,6 +120,7 @@ describe("Nested Validation", () => {
       expect(errs).toBeDefined();
 
       model = new OuterListTestModel({
+        id: Date.now().toString(),
         children: [
           {
             id: Date.now().toString(),
