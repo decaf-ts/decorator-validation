@@ -1,17 +1,19 @@
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
-import {
-  DEFAULT_ERROR_MESSAGES,
-  ModelErrors,
-  Validation,
-  ValidationKeys,
-  ValidationPropertyDecoratorDefinition,
-} from "../validation";
 import { DecoratorMetadata, getPropertyDecorators } from "@decaf-ts/reflection";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { ReservedModels } from "./constants";
 import { Validatable } from "./types";
 import { Model } from "./Model";
+import { Validation } from "../validation/Validation";
+import {
+  DEFAULT_ERROR_MESSAGES,
+  ValidationKeys,
+} from "../validation/Validators/constants";
+import {
+  ModelErrors,
+  ValidationPropertyDecoratorDefinition,
+} from "../validation/types";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them

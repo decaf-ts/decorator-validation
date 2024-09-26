@@ -4,6 +4,7 @@ import { jsTypes, ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { getPropertyDecorators, DecoratorMetadata } from "@decaf-ts/reflection";
+import { isModel } from "./utils";
 
 /**
  * @summary Repopulates the Object properties with the ones from the new object

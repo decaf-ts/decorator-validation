@@ -19,7 +19,7 @@ import { isEqual } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { getModelKey } from "./utils";
-import { ModelKeys } from "../utils";
+import { ModelKeys } from "../utils/constants";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;

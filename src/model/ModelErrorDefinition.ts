@@ -1,4 +1,4 @@
-import { ModelErrors } from "../validation";
+import { ModelErrors } from "../validation/types";
 
 /**
  * @summary Helper Class to hold the error results
