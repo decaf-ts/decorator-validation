@@ -21,4 +21,5 @@ export enum ModelKeys {
   ANCHOR = "__modelDefinition",
   HASHING = "hashing",
   SERIALIZATION = "serialization",
+  BINDING = "binding",
 }

@@ -3,8 +3,12 @@ import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
-import { getPropertyDecorators, DecoratorMetadata } from "@decaf-ts/reflection";
-import { isModel } from "./utils";
+import {
+  getPropertyDecorators,
+  DecoratorMetadata,
+  metadata,
+} from "@decaf-ts/reflection";
+import { getModelKey, isModel } from "./utils";
 
 /**
  * @summary Repopulates the Object properties with the ones from the new object
@@ -176,3 +180,37 @@ export type ModelBuilderFunction = <T extends Model>(
   self: T,
   obj?: T | Record<string, any>,
 ) => T;
+
+export function findLastProtoBeforeObject(obj: object): object {
+  let prototype: any = Object.getPrototypeOf(obj);
+  if (prototype === Object.prototype) return obj;
+  while (prototype !== Object.prototype) {
+    prototype = Object.getPrototypeOf(prototype);
+    if (prototype === Object.prototype) return prototype;
+    if (Object.getPrototypeOf(prototype) === Object.prototype) return prototype;
+  }
+  throw new Error("Could not find proper prototype");
+}
+
+export function bindModelPrototype(obj: any) {
+  if (obj instanceof Model) return;
+
+  function bindPrototype(objToOverride: object, prototype: object) {
+    Object.setPrototypeOf(objToOverride, prototype);
+  }
+
+  const prototype: any = Object.getPrototypeOf(obj);
+  if (prototype === Object.prototype) {
+    return bindPrototype(obj, Model.prototype);
+  }
+  while (prototype !== Object.prototype) {
+    const prot = Object.getPrototypeOf(prototype);
+    if (
+      prot === Object.prototype ||
+      Object.getPrototypeOf(prot) === Object.prototype
+    ) {
+      return bindPrototype(prototype, Model.prototype);
+    }
+  }
+  throw new Error("Could not find proper prototype to bind");
+}

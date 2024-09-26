@@ -72,7 +72,7 @@ export interface Serializable {
 }
 
 export interface Hashable {
-  toHash(): string;
+  hash(): string;
 }
 
 export interface Comparable<T> {

@@ -75,18 +75,7 @@ export abstract class Model
    * @summary Returns the serialized model according to the currently defined {@link Serializer}
    */
   serialize(): string {
-    const metadata = Reflect.getMetadata(
-      getModelKey(ModelKeys.SERIALIZATION),
-      this.constructor,
-    );
-
-    if (metadata && metadata.serializer)
-      return Serialization.serialize(
-        this,
-        metadata.serializer,
-        ...(metadata.args || []),
-      );
-    return Serialization.serialize(this);
+    return Model.serialize(this);
   }
 
   /**
@@ -100,15 +89,8 @@ export abstract class Model
   /**
    * @summary Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
    */
-  public toHash(): string {
-    const metadata = Reflect.getMetadata(
-      getModelKey(ModelKeys.HASHING),
-      this.constructor,
-    );
-
-    if (metadata && metadata.algorithm)
-      return Hashing.hash(this, metadata.algorithm, ...(metadata.args || []));
-    return Hashing.hash(this);
+  public hash(): string {
+    return Model.hash(this);
   }
 
   /**
@@ -237,5 +219,39 @@ export abstract class Model
         "could not find metadata for provided " + model.constructor.name,
       );
     return metadata;
+  }
+
+  static equals<V extends Model>(obj1: V, obj2: V, ...exceptions: any[]) {
+    return isEqual(obj1, obj2, ...exceptions);
+  }
+
+  static hasErrors<V extends Model>(model: V, ...exceptions: any[]) {
+    return validate(model, ...exceptions);
+  }
+
+  static serialize<V extends Model>(model: V) {
+    const metadata = Reflect.getMetadata(
+      getModelKey(ModelKeys.SERIALIZATION),
+      model.constructor,
+    );
+
+    if (metadata && metadata.serializer)
+      return Serialization.serialize(
+        this,
+        metadata.serializer,
+        ...(metadata.args || []),
+      );
+    return Serialization.serialize(model);
+  }
+
+  static hash<V extends Model>(model: V) {
+    const metadata = Reflect.getMetadata(
+      getModelKey(ModelKeys.HASHING),
+      model.constructor,
+    );
+
+    if (metadata && metadata.algorithm)
+      return Hashing.hash(model, metadata.algorithm, ...(metadata.args || []));
+    return Hashing.hash(model);
   }
 }

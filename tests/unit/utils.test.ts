@@ -109,14 +109,14 @@ describe('Hashing methods', function() {
         const model = new HashModel1({
             hashMe: "hash"
         });
-        expect(model.toHash()).toEqual(`this is a hash of hash`)
+        expect(model.hash()).toEqual(`this is a hash of hash`)
     })
 
     it("Properly tags the hashing function non model decorated classes classes", () => {
         const model = new HashModel2({
             hashMe: "hash"
         });
-        expect(model.toHash()).toEqual(`this is a hash of hash`)
+        expect(model.hash()).toEqual(`this is a hash of hash`)
     })
 
 });

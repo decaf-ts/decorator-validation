@@ -124,7 +124,7 @@ describe('Model Test', function() {
         const reverseEquality = dm2.equals(dm);
         const identity = dm === dm2;
         expect(equality).toBe(true);
-        expect(dm.toHash()).toEqual(dm2.toHash());
+        expect(dm.hash()).toEqual(dm2.hash());
         expect(reverseEquality).toBe(true);
         expect(identity).toBe(false)
     });

@@ -1,4 +1,4 @@
-import { construct } from "./construction";
+import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { getModelKey } from "./utils";
@@ -24,6 +24,7 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  * @param {string} [nameOverride]
  * @param {InstanceCallback} [instanceCallback] optional callback that will be called with the instance upon instantiation. defaults to undefined
  *
+ * @param basePrototype
  * @function model
  * @category Decorators
  */
@@ -38,6 +39,7 @@ export function model(
         original,
         ...args,
       );
+      bindModelPrototype(instance);
       // run a builder function if defined with the first argument (The ModelArg)
       const builder = Model.getBuilder();
       if (builder) builder(instance, args.length ? args[0] : undefined);
