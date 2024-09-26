@@ -119,7 +119,6 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   PASSWORD:
     "Must be at least 8 characters and contain one of number, lower and upper case letters, and special character (@$!%*?&_-.,)",
   LIST: "Invalid list of {0}",
-  LIST_INSIDE: "Elements of list are invalid: {0}",
   MODEL_NOT_FOUND: "No model registered under {0}",
 };
 

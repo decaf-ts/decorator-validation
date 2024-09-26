@@ -110,6 +110,7 @@ describe("Nested Validation", () => {
     it("also handles lists", async () => {
 
       let model = new OuterListTestModel({
+        id: Date.now().toString(),
         children: [
           {
             value: "1"

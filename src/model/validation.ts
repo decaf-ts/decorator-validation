@@ -14,6 +14,7 @@ import {
   ModelErrors,
   ValidationPropertyDecoratorDefinition,
 } from "../validation/types";
+import { isModel } from "./utils";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
@@ -133,19 +134,13 @@ export function validate<T extends Model>(
               : [customTypes.toLowerCase()];
         }
 
-        const validate = (
-          prop: string,
-          idx: number,
-          value: any,
-        ): string | undefined => {
-          const atIndex = idx >= 0 ? `at index ${idx} ` : "";
+        const validate = (prop: string, value: any): any => {
           if (typeof value === "object" || typeof value === "function")
-            return !!value.hasErrors
-              ? value.hasErrors()
-              : `Value in prop ${prop} ${atIndex}is not validatable`;
-          return allowedTypes.includes(typeof value)
-            ? undefined
-            : `Value in prop ${prop} ${atIndex}has no valid type`;
+            return isModel(value)
+              ? (value as Model).hasErrors()
+              : allowedTypes.includes(typeof value)
+                ? undefined
+                : `Value has no validatable type`;
         };
 
         switch (c) {
@@ -156,23 +151,25 @@ export function validate<T extends Model>(
                 (d) => d.key === ValidationKeys.LIST,
               );
               if (listDec) {
-                const e =
-                  c ===
-                  (Array.name
+                err = (
+                  c === Array.name
                     ? (obj as Record<string, any>)[prop]
-                    : (obj as Record<string, any>)[prop].values()
-                  ).find((v: Validatable, idx: number) =>
-                    validate(prop, idx, v),
-                  );
-                if (e)
-                  err = sf(DEFAULT_ERROR_MESSAGES.LIST_INSIDE, e.toString());
+                    : // If it's a Set
+                      (obj as Record<string, any>)[prop].values()
+                )
+                  .map((v: Validatable) => validate(prop, v))
+                  .filter((e: any) => !!e) as any;
+                if (!err?.length) {
+                  // if the result is an empty list...
+                  err = undefined;
+                }
               }
             }
             break;
           default:
             try {
               if ((obj as Record<string, any>)[prop])
-                err = validate(prop, -1, (obj as any)[prop]);
+                err = validate(prop, (obj as any)[prop]);
             } catch (e: any) {
               console.warn(sf("Model should be validatable but its not"));
             }
