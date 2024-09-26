@@ -1,4 +1,3 @@
-import { Model } from "../model/Model";
 import { Serialization } from "./serialization";
 
 /**
