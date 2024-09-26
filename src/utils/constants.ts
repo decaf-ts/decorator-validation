@@ -19,4 +19,6 @@ export enum ModelKeys {
   RETURN = "design:returntype",
   MODEL = "model",
   ANCHOR = "__modelDefinition",
+  HASHING = "hashing",
+  SERIALIATION = "serialization",
 }

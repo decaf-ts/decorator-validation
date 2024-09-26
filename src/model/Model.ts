@@ -1,32 +1,19 @@
-import {
-  DEFAULT_ERROR_MESSAGES,
-  ValidationKeys,
-} from "../validation/Validators/constants";
-import {
-  ModelErrors,
-  ValidationDecoratorDefinition,
-  ValidationPropertyDecoratorDefinition,
-} from "../validation/types";
-import { JSONSerializer, Serializer } from "../utils/serialization";
+import { Serialization } from "../utils/serialization";
 import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { ModelArg, ModelConstructor, Serializable, Validatable } from "./types";
-import { ReservedModels } from "./constants";
-import { ModelKeys } from "../utils/constants";
 import {
   constructFromModel,
   constructFromObject,
   ModelBuilderFunction,
 } from "./construction";
 import { ModelRegistryManager } from "./Registry";
-import { HashingFunction, hashObj } from "../utils/hashing";
 import { isEqual } from "@decaf-ts/reflection";
 import { validate } from "./validation";
+import { Hashing } from "../utils/hashing";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
-let serializer: Serializer<any>;
-let hashingFunction: any;
 
 /**
  * @summary Abstract class representing a Validatable Model object
@@ -79,7 +66,7 @@ export abstract class Model implements Validatable, Serializable {
    * @summary Returns the serialized model according to the currently defined {@link Serializer}
    */
   serialize(): string {
-    return Model.serialize(this);
+    return Serialization.serialize(this);
   }
 
   /**
@@ -94,7 +81,7 @@ export abstract class Model implements Validatable, Serializable {
    * @summary Defines a default implementation for object hash. Relies on a very basic implementation based on Java's string hash;
    */
   public toHash(): string {
-    return Model.getHashingFunction()(this).toString();
+    return Hashing.hash(this);
   }
 
   /**
@@ -104,19 +91,7 @@ export abstract class Model implements Validatable, Serializable {
    * @throws {Error} If it fails to parse the string, or if it fails to build the model
    */
   static deserialize(str: string) {
-    return Model.getSerializer().deserialize(str);
-  }
-
-  /**
-   * @summary Serializes a Model
-   * @param {Model} model
-   */
-  static serialize(model: any) {
-    return Model.getSerializer().serialize(model);
-  }
-
-  static hash(obj: any): string {
-    return Model.getHashingFunction()(obj);
+    return Serialization.deserialize(str);
   }
 
   /**
@@ -211,41 +186,5 @@ export abstract class Model implements Validatable, Serializable {
     clazz?: string,
   ): T {
     return Model.getRegistry().build(obj, clazz);
-  }
-
-  /**
-   * @summary Sets the {@link Serializer}
-   *
-   * @param {Serializer} ser
-   */
-  static setSerializer(ser: Serializer<any>) {
-    serializer = ser;
-  }
-
-  /**
-   * @summary Retrieves the current defined {@link Serializer}
-   *
-   */
-  private static getSerializer() {
-    if (!serializer) serializer = new JSONSerializer();
-    return serializer;
-  }
-
-  /**
-   * @summary Sets the {@link HashingFunction}
-   *
-   * @param {HashingFunction} hasher
-   */
-  static setHashingFunction(hasher: HashingFunction) {
-    hashingFunction = hasher;
-  }
-
-  /**
-   * @summary Retrieves the current defined {@link HashingFunction}
-   *
-   */
-  private static getHashingFunction() {
-    if (!hashingFunction) hashingFunction = hashObj;
-    return hashingFunction;
   }
 }

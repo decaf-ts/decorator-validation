@@ -1,4 +1,5 @@
 import { Model } from "../model/Model";
+import { Serialization } from "./serialization";
 
 /**
  * @summary Mimics Java's String's Hash implementation
@@ -10,7 +11,7 @@ import { Model } from "../model/Model";
  * @memberOf module:decorator-validation.Utils.Hashing
  * @category Hashing
  */
-export function hashCode(obj: string | number | symbol | Date) {
+export function hashCode(obj: string | number | symbol | Date): string {
   obj = String(obj);
   let hash = 0;
   for (let i = 0; i < obj.length; i++) {
@@ -18,7 +19,7 @@ export function hashCode(obj: string | number | symbol | Date) {
     hash = (hash << 5) - hash + character;
     hash = hash & hash; // Convert to 32bit integer
   }
-  return hash;
+  return hash.toString();
 }
 
 /**
@@ -26,7 +27,7 @@ export function hashCode(obj: string | number | symbol | Date) {
  * @memberOf module:decorator-validation.Utils.Hashing
  * @category Hashing
  */
-export type HashingFunction = (value: any) => string | number;
+export type HashingFunction = (value: any) => string;
 
 /**
  * @summary Hashes an object serializing it and then hashing the string
@@ -42,7 +43,7 @@ export type HashingFunction = (value: any) => string | number;
  * @category Hashing
  */
 export function hashSerialization(obj: Record<string, any> | any[]) {
-  return hashCode(Model.serialize(obj));
+  return hashCode(Serialization.serialize(obj));
 }
 
 /**
@@ -55,7 +56,7 @@ export function hashSerialization(obj: Record<string, any> | any[]) {
  * @memberOf module:decorator-validation.Utils.Hashing
  * @category Hashing
  */
-export function hashObj(obj: Record<string, any> | any[]) {
+export function hashObj(obj: Record<string, any> | any[]): string {
   const hashReducer = function (h: number | string, el: any): string | number {
     const elHash = hashFunction(el);
 
@@ -83,5 +84,42 @@ export function hashObj(obj: Record<string, any> | any[]) {
 
   const result = Object.values(obj).reduce(hashReducer, 0);
 
-  return typeof result === "number" ? Math.abs(result) : result;
+  return (typeof result === "number" ? Math.abs(result) : result).toString();
+}
+
+export const DefaultHashingMethod = "default";
+
+export class Hashing {
+  private static current: string = DefaultHashingMethod;
+
+  private static cache: Record<string, HashingFunction> = {
+    default: hashObj,
+  };
+
+  private constructor() {}
+
+  private static get(key: string): any {
+    if (key in this.cache) return this.cache[key];
+    throw new Error(`No hashing method registered under ${key}`);
+  }
+
+  static register(
+    key: string,
+    func: HashingFunction,
+    setDefault = false,
+  ): void {
+    if (key in this.cache)
+      throw new Error(`Hashing method ${key} already registered`);
+    this.cache[key] = func;
+    if (setDefault) this.current = key;
+  }
+
+  static hash(obj: any, method?: string) {
+    if (!method) return this.get(this.current)(obj);
+    return this.get(method)(obj);
+  }
+
+  static setDefault(method: string) {
+    this.current = this.get(method);
+  }
 }

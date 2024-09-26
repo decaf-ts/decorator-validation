@@ -1,5 +1,6 @@
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
+import { Constructor } from "../model/types";
 
 /**
  * @summary Helper in serialization
@@ -80,5 +81,47 @@ export class JSONSerializer<T extends Model> implements Serializer<T> {
    */
   serialize(model: T): string {
     return JSON.stringify(this.preSerialize(model));
+  }
+}
+
+export const DefaultSerializationMethod = "json";
+
+export class Serialization {
+  private static current: string = DefaultSerializationMethod;
+
+  private static cache: Record<string, Serializer<any>> = {
+    json: new JSONSerializer(),
+  };
+
+  private constructor() {}
+
+  private static get(key: string): any {
+    if (key in this.cache) return this.cache[key];
+    throw new Error(`No serialization method registered under ${key}`);
+  }
+
+  static register(
+    key: string,
+    func: Constructor<Serializer<any>>,
+    setDefault = false,
+  ): void {
+    if (key in this.cache)
+      throw new Error(`Serialization method ${key} already registered`);
+    this.cache[key] = new func();
+    if (setDefault) this.current = key;
+  }
+
+  static serialize(obj: any, method?: string) {
+    if (!method) return this.get(this.current).serialize(obj);
+    return this.get(method).serialize(obj);
+  }
+
+  static deserialize(obj: string, method?: string) {
+    if (!method) return this.get(this.current).deserialize(obj);
+    return this.get(method).deserialize(obj);
+  }
+
+  static setDefault(method: string) {
+    this.current = this.get(method);
   }
 }
