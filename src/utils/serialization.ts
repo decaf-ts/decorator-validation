@@ -1,7 +1,6 @@
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
 import { Constructor } from "../model/types";
-import { getModelKey } from "../model";
 
 /**
  * @summary Helper in serialization
