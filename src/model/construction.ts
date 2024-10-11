@@ -5,6 +5,7 @@ import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { getPropertyDecorators, DecoratorMetadata } from "@decaf-ts/reflection";
 import { isModel } from "./utils";
+import { ModelArg } from "./types";
 
 /**
  * @summary Repopulates the Object properties with the ones from the new object
@@ -19,7 +20,7 @@ import { isModel } from "./utils";
  */
 export function constructFromObject<T extends Model>(
   self: T,
-  obj?: T | Record<string, any>,
+  obj?: ModelArg<T>,
 ) {
   if (!obj) return self;
   for (const prop in obj) {
@@ -49,7 +50,7 @@ export function constructFromObject<T extends Model>(
  */
 export function constructFromModel<T extends Model>(
   self: T,
-  obj?: T | Record<string, any>,
+  obj?: ModelArg<T>,
 ) {
   if (!obj) return self;
 
