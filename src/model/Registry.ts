@@ -3,6 +3,7 @@ import { BuilderRegistry } from "../utils/registry";
 import { Constructor, ModelConstructor } from "./types";
 import { sf } from "../utils/strings";
 import { isModel } from "./utils";
+import { ModelKeys } from "../utils";
 
 /**
  * @summary ModelRegistry Interface

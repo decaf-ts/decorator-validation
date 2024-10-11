@@ -18,8 +18,8 @@ export enum ModelKeys {
   PARAMS = "design:paramtypes",
   RETURN = "design:returntype",
   MODEL = "model",
-  ANCHOR = "__modelDefinition",
+  ANCHOR = "__model",
   HASHING = "hashing",
   SERIALIZATION = "serialization",
-  BINDING = "binding",
+  METADATA = "__metadata",
 }

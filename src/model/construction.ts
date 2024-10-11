@@ -22,7 +22,8 @@ export function constructFromObject<T extends Model>(
   obj?: T | Record<string, any>,
 ) {
   if (!obj) return self;
-  for (const prop in obj)
+  for (const prop in obj) {
+    if (prop === ModelKeys.METADATA) continue;
     if (
       obj.hasOwnProperty(prop) &&
       (self.hasOwnProperty(prop) ||
@@ -30,6 +31,15 @@ export function constructFromObject<T extends Model>(
           (self as any).prototype.hasOwnProperty(prop)))
     )
       (self as any)[prop] = (obj as any)[prop] || undefined;
+  }
+
+  if ((obj as Record<string, any>)[ModelKeys.METADATA])
+    Object.defineProperty(self, ModelKeys.METADATA, {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: (obj as Record<string, any>)[ModelKeys.METADATA],
+    });
   return self;
 }
 
@@ -54,7 +64,8 @@ export function constructFromModel<T extends Model>(
 
   let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
 
-  for (const prop in obj)
+  for (const prop in obj) {
+    if (prop === ModelKeys.METADATA) continue;
     if (
       obj.hasOwnProperty(prop) &&
       (self.hasOwnProperty(prop) ||
@@ -143,7 +154,14 @@ export function constructFromModel<T extends Model>(
           }
       });
     }
-
+  }
+  if ((obj as Record<string, any>)[ModelKeys.METADATA])
+    Object.defineProperty(self, ModelKeys.METADATA, {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: (obj as Record<string, any>)[ModelKeys.METADATA],
+    });
   return self;
 }
 
