@@ -43,20 +43,6 @@ export function model(
       // run a builder function if defined with the first argument (The ModelArg)
       const builder = Model.getBuilder();
       if (builder) builder(instance, args.length ? args[0] : undefined);
-      //
-      // const data = Object.assign(
-      //   {},
-      //   {
-      //     class: original.name,
-      //   },
-      // );
-      //
-      // Object.defineProperty(instance, ModelKeys.ANCHOR, {
-      //   writable: false,
-      //   enumerable: false,
-      //   configurable: false,
-      //   value: data,
-      // });
 
       metadata(
         getModelKey(ModelKeys.MODEL),
@@ -77,6 +63,11 @@ export function model(
       configurable: false,
       value: original.prototype.constructor.name,
     });
+
+    metadata(
+      getModelKey(ModelKeys.MODEL),
+      nameOverride || original.name,
+    )(original);
 
     Model.register(newConstructor, nameOverride);
 
