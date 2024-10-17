@@ -22,7 +22,7 @@ export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  */
 export function isModel(target: Record<string, any>) {
   try {
-    return !!Model.getMetadata(target as any);
+    return target instanceof Model || !Model.getMetadata(target as any);
   } catch (e: any) {
     return false;
   }
