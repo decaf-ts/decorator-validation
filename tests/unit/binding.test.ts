@@ -49,7 +49,6 @@ describe("decorating non model classes", () => {
       }
     }
 
-    // eslint-disable-next-line max-len
     it("still properly handles non Model based classes by injecting himself on the top of the prototype chain", () => {
       let model = new NonModel();
       expect(model.hasErrors()).toBeDefined();

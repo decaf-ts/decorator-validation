@@ -27,30 +27,6 @@ export default [
       // '@typescript-eslint/explicit-function-return-type': 'off',
       // '@typescript-eslint/explicit-module-boundary-types': 'off',
       "@typescript-eslint/no-explicit-any": "off",
-      indent: [
-        "error",
-        2,
-        {
-          MemberExpression: 1,
-          ignoredNodes: [
-            "FunctionExpression > .params[decorators.length > 0]",
-            "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
-            "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key",
-            "SwitchCase",
-          ],
-        },
-      ],
-      semi: ["error", "always"],
-      quotes: ["error", "double"],
-      "max-len": [
-        "error",
-        {
-          tabWidth: 2,
-          code: 100,
-          ignoreComments: true,
-          ignoreTrailingComments: true,
-        },
-      ],
     },
   },
 ];

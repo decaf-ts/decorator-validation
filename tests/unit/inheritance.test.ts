@@ -24,7 +24,7 @@ class Test2 extends Test1 {
   @required()
   prop2?: string = undefined;
 
-  constructor(obj?: Test2 | {}) {
+  constructor(obj?: ModelArg<Test2>) {
     super(obj);
     constructFromObject(this, obj);
   }
@@ -32,13 +32,13 @@ class Test2 extends Test1 {
 
 @model()
 class Test3 extends Test2 {
-  constructor(obj?: Test3 | {}) {
+  constructor(obj?: ModelArg<Test3>) {
     super(obj);
   }
 }
 
 class Test4 extends Test2 {
-  constructor(obj?: Test4 | {}) {
+  constructor(obj?: ModelArg<Test4>) {
     super(obj);
   }
 }
@@ -94,6 +94,7 @@ describe("inheritance Test", () => {
               (this.cache[name][propKey][operation] as OperationHandler[]) || []
             )
           );
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           if (
             typeof target === "string" ||
@@ -204,7 +205,7 @@ describe("inheritance Test", () => {
       @Decorators.on(["create"], Handler.handler1)
       updatedOn?: string = undefined;
 
-      constructor(baseModel?: BaseModel | {}) {
+      constructor(baseModel?: ModelArg<BaseModel>) {
         super();
         constructFromObject<BaseModel>(this, baseModel);
       }
@@ -214,7 +215,7 @@ describe("inheritance Test", () => {
       @Decorators.on(["create"], Handler.handler2)
       override updatedOn?: string = undefined;
 
-      constructor(overriddenBaseModel?: OverriddenBaseModel | {}) {
+      constructor(overriddenBaseModel?: ModelArg<OverriddenBaseModel>) {
         super(overriddenBaseModel);
         constructFromObject<OverriddenBaseModel>(this, overriddenBaseModel);
       }
@@ -222,7 +223,7 @@ describe("inheritance Test", () => {
 
     @model()
     class OtherBaseModel extends OverriddenBaseModel {
-      constructor(otherBaseModel?: OtherBaseModel | {}) {
+      constructor(otherBaseModel?: ModelArg<OtherBaseModel>) {
         super(otherBaseModel);
       }
     }

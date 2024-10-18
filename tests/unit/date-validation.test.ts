@@ -30,9 +30,9 @@ class TestModel2 extends Model {
   @date("dd/MM/yyyy HH:mm:ss:S")
   dateProp?: Date = undefined;
 
-  constructor(model?: TestModel2 | {}) {
+  constructor(model?: ModelArg<TestModel2>) {
     super();
-    constructFromObject<TestModel2>(this, model);
+    Model.fromObject(this, model);
   }
 }
 
@@ -42,9 +42,9 @@ class TestModelInner extends Model {
   @date("dd-MM-yyyy")
   dateProp?: Date = undefined;
 
-  constructor(model?: TestModelInner | {}) {
+  constructor(model?: ModelArg<TestModelInner>) {
     super();
-    constructFromObject<TestModelInner>(this, model);
+    Model.fromObject(this, model);
   }
 }
 
@@ -52,9 +52,9 @@ class TestModelInner extends Model {
 class NestedTestModel extends Model {
   test?: TestModelInner = undefined;
 
-  constructor(model?: NestedTestModel | {}) {
+  constructor(model?: ModelArg<NestedTestModel>) {
     super();
-    constructFromObject<NestedTestModel>(this, model);
+    Model.fromObject(this, model);
     this.test = new TestModelInner(this.test);
   }
 }
@@ -155,7 +155,7 @@ describe("Date Integration", function () {
     const day = date.getDate();
     const expected = `${twoDigitPad(day)}/${twoDigitPad(month)}/${year}`;
     expect(dm.dateProp?.toISOString()).toEqual(expected);
-    expect(JSON.stringify(dm)).toEqual(`{\"dateProp\":\"${expected}\"}`);
+    expect(JSON.stringify(dm)).toEqual(`{"dateProp":"${expected}"}`);
   });
 
   it("deserializes properly", () => {

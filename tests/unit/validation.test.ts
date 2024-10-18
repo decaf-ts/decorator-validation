@@ -110,13 +110,13 @@ describe("Model Test", function () {
 
     const output = dm.toString();
     expect(output).toBe(
-      "TestModel: {\n" +
-        '  "id": "id",\n' +
-        '  "prop1": 23,\n' +
-        '  "prop2": "tests",\n' +
-        '  "prop3": "asdasfsdfsda",\n' +
-        '  "prop4": "test@pdm.com"\n' +
-        "}"
+      `TestModel: {
+  "id": "id",
+  "prop1": 23,
+  "prop2": "tests",
+  "prop3": "asdasfsdfsda",
+  "prop4": "test@pdm.com"
+}`
     );
   });
 
@@ -173,10 +173,8 @@ describe("Validation by decorators test", function () {
       expect(Object.keys(errors)).toBeInstanceOf(Array);
       expect(errors && Object.values(errors).length).toBe(7);
       expect(errors.toString()).toBe(
-        // eslint-disable-next-line max-len
         "id - This field is required\nprop1 - Invalid value. Not a step of 5\nThe maximum value is 100\n" +
           "prop2 - The minimum length is 5\nprop3 - The value does not match the pattern\n" +
-          // eslint-disable-next-line max-len
           "prop4 - The value is not a valid email\nprop5 - The value does not match the pattern\nprop6 - The value is not a valid URL"
       );
     }
