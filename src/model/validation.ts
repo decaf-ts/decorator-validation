@@ -30,13 +30,16 @@ export function validate<T extends Model>(
 ): ModelErrorDefinition | undefined {
   const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
   for (const prop in obj)
-    if (obj.hasOwnProperty(prop) && propsToIgnore.indexOf(prop) === -1)
+    if (
+      Object.prototype.hasOwnProperty.call(obj, prop) &&
+      propsToIgnore.indexOf(prop) === -1
+    )
       decoratedProperties.push(
         getPropertyDecorators(
           ValidationKeys.REFLECT,
           obj,
-          prop,
-        ) as ValidationPropertyDecoratorDefinition,
+          prop
+        ) as ValidationPropertyDecoratorDefinition
       );
 
   let result: ModelErrors | undefined = undefined;
@@ -53,7 +56,7 @@ export function validate<T extends Model>(
       decorators.find((d) => {
         if (d.key === ValidationKeys.TYPE) return true;
         return !!d.props.types?.find(
-          (t) => t === defaultTypeDecorator.props.name,
+          (t) => t === defaultTypeDecorator.props.name
         );
       })
     ) {
@@ -71,7 +74,7 @@ export function validate<T extends Model>(
         (obj as any)[prop.toString()],
         ...(decorator.key === ModelKeys.TYPE
           ? [decorator.props]
-          : Object.values(decorator.props)),
+          : Object.values(decorator.props))
       );
 
       if (err) {
@@ -93,14 +96,14 @@ export function validate<T extends Model>(
     const allDecorators = getPropertyDecorators(
       ValidationKeys.REFLECT,
       obj,
-      prop,
+      prop
     ).decorators;
     const decorators = getPropertyDecorators(
       ValidationKeys.REFLECT,
       obj,
-      prop,
+      prop
     ).decorators.filter(
-      (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
+      (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
     );
     if (!decorators || !decorators.length) continue;
     const dec = decorators.pop() as DecoratorMetadata;
@@ -110,7 +113,7 @@ export function validate<T extends Model>(
         ? dec.props.customTypes
         : [dec.props.customTypes];
     const reserved = Object.values(ReservedModels).map((v) =>
-      v.toLowerCase(),
+      v.toLowerCase()
     ) as string[];
 
     for (const c of clazz) {
@@ -137,7 +140,7 @@ export function validate<T extends Model>(
               ? (value as Model).hasErrors()
               : allowedTypes.includes(typeof value)
                 ? undefined
-                : `Value has no validatable type`;
+                : "Value has no validatable type";
         };
 
         switch (c) {
@@ -145,7 +148,7 @@ export function validate<T extends Model>(
           case Set.name:
             if (allDecorators.length) {
               const listDec = allDecorators.find(
-                (d) => d.key === ValidationKeys.LIST,
+                (d) => d.key === ValidationKeys.LIST
               );
               if (listDec) {
                 err = (
@@ -168,7 +171,7 @@ export function validate<T extends Model>(
               if ((obj as Record<string, any>)[prop])
                 err = validate(prop, (obj as any)[prop]);
             } catch (e: any) {
-              console.warn(sf("Model should be validatable but its not"));
+              console.warn(sf("Model should be validatable but its not: " + e));
             }
         }
       }

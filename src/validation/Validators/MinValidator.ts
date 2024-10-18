@@ -34,13 +34,13 @@ export class MinValidator extends Validator {
   public hasErrors(
     value: number | Date | string,
     min: number | Date | string,
-    message?: string,
+    message?: string
   ): string | undefined {
     if (value === undefined) return;
 
     if (value instanceof Date && !(min instanceof Date)) {
       min = new Date(min);
-      if (isNaN(min.getDate())) throw new Error(`Invalid Min param defined`);
+      if (isNaN(min.getDate())) throw new Error("Invalid Min param defined");
     }
     return value < min
       ? this.getMessage(message || this.message, min)

@@ -103,14 +103,14 @@ export abstract class Model
   static deserialize(str: string) {
     const metadata = Reflect.getMetadata(
       getModelKey(ModelKeys.SERIALIZATION),
-      this.constructor,
+      this.constructor
     );
 
     if (metadata && metadata.serializer)
       return Serialization.deserialize(
         str,
         metadata.serializer,
-        ...(metadata.args || []),
+        ...(metadata.args || [])
       );
     return Serialization.deserialize(str);
   }
@@ -122,7 +122,7 @@ export abstract class Model
    */
   static fromObject<T extends Model>(
     self: T,
-    obj?: T | Record<string, any>,
+    obj?: T | Record<string, any>
   ): T {
     return constructFromObject<T>(self, obj);
   }
@@ -179,7 +179,7 @@ export abstract class Model
    */
   static register<T extends Model>(
     constructor: ModelConstructor<T>,
-    name?: string,
+    name?: string
   ): void {
     return Model.getRegistry().register(constructor, name);
   }
@@ -204,7 +204,7 @@ export abstract class Model
    */
   static build<T extends Model>(
     obj: Record<string, any> = {},
-    clazz?: string,
+    clazz?: string
   ): T {
     return Model.getRegistry().build(obj, clazz);
   }
@@ -212,11 +212,11 @@ export abstract class Model
   static getMetadata<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
       getModelKey(ModelKeys.MODEL),
-      model.constructor,
+      model.constructor
     );
     if (!metadata)
       throw new Error(
-        "could not find metadata for provided " + model.constructor.name,
+        "could not find metadata for provided " + model.constructor.name
       );
     return metadata;
   }
@@ -232,14 +232,14 @@ export abstract class Model
   static serialize<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
       getModelKey(ModelKeys.SERIALIZATION),
-      model.constructor,
+      model.constructor
     );
 
     if (metadata && metadata.serializer)
       return Serialization.serialize(
         this,
         metadata.serializer,
-        ...(metadata.args || []),
+        ...(metadata.args || [])
       );
     return Serialization.serialize(model);
   }
@@ -247,7 +247,7 @@ export abstract class Model
   static hash<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
       getModelKey(ModelKeys.HASHING),
-      model.constructor,
+      model.constructor
     );
 
     if (metadata && metadata.algorithm)

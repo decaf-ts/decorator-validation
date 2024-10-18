@@ -50,6 +50,7 @@ export function dateFromFormat(date: string, format: string) {
   // Day Of Week
   if (formatRegexp.match(/EEEE/))
     formatRegexp = formatRegexp.replace("EEEE", "(?<dayofweek>\\w+)");
+  // eslint-disable-next-line no-dupe-else-if
   else if (formatRegexp.match(/EEEE/))
     formatRegexp = formatRegexp.replace("EEE", "(?<dayofweek>\\w+)");
 
@@ -118,7 +119,7 @@ export function dateFromFormat(date: string, format: string) {
   if (monthName) month = MONTH_NAMES.indexOf(monthName);
   else if (monthNameSmall) {
     const m = MONTH_NAMES.find((m) =>
-      m.toLowerCase().startsWith(monthNameSmall.toLowerCase()),
+      m.toLowerCase().startsWith(monthNameSmall.toLowerCase())
     );
     if (!m) return new Date(date);
     month = MONTH_NAMES.indexOf(m);
@@ -272,9 +273,10 @@ export function parseDate(format: string, v?: string | Date | number) {
   if (v instanceof Date)
     try {
       value = dateFromFormat(formatDate(v as Date, format), format);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
       throw new Error(
-        sf(`Could not convert date {0} to format: {1}`, v.toString(), format),
+        sf("Could not convert date {0} to format: {1}", v.toString(), format)
       );
     }
   else if (typeof v === "string") {
@@ -286,9 +288,10 @@ export function parseDate(format: string, v?: string | Date | number) {
     try {
       const d = new Date(v);
       value = dateFromFormat(formatDate(d, format), format);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       throw new Error(
-        sf(`Could not convert date {0} to format: {1}`, v, format),
+        sf("Could not convert date {0} to format: {1}", v, format)
       );
     }
   } else {

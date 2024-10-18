@@ -23,6 +23,7 @@ export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 export function isModel(target: Record<string, any>) {
   try {
     return target instanceof Model || !Model.getMetadata(target as any);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e: any) {
     return false;
   }

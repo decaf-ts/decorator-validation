@@ -12,7 +12,7 @@ import { isModel } from "./utils";
  *
  * @category Model
  */
-export interface ModelRegistry<T extends Model> extends BuilderRegistry<T> {}
+export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
 
 /**
  * @summary Util class to enable serialization and correct rebuilding
@@ -41,7 +41,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
   register(constructor: ModelConstructor<T>, name?: string): void {
     if (typeof constructor !== "function")
       throw new Error(
-        `Model registering failed. Missing Class name or constructor`,
+        "Model registering failed. Missing Class name or constructor"
       );
     name = name || constructor.name;
     this.cache[name] = constructor;
@@ -54,7 +54,8 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
   get(name: string): ModelConstructor<T> | undefined {
     try {
       return this.cache[name];
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: any) {
       return undefined;
     }
   }
@@ -67,11 +68,11 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
    */
   build(obj: Record<string, any> = {}, clazz?: string): T {
     if (!clazz && !this.testFunction(obj))
-      throw new Error(`Provided obj is not a Model object`);
+      throw new Error("Provided obj is not a Model object");
     const name = clazz || Model.getMetadata(obj as any);
     if (!(name in this.cache))
       throw new Error(
-        sf(`Provided class {0} is not a registered Model object`, name),
+        sf("Provided class {0} is not a registered Model object", name)
       );
     return new this.cache[name](obj);
   }
@@ -79,7 +80,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
 
 /**
  * @summary Bulk Registers Models
- * @description Useful when using bundlers that might not evaluate all of the code at once
+ * @description Useful when using bundlers that might not evaluate all the code at once
  *
  * @param {Array<Constructor<T>> | Array<{name: string, constructor: Constructor<T>}>} [models]
  *
@@ -95,6 +96,6 @@ export function bulkModelRegister<T extends Model>(
         m.constructor ? m.constructor : m
       ) as Constructor<T>;
       Model.register(constructor, (m as Constructor<T>).name);
-    },
+    }
   );
 }

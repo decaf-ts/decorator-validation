@@ -1,10 +1,14 @@
-import {findLastProtoBeforeObject, Model, model, ModelArg, ModelErrorDefinition, required} from "../../src";
-import {isEqual} from "@decaf-ts/reflection";
+import {
+  findLastProtoBeforeObject,
+  Model,
+  model,
+  ModelArg,
+  ModelErrorDefinition,
+  required,
+} from "../../src";
 
 describe("decorating non model classes", () => {
-
   describe("Binding", () => {
-
     class TestModel extends Model {
       constructor() {
         super();
@@ -15,9 +19,8 @@ describe("decorating non model classes", () => {
       const date = new TestModel();
       const lastPrototype = findLastProtoBeforeObject(date);
       expect(lastPrototype.constructor.name).toEqual(Model.name);
-    })
-
-  })
+    });
+  });
 
   describe("Non Model classes", () => {
     @model()
@@ -37,25 +40,26 @@ describe("decorating non model classes", () => {
         return Model.hasErrors(this, ...exceptions);
       }
 
-      serialize(): string  {
+      serialize(): string {
         return Model.serialize(this);
       }
 
-      hash(): string  {
+      hash(): string {
         return Model.hash(this);
       }
     }
 
+    // eslint-disable-next-line max-len
     it("still properly handles non Model based classes by injecting himself on the top of the prototype chain", () => {
       let model = new NonModel();
       expect(model.hasErrors()).toBeDefined();
       expect(model instanceof Model).toEqual(true);
 
       model = new NonModel({
-        arg1: "non model"
-      })
+        arg1: "non model",
+      });
       expect(model.hasErrors()).toBeUndefined();
-      expect(model.hash()).toBeDefined()
-    })
-  })
-})
+      expect(model.hash()).toBeDefined();
+    });
+  });
+});

@@ -24,7 +24,6 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  * @param {string} [nameOverride]
  * @param {InstanceCallback} [instanceCallback] optional callback that will be called with the instance upon instantiation. defaults to undefined
  *
- * @param basePrototype
  * @function model
  * @category Decorators
  */
@@ -32,7 +31,7 @@ export function model(
   nameOverride?: string,
   instanceCallback?: InstanceCallback,
 ) {
-  return (original: any) => {
+  return ((original: any) => {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {
       const instance: ReturnType<typeof original> = construct(
@@ -73,5 +72,5 @@ export function model(
 
     // return new constructor (will override original)
     return newConstructor;
-  };
+  }) as any;
 }

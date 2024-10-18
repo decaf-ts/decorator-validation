@@ -18,7 +18,7 @@ export class ModelErrorDefinition {
 
   constructor(errors: ModelErrors) {
     for (const prop in errors) {
-      if (errors.hasOwnProperty(prop) && errors[prop])
+      if (Object.prototype.hasOwnProperty.call(errors, prop) && errors[prop])
         Object.defineProperty(this as any, prop, {
           enumerable: true,
           configurable: false,
@@ -36,7 +36,11 @@ export class ModelErrorDefinition {
   toString(): string {
     const self: any = this as any;
     return Object.keys(self)
-      .filter((k) => self.hasOwnProperty(k) && typeof self[k] !== "function")
+      .filter(
+        (k) =>
+          Object.prototype.hasOwnProperty.call(self, k) &&
+          typeof self[k] !== "function"
+      )
       .reduce((accum: string, prop) => {
         let propError: string | undefined = Object.keys(self[prop]).reduce(
           (propAccum: undefined | string, key) => {
@@ -44,7 +48,7 @@ export class ModelErrorDefinition {
             else propAccum += `\n${self[prop][key]}`;
             return propAccum;
           },
-          undefined,
+          undefined
         );
 
         if (propError) {

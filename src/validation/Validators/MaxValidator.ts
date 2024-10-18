@@ -34,13 +34,13 @@ export class MaxValidator extends Validator {
   public hasErrors(
     value: number | Date | string,
     max: number | Date | string,
-    message?: string,
+    message?: string
   ): string | undefined {
     if (value === undefined) return;
 
     if (value instanceof Date && !(max instanceof Date)) {
       max = new Date(max);
-      if (isNaN(max.getDate())) throw new Error(`Invalid Max param defined`);
+      if (isNaN(max.getDate())) throw new Error("Invalid Max param defined");
     }
 
     return value > max

@@ -20,15 +20,15 @@ import { ModelArg } from "./types";
  */
 export function constructFromObject<T extends Model>(
   self: T,
-  obj?: ModelArg<T>,
+  obj?: ModelArg<T>
 ) {
   if (!obj) return self;
   for (const prop in obj) {
     if (
-      obj.hasOwnProperty(prop) &&
-      (self.hasOwnProperty(prop) ||
+      Object.prototype.hasOwnProperty.call(obj, prop) &&
+      (Object.prototype.hasOwnProperty.call(self, prop) ||
         ((self as any).prototype &&
-          (self as any).prototype.hasOwnProperty(prop)))
+          Object.prototype.hasOwnProperty.call((self as any).prototype, prop)))
     )
       (self as any)[prop] = (obj as any)[prop] || undefined;
   }
@@ -50,7 +50,7 @@ export function constructFromObject<T extends Model>(
  */
 export function constructFromModel<T extends Model>(
   self: T,
-  obj?: ModelArg<T>,
+  obj?: ModelArg<T>
 ) {
   if (!obj) return self;
 
@@ -58,17 +58,17 @@ export function constructFromModel<T extends Model>(
 
   for (const prop in obj) {
     if (
-      obj.hasOwnProperty(prop) &&
-      (self.hasOwnProperty(prop) ||
+      Object.prototype.hasOwnProperty.call(obj, prop) &&
+      (Object.prototype.hasOwnProperty.call(self, prop) ||
         ((self as any).prototype &&
-          (self as any).prototype.hasOwnProperty(prop)))
+          Object.prototype.hasOwnProperty.call((self as any).prototype, prop)))
     ) {
       (self as Record<string, any>)[prop] = (obj as Record<string, any>)[prop];
       if (typeof (self as any)[prop] !== "object") continue;
       if (isModel((self as Record<string, any>)[prop])) {
         try {
           (self as Record<string, any>)[prop] = Model.build(
-            (self as Record<string, any>)[prop],
+            (self as Record<string, any>)[prop]
           );
         } catch (e: any) {
           console.log(e);
@@ -79,11 +79,11 @@ export function constructFromModel<T extends Model>(
       const allDecorators: DecoratorMetadata[] = getPropertyDecorators(
         ValidationKeys.REFLECT,
         self,
-        prop,
+        prop
       ).decorators;
       decorators = allDecorators.filter(
         (d: DecoratorMetadata) =>
-          [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1,
+          [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
       );
       if (!decorators || !decorators.length)
         throw new Error(sf("failed to find decorators for property {0}", prop));
@@ -94,7 +94,7 @@ export function constructFromModel<T extends Model>(
           ? dec.props.customTypes
           : [dec.props.customTypes];
       const reserved = Object.values(ReservedModels).map((v) =>
-        v.toLowerCase(),
+        v.toLowerCase()
       ) as string[];
 
       clazz.forEach((c) => {
@@ -105,11 +105,11 @@ export function constructFromModel<T extends Model>(
               case "Set":
                 if (allDecorators.length) {
                   const listDec = allDecorators.find(
-                    (d) => d.key === ValidationKeys.LIST,
+                    (d) => d.key === ValidationKeys.LIST
                   );
                   if (listDec) {
                     const clazzName = listDec.props.class.find(
-                      (t: string) => !jsTypes.includes(t.toLowerCase()),
+                      (t: string) => !jsTypes.includes(t.toLowerCase())
                     );
                     if (c === "Array")
                       (self as Record<string, any>)[prop] = (
@@ -123,9 +123,14 @@ export function constructFromModel<T extends Model>(
                     if (c === "Set") {
                       const s = new Set();
                       for (const v of (self as Record<string, any>)[prop]) {
-                        ["object", "function"].includes(typeof v) && clazzName
-                          ? s.add(Model.build(v, clazzName))
-                          : s.add(v);
+                        if (
+                          ["object", "function"].includes(typeof v) &&
+                          clazzName
+                        ) {
+                          s.add(Model.build(v, clazzName));
+                        } else {
+                          s.add(v);
+                        }
                       }
                       (self as Record<string, any>)[prop] = s;
                     }
@@ -136,7 +141,7 @@ export function constructFromModel<T extends Model>(
                 if ((self as Record<string, any>)[prop])
                   (self as Record<string, any>)[prop] = Model.build(
                     (self as any)[prop],
-                    c,
+                    c
                   );
             }
           } catch (e: any) {
@@ -176,7 +181,7 @@ export function construct<T extends Model>(
  */
 export type ModelBuilderFunction = <T extends Model>(
   self: T,
-  obj?: T | Record<string, any>,
+  obj?: T | Record<string, any>
 ) => T;
 
 export function findLastProtoBeforeObject(obj: object): object {

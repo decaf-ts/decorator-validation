@@ -21,12 +21,14 @@ import { parseDate } from "../utils/dates";
  *
  * @category Decorators
  */
-export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
+export function required(
+  message: string = DEFAULT_ERROR_MESSAGES.REQUIRED
+): PropertyDecorator {
   return metadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.REQUIRED),
     {
       message: message,
-    },
+    }
   );
 }
 
@@ -43,7 +45,7 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
  */
 export function min(
   value: number | Date | string,
-  message: string = DEFAULT_ERROR_MESSAGES.MIN,
+  message: string = DEFAULT_ERROR_MESSAGES.MIN
 ) {
   return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.MIN), {
     value: value,
@@ -65,7 +67,7 @@ export function min(
  */
 export function max(
   value: number | Date | string,
-  message: string = DEFAULT_ERROR_MESSAGES.MAX,
+  message: string = DEFAULT_ERROR_MESSAGES.MAX
 ) {
   return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.MAX), {
     value: value,
@@ -87,7 +89,7 @@ export function max(
  */
 export function step(
   value: number,
-  message: string = DEFAULT_ERROR_MESSAGES.STEP,
+  message: string = DEFAULT_ERROR_MESSAGES.STEP
 ) {
   return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.STEP), {
     value: value,
@@ -109,7 +111,7 @@ export function step(
  */
 export function minlength(
   value: number,
-  message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH,
+  message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH
 ) {
   return metadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.MIN_LENGTH),
@@ -117,7 +119,7 @@ export function minlength(
       value: value,
       message: message,
       types: [String.name, Array.name, Set.name],
-    },
+    }
   );
 }
 
@@ -134,7 +136,7 @@ export function minlength(
  */
 export function maxlength(
   value: number,
-  message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH,
+  message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH
 ) {
   return metadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.MAX_LENGTH),
@@ -142,7 +144,7 @@ export function maxlength(
       value: value,
       message: message,
       types: [String.name, Array.name, Set.name],
-    },
+    }
   );
 }
 
@@ -159,7 +161,7 @@ export function maxlength(
  */
 export function pattern(
   value: RegExp | string,
-  message: string = DEFAULT_ERROR_MESSAGES.PATTERN,
+  message: string = DEFAULT_ERROR_MESSAGES.PATTERN
 ) {
   return metadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.PATTERN),
@@ -167,7 +169,7 @@ export function pattern(
       value: typeof value === "string" ? value : value.toString(),
       message: message,
       types: [String.name],
-    },
+    }
   );
 }
 
@@ -220,7 +222,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
  */
 export function type(
   types: string[] | string,
-  message: string = DEFAULT_ERROR_MESSAGES.TYPE,
+  message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
   return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.TYPE), {
     customTypes: types,
@@ -245,7 +247,7 @@ export function type(
  */
 export function date(
   format: string = "dd/MM/yyyy",
-  message: string = DEFAULT_ERROR_MESSAGES.DATE,
+  message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
   return (target: Record<string, any>, propertyKey: string): any => {
     metadata(getValidationKey(ValidationKeys.DATE), {
@@ -299,7 +301,7 @@ export function date(
  */
 export function password(
   pattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
-  message: string = DEFAULT_ERROR_MESSAGES.PASSWORD,
+  message: string = DEFAULT_ERROR_MESSAGES.PASSWORD
 ) {
   return metadata(getValidationKey(ValidationKeys.PASSWORD), {
     pattern: pattern,
@@ -325,7 +327,7 @@ export function password(
 export function list(
   clazz: ModelConstructor<any> | ModelConstructor<any>[],
   collection: "Array" | "Set" = "Array",
-  message: string = DEFAULT_ERROR_MESSAGES.LIST,
+  message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   return metadata(getValidationKey(ValidationKeys.LIST), {
     class: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
@@ -349,7 +351,7 @@ export function list(
  */
 export function set(
   clazz: ModelConstructor<any>,
-  message: string = DEFAULT_ERROR_MESSAGES.LIST,
+  message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   return list(clazz, "Set", message);
 }
