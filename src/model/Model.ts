@@ -225,7 +225,10 @@ export abstract class Model
 
   static getAttributes<V extends Model>(model: Constructor<V> | V) {
     const result: string[] = [];
-    let prototype = (model as any).prototype;
+    let prototype =
+      model instanceof Model
+        ? Object.getPrototypeOf(model)
+        : (model as any).prototype;
     while (prototype != null) {
       const props: string[] = prototype[ModelKeys.ATTRIBUTE];
       if (props) {

@@ -41,7 +41,7 @@ class TestModelWithList extends Model {
   @required()
   @minlength(1)
   @maxlength(1)
-  models?: ConstructionTestModel[] = undefined;
+  models!: ConstructionTestModel[];
 
   constructor(arg?: ModelArg<TestModelWithList>) {
     super(arg);
