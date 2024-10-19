@@ -2,20 +2,14 @@ import { apply, metadata } from "@decaf-ts/reflection";
 import { ModelKeys } from "./constants";
 
 export function prop(): PropertyDecorator {
-  return (target: object, propertyKey: string | symbol): void => {
-    const descriptor = Object.getOwnPropertyDescriptor(
-      target,
-      ModelKeys.ATTRIBUTE
-    );
-    const props: string[] = descriptor ? descriptor.value || [] : [];
-    if (props.indexOf(propertyKey.toString()) === -1)
-      props.push(propertyKey.toString());
-    Object.defineProperty(target, ModelKeys.ATTRIBUTE, {
-      enumerable: false,
-      configurable: true,
-      writable: false,
-      value: props,
-    });
+  return (model: object, propertyKey: string | symbol): void => {
+    let props: string[];
+    if (Object.prototype.hasOwnProperty.call(model, ModelKeys.ATTRIBUTE)) {
+      props = (model as any)[ModelKeys.ATTRIBUTE];
+    } else {
+      props = (model as any)[ModelKeys.ATTRIBUTE] = [];
+    }
+    props.push(propertyKey as string);
   };
 }
 
