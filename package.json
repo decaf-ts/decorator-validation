@@ -21,10 +21,10 @@
     "lint": "eslint .",
     "lint-fix": "eslint . && eslint --fix ./src/*",
     "test:circular": "dpdm -T --no-warning --no-tree ./src/index.ts",
-    "prepare-release": "npm run lint-fix && npm run build:prod && npm run test && npm run docs",
+    "prepare-release": "npm run lint-fix && npm run build:prod && npm run coverage && npm run docs",
     "release": "./bin/tag-release.sh",
     "clean-publish": "npx clean-publish",
-    "coverage": "npm run test:all && jest-coverage-badges --input \"./workdocs/coverage/coverage-summary.json\" --output \"./workdocs/badges\"",
+    "coverage": "npm run test:all && cd workdocs && jest-coverage-badges",
     "docs": "npx rimraf ./docs && mkdir docs && npm run do-install -- better-docs taffydb && gulp docs; npm remove better-docs taffydb"
   },
   "repository": {
