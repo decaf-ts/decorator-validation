@@ -23,14 +23,8 @@ export function constructFromObject<T extends Model>(
   obj?: ModelArg<T>
 ) {
   if (!obj) return self;
-  for (const prop in obj) {
-    if (
-      Object.prototype.hasOwnProperty.call(obj, prop) &&
-      (Object.prototype.hasOwnProperty.call(self, prop) ||
-        ((self as any).prototype &&
-          Object.prototype.hasOwnProperty.call((self as any).prototype, prop)))
-    )
-      (self as any)[prop] = (obj as any)[prop] || undefined;
+  for (const prop of Model.getAttributes(self)) {
+    (self as any)[prop] = (obj as any)[prop] || undefined;
   }
   return self;
 }
@@ -56,100 +50,96 @@ export function constructFromModel<T extends Model>(
 
   let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
 
-  for (const prop in obj) {
-    if (
-      Object.prototype.hasOwnProperty.call(obj, prop) &&
-      (Object.prototype.hasOwnProperty.call(self, prop) ||
-        ((self as any).prototype &&
-          Object.prototype.hasOwnProperty.call((self as any).prototype, prop)))
-    ) {
-      (self as Record<string, any>)[prop] = (obj as Record<string, any>)[prop];
-      if (typeof (self as any)[prop] !== "object") continue;
-      if (isModel((self as Record<string, any>)[prop])) {
-        try {
-          (self as Record<string, any>)[prop] = Model.build(
-            (self as Record<string, any>)[prop]
-          );
-        } catch (e: any) {
-          console.log(e);
-        }
-        continue;
+  const props = Model.getAttributes(self);
+
+  for (const prop of props) {
+    (self as Record<string, any>)[prop] =
+      (obj as Record<string, any>)[prop] || undefined;
+    if (typeof (self as any)[prop] !== "object") continue;
+    if (isModel((self as Record<string, any>)[prop])) {
+      try {
+        (self as Record<string, any>)[prop] = Model.build(
+          (self as Record<string, any>)[prop]
+        );
+      } catch (e: any) {
+        console.log(e);
       }
+      continue;
+    }
 
-      const allDecorators: DecoratorMetadata[] = getPropertyDecorators(
-        ValidationKeys.REFLECT,
-        self,
-        prop
-      ).decorators;
-      decorators = allDecorators.filter(
-        (d: DecoratorMetadata) =>
-          [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
-      );
-      if (!decorators || !decorators.length)
-        throw new Error(sf("failed to find decorators for property {0}", prop));
-      dec = decorators.pop() as DecoratorMetadata;
-      const clazz = dec.props.name
-        ? [dec.props.name]
-        : Array.isArray(dec.props.customTypes)
-          ? dec.props.customTypes
-          : [dec.props.customTypes];
-      const reserved = Object.values(ReservedModels).map((v) =>
-        v.toLowerCase()
-      ) as string[];
+    const allDecorators: DecoratorMetadata[] = getPropertyDecorators(
+      ValidationKeys.REFLECT,
+      self,
+      prop
+    ).decorators;
+    decorators = allDecorators.filter(
+      (d: DecoratorMetadata) =>
+        [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
+    );
+    if (!decorators || !decorators.length)
+      throw new Error(sf("failed to find decorators for property {0}", prop));
+    dec = decorators.pop() as DecoratorMetadata;
+    const clazz = dec.props.name
+      ? [dec.props.name]
+      : Array.isArray(dec.props.customTypes)
+        ? dec.props.customTypes
+        : [dec.props.customTypes];
+    const reserved = Object.values(ReservedModels).map((v) =>
+      v.toLowerCase()
+    ) as string[];
 
-      clazz.forEach((c) => {
-        if (reserved.indexOf(c.toLowerCase()) === -1)
-          try {
-            switch (c) {
-              case "Array":
-              case "Set":
-                if (allDecorators.length) {
-                  const listDec = allDecorators.find(
-                    (d) => d.key === ValidationKeys.LIST
+    clazz.forEach((c) => {
+      if (reserved.indexOf(c.toLowerCase()) === -1)
+        try {
+          switch (c) {
+            case "Array":
+            case "Set":
+              if (allDecorators.length) {
+                const listDec = allDecorators.find(
+                  (d) => d.key === ValidationKeys.LIST
+                );
+                if (listDec) {
+                  const clazzName = listDec.props.class.find(
+                    (t: string) => !jsTypes.includes(t.toLowerCase())
                   );
-                  if (listDec) {
-                    const clazzName = listDec.props.class.find(
-                      (t: string) => !jsTypes.includes(t.toLowerCase())
-                    );
-                    if (c === "Array")
-                      (self as Record<string, any>)[prop] = (
-                        self as Record<string, any>
-                      )[prop].map((el: any) => {
-                        return ["object", "function"].includes(typeof el) &&
-                          clazzName
-                          ? Model.build(el, clazzName)
-                          : el;
-                      });
-                    if (c === "Set") {
-                      const s = new Set();
-                      for (const v of (self as Record<string, any>)[prop]) {
-                        if (
-                          ["object", "function"].includes(typeof v) &&
-                          clazzName
-                        ) {
-                          s.add(Model.build(v, clazzName));
-                        } else {
-                          s.add(v);
-                        }
+                  if (c === "Array")
+                    (self as Record<string, any>)[prop] = (
+                      self as Record<string, any>
+                    )[prop].map((el: any) => {
+                      return ["object", "function"].includes(typeof el) &&
+                        clazzName
+                        ? Model.build(el, clazzName)
+                        : el;
+                    });
+                  if (c === "Set") {
+                    const s = new Set();
+                    for (const v of (self as Record<string, any>)[prop]) {
+                      if (
+                        ["object", "function"].includes(typeof v) &&
+                        clazzName
+                      ) {
+                        s.add(Model.build(v, clazzName));
+                      } else {
+                        s.add(v);
                       }
-                      (self as Record<string, any>)[prop] = s;
                     }
+                    (self as Record<string, any>)[prop] = s;
                   }
                 }
-                break;
-              default:
-                if ((self as Record<string, any>)[prop])
-                  (self as Record<string, any>)[prop] = Model.build(
-                    (self as any)[prop],
-                    c
-                  );
-            }
-          } catch (e: any) {
-            console.log(e);
-            // do nothing. we have no registry of this class
+              }
+              break;
+            default:
+              if ((self as Record<string, any>)[prop])
+                (self as Record<string, any>)[prop] = Model.build(
+                  (self as any)[prop],
+                  c
+                );
           }
-      });
-    }
+        } catch (e: any) {
+          console.log(e);
+          // do nothing. we have no registry of this class
+        }
+    });
   }
   return self;
 }

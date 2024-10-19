@@ -29,14 +29,14 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  */
 export function model(
   nameOverride?: string,
-  instanceCallback?: InstanceCallback,
+  instanceCallback?: InstanceCallback
 ) {
   return ((original: any) => {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {
       const instance: ReturnType<typeof original> = construct(
         original,
-        ...args,
+        ...args
       );
       bindModelPrototype(instance);
       // run a builder function if defined with the first argument (The ModelArg)
@@ -45,7 +45,7 @@ export function model(
 
       metadata(
         getModelKey(ModelKeys.MODEL),
-        nameOverride || original.name,
+        nameOverride || original.name
       )(instance.constructor);
 
       if (instanceCallback) instanceCallback(instance, ...args);
@@ -65,7 +65,7 @@ export function model(
 
     metadata(
       getModelKey(ModelKeys.MODEL),
-      nameOverride || original.name,
+      nameOverride || original.name
     )(original);
 
     Model.register(newConstructor, nameOverride);
@@ -73,4 +73,21 @@ export function model(
     // return new constructor (will override original)
     return newConstructor;
   }) as any;
+}
+
+export function hashedBy(algorithm: string, ...args: any[]): ClassDecorator {
+  return metadata(getModelKey(ModelKeys.HASHING), {
+    algorithm: algorithm,
+    args: args,
+  });
+}
+
+export function serializedBy(
+  serializer: string,
+  ...args: any[]
+): ClassDecorator {
+  return metadata(getModelKey(ModelKeys.SERIALIZATION), {
+    serializer: serializer,
+    args: args,
+  });
 }

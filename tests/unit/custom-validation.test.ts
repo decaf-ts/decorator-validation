@@ -3,13 +3,13 @@ import {
   constructFromObject,
   Model,
   ModelArg,
+  propMetadata,
   ValidationMetadata,
   validator,
   Validator,
 } from "../../src";
 import { Validation } from "../../src/validation/Validation";
 import { getValidationKey } from "../../src";
-import { metadata } from "@decaf-ts/reflection";
 
 function generateGtin() {
   function pad(num: number, width: number, padding: string = "0") {
@@ -70,15 +70,18 @@ class GtinValidator extends Validator {
 }
 
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
-  return metadata<ValidationMetadata>(getValidationKey(CUSTOM_VALIDATION_KEY), {
-    message: message,
-    types: ["string", "number"],
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(CUSTOM_VALIDATION_KEY),
+    {
+      message: message,
+      types: ["string", "number"],
+    }
+  );
 };
 
 class TestModel extends Model {
   @gtin()
-  customProp?: number | string = undefined;
+  customProp!: number | string;
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);

@@ -11,6 +11,7 @@ import {
   formatDate,
   twoDigitPad,
   ModelArg,
+  prop,
 } from "../../src";
 
 @model()
@@ -50,12 +51,12 @@ class TestModelInner extends Model {
 
 @model()
 class NestedTestModel extends Model {
-  test?: TestModelInner = undefined;
+  @prop()
+  test!: TestModelInner;
 
   constructor(model?: ModelArg<NestedTestModel>) {
     super();
-    Model.fromObject(this, model);
-    this.test = new TestModelInner(this.test);
+    Model.fromModel(this, model);
   }
 }
 

@@ -3,6 +3,7 @@ import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import {
   Comparable,
+  Constructor,
   Hashable,
   ModelArg,
   ModelConstructor,
@@ -20,6 +21,7 @@ import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { getModelKey } from "./utils";
 import { ModelKeys } from "../utils/constants";
+import { sf } from "../utils";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -219,6 +221,17 @@ export abstract class Model
         "could not find metadata for provided " + model.constructor.name
       );
     return metadata;
+  }
+
+  static getAttributes<V extends Model>(model: Constructor<V> | V) {
+    const result: string[] = [];
+    let prototype: any = model;
+    do {
+      const props: string[] | undefined = prototype[ModelKeys.ATTRIBUTE];
+      if (props) result.push(...props);
+      prototype = Object.getPrototypeOf(prototype);
+    } while (prototype !== null);
+    return result;
   }
 
   static equals<V extends Model>(obj1: V, obj2: V, ...exceptions: any[]) {

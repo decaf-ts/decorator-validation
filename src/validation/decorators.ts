@@ -8,8 +8,9 @@ import {
 import { sf } from "../utils/strings";
 import { ModelConstructor } from "../model/types";
 import { getValidationKey } from "./utils";
-import { metadata } from "@decaf-ts/reflection";
+import { apply, metadata } from "@decaf-ts/reflection";
 import { parseDate } from "../utils/dates";
+import { prop, propMetadata } from "../utils/decorators";
 
 /**
  * @summary Marks the property as required.
@@ -24,7 +25,7 @@ import { parseDate } from "../utils/dates";
 export function required(
   message: string = DEFAULT_ERROR_MESSAGES.REQUIRED
 ): PropertyDecorator {
-  return metadata<ValidationMetadata>(
+  return propMetadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.REQUIRED),
     {
       message: message,
@@ -47,11 +48,14 @@ export function min(
   value: number | Date | string,
   message: string = DEFAULT_ERROR_MESSAGES.MIN
 ) {
-  return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.MIN), {
-    value: value,
-    message: message,
-    types: [Number.name, Date.name],
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(ValidationKeys.MIN),
+    {
+      value: value,
+      message: message,
+      types: [Number.name, Date.name],
+    }
+  );
 }
 
 /**
@@ -69,11 +73,14 @@ export function max(
   value: number | Date | string,
   message: string = DEFAULT_ERROR_MESSAGES.MAX
 ) {
-  return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.MAX), {
-    value: value,
-    message: message,
-    types: [Number.name, Date.name],
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(ValidationKeys.MAX),
+    {
+      value: value,
+      message: message,
+      types: [Number.name, Date.name],
+    }
+  );
 }
 
 /**
@@ -91,11 +98,14 @@ export function step(
   value: number,
   message: string = DEFAULT_ERROR_MESSAGES.STEP
 ) {
-  return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.STEP), {
-    value: value,
-    message: message,
-    types: [Number.name],
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(ValidationKeys.STEP),
+    {
+      value: value,
+      message: message,
+      types: [Number.name],
+    }
+  );
 }
 
 /**
@@ -113,7 +123,7 @@ export function minlength(
   value: number,
   message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH
 ) {
-  return metadata<ValidationMetadata>(
+  return propMetadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.MIN_LENGTH),
     {
       value: value,
@@ -138,7 +148,7 @@ export function maxlength(
   value: number,
   message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH
 ) {
-  return metadata<ValidationMetadata>(
+  return propMetadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.MAX_LENGTH),
     {
       value: value,
@@ -163,7 +173,7 @@ export function pattern(
   value: RegExp | string,
   message: string = DEFAULT_ERROR_MESSAGES.PATTERN
 ) {
-  return metadata<ValidationMetadata>(
+  return propMetadata<ValidationMetadata>(
     getValidationKey(ValidationKeys.PATTERN),
     {
       value: typeof value === "string" ? value : value.toString(),
@@ -184,11 +194,14 @@ export function pattern(
  * @category Decorators
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
-  return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.EMAIL), {
-    pattern: DEFAULT_PATTERNS.EMAIL,
-    message: message,
-    types: [String.name],
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(ValidationKeys.EMAIL),
+    {
+      pattern: DEFAULT_PATTERNS.EMAIL,
+      message: message,
+      types: [String.name],
+    }
+  );
 }
 
 /**
@@ -202,11 +215,14 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  * @category Decorators
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
-  return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.URL), {
-    pattern: DEFAULT_PATTERNS.URL,
-    message: message,
-    types: [String.name],
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(ValidationKeys.URL),
+    {
+      pattern: DEFAULT_PATTERNS.URL,
+      message: message,
+      types: [String.name],
+    }
+  );
 }
 
 /**
@@ -224,10 +240,13 @@ export function type(
   types: string[] | string,
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
-  return metadata<ValidationMetadata>(getValidationKey(ValidationKeys.TYPE), {
-    customTypes: types,
-    message: message,
-  });
+  return propMetadata<ValidationMetadata>(
+    getValidationKey(ValidationKeys.TYPE),
+    {
+      customTypes: types,
+      message: message,
+    }
+  );
 }
 
 /**
@@ -250,7 +269,7 @@ export function date(
   message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
   return (target: Record<string, any>, propertyKey: string): any => {
-    metadata(getValidationKey(ValidationKeys.DATE), {
+    propMetadata(getValidationKey(ValidationKeys.DATE), {
       format: format,
       message: message,
       types: [Date.name],
@@ -303,7 +322,7 @@ export function password(
   pattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
   message: string = DEFAULT_ERROR_MESSAGES.PASSWORD
 ) {
-  return metadata(getValidationKey(ValidationKeys.PASSWORD), {
+  return propMetadata(getValidationKey(ValidationKeys.PASSWORD), {
     pattern: pattern,
     message: message,
     types: [String.name],
@@ -329,7 +348,7 @@ export function list(
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
-  return metadata(getValidationKey(ValidationKeys.LIST), {
+  return propMetadata(getValidationKey(ValidationKeys.LIST), {
     class: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
     type: collection,
     message: message,
