@@ -70,7 +70,7 @@ class GtinValidator extends Validator {
 
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
   return propMetadata<ValidationMetadata>(
-    getValidationKey(CUSTOM_VALIDATION_KEY),
+    Validation.key(CUSTOM_VALIDATION_KEY),
     {
       message: message,
       types: ["string", "number"],

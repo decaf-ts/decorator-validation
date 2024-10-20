@@ -9,8 +9,7 @@ import {
   Validator,
 } from "../../src";
 import { Validation } from "../../src/validation/Validation";
-import { getValidationKey } from "../../src";
-import { apply, metadata } from "@decaf-ts/reflection";
+import { apply } from "@decaf-ts/reflection";
 
 function generateGtin() {
   function pad(num: number, width: number, padding: string = "0") {
@@ -74,9 +73,9 @@ class GtinValidator extends Validator {
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
   return apply(
     required(CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE),
-    propMetadata<ValidationMetadata>(getValidationKey(CUSTOM_VALIDATION_KEY), {
+    propMetadata<ValidationMetadata>(Validation.key(CUSTOM_VALIDATION_KEY), {
       message: message,
-      types: ["string", "number"],
+      types: [String.name, Number.name],
     })
   );
 };

@@ -19,7 +19,7 @@ import {
 } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
-import { getModelKey, isPropertyModel } from "./utils";
+import { isPropertyModel } from "./utils";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { sf } from "../utils/strings";
@@ -33,14 +33,8 @@ let actingModelRegistry: BuilderRegistry<any>;
  * @description Meant to be used as a base class for all Model classes
  *
  * Model objects must:
- *  - Have all their properties defined as optional;
- *  - Have all their properties initialized eg:
- *
- *  <pre>
- *      class ClassName {
- *          propertyName?: PropertyType = undefined;
- *      }
- *  </pre>
+ *  - Have all their required properties marked with '!';
+ *  - Have all their optional properties marked as '?':
  *
  * @param {Model | {}} model base object from which to populate properties from
  *
@@ -49,7 +43,13 @@ let actingModelRegistry: BuilderRegistry<any>;
  * @implements Validatable
  * @implements Serializable
  *
- * @category Model
+ * @example
+ *      class ClassName {
+ *          @required()
+ *          requiredPropertyName!: PropertyType;
+ *
+ *          optionalPropertyName?: PropertyType;
+ *      }
  */
 export abstract class Model
   implements Validatable, Serializable, Hashable, Comparable<Model>
@@ -60,7 +60,7 @@ export abstract class Model
   /**
    * @summary Validates the object according to its decorated properties
    *
-   * @param {any[]} [exceptions] properties in the object to be ignored for he validation. Marked as 'any' to allow for extension but expects strings
+   * @param {any[]} [exceptions] properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    */
   public hasErrors(...exceptions: any[]): ModelErrorDefinition | undefined {
     return validate(this, ...exceptions);
@@ -106,7 +106,7 @@ export abstract class Model
    */
   static deserialize(str: string) {
     const metadata = Reflect.getMetadata(
-      getModelKey(ModelKeys.SERIALIZATION),
+      this.key(ModelKeys.SERIALIZATION),
       this.constructor
     );
 
@@ -324,7 +324,7 @@ export abstract class Model
 
   static getMetadata<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
-      getModelKey(ModelKeys.MODEL),
+      this.key(ModelKeys.MODEL),
       model.constructor
     );
     if (!metadata)
@@ -360,7 +360,7 @@ export abstract class Model
 
   static serialize<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
-      getModelKey(ModelKeys.SERIALIZATION),
+      this.key(ModelKeys.SERIALIZATION),
       model.constructor
     );
 
@@ -375,12 +375,20 @@ export abstract class Model
 
   static hash<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
-      getModelKey(ModelKeys.HASHING),
+      this.key(ModelKeys.HASHING),
       model.constructor
     );
 
     if (metadata && metadata.algorithm)
       return Hashing.hash(model, metadata.algorithm, ...(metadata.args || []));
     return Hashing.hash(model);
+  }
+  /**
+   * @summary Builds the key to store as Metadata under Reflections
+   * @description concatenates {@link ModelKeys#REFLECT} with the provided key
+   * @param {string} str
+   */
+  static key(str: string) {
+    return ModelKeys.REFLECT + str;
   }
 }

@@ -1,7 +1,10 @@
-import { bindModelPrototype, construct } from "./construction";
+import {
+  bindModelPrototype,
+  construct,
+  ModelBuilderFunction,
+} from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
-import { getModelKey } from "./utils";
 import { metadata } from "@decaf-ts/reflection";
 
 /**
@@ -44,7 +47,7 @@ export function model(
       if (builder) builder(instance, args.length ? args[0] : undefined);
 
       metadata(
-        getModelKey(ModelKeys.MODEL),
+        Model.key(ModelKeys.MODEL),
         nameOverride || original.name
       )(instance.constructor);
 
@@ -64,7 +67,7 @@ export function model(
     });
 
     metadata(
-      getModelKey(ModelKeys.MODEL),
+      Model.key(ModelKeys.MODEL),
       nameOverride || original.name
     )(original);
 
@@ -76,7 +79,7 @@ export function model(
 }
 
 export function hashedBy(algorithm: string, ...args: any[]): ClassDecorator {
-  return metadata(getModelKey(ModelKeys.HASHING), {
+  return metadata(Model.key(ModelKeys.HASHING), {
     algorithm: algorithm,
     args: args,
   });
@@ -86,7 +89,7 @@ export function serializedBy(
   serializer: string,
   ...args: any[]
 ): ClassDecorator {
-  return metadata(getModelKey(ModelKeys.SERIALIZATION), {
+  return metadata(Model.key(ModelKeys.SERIALIZATION), {
     serializer: serializer,
     args: args,
   });

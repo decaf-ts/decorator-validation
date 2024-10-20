@@ -3,7 +3,6 @@ import { Validation } from "../Validation";
 import { ValidatorDefinition } from "./types";
 import { Constructor } from "../../model/types";
 import { ValidationKeys } from "./constants";
-import { getValidationKey } from "../utils";
 import { apply, metadata } from "@decaf-ts/reflection";
 
 /**
@@ -28,6 +27,6 @@ export function validator<T extends Validator>(...keys: string[]) {
       });
       return original;
     }) as ClassDecorator,
-    metadata(getValidationKey(ValidationKeys.VALIDATOR), keys),
+    metadata(Validation.key(ValidationKeys.VALIDATOR), keys)
   );
 }

@@ -1,17 +1,6 @@
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 
-/**
- * @summary Builds the key to store as Metadata under Reflections
- * @description concatenates {@link ModelKeys#REFLECT} with the provided key
- * @param {string} str
- *
- * @function getModelKey
- * @memberOf module:decorator-validation.Model
- * @category Utilities
- */
-export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
-
 export function isPropertyModel<M extends Model>(
   target: M,
   attribute: string

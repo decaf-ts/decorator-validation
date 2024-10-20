@@ -13,13 +13,13 @@
  * @category Model
  */
 export enum ModelKeys {
-  REFLECT = "model.definition.",
+  REFLECT = "decaf.model.",
   TYPE = "design:type",
   PARAMS = "design:paramtypes",
   RETURN = "design:returntype",
   MODEL = "model",
   ANCHOR = "__model",
-  ATTRIBUTES = "attributes.for.{0}",
+  CONSTRUCTION = "constructed-by",
   ATTRIBUTE = "__attributes",
   HASHING = "hashing",
   SERIALIZATION = "serialization",

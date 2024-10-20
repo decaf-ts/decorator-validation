@@ -1,6 +1,7 @@
 import { Validator } from "./Validators/Validator";
 import { IValidatorRegistry, ValidatorDefinition } from "./Validators/types";
 import { ValidatorRegistry } from "./Validators/ValidatorRegistry";
+import { ValidationKeys } from "./Validators/constants";
 
 /**
  * @summary Static class acting as a namespace for the Validation
@@ -24,7 +25,7 @@ export class Validation {
    */
   static setRegistry(
     validatorRegistry: IValidatorRegistry<Validator>,
-    migrationHandler?: (validator: Validator) => Validator,
+    migrationHandler?: (validator: Validator) => Validator
   ) {
     if (migrationHandler && Validation.actingValidatorRegistry)
       Validation.actingValidatorRegistry.getKeys().forEach((k) => {
@@ -64,5 +65,15 @@ export class Validation {
     ...validator: (ValidatorDefinition | T)[]
   ): void {
     return Validation.getRegistry().register(...validator);
+  }
+
+  /**
+   * @summary Builds the key to store as Metadata under Reflections
+   * @description concatenates {@link ValidationKeys#REFLECT} with the provided key
+   *
+   * @param {string} key
+   */
+  static key(key: string) {
+    return ValidationKeys.REFLECT + key;
   }
 }

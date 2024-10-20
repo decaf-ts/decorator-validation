@@ -1,3 +1,5 @@
+import { ModelKeys } from "../../utils/constants";
+
 /**
  * @summary The keys used for validation
  *
@@ -21,7 +23,7 @@
  * @category Validation
  */
 export const ValidationKeys = {
-  REFLECT: "model.validation.",
+  REFLECT: `${ModelKeys.REFLECT}validation.`,
   VALIDATOR: "validator",
   REQUIRED: "required",
   MIN: "min",
