@@ -19,7 +19,7 @@ class TestModel extends Model {
   @date("dd/MM/yyyy")
   @max("2022/01/01")
   @min(new Date("2020/01/01"))
-  dateProp?: Date = undefined;
+  dateProp?: Date;
 
   constructor(model?: ModelArg<TestModel>) {
     super();
@@ -29,7 +29,7 @@ class TestModel extends Model {
 
 class TestModel2 extends Model {
   @date("dd/MM/yyyy HH:mm:ss:S")
-  dateProp?: Date = undefined;
+  dateProp?: Date;
 
   constructor(model?: ModelArg<TestModel2>) {
     super();
@@ -39,13 +39,14 @@ class TestModel2 extends Model {
 
 const format = "dd-MM-yyyy";
 
+@model()
 class TestModelInner extends Model {
   @date("dd-MM-yyyy")
-  dateProp?: Date = undefined;
+  dateProp?: Date;
 
   constructor(model?: ModelArg<TestModelInner>) {
-    super();
-    Model.fromObject(this, model);
+    super(model);
+    Model.fromModel(this, model);
   }
 }
 

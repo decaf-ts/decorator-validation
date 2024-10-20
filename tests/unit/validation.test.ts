@@ -3,6 +3,7 @@ import {
   Model,
   ModelArg,
   ModelErrorDefinition,
+  prop,
   step,
   Validator,
   Validators,
@@ -31,34 +32,35 @@ class InnerTestModel extends Model {
 class TestModel extends Model {
   @type(["string", "number"])
   @required()
-  id?: string | number = undefined;
+  id!: string | number;
 
-  irrelevant?: string = undefined;
+  @prop()
+  irrelevant?: string;
 
   @required()
   @max(100)
   @step(5)
   @min(0)
-  prop1?: number = undefined;
+  prop1!: number;
 
   @maxlength(10)
   @minlength(5)
-  prop2?: string = undefined;
+  prop2?: string;
 
   @pattern(/^\w+$/g)
-  prop3?: string = undefined;
+  prop3?: string;
 
   @email()
-  prop4?: string = undefined;
+  prop4?: string;
 
   @pattern("^\\w+$")
-  prop5?: string = undefined;
+  prop5?: string;
 
   @url()
-  prop6?: string = undefined;
+  prop6?: string;
 
   @type(InnerTestModel.name)
-  prop7?: InnerTestModel = undefined;
+  prop7?: InnerTestModel;
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);
@@ -69,7 +71,7 @@ class TestModel extends Model {
 @model()
 class PasswordTestModel extends Model {
   @password()
-  password?: string = undefined;
+  password?: string;
 
   constructor(model?: ModelArg<PasswordTestModel>) {
     super();
@@ -83,7 +85,7 @@ class ListModelTest extends Model {
   @maxlength(2)
   @minlength(1)
   @required()
-  strings?: string[] = undefined;
+  strings!: string[];
 
   constructor(model?: ModelArg<ListModelTest>) {
     super();

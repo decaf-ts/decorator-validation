@@ -12,10 +12,10 @@ import {
 @model()
 class InnerTestModel extends Model {
   @required()
-  id?: string = undefined;
+  id!: string;
 
   @required()
-  value?: string = undefined;
+  value!: string;
 
   constructor(arg: ModelArg<InnerTestModel>) {
     super(arg);
@@ -29,13 +29,13 @@ class InnerTestModel extends Model {
 @model()
 class OuterTestModel extends Model {
   @required()
-  id?: string = undefined;
+  id!: string;
 
   @required()
-  name?: string = undefined;
+  name!: string;
 
   @required()
-  child?: InnerTestModel = undefined;
+  child!: InnerTestModel;
 
   constructor(arg: ModelArg<OuterTestModel>) {
     super(arg);
@@ -52,12 +52,12 @@ class OuterTestModel extends Model {
 @model()
 class OuterListTestModel extends Model {
   @required()
-  id?: string = undefined;
+  id!: string;
 
   @list(InnerTestModel)
   @minlength(1)
   @required()
-  children?: InnerTestModel[] = undefined;
+  children!: InnerTestModel[];
 
   constructor(arg: ModelArg<OuterTestModel>) {
     super(arg);

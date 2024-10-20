@@ -9,7 +9,8 @@ export function prop(): PropertyDecorator {
     } else {
       props = (model as any)[ModelKeys.ATTRIBUTE] = [];
     }
-    props.push(propertyKey as string);
+    if (!props.includes(propertyKey as string))
+      props.push(propertyKey as string);
   };
 }
 

@@ -78,7 +78,7 @@ describe("Hashing methods", function () {
   @hashedBy("hash")
   class HashModel1 extends Model {
     @required()
-    hashMe?: string = undefined;
+    hashMe!: string;
 
     constructor(arg?: ModelArg<HashModel1>) {
       super();
@@ -89,7 +89,7 @@ describe("Hashing methods", function () {
   @hashedBy("hash")
   class HashModel2 extends Model {
     @required()
-    hashMe?: string = undefined;
+    hashMe!: string;
 
     constructor(arg?: ModelArg<HashModel2>) {
       super();

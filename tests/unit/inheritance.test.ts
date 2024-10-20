@@ -12,7 +12,7 @@ type Callback = (...args: any) => void;
 
 class Test1 extends Model {
   @required()
-  prop?: string = undefined;
+  prop!: string;
 
   constructor(obj?: ModelArg<Test1>) {
     super();
@@ -203,7 +203,7 @@ describe("inheritance Test", () => {
 
     class BaseModel extends Model {
       @Decorators.on(["create"], Handler.handler1)
-      updatedOn?: string = undefined;
+      updatedOn?: string;
 
       constructor(baseModel?: ModelArg<BaseModel>) {
         super();

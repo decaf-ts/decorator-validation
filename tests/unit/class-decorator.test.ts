@@ -1,8 +1,9 @@
-import { model, Model, ModelArg } from "../../src";
+import { model, Model, ModelArg, prop } from "../../src";
 
 @model()
 class TestModel extends Model {
-  name?: string = undefined;
+  @prop()
+  name!: string;
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);

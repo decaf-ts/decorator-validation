@@ -3,6 +3,7 @@ import {
   constructFromObject,
   Model,
   ModelArg,
+  propMetadata,
   required,
   ValidationMetadata,
   validator,
@@ -74,7 +75,7 @@ class GtinValidator extends Validator {
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
   return apply(
     required(CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE),
-    metadata<ValidationMetadata>(getValidationKey(CUSTOM_VALIDATION_KEY), {
+    propMetadata<ValidationMetadata>(getValidationKey(CUSTOM_VALIDATION_KEY), {
       message: message,
       types: ["string", "number"],
     })
@@ -83,7 +84,7 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
 
 class TestModel extends Model {
   @gtin()
-  customProp?: number | string = undefined;
+  customProp!: number | string;
 
   constructor(model?: ModelArg<TestModel>) {
     super();

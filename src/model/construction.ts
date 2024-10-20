@@ -4,7 +4,7 @@ import { jsTypes, ReservedModels } from "./constants";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { getPropertyDecorators, DecoratorMetadata } from "@decaf-ts/reflection";
-import { isModel } from "./utils";
+import { isModel, isPropertyModel } from "./utils";
 import { ModelArg } from "./types";
 
 /**
@@ -22,7 +22,7 @@ export function constructFromObject<T extends Model>(
   self: T,
   obj?: ModelArg<T>
 ) {
-  if (!obj) return self;
+  if (!obj) obj = {};
   for (const prop of Model.getAttributes(self)) {
     (self as any)[prop] = (obj as any)[prop] || undefined;
   }
@@ -46,7 +46,7 @@ export function constructFromModel<T extends Model>(
   self: T,
   obj?: ModelArg<T>
 ) {
-  if (!obj) return self;
+  if (!obj) obj = {};
 
   let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
 
@@ -56,10 +56,12 @@ export function constructFromModel<T extends Model>(
     (self as Record<string, any>)[prop] =
       (obj as Record<string, any>)[prop] || undefined;
     if (typeof (self as any)[prop] !== "object") continue;
-    if (isModel((self as Record<string, any>)[prop])) {
+    const propM = isPropertyModel(self, prop);
+    if (propM) {
       try {
         (self as Record<string, any>)[prop] = Model.build(
-          (self as Record<string, any>)[prop]
+          (self as Record<string, any>)[prop],
+          typeof propM === "string" ? propM : undefined
         );
       } catch (e: any) {
         console.log(e);

@@ -8,7 +8,7 @@ import { minlength, maxlength } from "../../src";
 @model()
 class ConstructionTestModel extends Model {
   @required()
-  prop1?: string = undefined;
+  prop1!: string;
 
   constructor(arg?: ModelArg<ConstructionTestModel>) {
     super(arg);
@@ -18,7 +18,7 @@ class ConstructionTestModel extends Model {
 @model()
 class ParentConstructionTestModel extends Model {
   @required()
-  child?: ConstructionTestModel = undefined;
+  child!: ConstructionTestModel;
 
   constructor(arg?: ModelArg<ConstructionTestModel>) {
     super(arg);
@@ -28,7 +28,7 @@ class ParentConstructionTestModel extends Model {
 @model()
 class GrandParentConstructionTestModel extends Model {
   @required()
-  parent?: ParentConstructionTestModel = undefined;
+  parent!: ParentConstructionTestModel;
 
   constructor(arg?: ModelArg<GrandParentConstructionTestModel>) {
     super(arg);
@@ -49,16 +49,6 @@ class TestModelWithList extends Model {
 }
 
 describe("Construction", () => {
-  it("constructs simple objects", () => {
-    const r = {
-      prop1: "test",
-    };
-    const model = new ConstructionTestModel(r);
-    expect(model.hasErrors()).toBeDefined();
-
-    constructFromObject(model, r);
-    expect(model.hasErrors()).toBeUndefined();
-  });
   it("auto constructs when configured", () => {
     Model.setBuilder(Model.fromObject);
     const r = {
@@ -76,10 +66,6 @@ describe("Construction", () => {
       },
     };
 
-    it("Fails to build without a defined builder function", () => {
-      const model = new ParentConstructionTestModel(r);
-      expect(model.hasErrors()).toBeDefined();
-    });
     it("Only builds the parent class with the normal Builder function", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);

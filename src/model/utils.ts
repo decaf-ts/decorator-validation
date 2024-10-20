@@ -12,6 +12,15 @@ import { Model } from "./Model";
  */
 export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
 
+export function isPropertyModel<M extends Model>(
+  target: M,
+  attribute: string
+): boolean | string | undefined {
+  if (isModel((target as Record<string, any>)[attribute])) return true;
+  const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
+  return Model.get(metadata.name) ? metadata.name : undefined;
+}
+
 /**
  * @summary For Serialization/deserialization purposes.
  * @description Reads the {@link ModelKeys.ANCHOR} property of a {@link Model} to discover the class to instantiate
@@ -22,7 +31,7 @@ export const getModelKey = (str: string) => ModelKeys.REFLECT + str;
  */
 export function isModel(target: Record<string, any>) {
   try {
-    return target instanceof Model || !Model.getMetadata(target as any);
+    return target instanceof Model || !!Model.getMetadata(target as any);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e: any) {
     return false;

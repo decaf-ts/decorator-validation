@@ -3,7 +3,7 @@ import "reflect-metadata";
 
 @model()
 class TestModel extends Model {
-  name?: string = undefined;
+  name?: string;
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);

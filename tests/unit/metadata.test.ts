@@ -5,7 +5,7 @@ describe("metadata", () => {
   @metadata(getModelKey(ModelKeys.MODEL), TestModel1.name)
   class TestModel1 extends Model {
     @required()
-    name?: string = undefined;
+    name!: string;
     constructor(arg?: ModelArg<Model>) {
       super(arg);
     }
@@ -13,7 +13,7 @@ describe("metadata", () => {
   @metadata(getModelKey(ModelKeys.MODEL), TestModel2.name)
   class TestModel2 extends Model {
     @required()
-    name?: string = undefined;
+    name!: string;
     constructor(arg?: ModelArg<Model>) {
       super(arg);
     }
