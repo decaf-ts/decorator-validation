@@ -1,5 +1,4 @@
 import {
-  constructFromObject,
   hashedBy,
   Hashing,
   isModel,
@@ -16,7 +15,7 @@ class TestModel extends Model {
 
   constructor(model?: TestModel | Record<any, any>) {
     super(model);
-    constructFromObject<TestModel>(this, model);
+    Model.fromObject<TestModel>(this, model);
   }
 }
 
@@ -82,7 +81,7 @@ describe("Hashing methods", function () {
 
     constructor(arg?: ModelArg<HashModel1>) {
       super();
-      constructFromObject(this, arg);
+      Model.fromObject(this, arg);
     }
   }
 
@@ -93,7 +92,7 @@ describe("Hashing methods", function () {
 
     constructor(arg?: ModelArg<HashModel2>) {
       super();
-      constructFromObject(this, arg);
+      Model.fromObject(this, arg);
     }
   }
 

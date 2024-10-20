@@ -1,5 +1,4 @@
 import {
-  constructFromModel,
   list,
   minlength,
   model,
@@ -66,7 +65,7 @@ class OuterListTestModel extends Model {
 
 describe("Nested Validation", () => {
   beforeAll(() => {
-    Model.setBuilder(constructFromModel);
+    Model.setBuilder(Model.fromModel);
   });
 
   afterAll(() => {

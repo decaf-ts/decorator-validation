@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import {
-  constructFromObject,
   Model,
   ModelArg,
   propMetadata,
@@ -85,7 +84,7 @@ class TestModel extends Model {
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);
-    constructFromObject<TestModel>(this, model);
+    Model.fromObject<TestModel>(this, model);
   }
 }
 

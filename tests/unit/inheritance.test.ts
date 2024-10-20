@@ -1,10 +1,4 @@
-import {
-  constructFromObject,
-  required,
-  Model,
-  model,
-  ModelArg,
-} from "../../src";
+import { required, Model, model, ModelArg } from "../../src";
 import { hashObj } from "../../src";
 import { getPropertyDecorators } from "@decaf-ts/reflection";
 
@@ -16,7 +10,7 @@ class Test1 extends Model {
 
   constructor(obj?: ModelArg<Test1>) {
     super();
-    constructFromObject(this, obj);
+    Model.fromObject(this, obj);
   }
 }
 
@@ -26,7 +20,7 @@ class Test2 extends Test1 {
 
   constructor(obj?: ModelArg<Test2>) {
     super(obj);
-    constructFromObject(this, obj);
+    Model.fromObject(this, obj);
   }
 }
 
@@ -207,7 +201,7 @@ describe("inheritance Test", () => {
 
       constructor(baseModel?: ModelArg<BaseModel>) {
         super();
-        constructFromObject<BaseModel>(this, baseModel);
+        Model.fromObject<BaseModel>(this, baseModel);
       }
     }
 
@@ -217,7 +211,7 @@ describe("inheritance Test", () => {
 
       constructor(overriddenBaseModel?: ModelArg<OverriddenBaseModel>) {
         super(overriddenBaseModel);
-        constructFromObject<OverriddenBaseModel>(this, overriddenBaseModel);
+        Model.fromObject<OverriddenBaseModel>(this, overriddenBaseModel);
       }
     }
 
