@@ -8,7 +8,6 @@ import {
   Validator,
 } from "../../src";
 import { Validation } from "../../src/validation/Validation";
-import { getValidationKey } from "../../src";
 
 function generateGtin() {
   function pad(num: number, width: number, padding: string = "0") {

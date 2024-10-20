@@ -1,8 +1,4 @@
-import {
-  bindModelPrototype,
-  construct,
-  ModelBuilderFunction,
-} from "./construction";
+import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { metadata } from "@decaf-ts/reflection";
@@ -22,18 +18,13 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  * - Overrides the class constructor;
  * - Runs the global {@link ModelBuilderFunction} if defined;
  * - Runs the optional {@link InstanceCallback} if provided;
- * - Defines an {@link ModelKeys#ANCHOR} property for serialization and model rebuilding purposes;
  *
- * @param {string} [nameOverride]
  * @param {InstanceCallback} [instanceCallback] optional callback that will be called with the instance upon instantiation. defaults to undefined
  *
  * @function model
  * @category Decorators
  */
-export function model(
-  nameOverride?: string,
-  instanceCallback?: InstanceCallback
-) {
+export function model(instanceCallback?: InstanceCallback) {
   return ((original: any) => {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {
@@ -46,10 +37,7 @@ export function model(
       const builder = Model.getBuilder();
       if (builder) builder(instance, args.length ? args[0] : undefined);
 
-      metadata(
-        Model.key(ModelKeys.MODEL),
-        nameOverride || original.name
-      )(instance.constructor);
+      metadata(Model.key(ModelKeys.MODEL), original.name)(instance.constructor);
 
       if (instanceCallback) instanceCallback(instance, ...args);
 
@@ -66,12 +54,9 @@ export function model(
       value: original.prototype.constructor.name,
     });
 
-    metadata(
-      Model.key(ModelKeys.MODEL),
-      nameOverride || original.name
-    )(original);
+    metadata(Model.key(ModelKeys.MODEL), original.name)(original);
 
-    Model.register(newConstructor, nameOverride);
+    Model.register(newConstructor, original.name);
 
     // return new constructor (will override original)
     return newConstructor;
