@@ -139,7 +139,7 @@ describe("inheritance Test", () => {
           args: any[] = [],
           ...props: string[]
         ) =>
-        (target: any, propertyKey: string) => {
+        (target: any, propertyKey?: any) => {
           const name = target.constructor.name;
           operation.forEach((op) => {
             op = "on." + op;

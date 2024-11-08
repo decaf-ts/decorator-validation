@@ -21,9 +21,7 @@ import { Validation } from "./Validation";
  *
  * @category Decorators
  */
-export function required(
-  message: string = DEFAULT_ERROR_MESSAGES.REQUIRED
-): PropertyDecorator {
+export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.REQUIRED),
     {
@@ -252,7 +250,7 @@ export function date(
   format: string = "dd/MM/yyyy",
   message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
-  return (target: Record<string, any>, propertyKey: string): any => {
+  return (target: Record<string, any>, propertyKey?: any): any => {
     propMetadata(Validation.key(ValidationKeys.DATE), {
       format: format,
       message: message,

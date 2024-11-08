@@ -63,17 +63,14 @@ export function model(instanceCallback?: InstanceCallback) {
   }) as any;
 }
 
-export function hashedBy(algorithm: string, ...args: any[]): ClassDecorator {
+export function hashedBy(algorithm: string, ...args: any[]) {
   return metadata(Model.key(ModelKeys.HASHING), {
     algorithm: algorithm,
     args: args,
   });
 }
 
-export function serializedBy(
-  serializer: string,
-  ...args: any[]
-): ClassDecorator {
+export function serializedBy(serializer: string, ...args: any[]) {
   return metadata(Model.key(ModelKeys.SERIALIZATION), {
     serializer: serializer,
     args: args,
