@@ -14,6 +14,6 @@ export function prop(key: string = ModelKeys.ATTRIBUTE) {
   };
 }
 
-export function propMetadata<V>(key: string, value: any) {
+export function propMetadata<V>(key: string, value: V) {
   return apply(prop(), metadata<V>(key, value));
 }
