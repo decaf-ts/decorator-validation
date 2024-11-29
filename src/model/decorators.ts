@@ -5,8 +5,8 @@ import { metadata } from "@decaf-ts/reflection";
 
 /**
  * @summary defines the tpe os an InstanceCallback function
- * @memberOf module:decorator-validation.Construction
- * @category Construction
+ *
+ * @memberOf module:decorator-validation.Model
  */
 export type InstanceCallback = (instance: any, ...args: any[]) => void;
 
@@ -22,7 +22,9 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  * @param {InstanceCallback} [instanceCallback] optional callback that will be called with the instance upon instantiation. defaults to undefined
  *
  * @function model
- * @category Decorators
+ *
+ * @memberOf module:decorator-validation.Model
+ *
  */
 export function model(instanceCallback?: InstanceCallback) {
   return ((original: any) => {

@@ -1,5 +1,5 @@
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
-import { DecoratorMetadata, getPropertyDecorators } from "@decaf-ts/reflection";
+import { DecoratorMetadata, Reflection } from "@decaf-ts/reflection";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { ReservedModels } from "./constants";
@@ -35,7 +35,7 @@ export function validate<T extends Model>(
       propsToIgnore.indexOf(prop) === -1
     )
       decoratedProperties.push(
-        getPropertyDecorators(
+        Reflection.getPropertyDecorators(
           ValidationKeys.REFLECT,
           obj,
           prop
@@ -93,17 +93,18 @@ export function validate<T extends Model>(
   for (const prop of Object.keys(obj).filter((k) => !result || !result[k])) {
     let err: string | undefined;
     // if a nested Model
-    const allDecorators = getPropertyDecorators(
+    const allDecorators = Reflection.getPropertyDecorators(
       ValidationKeys.REFLECT,
       obj,
       prop
     ).decorators;
-    const decorators = getPropertyDecorators(
+    const decorators = Reflection.getPropertyDecorators(
       ValidationKeys.REFLECT,
       obj,
       prop
     ).decorators.filter(
-      (d) => [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
+      (d: DecoratorMetadata) =>
+        [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
     );
     if (!decorators || !decorators.length) continue;
     const dec = decorators.pop() as DecoratorMetadata;
@@ -122,7 +123,9 @@ export function validate<T extends Model>(
           ? ValidationKeys.LIST
           : ValidationKeys.TYPE;
         const types: any =
-          allDecorators.find((d) => d.key === typeDecoratorKey) || {};
+          allDecorators.find(
+            (d: DecoratorMetadata) => d.key === typeDecoratorKey
+          ) || {};
         let allowedTypes: string[] = [];
         if (types && types.props) {
           const customTypes = Array.isArray((obj as any)[prop])
@@ -148,7 +151,7 @@ export function validate<T extends Model>(
           case Set.name:
             if (allDecorators.length) {
               const listDec = allDecorators.find(
-                (d) => d.key === ValidationKeys.LIST
+                (d: DecoratorMetadata) => d.key === ValidationKeys.LIST
               );
               if (listDec) {
                 err = (

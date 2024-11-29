@@ -2,6 +2,16 @@ import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { Model } from "./Model";
 
 /**
+ * @summary Typo of a Model builder function
+ * @memberOf module:decorator-validation.Construction
+ * @category Construction
+ */
+export type ModelBuilderFunction = <T extends Model>(
+  self: T,
+  obj?: T | Record<string, any>
+) => T;
+
+/**
  * @summary Definition of a Model Constructor Argument
  *
  * @memberOf module:decorator-validation.Model

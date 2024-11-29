@@ -3,7 +3,9 @@
  */
 
 /**
- * @summary Defines the Model object
+ * @summary Model definition functionality
+ * @description defines the base class and related functionality
+ *
  * @namespace Model
  * @memberOf module:decorator-validation
  */
@@ -15,63 +17,31 @@
  */
 
 /**
+ * @summary Validation related functionality
+ * @description Defines the Model validation apis and base classes for validators
+ *
  * @namespace Validation
- * @memberOf module:decorator-validation.Decorators
- */
-
-/**
- * @namespace Model
- * @memberOf module:decorator-validation.Decorators
- */
-
-/**
- * @namespace Reflections
- * @memberOf module:decorator-validation.Reflections
- */
-
-/**
- * @namespace Construction
- * @memberOf module:decorator-validation
- */
-
-/**
- * @namespace Validation
- * @memberOf module:decorator-validation
- */
-
-/**
- * @namespace Validators
- * @memberOf module:decorator-validation.Validation
- */
-
-/**
- * @namespace Utils
  * @memberOf module:decorator-validation
  */
 
 /**
  * @namespace Dates
- * @memberOf module:decorator-validation.Utils
- */
-
-/**
- * @namespace Equality
- * @memberOf module:decorator-validation.Utils
+ * @memberOf module:decorator-validation
  */
 
 /**
  * @namespace Hashing
- * @memberOf module:decorator-validation.Utils
+ * @memberOf module:decorator-validation
  */
 
 /**
  * @namespace Serialization
- * @memberOf module:decorator-validation.Utils
+ * @memberOf module:decorator-validation
  */
 
 /**
  * @namespace Format
- * @memberOf module:decorator-validation.Utils
+ * @memberOf module:decorator-validation
  */
 
 export * from "./utils";

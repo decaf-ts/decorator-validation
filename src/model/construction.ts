@@ -9,7 +9,6 @@ import { Model } from "./Model";
  *
  * @function construct
  * @memberOf module:decorator-validation.Construction
- * @category Construction
  */
 export function construct<T extends Model>(
   constructor: any,
@@ -21,15 +20,12 @@ export function construct<T extends Model>(
 }
 
 /**
- * @summary Typo of a Model builder function
+ * @summary Recursively finds the last prototype before Object
+ * @param {object} obj
+ *
+ * @function findLastProtoBeforeObject
  * @memberOf module:decorator-validation.Construction
- * @category Construction
  */
-export type ModelBuilderFunction = <T extends Model>(
-  self: T,
-  obj?: T | Record<string, any>
-) => T;
-
 export function findLastProtoBeforeObject(obj: object): object {
   let prototype: any = Object.getPrototypeOf(obj);
   if (prototype === Object.prototype) return obj;
@@ -41,10 +37,18 @@ export function findLastProtoBeforeObject(obj: object): object {
   throw new Error("Could not find proper prototype");
 }
 
-export function bindModelPrototype(obj: any) {
+/**
+ * @sumary binds the {@link Model} class as a root prototype of the provided instance
+ *
+ * @param {unknown} obj
+ *
+ * @function bindModelPrototype
+ * @memberOf module:decorator-validation.Construction
+ */
+export function bindModelPrototype(obj: unknown) {
   if (obj instanceof Model) return;
 
-  function bindPrototype(objToOverride: object, prototype: object) {
+  function bindPrototype(objToOverride: unknown, prototype: object) {
     Object.setPrototypeOf(objToOverride, prototype);
   }
 
