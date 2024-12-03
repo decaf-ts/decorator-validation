@@ -6,13 +6,13 @@ import {
   Constructor,
   Hashable,
   ModelArg,
+  ModelBuilderFunction,
   ModelConstructor,
   Serializable,
   Validatable,
 } from "./types";
-import { ModelBuilderFunction } from "./construction";
 import { ModelRegistryManager } from "./Registry";
-import { DecoratorMetadata, Reflection, isEqual } from "@decaf-ts/reflection";
+import { DecoratorMetadata, isEqual, Reflection } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { isPropertyModel } from "./utils";
@@ -201,7 +201,7 @@ export abstract class Model
                     (d) => d.key === ValidationKeys.LIST
                   );
                   if (listDec) {
-                    const clazzName = listDec.props.class.find(
+                    const clazzName = (listDec.props.class as string[]).find(
                       (t: string) => !jsTypes.includes(t.toLowerCase())
                     );
                     if (c === "Array")

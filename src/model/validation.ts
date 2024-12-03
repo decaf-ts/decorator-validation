@@ -103,7 +103,7 @@ export function validate<T extends Model>(
       obj,
       prop
     ).decorators.filter(
-      (d: DecoratorMetadata) =>
+      (d: { key: string }) =>
         [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
     );
     if (!decorators || !decorators.length) continue;
@@ -124,7 +124,7 @@ export function validate<T extends Model>(
           : ValidationKeys.TYPE;
         const types: any =
           allDecorators.find(
-            (d: DecoratorMetadata) => d.key === typeDecoratorKey
+            (d: { key: string }) => d.key === typeDecoratorKey
           ) || {};
         let allowedTypes: string[] = [];
         if (types && types.props) {
@@ -151,7 +151,7 @@ export function validate<T extends Model>(
           case Set.name:
             if (allDecorators.length) {
               const listDec = allDecorators.find(
-                (d: DecoratorMetadata) => d.key === ValidationKeys.LIST
+                (d: { key: string }) => d.key === ValidationKeys.LIST
               );
               if (listDec) {
                 err = (

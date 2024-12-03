@@ -3,8 +3,8 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { Validation } from "../Validation";
 import { ValidatorDefinition } from "./types";
-import { Reflection } from "@decaf-ts/reflection";
 import { ModelKeys } from "../../utils/constants";
+import { Reflection } from "@decaf-ts/reflection";
 
 /**
  * @summary Required Validator
