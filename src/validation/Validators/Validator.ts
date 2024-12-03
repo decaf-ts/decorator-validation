@@ -1,6 +1,6 @@
 import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { sf } from "../../utils/strings";
-import { checkTypes } from "@decaf-ts/reflection";
+import { Reflection } from "@decaf-ts/reflection";
 
 /**
  * @summary Base Implementation for Validators
@@ -45,7 +45,7 @@ export abstract class Validator {
    * @private
    */
   private checkTypeAndHasErrors(
-    unbound: (value: any, ...args: any[]) => string | undefined,
+    unbound: (value: any, ...args: any[]) => string | undefined
   ) {
     return function (
       this: Validator,
@@ -54,11 +54,11 @@ export abstract class Validator {
     ): string | undefined {
       if (value === undefined || !this.acceptedTypes)
         return unbound(value, ...args);
-      if (!checkTypes(value, this.acceptedTypes))
+      if (!Reflection.checkTypes(value, this.acceptedTypes))
         return this.getMessage(
           DEFAULT_ERROR_MESSAGES.TYPE,
           this.acceptedTypes.join(", "),
-          typeof value,
+          typeof value
         );
       return unbound(value, ...args);
     }.bind(this);

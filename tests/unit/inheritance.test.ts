@@ -1,6 +1,6 @@
 import { required, Model, model, ModelArg } from "../../src";
 import { hashObj } from "../../src";
-import { getPropertyDecorators } from "@decaf-ts/reflection";
+import { Reflection } from "@decaf-ts/reflection";
 
 type Callback = (...args: any) => void;
 
@@ -227,7 +227,7 @@ describe("inheritance Test", () => {
     const overRidden = new OverriddenBaseModel();
     expect(overRidden).toBeDefined();
 
-    const decorators = getPropertyDecorators(
+    const decorators = Reflection.getPropertyDecorators(
       "on.create",
       overRidden,
       "updatedOn",
@@ -258,7 +258,7 @@ describe("inheritance Test", () => {
 
     expect(other).toBeDefined();
 
-    const otherDecorators = getPropertyDecorators(
+    const otherDecorators = Reflection.getPropertyDecorators(
       "on.create",
       other,
       "updatedOn",

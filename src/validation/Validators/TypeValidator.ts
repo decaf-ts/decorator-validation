@@ -3,8 +3,8 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { Validation } from "../Validation";
 import { ValidatorDefinition } from "./types";
-import { evaluateDesignTypes } from "@decaf-ts/reflection";
 import { ModelKeys } from "../../utils/constants";
+import { Reflection } from "@decaf-ts/reflection";
 
 /**
  * @summary Required Validator
@@ -35,10 +35,10 @@ export class TypeValidator extends Validator {
   public hasErrors(
     value: any,
     types: string | string[] | { name: string },
-    message?: string,
+    message?: string
   ): string | undefined {
     if (value === undefined) return; // Dont try and enforce type if undefined
-    if (!evaluateDesignTypes(value, types))
+    if (!Reflection.evaluateDesignTypes(value, types))
       return this.getMessage(
         message || this.message,
         typeof types === "string"
@@ -46,7 +46,7 @@ export class TypeValidator extends Validator {
           : Array.isArray(types)
             ? types.join(", ")
             : types.name,
-        typeof value,
+        typeof value
       );
   }
 }

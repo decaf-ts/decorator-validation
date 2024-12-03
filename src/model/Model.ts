@@ -12,11 +12,7 @@ import {
 } from "./types";
 import { ModelBuilderFunction } from "./construction";
 import { ModelRegistryManager } from "./Registry";
-import {
-  DecoratorMetadata,
-  getPropertyDecorators,
-  isEqual,
-} from "@decaf-ts/reflection";
+import { DecoratorMetadata, isEqual, Reflection } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { isPropertyModel } from "./utils";
@@ -172,11 +168,12 @@ export abstract class Model
         continue;
       }
 
-      const allDecorators: DecoratorMetadata[] = getPropertyDecorators(
-        ValidationKeys.REFLECT,
-        self,
-        prop
-      ).decorators;
+      const allDecorators: DecoratorMetadata[] =
+        Reflection.getPropertyDecorators(
+          ValidationKeys.REFLECT,
+          self,
+          prop
+        ).decorators;
       decorators = allDecorators.filter(
         (d: DecoratorMetadata) =>
           [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
@@ -204,7 +201,7 @@ export abstract class Model
                     (d) => d.key === ValidationKeys.LIST
                   );
                   if (listDec) {
-                    const clazzName = listDec.props.class.find(
+                    const clazzName = (listDec.props.class as string[]).find(
                       (t: string) => !jsTypes.includes(t.toLowerCase())
                     );
                     if (c === "Array")
