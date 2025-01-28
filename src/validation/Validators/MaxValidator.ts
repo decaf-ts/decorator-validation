@@ -40,7 +40,8 @@ export class MaxValidator extends Validator {
 
     if (value instanceof Date && !(max instanceof Date)) {
       max = new Date(max);
-      if (isNaN(max.getDate())) throw new Error("Invalid Max param defined");
+      if (Number.isNaN(max.getDate()))
+        throw new Error("Invalid Max param defined");
     }
 
     return value > max

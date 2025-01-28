@@ -40,7 +40,8 @@ export class MinValidator extends Validator {
 
     if (value instanceof Date && !(min instanceof Date)) {
       min = new Date(min);
-      if (isNaN(min.getDate())) throw new Error("Invalid Min param defined");
+      if (Number.isNaN(min.getDate()))
+        throw new Error("Invalid Min param defined");
     }
     return value < min
       ? this.getMessage(message || this.message, min)

@@ -102,7 +102,7 @@ export abstract class Model
    */
   static deserialize(str: string) {
     const metadata = Reflect.getMetadata(
-      this.key(ModelKeys.SERIALIZATION),
+      Model.key(ModelKeys.SERIALIZATION),
       this.constructor
     );
 
@@ -321,7 +321,7 @@ export abstract class Model
 
   static getMetadata<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
-      this.key(ModelKeys.MODEL),
+      Model.key(ModelKeys.MODEL),
       model.constructor
     );
     if (!metadata)
@@ -357,7 +357,7 @@ export abstract class Model
 
   static serialize<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
-      this.key(ModelKeys.SERIALIZATION),
+      Model.key(ModelKeys.SERIALIZATION),
       model.constructor
     );
 
@@ -372,7 +372,7 @@ export abstract class Model
 
   static hash<V extends Model>(model: V) {
     const metadata = Reflect.getMetadata(
-      this.key(ModelKeys.HASHING),
+      Model.key(ModelKeys.HASHING),
       model.constructor
     );
 

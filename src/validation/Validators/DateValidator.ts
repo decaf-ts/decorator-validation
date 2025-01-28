@@ -34,12 +34,13 @@ export class DateValidator extends Validator {
   public hasErrors(
     value: Date | string,
     format: string,
-    message?: string,
+    message?: string
   ): string | undefined {
     if (value === undefined) return;
 
     if (typeof value === "string") value = new Date(value);
 
-    if (isNaN(value.getDate())) return this.getMessage(message || this.message);
+    if (Number.isNaN(value.getDate()))
+      return this.getMessage(message || this.message);
   }
 }
