@@ -76,4 +76,11 @@ export class Validation {
   static key(key: string) {
     return ValidationKeys.REFLECT + key;
   }
+
+  /**
+   * @summary Returns all registered validation keys
+   */
+  static keys() {
+    return this.getRegistry().getKeys();
+  }
 }
