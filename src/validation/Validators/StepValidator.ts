@@ -34,9 +34,9 @@ export class StepValidator extends Validator {
   public hasErrors(
     value: number | string,
     step: number | string,
-    message?: string,
+    message?: string
   ): string | undefined {
-    if (value === undefined) return;
+    if (typeof value === "undefined") return;
     return Number(value) % Number(step) !== 0
       ? this.getMessage(message || this.message, step)
       : undefined;

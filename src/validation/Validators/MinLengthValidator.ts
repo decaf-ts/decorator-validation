@@ -35,9 +35,9 @@ export class MinLengthValidator extends Validator {
   public hasErrors(
     value: string | any[],
     minlength: number,
-    message?: string,
+    message?: string
   ): string | undefined {
-    if (value === undefined) return;
+    if (typeof value === "undefined") return;
     return value.length < minlength
       ? this.getMessage(message || this.message, minlength)
       : undefined;

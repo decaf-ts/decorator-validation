@@ -36,7 +36,7 @@ export class MaxValidator extends Validator {
     max: number | Date | string,
     message?: string
   ): string | undefined {
-    if (value === undefined) return;
+    if (typeof value === "undefined") return;
 
     if (value instanceof Date && !(max instanceof Date)) {
       max = new Date(max);

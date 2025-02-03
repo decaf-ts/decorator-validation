@@ -36,7 +36,7 @@ export class MinValidator extends Validator {
     min: number | Date | string,
     message?: string
   ): string | undefined {
-    if (value === undefined) return;
+    if (typeof value === "undefined") return;
 
     if (value instanceof Date && !(min instanceof Date)) {
       min = new Date(min);

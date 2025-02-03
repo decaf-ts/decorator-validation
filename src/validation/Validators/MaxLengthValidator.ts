@@ -35,9 +35,9 @@ export class MaxLengthValidator extends Validator {
   public hasErrors(
     value: string | any[],
     maxlength: number,
-    message?: string,
+    message?: string
   ): string | undefined {
-    if (value === undefined) return;
+    if (typeof value === "undefined") return;
     return value.length > maxlength
       ? this.getMessage(message || this.message, maxlength)
       : undefined;
