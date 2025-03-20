@@ -5,7 +5,7 @@ const { src, dest, parallel, series } = gulp;
 import ts from "gulp-typescript";
 const { createProject } = ts;
 import sourcemaps from "gulp-sourcemaps";
-import uglify from "gulp-uglify";
+// import uglify from "gulp-uglify";
 import gulpIf from "gulp-if";
 import merge from "merge-stream";
 import named from "vinyl-named";
@@ -131,7 +131,7 @@ function exportDefault(isDev, mode) {
       return merge([
         stream.dts.pipe(dest(destPath)),
         stream.js
-          .pipe(gulpIf(!isDev, uglify()))
+          // .pipe(gulpIf(!isDev, uglify()))
           .pipe(
             gulpIf(
               mode === "commonjs",
@@ -223,7 +223,7 @@ export const dev = series(
 
 export const prod = series(
   parallel(
-    series(exportDefault(true, "commonjs"), exportDefault(true, "es2022")),
+    series(exportDefault(false, "commonjs"), exportDefault(false, "es2022")),
     exportESMDist(false),
     exportJSDist(false)
   ),
