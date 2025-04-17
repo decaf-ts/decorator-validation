@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
+import { Validator, ValidatorOptions } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface ListValidatorOptions extends ValidatorOptions {
+  clazz: string[];
+}
 
 /**
  * @summary List Validator
@@ -13,7 +17,7 @@ import { validator } from "./decorators";
  * @category Validators
  */
 @validator(ValidationKeys.LIST)
-export class ListValidator extends Validator {
+export class ListValidator extends Validator<ListValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LIST) {
     super(message, Array.name, Set.name);
   }
@@ -22,8 +26,7 @@ export class ListValidator extends Validator {
    * @summary Validates a model
    *
    * @param {any[] | Set<any>} value
-   * @param {string} clazz
-   * @param {string} [message]
+   * @param {ListValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -33,12 +36,11 @@ export class ListValidator extends Validator {
    */
   hasErrors(
     value: any[] | Set<any>,
-    clazz: string[],
-    message?: string,
+    options: ListValidatorOptions
   ): string | undefined {
     if (!value || (Array.isArray(value) ? !value.length : !value.size)) return;
 
-    clazz = Array.isArray(clazz) ? clazz : [clazz];
+    const clazz = Array.isArray(options.clazz) ? options.clazz : [options.clazz];
     let val: any,
       isValid = true;
     for (
@@ -60,6 +62,6 @@ export class ListValidator extends Validator {
 
     return isValid
       ? undefined
-      : this.getMessage(message || this.message, clazz);
+      : this.getMessage(options.message || this.message, clazz);
   }
 }

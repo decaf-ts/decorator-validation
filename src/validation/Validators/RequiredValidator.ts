@@ -1,5 +1,5 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 
 /**
@@ -22,7 +22,7 @@ export class RequiredValidator extends Validator {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {string} [message]
+   * @param {ValidatorOptions} [options={}]
    *
    * @return {string | undefined}
    *
@@ -30,15 +30,17 @@ export class RequiredValidator extends Validator {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(value: any, message?: string): string | undefined {
+  public hasErrors(value: any, options: ValidatorOptions = {}): string | undefined {
     switch (typeof value) {
       case "boolean":
       case "number":
         return typeof value === "undefined"
-          ? this.getMessage(message || this.message)
+          ? this.getMessage(options.message || this.message)
           : undefined;
       default:
-        return !value ? this.getMessage(message || this.message) : undefined;
+        return !value
+          ? this.getMessage(options.message || this.message)
+          : undefined;
     }
   }
 }

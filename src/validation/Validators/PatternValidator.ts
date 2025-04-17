@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface PatternValidatorOptions extends ValidatorOptions {
+  pattern?: RegExp | string;
+}
 
 export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
 
@@ -16,7 +20,7 @@ export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
  * @category Validators
  */
 @validator(ValidationKeys.PATTERN)
-export class PatternValidator extends Validator {
+export class PatternValidator extends Validator<PatternValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.PATTERN) {
     super(message, "string");
   }
@@ -37,8 +41,7 @@ export class PatternValidator extends Validator {
    * @summary Validates a Model
    *
    * @param {string} value
-   * @param {RegExp | string} pattern
-   * @param {string} [message]
+   * @param {PatternValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -48,15 +51,16 @@ export class PatternValidator extends Validator {
    */
   public hasErrors(
     value: string,
-    pattern?: RegExp | string,
-    message?: string,
+    options: PatternValidatorOptions
   ): string | undefined {
     if (!value) return;
+
+    let { pattern } = options;
     if (!pattern) throw new Error("Missing Pattern");
     pattern = typeof pattern === "string" ? this.getPattern(pattern) : pattern;
     pattern.lastIndex = 0; // resets pattern position for repeat validation requests
     return !pattern.test(value)
-      ? this.getMessage(message || this.message)
+      ? this.getMessage(options.message || this.message)
       : undefined;
   }
 }

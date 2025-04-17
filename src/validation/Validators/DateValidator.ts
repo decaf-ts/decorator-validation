@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface DateValidatorOptions extends ValidatorOptions {
+  format?: string;
+}
 
 /**
  * @summary Date Validator
@@ -13,7 +17,7 @@ import { validator } from "./decorators";
  * @category Validators
  */
 @validator(ValidationKeys.DATE)
-export class DateValidator extends Validator {
+export class DateValidator extends Validator<DateValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.DATE) {
     super(message, Number.name, Date.name, String.name);
   }
@@ -22,8 +26,7 @@ export class DateValidator extends Validator {
    * @summary Validates a model
    *
    * @param {Date | string} value
-   * @param {string} format
-   * @param {string} [message]
+   * @param {DateValidatorOptions} [options]
    *
    * @return {string | undefined}
    *
@@ -31,16 +34,14 @@ export class DateValidator extends Validator {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(
-    value: Date | string,
-    format: string,
-    message?: string
-  ): string | undefined {
+  public hasErrors(value: Date | string, options: DateValidatorOptions = {}): string | undefined {
     if (value === undefined) return;
 
     if (typeof value === "string") value = new Date(value);
 
-    if (Number.isNaN(value.getDate()))
+    if (Number.isNaN(value.getDate())) {
+      const { message = "" } = options;
       return this.getMessage(message || this.message);
+    }
   }
 }

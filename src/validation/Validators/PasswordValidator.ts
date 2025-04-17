@@ -1,4 +1,4 @@
-import { PatternValidator } from "./PatternValidator";
+import { PatternValidator, PatternValidatorOptions } from "./PatternValidator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 
@@ -22,8 +22,7 @@ export class PasswordValidator extends PatternValidator {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {RegExp} [pattern]
-   * @param {string} [message]
+   * @param {PatternValidatorOptions} [options={}]
    *
    * @return {string | undefined}
    *
@@ -33,13 +32,11 @@ export class PasswordValidator extends PatternValidator {
    */
   public hasErrors(
     value: string,
-    pattern?: RegExp,
-    message?: string
+    options: PatternValidatorOptions = {}
   ): string | undefined {
-    return super.hasErrors(
-      value,
-      pattern || DEFAULT_ERROR_MESSAGES.PASSWORD,
-      message || this.message
-    );
+    return super.hasErrors(value, {
+      ...options,
+      message: options.message || this.message,
+    });
   }
 }

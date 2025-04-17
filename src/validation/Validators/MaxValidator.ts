@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface MaxValidatorOptions extends ValidatorOptions {
+  max: number | Date | string;
+}
 
 /**
  * @summary Max Validator
@@ -13,7 +17,7 @@ import { validator } from "./decorators";
  * @category Validators
  */
 @validator(ValidationKeys.MAX)
-export class MaxValidator extends Validator {
+export class MaxValidator extends Validator<MaxValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX) {
     super(message, "number", "Date", "string");
   }
@@ -22,8 +26,7 @@ export class MaxValidator extends Validator {
    * @summary Validates a Model
    *
    * @param {string} value
-   * @param {number | Date | string} max
-   * @param {string} [message]
+   * @param {MaxValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -33,11 +36,11 @@ export class MaxValidator extends Validator {
    */
   public hasErrors(
     value: number | Date | string,
-    max: number | Date | string,
-    message?: string
+    options: MaxValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
 
+    let { max } = options;
     if (value instanceof Date && !(max instanceof Date)) {
       max = new Date(max);
       if (Number.isNaN(max.getDate()))
@@ -45,7 +48,7 @@ export class MaxValidator extends Validator {
     }
 
     return value > max
-      ? this.getMessage(message || this.message, max)
+      ? this.getMessage(options.message || this.message, max)
       : undefined;
   }
 }

@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface MinLengthValidatorOptions extends ValidatorOptions {
+  minlength: number;
+}
 
 /**
  * @summary Minimum Length Validator
@@ -14,7 +18,7 @@ import { validator } from "./decorators";
  * @category Validators
  */
 @validator(ValidationKeys.MIN_LENGTH)
-export class MinLengthValidator extends Validator {
+export class MinLengthValidator extends Validator<MinLengthValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH) {
     super(message, String.name, Array.name);
   }
@@ -22,8 +26,7 @@ export class MinLengthValidator extends Validator {
   /**
    *
    * @param {string | Array} value
-   * @param {number} minlength
-   * @param {string} [message]
+   * @param {MinLengthValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -34,12 +37,11 @@ export class MinLengthValidator extends Validator {
    */
   public hasErrors(
     value: string | any[],
-    minlength: number,
-    message?: string
+    options: MinLengthValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return value.length < minlength
-      ? this.getMessage(message || this.message, minlength)
+    return value.length < options.minlength
+      ? this.getMessage(options.message || this.message, options.minlength)
       : undefined;
   }
 }

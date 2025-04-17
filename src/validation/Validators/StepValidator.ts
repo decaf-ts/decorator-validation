@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface StepValidatorOptions extends ValidatorOptions {
+  step: number | string;
+}
 
 /**
  * @summary Step Validator
@@ -13,7 +17,7 @@ import { validator } from "./decorators";
  * @category Validators
  */
 @validator(ValidationKeys.STEP)
-export class StepValidator extends Validator {
+export class StepValidator extends Validator<StepValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.STEP) {
     super(message, "number", "string");
   }
@@ -23,7 +27,7 @@ export class StepValidator extends Validator {
    *
    * @param {string} value
    * @param {number} step
-   * @param {string} [message]
+   * @param {StepValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -33,12 +37,11 @@ export class StepValidator extends Validator {
    */
   public hasErrors(
     value: number | string,
-    step: number | string,
-    message?: string
+    options: StepValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return Number(value) % Number(step) !== 0
-      ? this.getMessage(message || this.message, step)
+    return Number(value) % Number(options.step) !== 0
+      ? this.getMessage(options.message || this.message, options.step)
       : undefined;
   }
 }

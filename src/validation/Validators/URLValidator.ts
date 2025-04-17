@@ -3,8 +3,13 @@ import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
 } from "./constants";
-import { PatternValidator } from "./PatternValidator";
+import { PatternValidator, PatternValidatorOptions } from "./PatternValidator";
 import { validator } from "./decorators";
+import { ValidatorOptions } from "./Validator";
+
+export interface URLValidatorOptions extends ValidatorOptions {
+  types: string | string[] | { name: string };
+}
 
 /**
  * @summary URL Validator
@@ -25,7 +30,7 @@ export class URLValidator extends PatternValidator {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {string} [message]
+   * @param {PatternValidatorOptions} [options={}]
    *
    * @return {string | undefined}
    *
@@ -35,9 +40,8 @@ export class URLValidator extends PatternValidator {
    */
   public hasErrors(
     value: string,
-    pattern?: RegExp,
-    message?: string,
+    options: PatternValidatorOptions = {}
   ): string | undefined {
-    return super.hasErrors(value, pattern || DEFAULT_PATTERNS.URL, message);
+    return super.hasErrors(value, {...options, pattern: options.pattern || DEFAULT_PATTERNS.URL});
   }
 }

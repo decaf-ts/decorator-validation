@@ -1,10 +1,14 @@
-import { Validator } from "./Validator";
+import { Validator, ValidatorOptions } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { Validation } from "../Validation";
 import { ValidatorDefinition } from "./types";
 import { ModelKeys } from "../../utils/constants";
 import { Reflection } from "@decaf-ts/reflection";
+
+export interface TypeValidatorOptions extends ValidatorOptions {
+  types: string | string[] | { name: string };
+}
 
 /**
  * @summary Required Validator
@@ -15,7 +19,7 @@ import { Reflection } from "@decaf-ts/reflection";
  * @category Validators
  */
 @validator(ValidationKeys.TYPE)
-export class TypeValidator extends Validator {
+export class TypeValidator extends Validator<TypeValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.TYPE) {
     super(message);
   }
@@ -23,8 +27,7 @@ export class TypeValidator extends Validator {
   /**
    * @summary Validates a model
    * @param {string} value
-   * @param {string | string[] | {name: string}} types
-   * @param {string} [message]
+   * @param {TypeValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -34,10 +37,10 @@ export class TypeValidator extends Validator {
    */
   public hasErrors(
     value: any,
-    types: string | string[] | { name: string },
-    message?: string
+    options: TypeValidatorOptions
   ): string | undefined {
-    if (value === undefined) return; // Dont try and enforce type if undefined
+    if (value === undefined) return; // Don't try and enforce type if undefined
+    const { types, message } = options;
     if (!Reflection.evaluateDesignTypes(value, types))
       return this.getMessage(
         message || this.message,

@@ -1,6 +1,10 @@
-import { Validator } from "./Validator";
-import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
+import { Validator, ValidatorOptions } from "./Validator";
+import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
+
+export interface MinValidatorOptions extends ValidatorOptions {
+  min: number | Date | string;
+}
 
 /**
  * @summary Min Validator
@@ -13,7 +17,7 @@ import { validator } from "./decorators";
  * @category Validators
  */
 @validator(ValidationKeys.MIN)
-export class MinValidator extends Validator {
+export class MinValidator extends Validator<MinValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN) {
     super(message, "number", "Date", "string");
   }
@@ -22,8 +26,7 @@ export class MinValidator extends Validator {
    * @summary Validates Model
    *
    * @param {string} value
-   * @param {number | Date | string} min
-   * @param {string} [message]
+   * @param {MaxValidatorOptions} options
    *
    * @return {string | undefined}
    *
@@ -33,18 +36,18 @@ export class MinValidator extends Validator {
    */
   public hasErrors(
     value: number | Date | string,
-    min: number | Date | string,
-    message?: string
+    options: MinValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
 
+    let { min } = options;
     if (value instanceof Date && !(min instanceof Date)) {
       min = new Date(min);
       if (Number.isNaN(min.getDate()))
         throw new Error("Invalid Min param defined");
     }
     return value < min
-      ? this.getMessage(message || this.message, min)
+      ? this.getMessage(options.message || this.message, min)
       : undefined;
   }
 }
