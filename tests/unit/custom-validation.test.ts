@@ -5,7 +5,7 @@ import {
   propMetadata,
   ValidationMetadata,
   validator,
-  Validator,
+  Validator, ValidatorOptions,
 } from "../../src";
 import { Validation } from "../../src/validation/Validation";
 
@@ -54,8 +54,10 @@ class GtinValidator extends Validator {
     super(message);
   }
 
-  hasErrors(value: number | string, message?: string): string | undefined {
+  hasErrors(value: number | string, options?: ValidatorOptions): string | undefined {
     if (value === undefined) return;
+
+    const { message } = options || {};
     const gtin = value + "";
     if (!gtin.match(/\d{14}/g)) return this.getMessage(message || this.message);
 

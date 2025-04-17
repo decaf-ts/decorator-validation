@@ -32,11 +32,11 @@ export class EmailValidator extends PatternValidator {
    */
   public hasErrors(
     value: string,
-    options: PatternValidatorOptions
+    options: PatternValidatorOptions = {}
   ): string | undefined {
     return super.hasErrors(value, {
       ...options,
-      pattern: options.pattern || DEFAULT_PATTERNS.EMAIL,
+      pattern: options?.pattern || DEFAULT_PATTERNS.EMAIL,
     });
   }
 }
