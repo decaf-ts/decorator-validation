@@ -2,6 +2,10 @@ import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { sf } from "../../utils/strings";
 import { Reflection } from "@decaf-ts/reflection";
 
+export type ValidatorOptions = {
+  message?: string;
+}
+
 /**
  * @summary Base Implementation for Validators
  * @description Provides the underlying functionality for {@link Validator}s
@@ -14,7 +18,7 @@ import { Reflection } from "@decaf-ts/reflection";
  * @abstract
  * @category Validators
  */
-export abstract class Validator {
+export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
   readonly message: string;
   readonly acceptedTypes?: string[];
 
@@ -67,11 +71,11 @@ export abstract class Validator {
   /**
    * @summary Validates an attribute
    * @param {any} value
-   * @param {any[]} args
+   * @param {ValidatorOptions} [options] Validate options for customizing the model validation behavior
    *
    * @abstract
    *
    * @see Model#hasErrors
    */
-  public abstract hasErrors(value: any, ...args: any[]): string | undefined;
+  public abstract hasErrors(value: any, options?: V): string | undefined;
 }

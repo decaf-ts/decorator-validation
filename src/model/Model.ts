@@ -351,8 +351,8 @@ export abstract class Model
     return isEqual(obj1, obj2, ...exceptions);
   }
 
-  static hasErrors<V extends Model>(model: V, ...exceptions: any[]) {
-    return validate(model, ...exceptions);
+  static hasErrors<V extends Model>(model: V, ...propsToIgnore: string[]) {
+    return validate(model, ...propsToIgnore);
   }
 
   static serialize<V extends Model>(model: V) {
