@@ -3,11 +3,12 @@ import {
   Model,
   ModelArg,
   propMetadata,
+  Validation,
   ValidationMetadata,
+  Validator,
   validator,
-  Validator, ValidatorOptions,
+  ValidatorOptions,
 } from "../../src";
-import { Validation } from "../../src/validation/Validation";
 
 function generateGtin() {
   function pad(num: number, width: number, padding: string = "0") {
@@ -54,7 +55,10 @@ class GtinValidator extends Validator {
     super(message);
   }
 
-  hasErrors(value: number | string, options?: ValidatorOptions): string | undefined {
+  hasErrors(
+    value: number | string,
+    options?: ValidatorOptions
+  ): string | undefined {
     if (value === undefined) return;
 
     const { message } = options || {};

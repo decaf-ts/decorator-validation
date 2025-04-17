@@ -4,11 +4,12 @@ import {
   ModelArg,
   propMetadata,
   required,
+  Validation,
   ValidationMetadata,
+  Validator,
   validator,
-  Validator, ValidatorOptions,
+  ValidatorOptions,
 } from "../../src";
-import { Validation } from "../../src/validation/Validation";
 import { apply } from "@decaf-ts/reflection";
 
 function generateGtin() {
@@ -57,7 +58,10 @@ class GtinValidator extends Validator {
     super(message);
   }
 
-  hasErrors(value: number | string, options?: ValidatorOptions): string | undefined {
+  hasErrors(
+    value: number | string,
+    options?: ValidatorOptions
+  ): string | undefined {
     if (value === undefined) return;
 
     const { message } = options || {};

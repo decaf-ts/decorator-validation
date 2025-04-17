@@ -97,7 +97,6 @@ export abstract class Model
    * @summary Deserializes a Model
    * @param {string} str
    *
-   * @param args
    * @throws {Error} If it fails to parse the string, or if it fails to build the model
    */
   static deserialize(str: string) {
