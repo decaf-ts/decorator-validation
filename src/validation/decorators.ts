@@ -46,7 +46,7 @@ export function min(
   message: string = DEFAULT_ERROR_MESSAGES.MIN
 ) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MIN), {
-    value: value,
+    min: value,
     message: message,
     types: [Number.name, Date.name],
   });
@@ -68,7 +68,7 @@ export function max(
   message: string = DEFAULT_ERROR_MESSAGES.MAX
 ) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MAX), {
-    value: value,
+    max: value,
     message: message,
     types: [Number.name, Date.name],
   });
@@ -90,7 +90,7 @@ export function step(
   message: string = DEFAULT_ERROR_MESSAGES.STEP
 ) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.STEP), {
-    value: value,
+    step: value,
     message: message,
     types: [Number.name],
   });
@@ -114,7 +114,7 @@ export function minlength(
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.MIN_LENGTH),
     {
-      value: value,
+      minLength: value,
       message: message,
       types: [String.name, Array.name, Set.name],
     }
@@ -139,7 +139,7 @@ export function maxlength(
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.MAX_LENGTH),
     {
-      value: value,
+      maxLength: value,
       message: message,
       types: [String.name, Array.name, Set.name],
     }
@@ -164,7 +164,7 @@ export function pattern(
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.PATTERN),
     {
-      value: typeof value === "string" ? value : value.toString(),
+      pattern: typeof value === "string" ? value : value.toString(),
       message: message,
       types: [String.name],
     }
@@ -331,7 +331,7 @@ export function list(
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   return propMetadata(Validation.key(ValidationKeys.LIST), {
-    class: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
+    clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
     type: collection,
     message: message,
   });

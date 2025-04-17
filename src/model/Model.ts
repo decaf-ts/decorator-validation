@@ -201,7 +201,7 @@ export abstract class Model
                     (d) => d.key === ValidationKeys.LIST
                   );
                   if (listDec) {
-                    const clazzName = (listDec.props.class as string[]).find(
+                    const clazzName = (listDec.props.clazz as string[]).find(
                       (t: string) => !jsTypes.includes(t.toLowerCase())
                     );
                     if (c === "Array")

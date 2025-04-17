@@ -3,7 +3,7 @@ import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { validator } from "./decorators";
 
 export interface MaxLengthValidatorOptions extends ValidatorOptions {
-  maxlength: number;
+  maxLength: number;
 }
 
 /**
@@ -40,8 +40,8 @@ export class MaxLengthValidator extends Validator<MaxLengthValidatorOptions> {
     options: MaxLengthValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return value.length > options.maxlength
-      ? this.getMessage(options.message || this.message, options.maxlength)
+    return value.length > options.maxLength
+      ? this.getMessage(options.message || this.message, options.maxLength)
       : undefined;
   }
 }

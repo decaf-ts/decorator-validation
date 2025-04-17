@@ -3,7 +3,7 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 
 export interface MinLengthValidatorOptions extends ValidatorOptions {
-  minlength: number;
+  minLength: number;
 }
 
 /**
@@ -40,8 +40,8 @@ export class MinLengthValidator extends Validator<MinLengthValidatorOptions> {
     options: MinLengthValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return value.length < options.minlength
-      ? this.getMessage(options.message || this.message, options.minlength)
+    return value.length < options.minLength
+      ? this.getMessage(options.message || this.message, options.minLength)
       : undefined;
   }
 }
