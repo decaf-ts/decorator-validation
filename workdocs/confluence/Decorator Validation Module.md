@@ -1,4 +1,4 @@
-## Decaf-ts' Angular Module
+## Decorator Validation
 
 ### Design Specifications
 
