@@ -5,7 +5,7 @@ const { src, dest, parallel, series } = gulp;
 import ts from "gulp-typescript";
 const { createProject } = ts;
 import sourcemaps from "gulp-sourcemaps";
-// import uglify from "gulp-uglify";
+import uglify from "gulp-uglify";
 import gulpIf from "gulp-if";
 import merge from "merge-stream";
 import named from "vinyl-named";
@@ -13,6 +13,7 @@ import replace from "gulp-replace";
 import webpack from "webpack-stream";
 import run from "gulp-run-command";
 import process from "node:process";
+import nodeExternals from "webpack-node-externals";
 
 import pkg from "./package.json" with { type: "json" };
 import fs from "fs";
@@ -24,7 +25,7 @@ const VERSION_STRING = "##VERSION##";
 function patchFiles() {
   const doPatch = (basePath) => {
     return function doPatch() {
-      const jsFiles = [`${basePath}/**/*.js`];
+      const jsFiles = [`${basePath}/**/*.?(c|m)js`];
       return src(jsFiles)
         .pipe(replace(VERSION_STRING, `${version}`))
         .pipe(dest(`${basePath}/`));
@@ -34,10 +35,10 @@ function patchFiles() {
   return series(doPatch("lib"), doPatch("dist"));
 }
 
-function getWebpackConfig(isESM, isDev) {
+function getWebpackConfig(isESM, isDev, isLib, nameOverride = name) {
   const webPackConfig = {
     mode: isDev ? "development" : "production", // can be changed to production to produce minified bundle
-
+    target: "node",
     module: {
       rules: [
         {
@@ -67,12 +68,16 @@ function getWebpackConfig(isESM, isDev) {
         util: false,
       },
     },
-
     output: {
-      filename: `${name}.bundle.${!isDev ? "min." : ""}${isESM ? "esm." : ""}js`,
-      path: path.join(process.cwd(), "./dist/"),
+      filename: `${nameOverride ? nameOverride : `.bundle.${!isDev ? "min" : ""}${isESM ? "esm" : ""}`}.js`,
+      path: path.join(process.cwd(), isLib ? "./bin" : "./dist/"),
     },
   };
+
+  if (isLib) {
+    webPackConfig.externals = [nodeExternals()];
+    webPackConfig.externalsPresets = { node: true };
+  }
 
   if (isESM) webPackConfig.experiments = { outputModule: true };
   else
@@ -131,7 +136,8 @@ function exportDefault(isDev, mode) {
       return merge([
         stream.dts.pipe(dest(destPath)),
         stream.js
-          // .pipe(gulpIf(!isDev, uglify()))
+          .pipe(gulpIf(!isDev, uglify()))
+          .pipe(gulpIf(isDev, sourcemaps.write()))
           .pipe(
             gulpIf(
               mode === "commonjs",
@@ -146,7 +152,6 @@ function exportDefault(isDev, mode) {
               replace(/(require\(["'])(\..*?)(["']\)[;,])/g, fixCjsImports)
             )
           )
-          .pipe(gulpIf(isDev, sourcemaps.write()))
           .pipe(dest(destPath)),
       ]);
     }
@@ -156,11 +161,9 @@ function exportDefault(isDev, mode) {
 }
 
 function exportBundles(isEsm, isDev) {
-  const entryFile = "src/index.ts";
-  return src(entryFile)
-    .pipe(named())
-    .pipe(webpack(getWebpackConfig(isEsm, isDev)))
-    .pipe(dest(`./dist${isEsm ? "/esm" : ""}`));
+  return bundleFromFile("src/index.ts", isEsm, isDev).pipe(
+    dest(`./dist${isEsm ? "/esm" : ""}`)
+  );
 }
 
 function exportESMDist(isDev = false) {
@@ -183,14 +186,21 @@ function makeDocs() {
       );
     };
   };
+  const copyFile = (source, destination) => {
+    return function copyFile() {
+      return src(source, { base: source, encoding: false }).pipe(
+        dest(destination)
+      );
+    };
+  };
 
   function compileReadme() {
-    return run.default("npx markdown-include ./mdCompile.json")();
+    return run.default("npx markdown-include ./workdocs/readme-md.json")();
   }
 
   function compileDocs() {
     return run.default(
-      "npx jsdoc -c jsdocs.json -t ./node_modules/better-docs"
+      "npx jsdoc -c ./workdocs/jsdocs.json -t ./node_modules/better-docs"
     )();
   }
 
@@ -204,12 +214,34 @@ function makeDocs() {
           dest: "./docs/workdocs/assets",
         },
         {
-          src: "workdocs/coverage",
-          dest: "./docs/workdocs/coverage",
+          src: "workdocs/reports/coverage",
+          dest: "./docs/workdocs/reports/coverage",
+        },
+        {
+          src: "workdocs/reports/html",
+          dest: "./docs/workdocs/reports/html",
+        },
+        {
+          src: "workdocs/resources",
+          dest: "./docs/workdocs/resources",
         },
       ].map((e) => copyFiles(e.src, e.dest))
+    ),
+    series(
+      ...[
+        {
+          src: "LICENSE.md",
+          dest: "./docs/LICENSE.md",
+        },
+      ].map((e) => copyFile(e.src, e.dest))
     )
   );
+}
+
+function bundleFromFile(entryFile, isEsm, isDev, isLib) {
+  return src(entryFile)
+    .pipe(named())
+    .pipe(webpack(getWebpackConfig(isEsm, isDev, isLib)));
 }
 
 export const dev = series(
@@ -223,7 +255,7 @@ export const dev = series(
 
 export const prod = series(
   parallel(
-    series(exportDefault(false, "commonjs"), exportDefault(false, "es2022")),
+    series(exportDefault(true, "commonjs"), exportDefault(true, "es2022")),
     exportESMDist(false),
     exportJSDist(false)
   ),
