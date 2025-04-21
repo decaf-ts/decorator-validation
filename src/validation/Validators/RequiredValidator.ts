@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import { ValidatorOptions } from "./types";
+import { ValidatorOptions } from "../types";
 
 /**
  * @summary Required Validator

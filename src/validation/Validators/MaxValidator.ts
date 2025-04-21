@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import { MaxValidatorOptions } from "./types";
+import { MaxValidatorOptions } from "../types";
 
 /**
  * @summary Max Validator

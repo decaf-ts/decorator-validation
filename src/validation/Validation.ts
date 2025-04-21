@@ -1,5 +1,5 @@
 import { Validator } from "./Validators/Validator";
-import { IValidatorRegistry, ValidatorDefinition } from "./Validators/types";
+import { IValidatorRegistry, ValidatorDefinition } from "./types";
 import { ValidatorRegistry } from "./Validators/ValidatorRegistry";
 import { ValidationKeys } from "./Validators/constants";
 
@@ -28,7 +28,7 @@ export class Validation {
     migrationHandler?: (validator: Validator) => Validator
   ) {
     if (migrationHandler && Validation.actingValidatorRegistry)
-      Validation.actingValidatorRegistry.getKeys().forEach((k) => {
+      Validation.actingValidatorRegistry.getKeys().forEach((k: string) => {
         const validator = validatorRegistry.get(k);
         if (validator) validatorRegistry.register(migrationHandler(validator));
       });

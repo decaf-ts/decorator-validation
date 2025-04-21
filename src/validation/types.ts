@@ -1,4 +1,7 @@
 import { DecoratorMetadata } from "@decaf-ts/reflection";
+import { Constructor } from "../model";
+import { Validator } from "./Validators";
+import { IRegistry } from "../utils";
 
 /**
  * @summary Type for validation decorator metadata
@@ -50,3 +53,102 @@ export type ValidationElementDefinition = {
  * @category Validation
  */
 export type ModelErrors = Record<string, Record<string, string | undefined>>;
+
+/**
+ * @summary Util type for {@link Validator} configuration
+ * @memberOf module:decorator-validation.Validation
+ * @category Validation
+ */
+export type ValidatorDefinition = {
+  validator: Constructor<Validator>;
+  validationKey: string;
+  save: boolean;
+};
+
+/**
+ * @summary Base API for a {@link Validator} registry
+ *
+ * @interface ValidatorRegistry
+ * @extends IRegistry
+ *
+ * @category Validation
+ */
+export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
+  /**
+   * @summary retrieves the custom keys
+   * @method
+   */
+  getCustomKeys(): Record<string, string>;
+
+  /**
+   * @summary Retrieves the Registered validator keys
+   * @return {string[]} the registered validators keys
+   * @method
+   */
+  getKeys(): string[];
+
+  /**
+   * @summary Registers the provided validators onto the registry
+   *
+   * @typedef T extends Validator
+   * @param {T[] | ValidatorDefinition[]} validator
+   * @method
+   */
+  register<T extends Validator>(
+    ...validator: (T | ValidatorDefinition)[]
+  ): void;
+
+  /**
+   * @summary Retrieves the Validator constructor if registered
+   *
+   * @typedef T extends Validator
+   * @param {string} key one of the {@link ValidationKeys}
+   * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
+   * @method
+   */
+  get<T extends Validator>(key: string): T | undefined;
+}
+
+export type ValidatorOptions = {
+  message?: string;
+};
+
+export interface URLValidatorOptions extends ValidatorOptions {
+  types: string | string[] | { name: string };
+}
+
+export interface TypeValidatorOptions extends ValidatorOptions {
+  types: string | string[] | { name: string };
+}
+
+export interface StepValidatorOptions extends ValidatorOptions {
+  step: number | string;
+}
+
+export interface PatternValidatorOptions extends ValidatorOptions {
+  pattern?: RegExp | string;
+}
+
+export interface MinValidatorOptions extends ValidatorOptions {
+  min: number | Date | string;
+}
+
+export interface MinLengthValidatorOptions extends ValidatorOptions {
+  minLength: number;
+}
+
+export interface MaxValidatorOptions extends ValidatorOptions {
+  max: number | Date | string;
+}
+
+export interface MaxLengthValidatorOptions extends ValidatorOptions {
+  maxLength: number;
+}
+
+export interface ListValidatorOptions extends ValidatorOptions {
+  clazz: string[];
+}
+
+export interface DateValidatorOptions extends ValidatorOptions {
+  format?: string;
+}

@@ -2,7 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { Validation } from "../Validation";
-import { TypeValidatorOptions, ValidatorDefinition } from "./types";
+import { TypeValidatorOptions, ValidatorDefinition } from "../types";
 import { ModelKeys } from "../../utils/constants";
 import { Reflection } from "@decaf-ts/reflection";
 

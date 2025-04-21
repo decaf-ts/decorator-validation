@@ -1,5 +1,3 @@
-import { Serialization } from "./serialization";
-
 /**
  * @summary Mimics Java's String's Hash implementation
  *
@@ -27,23 +25,6 @@ export function hashCode(obj: string | number | symbol | Date): string {
  * @category Hashing
  */
 export type HashingFunction = (value: any, ...args: any[]) => string;
-
-/**
- * @summary Hashes an object serializing it and then hashing the string
- * @description The Serialization algorithm used by default (JSON.stringify)
- * is not deterministic and should not be used for hashing
- *
- * @param {Record<string, any>} obj
- * @return {string} the resulting hash
- *
- * @function hashSerialization
- * @memberOf module:decorator-validation.Utils.Hashing
- *
- * @category Hashing
- */
-export function hashSerialization(obj: Record<string, any> | any[]) {
-  return hashCode(Serialization.serialize(obj));
-}
 
 /**
  * @summary Hashes an object by combining the hash of all its properties
@@ -77,7 +58,7 @@ export function hashObj(obj: Record<string, any> | any[]): string {
     if (Array.isArray(value)) return value.reduce(hashReducer, undefined);
     return (Object.values(value) as (string | number)[]).reduce(
       hashReducer,
-      undefined as unknown as string | number,
+      undefined as unknown as string | number
     );
   };
 
@@ -105,7 +86,7 @@ export class Hashing {
   static register(
     key: string,
     func: HashingFunction,
-    setDefault = false,
+    setDefault = false
   ): void {
     if (key in this.cache)
       throw new Error(`Hashing method ${key} already registered`);

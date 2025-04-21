@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import { PatternValidatorOptions } from "./types";
+import { PatternValidatorOptions } from "../types";
 
 export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
 

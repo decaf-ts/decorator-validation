@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import { ListValidatorOptions } from "./types";
+import { ListValidatorOptions } from "../types";
 
 /**
  * @summary List Validator
@@ -54,7 +54,7 @@ export class ListValidator extends Validator<ListValidatorOptions> {
           isValid = clazz.includes((val as object).constructor?.name);
           break;
         default:
-          isValid = clazz.some((c) => typeof val === c.toLowerCase());
+          isValid = clazz.some((c: string) => typeof val === c.toLowerCase());
           break;
       }
     }

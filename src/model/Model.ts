@@ -14,7 +14,6 @@ import {
 import { DecoratorMetadata, isEqual, Reflection } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
-import { isPropertyModel } from "./utils";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { sf } from "../utils/strings";
@@ -22,6 +21,15 @@ import { jsTypes, ReservedModels } from "./constants";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
+
+export function isPropertyModel<M extends Model>(
+  target: M,
+  attribute: string
+): boolean | string | undefined {
+  if (isModel((target as Record<string, any>)[attribute])) return true;
+  const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
+  return Model.get(metadata.name) ? metadata.name : undefined;
+}
 
 /**
  * @summary For Serialization/deserialization purposes.

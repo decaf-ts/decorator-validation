@@ -1,9 +1,9 @@
 import { Validator } from "./Validator";
 import { Validation } from "../Validation";
-import { ValidatorDefinition } from "./types";
 import { Constructor } from "../../model/types";
 import { ValidationKeys } from "./constants";
 import { apply, metadata } from "@decaf-ts/reflection";
+import { ValidatorDefinition } from "../types";
 
 /**
  * @summary Marks the class as a validator for a certain key.

@@ -5,7 +5,7 @@ import {
 } from "./constants";
 import { PatternValidator } from "./PatternValidator";
 import { validator } from "./decorators";
-import { PatternValidatorOptions } from "./types";
+import { PatternValidatorOptions } from "../types";
 
 /**
  * @summary Email Validator

@@ -1,7 +1,7 @@
 import { PatternValidator } from "./PatternValidator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import { PatternValidatorOptions } from "./types";
+import { PatternValidatorOptions } from "../types";
 
 /**
  * @summary Handles Password Validation

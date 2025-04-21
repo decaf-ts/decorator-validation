@@ -25,7 +25,6 @@ export * from "./PasswordValidator";
 export * from "./PatternValidator";
 export * from "./RequiredValidator";
 export * from "./StepValidator";
-export * from "./types";
 export * from "./TypeValidator";
 export * from "./URLValidator";
 export * from "./Validator";

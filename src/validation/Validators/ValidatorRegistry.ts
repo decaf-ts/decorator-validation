@@ -1,5 +1,5 @@
-import { ValidatorDefinition } from "./types";
-import { IValidatorRegistry } from "./types";
+import { ValidatorDefinition } from "../types";
+import { IValidatorRegistry } from "../types";
 import type { Validator } from "./Validator";
 
 /**

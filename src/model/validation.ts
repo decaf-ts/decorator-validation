@@ -11,7 +11,7 @@ import {
   ModelErrors,
   ValidationPropertyDecoratorDefinition,
 } from "../validation/types";
-import { ValidatorOptions } from "../validation/Validators/types";
+import { ValidatorOptions } from "../validation/types";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
