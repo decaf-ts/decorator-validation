@@ -5,8 +5,18 @@ const a = ModelKeys.MODEL;
 describe("Distribution Tests", () => {
   it("reads lib", () => {
     try {
-      const { ValidationKeys } = require("../../lib/index.cjs");
+      const {
+        ValidationKeys,
+        Validation,
+        Validators,
+        MinValidator,
+        Validator,
+      } = require("../../lib/index.cjs");
       expect(ValidationKeys).toBeDefined();
+      expect(Validation).toBeDefined();
+      expect(Validators).toBeDefined();
+      expect(MinValidator).toBeDefined();
+      expect(Validator).toBeDefined();
     } catch (e) {
       expect(e).toBeUndefined();
     }
@@ -28,8 +38,18 @@ describe("Distribution Tests", () => {
       if (distFile.length === 0)
         throw new Error("There should only be a js file in directory");
 
-      const { ValidationKeys } = require(`../../dist/${distFile[0].name}`);
+      const {
+        ValidationKeys,
+        Validation,
+        Validators,
+        MinValidator,
+        Validator,
+      } = require(`../../dist/${distFile[0].name}`);
       expect(ValidationKeys).toBeDefined();
+      expect(Validation).toBeDefined();
+      expect(Validators).toBeDefined();
+      expect(MinValidator).toBeDefined();
+      expect(Validator).toBeDefined();
     } catch (e) {
       expect(e).toBeUndefined();
     }
