@@ -12,6 +12,7 @@ export default [
       "dist",
       "docs",
       "workdocs",
+      "gulpfile.js",
       "!src/**/*",
       "!tests/**/*",
       "tests/bundling/**/*",

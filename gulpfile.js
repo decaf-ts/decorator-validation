@@ -111,52 +111,61 @@ function exportDefault(isDev, mode) {
 
       const destPath = `lib${mode === "commonjs" ? "" : "/esm"}`;
 
-      const fixCjsImports = function (match, ...groups) {
-        const renamedFile = groups[1] + ".cjs";
-        const fileName = groups[1] + ".ts";
-
-        const filePath = path.join(
-          this.file.path.split(name)[0],
-          name,
-          "src",
-          this.file.path
-            .split(name)[1]
-            .split("/")
-            .slice(1, this.file.path.split(name)[1].split("/").length - 1)
-            .join("/"),
-          fileName
-        );
-
-        if (!fs.existsSync(filePath))
-          return groups[0] + groups[1] + "/index.cjs" + groups[2];
-
-        return groups[0] + renamedFile + groups[2];
-      };
-
       return merge([
         stream.dts.pipe(dest(destPath)),
         stream.js
           .pipe(gulpIf(!isDev, uglify()))
           .pipe(gulpIf(isDev, sourcemaps.write()))
-          .pipe(
-            gulpIf(
-              mode === "commonjs",
-              rename(function changeName(file) {
-                return Object.assign(file, { extname: ".cjs" });
-              })
-            )
-          )
-          .pipe(
-            gulpIf(
-              mode === "commonjs",
-              replace(/(require\(["'])(\..*?)(["']\)[;,])/g, fixCjsImports)
-            )
-          )
           .pipe(dest(destPath)),
       ]);
     }
 
     return createLib();
+  };
+}
+
+function fixCjsImports(mode) {
+  return function fixCjsImports() {
+    const destPath = `lib${mode === "commonjs" ? "" : "/esm"}`;
+
+    const fixCjsImports = function (match, ...groups) {
+      const renamedFile = groups[1] + ".cjs";
+      const fileName = groups[1] + ".ts";
+
+      const filePath = path.join(
+        this.file.path.split(name)[0],
+        name,
+        "src",
+        this.file.path
+          .split(name)[1]
+          .split("/")
+          .slice(1, this.file.path.split(name)[1].split("/").length - 1)
+          .join("/"),
+        fileName
+      );
+
+      if (!fs.existsSync(filePath))
+        return groups[0] + groups[1] + "/index.cjs" + groups[2];
+
+      return groups[0] + renamedFile + groups[2];
+    };
+
+    return src("./lib/**/*.cjs")
+      .pipe(
+        gulpIf(
+          mode === "commonjs",
+          rename(function changeName(file) {
+            return Object.assign(file, { extname: ".cjs" });
+          })
+        )
+      )
+      .pipe(
+        gulpIf(
+          mode === "commonjs",
+          replace(/(require\(["'])(\..*?)(["']\)[;,])/g, fixCjsImports)
+        )
+      )
+      .pipe(dest(destPath));
   };
 }
 
@@ -246,7 +255,11 @@ function bundleFromFile(entryFile, isEsm, isDev, isLib) {
 
 export const dev = series(
   parallel(
-    series(exportDefault(true, "commonjs"), exportDefault(true, "es2022")),
+    series(
+      exportDefault(true, "commonjs"),
+      exportDefault(true, "es2022"),
+      fixCjsImports("commonjs")
+    ),
     exportESMDist(true),
     exportJSDist(true)
   ),
@@ -255,7 +268,11 @@ export const dev = series(
 
 export const prod = series(
   parallel(
-    series(exportDefault(true, "commonjs"), exportDefault(true, "es2022")),
+    series(
+      exportDefault(true, "commonjs"),
+      exportDefault(true, "es2022"),
+      fixCjsImports("commonjs")
+    ),
     exportESMDist(false),
     exportJSDist(false)
   ),
