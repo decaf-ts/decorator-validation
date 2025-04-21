@@ -1,4 +1,4 @@
-### Decorator based
+### Description
 
 Simple implementation of a Typescript decorator based validation system.
 
