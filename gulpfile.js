@@ -106,7 +106,7 @@ function exportDefault(isDev, mode) {
 
       const stream = src("./src/**/*.ts")
         .pipe(replace(VERSION_STRING, `${version}`))
-        .pipe(gulpIf(isDev, sourcemaps.init()))
+        // .pipe(gulpIf(isDev, sourcemaps.init()))
         .pipe(tsProject());
 
       const destPath = `lib${mode === "commonjs" ? "" : "/esm"}`;
@@ -115,7 +115,7 @@ function exportDefault(isDev, mode) {
         stream.dts.pipe(dest(destPath)),
         stream.js
           .pipe(gulpIf(!isDev, uglify()))
-          .pipe(gulpIf(isDev, sourcemaps.write()))
+          // .pipe(gulpIf(isDev, sourcemaps.write()))
           .pipe(dest(destPath)),
       ]);
     }
@@ -255,11 +255,7 @@ function bundleFromFile(entryFile, isEsm, isDev, isLib) {
 
 export const dev = series(
   parallel(
-    series(
-      exportDefault(true, "commonjs"),
-      exportDefault(true, "es2022"),
-      fixCjsImports("commonjs")
-    ),
+    series(exportDefault(true, "commonjs"), exportDefault(true, "es2022")),
     exportESMDist(true),
     exportJSDist(true)
   ),
