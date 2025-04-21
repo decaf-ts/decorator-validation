@@ -7,7 +7,7 @@
     "require": "./lib/index.cjs",
     "import": "./lib/esm/index.js"
   },
-  "types": "lib/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "do-install": "TOKEN=$(cat .token) npm install",
     "update-scripts": "node ./bin/update-scripts.cjs",
