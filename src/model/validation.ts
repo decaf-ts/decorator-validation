@@ -4,15 +4,14 @@ import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { ReservedModels } from "./constants";
 import { Validatable } from "./types";
-import { Model } from "./Model";
+import { isModel, Model } from "./Model";
 import { Validation } from "../validation/Validation";
 import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
   ValidationPropertyDecoratorDefinition,
 } from "../validation/types";
-import { isModel } from "./utils";
-import type { ValidatorOptions } from "../validation";
+import { ValidatorOptions } from "../validation/Validators/types";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
@@ -72,9 +71,10 @@ export function validate<T extends Model>(
         throw new Error(`Missing validator for ${decorator.key}`);
       }
 
-      const decoratorProps = decorator.key === ModelKeys.TYPE
-        ? [decorator.props]
-        : (decorator.props || {});
+      const decoratorProps =
+        decorator.key === ModelKeys.TYPE
+          ? [decorator.props]
+          : decorator.props || {};
 
       const err: string | undefined = validator.hasErrors(
         (obj as any)[prop.toString()],
