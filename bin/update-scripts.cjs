@@ -4738,6 +4738,9 @@ class TemplateSync extends command_1.Command {
                     }
                 }
             });
+            pkg["exports"]["require"] = originalPkg["exports"]["require"];
+            pkg["exports"]["import"] = originalPkg["exports"]["import"];
+            pkg["types"] = originalPkg["types"];
             fs_1.default.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
         }
         catch (e) {

@@ -32,8 +32,8 @@
       "useLongnameInNav": false
     },
     "better-docs": {
-      "name": "Decorator Validation",
-      "title": "decaf-ts' Decorator Validation Module",
+      "name": "ts-template",
+      "title": "TypeScript workspace template",
       "hideGenerator": true,
       "useLongnameInNav": false,
       "navLinks": [
