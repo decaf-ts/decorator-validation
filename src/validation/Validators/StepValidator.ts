@@ -1,10 +1,7 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-
-export interface StepValidatorOptions extends ValidatorOptions {
-  step: number | string;
-}
+import { StepValidatorOptions } from "./types";
 
 /**
  * @summary Step Validator

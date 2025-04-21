@@ -3,13 +3,9 @@ import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
 } from "./constants";
-import { PatternValidator, PatternValidatorOptions } from "./PatternValidator";
+import { PatternValidator } from "./PatternValidator";
 import { validator } from "./decorators";
-import { ValidatorOptions } from "./Validator";
-
-export interface URLValidatorOptions extends ValidatorOptions {
-  types: string | string[] | { name: string };
-}
+import { PatternValidatorOptions } from "./types";
 
 /**
  * @summary URL Validator
@@ -42,6 +38,9 @@ export class URLValidator extends PatternValidator {
     value: string,
     options: PatternValidatorOptions = {}
   ): string | undefined {
-    return super.hasErrors(value, {...options, pattern: options.pattern || DEFAULT_PATTERNS.URL});
+    return super.hasErrors(value, {
+      ...options,
+      pattern: options.pattern || DEFAULT_PATTERNS.URL,
+    });
   }
 }

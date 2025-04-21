@@ -1,10 +1,7 @@
 import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { sf } from "../../utils/strings";
 import { Reflection } from "@decaf-ts/reflection";
-
-export type ValidatorOptions = {
-  message?: string;
-}
+import { ValidatorOptions } from "./types";
 
 /**
  * @summary Base Implementation for Validators

@@ -56,3 +56,47 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
    */
   get<T extends Validator>(key: string): T | undefined;
 }
+
+export type ValidatorOptions = {
+  message?: string;
+};
+
+export interface URLValidatorOptions extends ValidatorOptions {
+  types: string | string[] | { name: string };
+}
+
+export interface TypeValidatorOptions extends ValidatorOptions {
+  types: string | string[] | { name: string };
+}
+
+export interface StepValidatorOptions extends ValidatorOptions {
+  step: number | string;
+}
+
+export interface PatternValidatorOptions extends ValidatorOptions {
+  pattern?: RegExp | string;
+}
+
+export interface MinValidatorOptions extends ValidatorOptions {
+  min: number | Date | string;
+}
+
+export interface MinLengthValidatorOptions extends ValidatorOptions {
+  minLength: number;
+}
+
+export interface MaxValidatorOptions extends ValidatorOptions {
+  max: number | Date | string;
+}
+
+export interface MaxLengthValidatorOptions extends ValidatorOptions {
+  maxLength: number;
+}
+
+export interface ListValidatorOptions extends ValidatorOptions {
+  clazz: string[];
+}
+
+export interface DateValidatorOptions extends ValidatorOptions {
+  format?: string;
+}

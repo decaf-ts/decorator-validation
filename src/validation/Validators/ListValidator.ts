@@ -1,10 +1,7 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-
-export interface ListValidatorOptions extends ValidatorOptions {
-  clazz: string[];
-}
+import { ListValidatorOptions } from "./types";
 
 /**
  * @summary List Validator
@@ -40,7 +37,9 @@ export class ListValidator extends Validator<ListValidatorOptions> {
   ): string | undefined {
     if (!value || (Array.isArray(value) ? !value.length : !value.size)) return;
 
-    const clazz = Array.isArray(options.clazz) ? options.clazz : [options.clazz];
+    const clazz = Array.isArray(options.clazz)
+      ? options.clazz
+      : [options.clazz];
     let val: any,
       isValid = true;
     for (

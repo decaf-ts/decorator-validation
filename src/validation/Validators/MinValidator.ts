@@ -1,10 +1,7 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-
-export interface MinValidatorOptions extends ValidatorOptions {
-  min: number | Date | string;
-}
+import { MinValidatorOptions } from "./types";
 
 /**
  * @summary Min Validator

@@ -1,10 +1,7 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-
-export interface PatternValidatorOptions extends ValidatorOptions {
-  pattern?: RegExp | string;
-}
+import { PatternValidatorOptions } from "./types";
 
 export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
 

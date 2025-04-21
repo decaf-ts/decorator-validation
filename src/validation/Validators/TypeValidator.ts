@@ -1,14 +1,10 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { Validation } from "../Validation";
-import { ValidatorDefinition } from "./types";
+import { TypeValidatorOptions, ValidatorDefinition } from "./types";
 import { ModelKeys } from "../../utils/constants";
 import { Reflection } from "@decaf-ts/reflection";
-
-export interface TypeValidatorOptions extends ValidatorOptions {
-  types: string | string[] | { name: string };
-}
 
 /**
  * @summary Required Validator

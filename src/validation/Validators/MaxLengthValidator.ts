@@ -1,10 +1,7 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { validator } from "./decorators";
-
-export interface MaxLengthValidatorOptions extends ValidatorOptions {
-  maxLength: number;
-}
+import { MaxLengthValidatorOptions } from "./types";
 
 /**
  * @summary Maximum Length Validator

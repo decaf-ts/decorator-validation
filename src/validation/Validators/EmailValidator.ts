@@ -1,6 +1,11 @@
-import { DEFAULT_ERROR_MESSAGES, DEFAULT_PATTERNS, ValidationKeys } from "./constants";
-import { PatternValidator, PatternValidatorOptions } from "./PatternValidator";
+import {
+  DEFAULT_ERROR_MESSAGES,
+  DEFAULT_PATTERNS,
+  ValidationKeys,
+} from "./constants";
+import { PatternValidator } from "./PatternValidator";
 import { validator } from "./decorators";
+import { PatternValidatorOptions } from "./types";
 
 /**
  * @summary Email Validator

@@ -1,10 +1,7 @@
-import { Validator, ValidatorOptions } from "./Validator";
+import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-
-export interface DateValidatorOptions extends ValidatorOptions {
-  format?: string;
-}
+import { DateValidatorOptions } from "./types";
 
 /**
  * @summary Date Validator
@@ -34,7 +31,10 @@ export class DateValidator extends Validator<DateValidatorOptions> {
    *
    * @see Validator#hasErrors
    */
-  public hasErrors(value: Date | string, options: DateValidatorOptions = {}): string | undefined {
+  public hasErrors(
+    value: Date | string,
+    options: DateValidatorOptions = {}
+  ): string | undefined {
     if (value === undefined) return;
 
     if (typeof value === "string") value = new Date(value);
