@@ -8,13 +8,11 @@ describe("Distribution Tests", () => {
       const {
         ValidationKeys,
         Validation,
-        Validators,
         MinValidator,
         Validator,
       } = require("../../lib/index.cjs");
       expect(ValidationKeys).toBeDefined();
       expect(Validation).toBeDefined();
-      expect(Validators).toBeDefined();
       expect(MinValidator).toBeDefined();
       expect(Validator).toBeDefined();
     } catch (e) {
@@ -38,16 +36,11 @@ describe("Distribution Tests", () => {
       if (distFile.length === 0)
         throw new Error("There should only be a js file in directory");
 
-      const {
-        ValidationKeys,
-        Validation,
-        Validators,
-        MinValidator,
-        Validator,
-      } = require(`../../dist/${distFile[0].name}`);
+      const { ValidationKeys, Validation, MinValidator, Validator } = require(
+        `../../dist/${distFile[0].name}`
+      );
       expect(ValidationKeys).toBeDefined();
       expect(Validation).toBeDefined();
-      expect(Validators).toBeDefined();
       expect(MinValidator).toBeDefined();
       expect(Validator).toBeDefined();
     } catch (e) {

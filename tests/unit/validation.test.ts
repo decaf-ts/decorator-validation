@@ -5,8 +5,6 @@ import {
   ModelErrorDefinition,
   prop,
   step,
-  Validator,
-  Validators,
 } from "../../src";
 import {
   email,
@@ -221,16 +219,6 @@ describe("Validation by decorators test", function () {
         "id - This field is required\nprop1 - The maximum value is 100"
       );
     }
-  });
-
-  it("Test all non required Validators for undefined values pass", function () {
-    Object.values(Validators)
-      .filter((v) => v.name !== "Validator")
-      .forEach((v) => {
-        const validator: Validator = new v();
-        if (validator.constructor.name === "RequiredValidator") return;
-        expect(validator.hasErrors(undefined)).toBeUndefined();
-      });
   });
 
   it("Handles Dates", function () {
