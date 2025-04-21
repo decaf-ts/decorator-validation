@@ -1,7 +1,5 @@
-import { ModelKeys, Model } from "../../src";
+import { ModelKeys } from "../../src";
 import { Dirent } from "fs";
-import fs from "fs";
-import path from "path"; // at least one import is needed so the file is considered a module byt jest
 const a = ModelKeys.MODEL;
 
 describe("Distribution Tests", () => {
