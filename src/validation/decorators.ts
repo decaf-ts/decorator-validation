@@ -46,7 +46,7 @@ export function min(
   message: string = DEFAULT_ERROR_MESSAGES.MIN
 ) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MIN), {
-    min: value,
+    [ValidationKeys.MIN]: value,
     message: message,
     types: [Number.name, Date.name],
   });
@@ -68,7 +68,7 @@ export function max(
   message: string = DEFAULT_ERROR_MESSAGES.MAX
 ) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MAX), {
-    max: value,
+    [ValidationKeys.MAX]: value,
     message: message,
     types: [Number.name, Date.name],
   });
@@ -90,7 +90,7 @@ export function step(
   message: string = DEFAULT_ERROR_MESSAGES.STEP
 ) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.STEP), {
-    step: value,
+    [ValidationKeys.STEP]: value,
     message: message,
     types: [Number.name],
   });
@@ -114,7 +114,7 @@ export function minlength(
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.MIN_LENGTH),
     {
-      minLength: value,
+      [ValidationKeys.MIN_LENGTH]: value,
       message: message,
       types: [String.name, Array.name, Set.name],
     }
@@ -139,7 +139,7 @@ export function maxlength(
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.MAX_LENGTH),
     {
-      maxLength: value,
+      [ValidationKeys.MAX_LENGTH]: value,
       message: message,
       types: [String.name, Array.name, Set.name],
     }
@@ -164,7 +164,8 @@ export function pattern(
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.PATTERN),
     {
-      pattern: typeof value === "string" ? value : value.toString(),
+      [ValidationKeys.PATTERN]:
+        typeof value === "string" ? value : value.toString(),
       message: message,
       types: [String.name],
     }
@@ -185,7 +186,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.EMAIL),
     {
-      pattern: DEFAULT_PATTERNS.EMAIL,
+      [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
       message: message,
       types: [String.name],
     }
@@ -204,7 +205,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
   return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.URL), {
-    pattern: DEFAULT_PATTERNS.URL,
+    [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
     message: message,
     types: [String.name],
   });
@@ -252,7 +253,7 @@ export function date(
 ) {
   return (target: Record<string, any>, propertyKey?: any): any => {
     propMetadata(Validation.key(ValidationKeys.DATE), {
-      format: format,
+      [ValidationKeys.FORMAT]: format,
       message: message,
       types: [Date.name],
     })(target, propertyKey);
@@ -305,7 +306,7 @@ export function password(
   message: string = DEFAULT_ERROR_MESSAGES.PASSWORD
 ) {
   return propMetadata(Validation.key(ValidationKeys.PASSWORD), {
-    pattern: pattern,
+    [ValidationKeys.PATTERN]: pattern,
     message: message,
     types: [String.name],
   });
