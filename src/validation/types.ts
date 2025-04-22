@@ -1,6 +1,6 @@
 import { DecoratorMetadata } from "@decaf-ts/reflection";
 import { Constructor } from "../model";
-import { Validator } from "./Validators";
+import { ValidationKeys, Validator } from "./Validators";
 import { IRegistry } from "../utils";
 
 /**
@@ -122,27 +122,27 @@ export interface TypeValidatorOptions extends ValidatorOptions {
 }
 
 export interface StepValidatorOptions extends ValidatorOptions {
-  step: number | string;
+  [ValidationKeys.STEP]: number | string;
 }
 
 export interface PatternValidatorOptions extends ValidatorOptions {
-  pattern?: RegExp | string;
+  [ValidationKeys.PATTERN]?: RegExp | string;
 }
 
 export interface MinValidatorOptions extends ValidatorOptions {
-  min: number | Date | string;
+  [ValidationKeys.MIN]: number | Date | string;
 }
 
 export interface MinLengthValidatorOptions extends ValidatorOptions {
-  minLength: number;
+  [ValidationKeys.MIN_LENGTH]: number;
 }
 
 export interface MaxValidatorOptions extends ValidatorOptions {
-  max: number | Date | string;
+  [ValidationKeys.MAX]: number | Date | string;
 }
 
 export interface MaxLengthValidatorOptions extends ValidatorOptions {
-  maxLength: number;
+  [ValidationKeys.MAX_LENGTH]: number;
 }
 
 export interface ListValidatorOptions extends ValidatorOptions {
@@ -150,5 +150,5 @@ export interface ListValidatorOptions extends ValidatorOptions {
 }
 
 export interface DateValidatorOptions extends ValidatorOptions {
-  format?: string;
+  [ValidationKeys.FORMAT]?: string;
 }
