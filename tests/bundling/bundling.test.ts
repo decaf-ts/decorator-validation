@@ -1,5 +1,6 @@
 import { ModelKeys } from "../../src";
 import { Dirent } from "fs";
+import path from "path";
 const a = ModelKeys.MODEL;
 
 describe("Distribution Tests", () => {
@@ -25,7 +26,7 @@ describe("Distribution Tests", () => {
       let distFile: Dirent[];
       try {
         distFile = require("fs")
-          .readdirSync(require("path").join(process.cwd(), "dist"), {
+          .readdirSync(path.join(__dirname, "../../dist"), {
             withFileTypes: true,
           })
           .filter((d: Dirent) => d.isFile() && !d.name.endsWith("esm.js"));
