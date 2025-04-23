@@ -38,7 +38,8 @@ export const ValidationKeys = {
   TYPE: "type",
   PASSWORD: "password",
   LIST: "list",
-};
+  FORMAT: "format",
+} as const;
 
 /**
  * @summary list of month names

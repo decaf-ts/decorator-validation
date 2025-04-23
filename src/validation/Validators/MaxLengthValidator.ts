@@ -37,8 +37,8 @@ export class MaxLengthValidator extends Validator<MaxLengthValidatorOptions> {
     options: MaxLengthValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return value.length > options.maxLength
-      ? this.getMessage(options.message || this.message, options.maxLength)
+    return value.length > options.maxlength
+      ? this.getMessage(options.message || this.message, options.maxlength)
       : undefined;
   }
 }

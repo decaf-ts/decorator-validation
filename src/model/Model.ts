@@ -295,7 +295,7 @@ export abstract class Model
         ).decorators;
       decorators = allDecorators.filter(
         (d: DecoratorMetadata) =>
-          [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
+          [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(d.key) !== -1
       );
       if (!decorators || !decorators.length)
         throw new Error(sf("failed to find decorators for property {0}", prop));

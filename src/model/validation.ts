@@ -108,7 +108,7 @@ export function validate<T extends Model>(
       prop
     ).decorators.filter(
       (d: { key: string }) =>
-        [ModelKeys.TYPE, ValidationKeys.TYPE].indexOf(d.key) !== -1
+        [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(d.key) !== -1
     );
     if (!decorators || !decorators.length) continue;
     const dec = decorators.pop() as DecoratorMetadata;
