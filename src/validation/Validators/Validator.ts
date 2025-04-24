@@ -74,5 +74,9 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
    *
    * @see Model#hasErrors
    */
-  public abstract hasErrors(value: any, options?: V): string | undefined;
+  public abstract hasErrors(
+    value: any,
+    options?: V,
+    instanceObj: any = {} // TODO: Assert type and deep Object.freeze
+  ): string | undefined;
 }

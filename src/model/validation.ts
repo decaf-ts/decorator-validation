@@ -78,7 +78,8 @@ export function validate<T extends Model>(
 
       const err: string | undefined = validator.hasErrors(
         (obj as any)[prop.toString()],
-        decoratorProps as ValidatorOptions
+        decoratorProps as ValidatorOptions,
+        obj // TODO: Assert type and deep Object.freeze
       );
 
       if (err) {
