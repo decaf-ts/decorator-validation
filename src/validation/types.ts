@@ -152,3 +152,7 @@ export interface ListValidatorOptions extends ValidatorOptions {
 export interface DateValidatorOptions extends ValidatorOptions {
   [ValidationKeys.FORMAT]?: string;
 }
+
+export interface ComparisonValidatorOptions extends ValidatorOptions {
+  propertyToMatch: string;
+}

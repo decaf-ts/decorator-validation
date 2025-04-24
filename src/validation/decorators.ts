@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ValidationMetadata } from "./types";
+import { type ComparisonValidatorOptions, ValidationMetadata } from "./types";
 import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
@@ -356,4 +356,32 @@ export function set(
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   return list(clazz, "Set", message);
+}
+
+/**
+ * @summary Declares that the decorated property must be equal to another specified property.
+ * @description Applies the {@link ValidationKeys.EQUALS} validator to ensure the decorated value matches the value of the given property.
+ *
+ * @param {string} propertyToMatch - The name of the property to compare equality against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.EQUALS] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the equality validation metadata.
+ *
+ * @function eq
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function eq(
+  propertyToMatch: string,
+  message: string = DEFAULT_ERROR_MESSAGES.EQUALS
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToMatch,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.EQUALS),
+    options as ValidationMetadata
+  );
 }

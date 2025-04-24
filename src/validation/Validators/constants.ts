@@ -39,6 +39,7 @@ export const ValidationKeys = {
   PASSWORD: "password",
   LIST: "list",
   FORMAT: "format",
+  EQUALS: "equals",
 } as const;
 
 /**
@@ -123,6 +124,7 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
     "Must be at least 8 characters and contain one of number, lower and upper case letters, and special character (@$!%*?&_-.,)",
   LIST: "Invalid list of {0}",
   MODEL_NOT_FOUND: "No model registered under {0}",
+  EQUALS: "This field must be equal to field {0}",
 };
 
 /**

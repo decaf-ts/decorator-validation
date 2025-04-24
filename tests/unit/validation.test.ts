@@ -1,23 +1,23 @@
 import {
-  model,
-  Model,
-  ModelArg,
-  ModelErrorDefinition,
-  prop,
-  step,
-} from "../../src";
-import {
   email,
+  eq,
   max,
   maxlength,
   min,
   minlength,
+  model,
+  Model,
+  ModelArg,
+  ModelErrorDefinition,
   password,
   pattern,
+  prop,
   required,
+  step,
   type,
+  url,
+  ValidationKeys,
 } from "../../src";
-import { url } from "../../src";
 
 @model()
 class InnerTestModel extends Model {
@@ -275,5 +275,136 @@ describe("Validation by decorators test", function () {
 
     errors = p.hasErrors();
     expect(errors).toBeUndefined();
+  });
+
+  describe("EqualsValidator", () => {
+    @model()
+    class MirrorTestModel extends Model {
+      @required()
+      mirrorStringValue: string = "";
+
+      @required()
+      numberValue: number = 0;
+
+      @required()
+      anyBooleanValue: boolean = false;
+
+      @required()
+      arrayValue: string[] = [];
+
+      @required()
+      objectValue: Record<string, any> = {};
+
+      constructor(model?: ModelArg<MirrorTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class MultiTypeEqualsModel extends Model {
+      @eq("mirror.mirrorStringValue")
+      stringValue: string = "";
+
+      @eq("mirror.numberValue")
+      numberValue: number = 0;
+
+      @eq("mirror.anyBooleanValue")
+      booleanValue: boolean = false;
+
+      @eq("mirror.arrayValue")
+      arrayValue: string[] = [];
+
+      @eq("mirror.objectValue")
+      objectValue: Record<string, any> = {};
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeEqualsModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class InvalidPropertyModel extends Model {
+      @eq("mirror.stringValue")
+      stringValue: string = "";
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeEqualsModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should pass validation for all supported types", () => {
+      const model = new MultiTypeEqualsModel({
+        stringValue: "hello",
+        numberValue: 42,
+        booleanValue: true,
+        arrayValue: ["a", "b", "c"],
+        objectValue: { foo: "bar" },
+        mirror: new MirrorTestModel({
+          mirrorStringValue: "hello",
+          numberValue: 42,
+          anyBooleanValue: true,
+          arrayValue: ["a", "b", "c"],
+          objectValue: { foo: "bar" },
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should return validation errors for mismatched values", () => {
+      const model = new MultiTypeEqualsModel({
+        stringValue: "mismatch",
+        numberValue: 100,
+        booleanValue: false,
+        arrayValue: ["x", "y"],
+        objectValue: { foo: "wrong" },
+        mirror: new MirrorTestModel({
+          mirrorStringValue: "expected",
+          numberValue: 99,
+          anyBooleanValue: true,
+          arrayValue: ["a", "b"],
+          objectValue: { foo: "bar" },
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      for (const key of Object.keys(new MirrorTestModel({}))) {
+        expect(errors?.[key]).toEqual({
+          [ValidationKeys.EQUALS]:
+            "This field must be equal to field mirror." + key,
+        });
+      }
+    });
+
+    it("should return validation errors for property does not exist", () => {
+      const model = new InvalidPropertyModel({
+        stringValue: "mismatch",
+        mirror: new MirrorTestModel({
+          mirrorStringValue: "expected",
+          numberValue: 99,
+          anyBooleanValue: true,
+          arrayValue: ["a", "b"],
+          objectValue: { foo: "bar" },
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.stringValue).toEqual({
+        [ValidationKeys.EQUALS]:
+          "Failed to resolve path mirror.stringValue: property 'stringValue' does not exist.",
+      });
+    });
   });
 });
