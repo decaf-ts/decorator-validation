@@ -1,6 +1,11 @@
 import {
+  diff,
   email,
   eq,
+  gt,
+  gte,
+  lt,
+  lte,
   max,
   maxlength,
   min,
@@ -238,7 +243,7 @@ describe("Validation by decorators test", function () {
     }
   });
 
-  it("Handles Passwords", () => {
+  it("handles Passwords", () => {
     let p: Model = new PasswordTestModel({
       password: "testssdfdsg",
     });
@@ -405,6 +410,625 @@ describe("Validation by decorators test", function () {
         [ValidationKeys.EQUALS]:
           "Failed to resolve path mirror.stringValue: property 'stringValue' does not exist.",
       });
+      expect(Object.keys(errors || {}).length).toEqual(1);
+    });
+  });
+
+  describe("DiffValidator", () => {
+    @model()
+    class MirrorTestModel extends Model {
+      @required()
+      mirrorStringValue: string = "";
+
+      @required()
+      numberValue: number = 0;
+
+      @required()
+      anyBooleanValue: boolean = false;
+
+      @required()
+      arrayValue: string[] = [];
+
+      @required()
+      objectValue: Record<string, any> = {};
+
+      constructor(model?: ModelArg<MirrorTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class MultiTypeDiffModel extends Model {
+      @diff("mirror.mirrorStringValue")
+      stringValue: string = "";
+
+      @diff("mirror.numberValue")
+      numberValue: number = 0;
+
+      @diff("mirror.anyBooleanValue")
+      booleanValue: boolean = false;
+
+      @diff("mirror.arrayValue")
+      arrayValue: string[] = [];
+
+      @diff("mirror.objectValue")
+      objectValue: Record<string, any> = {};
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeDiffModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class InvalidPropertyModel extends Model {
+      @diff("mirror.stringValue")
+      stringValue: string = "";
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeDiffModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    const fieldMapping = {
+      stringValue: "mirrorStringValue",
+      numberValue: "numberValue",
+      booleanValue: "anyBooleanValue",
+      arrayValue: "arrayValue",
+      objectValue: "objectValue",
+    };
+
+    it("should pass validation for all supported types when values are different", () => {
+      const model = new MultiTypeDiffModel({
+        stringValue: "hello",
+        numberValue: 42,
+        booleanValue: true,
+        arrayValue: ["a", "b", "c"],
+        objectValue: { foo: "bar" },
+        mirror: new MirrorTestModel({
+          mirrorStringValue: "world",
+          numberValue: 100,
+          anyBooleanValue: false,
+          arrayValue: ["x", "y", "z"],
+          objectValue: { foo: "baz" },
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should return validation errors when values are the same", () => {
+      const model = new MultiTypeDiffModel({
+        stringValue: "same",
+        numberValue: 123,
+        booleanValue: true,
+        arrayValue: ["item1", "item2"],
+        objectValue: { key: "value" },
+        mirror: new MirrorTestModel({
+          mirrorStringValue: "same",
+          numberValue: 123,
+          anyBooleanValue: true,
+          arrayValue: ["item1", "item2"],
+          objectValue: { key: "value" },
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(Object.keys(new MirrorTestModel({})).length).toEqual(
+        Object.keys(fieldMapping).length
+      );
+      for (const [parentKey, mirrorKey] of Object.entries(fieldMapping)) {
+        expect(errors?.[parentKey]).toEqual({
+          [ValidationKeys.DIFF]:
+            "This field must be different from field mirror." + mirrorKey,
+        });
+      }
+    });
+
+    it("should return validation errors for property that does not exist", () => {
+      const model = new InvalidPropertyModel({
+        stringValue: "mismatch",
+        mirror: new MirrorTestModel({
+          mirrorStringValue: "expected",
+          numberValue: 99,
+          anyBooleanValue: true,
+          arrayValue: ["a", "b"],
+          objectValue: { foo: "bar" },
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.stringValue).toEqual({
+        [ValidationKeys.DIFF]:
+          "Failed to resolve path mirror.stringValue: property 'stringValue' does not exist.",
+      });
+      expect(Object.keys(errors || {}).length).toEqual(1);
+    });
+  });
+
+  describe("LessThanValidator", () => {
+    @model()
+    class MirrorTestModel extends Model {
+      @required()
+      mirrorNumberValue: number = 0;
+
+      @required()
+      mirrorDateValue: Date = new Date(0);
+
+      constructor(model?: ModelArg<MirrorTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class MultiTypeLessThanModel extends Model {
+      @lt("mirror.mirrorNumberValue")
+      numberValue: number = 0;
+
+      @lt("mirror.mirrorDateValue")
+      dateValue: Date = new Date(0);
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeLessThanModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class InvalidPropertyModel extends Model {
+      @lt("mirror.invalidField")
+      numberValue: number = 0;
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<InvalidPropertyModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should pass validation when fields are less than the target fields", () => {
+      const model = new MultiTypeLessThanModel({
+        numberValue: 19,
+        dateValue: new Date("2024-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should fail when compare fields are equal", () => {
+      const model = new MultiTypeLessThanModel({
+        numberValue: 20,
+        dateValue: new Date("2025-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.LESS_THAN]:
+          "This field must be less than field mirror.mirrorNumberValue",
+      });
+      expect(errors?.dateValue).toEqual({
+        [ValidationKeys.LESS_THAN]:
+          "This field must be less than field mirror.mirrorDateValue",
+      });
+    });
+
+    it("should fail when fields are not less than the target fields", () => {
+      const model = new MultiTypeLessThanModel({
+        numberValue: 30,
+        dateValue: new Date("2026-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.LESS_THAN]:
+          "This field must be less than field mirror.mirrorNumberValue",
+      });
+      expect(errors?.dateValue).toEqual({
+        [ValidationKeys.LESS_THAN]:
+          "This field must be less than field mirror.mirrorDateValue",
+      });
+    });
+
+    it("should fail if target property does not exist", () => {
+      const model = new InvalidPropertyModel({
+        numberValue: 10,
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.LESS_THAN]:
+          "Failed to resolve path mirror.invalidField: property 'invalidField' does not exist.",
+      });
+      expect(Object.keys(errors || {}).length).toEqual(1);
+    });
+  });
+
+  describe("GreaterThanValidator", () => {
+    @model()
+    class MirrorTestModel extends Model {
+      @required()
+      mirrorNumberValue: number = 0;
+
+      @required()
+      mirrorDateValue: Date = new Date();
+
+      constructor(model?: ModelArg<MirrorTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class MultiTypeGreaterThanModel extends Model {
+      @gt("mirror.mirrorNumberValue")
+      numberValue: number = 0;
+
+      @gt("mirror.mirrorDateValue")
+      dateValue: Date = new Date();
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeGreaterThanModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class InvalidPropertyModel extends Model {
+      @gt("mirror.inexistentField")
+      numberValue: number = 0;
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<InvalidPropertyModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should pass validation when values are greater than compared values", () => {
+      const model = new MultiTypeGreaterThanModel({
+        numberValue: 10,
+        dateValue: new Date("2024-01-02"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 5,
+          mirrorDateValue: new Date("2024-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should fail when values are equal", () => {
+      const model = new MultiTypeGreaterThanModel({
+        numberValue: 5,
+        dateValue: new Date("2024-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 5,
+          mirrorDateValue: new Date("2024-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.GREATER_THAN]:
+          "This field must be greater than field mirror.mirrorNumberValue",
+      });
+      expect(errors?.dateValue).toEqual({
+        [ValidationKeys.GREATER_THAN]:
+          "This field must be greater than field mirror.mirrorDateValue",
+      });
+    });
+
+    it("should fail when values are not greater", () => {
+      const model = new MultiTypeGreaterThanModel({
+        numberValue: 3,
+        dateValue: new Date("2024-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 5,
+          mirrorDateValue: new Date("2024-01-02"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.GREATER_THAN]:
+          "This field must be greater than field mirror.mirrorNumberValue",
+      });
+      expect(errors?.dateValue).toEqual({
+        [ValidationKeys.GREATER_THAN]:
+          "This field must be greater than field mirror.mirrorDateValue",
+      });
+    });
+
+    it("should return validation error if compared property does not exist", () => {
+      const model = new InvalidPropertyModel({
+        numberValue: 10,
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 5,
+          mirrorDateValue: new Date("2024-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.GREATER_THAN]:
+          "Failed to resolve path mirror.inexistentField: property 'inexistentField' does not exist.",
+      });
+    });
+  });
+
+  describe("GreaterThanOrEqualValidator", () => {
+    @model()
+    class MirrorTestModel extends Model {
+      @required()
+      mirrorNumberValue: number = 0;
+
+      @required()
+      mirrorDateValue: Date = new Date(0);
+
+      constructor(model?: ModelArg<MirrorTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class MultiTypeGreaterThanOrEqualModel extends Model {
+      @gte("mirror.mirrorNumberValue")
+      numberValue: number = 0;
+
+      @gte("mirror.mirrorDateValue")
+      dateValue: Date = new Date(0);
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeGreaterThanOrEqualModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class InvalidPropertyModel extends Model {
+      @gte("mirror.invalidField")
+      numberValue: number = 0;
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<InvalidPropertyModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should pass when fields are greater than to the target fields", () => {
+      const model = new MultiTypeGreaterThanOrEqualModel({
+        numberValue: 21,
+        dateValue: new Date("2026-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should pass when fields are equal to the target fields", () => {
+      const model = new MultiTypeGreaterThanOrEqualModel({
+        numberValue: 20,
+        dateValue: new Date("2025-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should fail when fields are less than the target fields", () => {
+      const model = new MultiTypeGreaterThanOrEqualModel({
+        numberValue: 10,
+        dateValue: new Date("2023-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+          "This field must be greater than or equal to field mirror.mirrorNumberValue",
+      });
+      expect(errors?.dateValue).toEqual({
+        [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+          "This field must be greater than or equal to field mirror.mirrorDateValue",
+      });
+    });
+
+    it("should fail if target property does not exist", () => {
+      const model = new InvalidPropertyModel({
+        numberValue: 30,
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+          "Failed to resolve path mirror.invalidField: property 'invalidField' does not exist.",
+      });
+      expect(Object.keys(errors || {}).length).toEqual(1);
+    });
+  });
+
+  describe("LessThanOrEqualValidator", () => {
+    @model()
+    class MirrorTestModel extends Model {
+      @required()
+      mirrorNumberValue: number = 0;
+
+      @required()
+      mirrorDateValue: Date = new Date(0);
+
+      constructor(model?: ModelArg<MirrorTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class MultiTypeLessThanOrEqualModel extends Model {
+      @lte("mirror.mirrorNumberValue")
+      numberValue: number = 0;
+
+      @lte("mirror.mirrorDateValue")
+      dateValue: Date = new Date(0);
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<MultiTypeLessThanOrEqualModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class InvalidPropertyModel extends Model {
+      @lte("mirror.invalidField")
+      numberValue: number = 0;
+
+      @type(MirrorTestModel.name)
+      mirror?: MirrorTestModel;
+
+      constructor(model?: ModelArg<InvalidPropertyModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should pass when fields are less than the target fields", () => {
+      const model = new MultiTypeLessThanOrEqualModel({
+        numberValue: 10,
+        dateValue: new Date("2022-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should pass when fields are equal to the target fields", () => {
+      const model = new MultiTypeLessThanOrEqualModel({
+        numberValue: 20,
+        dateValue: new Date("2025-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should fail when fields are greater than the target fields", () => {
+      const model = new MultiTypeLessThanOrEqualModel({
+        numberValue: 30,
+        dateValue: new Date("2026-01-01"),
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.LESS_THAN_OR_EQUAL]:
+          "This field must be less than or equal to field mirror.mirrorNumberValue",
+      });
+      expect(errors?.dateValue).toEqual({
+        [ValidationKeys.LESS_THAN_OR_EQUAL]:
+          "This field must be less than or equal to field mirror.mirrorDateValue",
+      });
+    });
+
+    it("should fail if target property does not exist", () => {
+      const model = new InvalidPropertyModel({
+        numberValue: 10,
+        mirror: new MirrorTestModel({
+          mirrorNumberValue: 20,
+          mirrorDateValue: new Date("2025-01-01"),
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeDefined();
+      expect(errors?.numberValue).toEqual({
+        [ValidationKeys.LESS_THAN_OR_EQUAL]:
+          "Failed to resolve path mirror.invalidField: property 'invalidField' does not exist.",
+      });
+      expect(Object.keys(errors || {}).length).toEqual(1);
     });
   });
 });
