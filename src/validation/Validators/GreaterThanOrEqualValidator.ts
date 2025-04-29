@@ -2,22 +2,22 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import type { ComparisonValidatorOptions } from "../types";
+import { getValueByPath, isGreaterThan } from "./utils";
 import { isEqual } from "@decaf-ts/reflection";
-import { getValueByPath } from "./utils";
 
 /**
- * @summary Equals Validator
+ * @summary Greater Than or Equal Validator
  *
- * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#EQUALS}
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#GREATER_THAN_OR_EQUAL}
  *
- * @class EqualsValidator
+ * @class GreaterThanOrEqualValidator
  * @extends Validator
  *
  * @category Validators
  */
-@validator(ValidationKeys.EQUALS)
-export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
-  constructor(message: string = DEFAULT_ERROR_MESSAGES.EQUALS) {
+@validator(ValidationKeys.GREATER_THAN_OR_EQUAL)
+export class GreaterThanOrEqualValidator extends Validator<ComparisonValidatorOptions> {
+  constructor(message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL) {
     super(message);
   }
 
@@ -47,7 +47,8 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
       return this.getMessage(e.message || this.message);
     }
 
-    return isEqual(value, comparisonPropertyValue)
+    return isGreaterThan(value, comparisonPropertyValue) ||
+      isEqual(value, comparisonPropertyValue)
       ? undefined
       : this.getMessage(
           options.message || this.message,
@@ -55,9 +56,3 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
         );
   }
 }
-
-// Validation.register({
-//   validator: EqualsValidator,
-//   validationKey: ValidationKeys.EQUALS,
-//   save: false,
-// } as ValidatorDefinition);

@@ -2,22 +2,22 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import type { ComparisonValidatorOptions } from "../types";
+import { getValueByPath, isLessThan } from "./utils";
 import { isEqual } from "@decaf-ts/reflection";
-import { getValueByPath } from "./utils";
 
 /**
- * @summary Equals Validator
+ * @summary Less Than or Equal Validator
  *
- * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#EQUALS}
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#LESS_THAN_OR_EQUAL}
  *
- * @class EqualsValidator
+ * @class LessThanOrEqualValidator
  * @extends Validator
  *
  * @category Validators
  */
-@validator(ValidationKeys.EQUALS)
-export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
-  constructor(message: string = DEFAULT_ERROR_MESSAGES.EQUALS) {
+@validator(ValidationKeys.LESS_THAN_OR_EQUAL)
+export class LessThanOrEqualValidator extends Validator<ComparisonValidatorOptions> {
+  constructor(message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL) {
     super(message);
   }
 
@@ -47,7 +47,11 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
       return this.getMessage(e.message || this.message);
     }
 
-    return isEqual(value, comparisonPropertyValue)
+    const p1 = isLessThan(value, comparisonPropertyValue);
+    const p2 = isEqual(value, comparisonPropertyValue);
+    const p = p1 || p2;
+
+    return p
       ? undefined
       : this.getMessage(
           options.message || this.message,
@@ -55,9 +59,3 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
         );
   }
 }
-
-// Validation.register({
-//   validator: EqualsValidator,
-//   validationKey: ValidationKeys.EQUALS,
-//   save: false,
-// } as ValidatorDefinition);

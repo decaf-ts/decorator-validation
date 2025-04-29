@@ -6,18 +6,18 @@ import { isEqual } from "@decaf-ts/reflection";
 import { getValueByPath } from "./utils";
 
 /**
- * @summary Equals Validator
+ * @summary Diff Validator
  *
- * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#EQUALS}
+ * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#DiffValidator}
  *
- * @class EqualsValidator
+ * @class DiffValidator
  * @extends Validator
  *
  * @category Validators
  */
-@validator(ValidationKeys.EQUALS)
-export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
-  constructor(message: string = DEFAULT_ERROR_MESSAGES.EQUALS) {
+@validator(ValidationKeys.DIFF)
+export class DiffValidator extends Validator<ComparisonValidatorOptions> {
+  constructor(message: string = DEFAULT_ERROR_MESSAGES.DIFF) {
     super(message);
   }
 
@@ -48,16 +48,10 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
     }
 
     return isEqual(value, comparisonPropertyValue)
-      ? undefined
-      : this.getMessage(
+      ? this.getMessage(
           options.message || this.message,
           options.propertyToCompare
-        );
+        )
+      : undefined;
   }
 }
-
-// Validation.register({
-//   validator: EqualsValidator,
-//   validationKey: ValidationKeys.EQUALS,
-//   save: false,
-// } as ValidatorDefinition);

@@ -40,6 +40,11 @@ export const ValidationKeys = {
   LIST: "list",
   FORMAT: "format",
   EQUALS: "equals",
+  DIFF: "different",
+  LESS_THAN: "lessThan",
+  LESS_THAN_OR_EQUAL: "lessThanOrEqual",
+  GREATER_THAN: "greaterThan",
+  GREATER_THAN_OR_EQUAL: "greaterThanOrEqual",
 } as const;
 
 /**
@@ -125,6 +130,12 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   LIST: "Invalid list of {0}",
   MODEL_NOT_FOUND: "No model registered under {0}",
   EQUALS: "This field must be equal to field {0}",
+  DIFF: "This field must be different from field {0}",
+  LESS_THAN: "This field must be less than field {0}",
+  LESS_THAN_OR_EQUAL: "This field must be less than or equal to field {0}",
+  GREATER_THAN: "This field must be greater than field {0}",
+  GREATER_THAN_OR_EQUAL:
+    "This field must be greater than or equal to field {0}",
 };
 
 /**

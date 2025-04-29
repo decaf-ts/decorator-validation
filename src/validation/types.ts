@@ -154,5 +154,5 @@ export interface DateValidatorOptions extends ValidatorOptions {
 }
 
 export interface ComparisonValidatorOptions extends ValidatorOptions {
-  propertyToMatch: string;
+  propertyToCompare: string;
 }
