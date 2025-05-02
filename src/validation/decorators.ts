@@ -10,6 +10,7 @@ import { ModelConstructor } from "../model/types";
 import { parseDate } from "../utils/dates";
 import { propMetadata } from "../utils/decorators";
 import { Validation } from "./Validation";
+import { Decoration } from "../utils/Decoration";
 
 /**
  * @summary Marks the property as required.
@@ -22,12 +23,14 @@ import { Validation } from "./Validation";
  * @category Decorators
  */
 export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.REQUIRED),
-    {
-      message: message,
-    }
-  );
+  const key = Validation.key(ValidationKeys.REQUIRED);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(key, {
+        message: message,
+      })
+    )
+    .apply();
 }
 
 /**
@@ -45,11 +48,16 @@ export function min(
   value: number | Date | string,
   message: string = DEFAULT_ERROR_MESSAGES.MIN
 ) {
-  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MIN), {
-    [ValidationKeys.MIN]: value,
-    message: message,
-    types: [Number.name, Date.name],
-  });
+  const key = Validation.key(ValidationKeys.MIN);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MIN), {
+        [ValidationKeys.MIN]: value,
+        message: message,
+        types: [Number.name, Date.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -67,11 +75,16 @@ export function max(
   value: number | Date | string,
   message: string = DEFAULT_ERROR_MESSAGES.MAX
 ) {
-  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MAX), {
-    [ValidationKeys.MAX]: value,
-    message: message,
-    types: [Number.name, Date.name],
-  });
+  const key = Validation.key(ValidationKeys.MAX);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(key, {
+        [ValidationKeys.MAX]: value,
+        message: message,
+        types: [Number.name, Date.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -89,11 +102,16 @@ export function step(
   value: number,
   message: string = DEFAULT_ERROR_MESSAGES.STEP
 ) {
-  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.STEP), {
-    [ValidationKeys.STEP]: value,
-    message: message,
-    types: [Number.name],
-  });
+  const key = Validation.key(ValidationKeys.STEP);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(key, {
+        [ValidationKeys.STEP]: value,
+        message: message,
+        types: [Number.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -111,14 +129,16 @@ export function minlength(
   value: number,
   message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH
 ) {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.MIN_LENGTH),
-    {
-      [ValidationKeys.MIN_LENGTH]: value,
-      message: message,
-      types: [String.name, Array.name, Set.name],
-    }
-  );
+  const key = Validation.key(ValidationKeys.MIN_LENGTH);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(key, {
+        [ValidationKeys.MIN_LENGTH]: value,
+        message: message,
+        types: [String.name, Array.name, Set.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -136,14 +156,16 @@ export function maxlength(
   value: number,
   message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH
 ) {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.MAX_LENGTH),
-    {
-      [ValidationKeys.MAX_LENGTH]: value,
-      message: message,
-      types: [String.name, Array.name, Set.name],
-    }
-  );
+  const key = Validation.key(ValidationKeys.MAX_LENGTH);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(key, {
+        [ValidationKeys.MAX_LENGTH]: value,
+        message: message,
+        types: [String.name, Array.name, Set.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -161,15 +183,17 @@ export function pattern(
   value: RegExp | string,
   message: string = DEFAULT_ERROR_MESSAGES.PATTERN
 ) {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.PATTERN),
-    {
-      [ValidationKeys.PATTERN]:
-        typeof value === "string" ? value : value.toString(),
-      message: message,
-      types: [String.name],
-    }
-  );
+  const key = Validation.key(ValidationKeys.PATTERN);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.PATTERN), {
+        [ValidationKeys.PATTERN]:
+          typeof value === "string" ? value : value.toString(),
+        message: message,
+        types: [String.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -183,14 +207,16 @@ export function pattern(
  * @category Decorators
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.EMAIL),
-    {
-      [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
-      message: message,
-      types: [String.name],
-    }
-  );
+  const key = Validation.key(ValidationKeys.EMAIL);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.EMAIL), {
+        [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
+        message: message,
+        types: [String.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -204,11 +230,16 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  * @category Decorators
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
-  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.URL), {
-    [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
-    message: message,
-    types: [String.name],
-  });
+  const key = Validation.key(ValidationKeys.URL);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.URL), {
+        [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
+        message: message,
+        types: [String.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -226,10 +257,15 @@ export function type(
   types: string[] | string,
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
-  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.TYPE), {
-    customTypes: types,
-    message: message,
-  });
+  const key = Validation.key(ValidationKeys.TYPE);
+  return Decoration.for(key)
+    .define(
+      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.TYPE), {
+        customTypes: types,
+        message: message,
+      })
+    )
+    .apply();
 }
 
 /**
@@ -251,8 +287,9 @@ export function date(
   format: string = "dd/MM/yyyy",
   message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
-  return (target: Record<string, any>, propertyKey?: any): any => {
-    propMetadata(Validation.key(ValidationKeys.DATE), {
+  const key = Validation.key(ValidationKeys.DATE);
+  const dateDec = (target: Record<string, any>, propertyKey?: any): any => {
+    propMetadata(key, {
       [ValidationKeys.FORMAT]: format,
       message: message,
       types: [Date.name],
@@ -286,6 +323,7 @@ export function date(
       },
     });
   };
+  return Decoration.for(key).define(dateDec).apply();
 }
 
 /**
@@ -305,11 +343,16 @@ export function password(
   pattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
   message: string = DEFAULT_ERROR_MESSAGES.PASSWORD
 ) {
-  return propMetadata(Validation.key(ValidationKeys.PASSWORD), {
-    [ValidationKeys.PATTERN]: pattern,
-    message: message,
-    types: [String.name],
-  });
+  const key = Validation.key(ValidationKeys.PASSWORD);
+  return Decoration.for(key)
+    .define(
+      propMetadata(key, {
+        [ValidationKeys.PATTERN]: pattern,
+        message: message,
+        types: [String.name],
+      })
+    )
+    .apply();
 }
 
 /**
@@ -331,11 +374,16 @@ export function list(
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
-  return propMetadata(Validation.key(ValidationKeys.LIST), {
-    clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
-    type: collection,
-    message: message,
-  });
+  const key = Validation.key(ValidationKeys.LIST);
+  return Decoration.for(key)
+    .define(
+      propMetadata(key, {
+        clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
+        type: collection,
+        message: message,
+      })
+    )
+    .apply();
 }
 
 /**

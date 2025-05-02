@@ -1,5 +1,6 @@
 export * from "./constants";
 export * from "./dates";
+export * from "./Decoration";
 export * from "./decorators";
 export * from "./hashing";
 export * from "./registry";

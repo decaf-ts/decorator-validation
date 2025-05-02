@@ -1,7 +1,8 @@
 import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
-import { metadata } from "@decaf-ts/reflection";
+import { apply, metadata } from "@decaf-ts/reflection";
+import { Decoration } from "../utils/Decoration";
 
 /**
  * @summary defines the tpe os an InstanceCallback function
@@ -27,7 +28,8 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  *
  */
 export function model(instanceCallback?: InstanceCallback) {
-  return ((original: any) => {
+  const key = Model.key(ModelKeys.MODEL);
+  function modelDec(original: any) {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {
       const instance: ReturnType<typeof original> = construct(
@@ -62,7 +64,10 @@ export function model(instanceCallback?: InstanceCallback) {
 
     // return new constructor (will override original)
     return newConstructor;
-  }) as any;
+  }
+  // return Decoration.for(key).define(modelDec).apply();
+
+  return modelDec;
 }
 
 export function hashedBy(algorithm: string, ...args: any[]) {
