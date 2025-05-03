@@ -507,4 +507,8 @@ export abstract class Model
   static key(str: string) {
     return ModelKeys.REFLECT + str;
   }
+
+  static isModel(target: Record<string, any>) {
+    return isModel(target);
+  }
 }
