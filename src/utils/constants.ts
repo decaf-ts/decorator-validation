@@ -24,3 +24,5 @@ export enum ModelKeys {
   HASHING = "hashing",
   SERIALIZATION = "serialization",
 }
+
+export const DefaultFlavour = "decaf";

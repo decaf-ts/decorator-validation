@@ -1,36 +1,12 @@
-export interface DecorationBuilderBuild {
-  apply(): (
-    target: object,
-    propertyKey?: any,
-    descriptor?: TypedPropertyDescriptor<any>
-  ) => any;
-}
-
-export interface DecorationBuilderEnd {
-  extend(
-    ...decorators: (ClassDecorator | PropertyDecorator | MethodDecorator)[]
-  ): DecorationBuilderBuild;
-}
-
-export interface DecorationBuilderMid extends DecorationBuilderEnd {
-  define(
-    ...decorators: (ClassDecorator | PropertyDecorator | MethodDecorator)[]
-  ): DecorationBuilderEnd & DecorationBuilderBuild;
-}
-
-export interface DecorationBuilderStart {
-  for(id: string): DecorationBuilderMid;
-}
-
-export interface IDecorationBuilder
-  extends DecorationBuilderStart,
-    DecorationBuilderMid,
-    DecorationBuilderEnd,
-    DecorationBuilderBuild {}
-
-export const DefaultFlavour = "decaf";
-
-export type FlavourResolver = (target: object) => string;
+import {
+  DecorationBuilderBuild,
+  DecorationBuilderEnd,
+  DecorationBuilderMid,
+  DecorationBuilderStart,
+  FlavourResolver,
+  IDecorationBuilder,
+} from "./types";
+import { DefaultFlavour } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function defaultFlavourResolver(target: object) {
