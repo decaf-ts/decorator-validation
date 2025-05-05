@@ -4,7 +4,7 @@
 /workdocs/drawings/*
 !/workdocs/drawings/*.drawio
 /workdocs/resources/*
-/workdocs/reports/*
+/workdocs/reports/**/*
 !/workdocs/reports/data
 /workdocs/reports/data/*
 !/workdocs/reports/data/.gitkeep

@@ -4,9 +4,17 @@ import { ValidationKeys, Validator } from "./Validators";
 import { IRegistry } from "../utils";
 
 /**
- * @summary Type for validation decorator metadata
- * @memberOf module:decorator-validation.Reflection
- * @category Reflection
+ * @description Type definition for metadata used by validation decorators
+ * @summary Defines the structure of metadata attached to properties by validation decorators.
+ * This metadata is used during validation to determine validation rules and error messages.
+ *
+ * @property {any[]} [args] - Optional arguments for the validator
+ * @property {string} message - Error message to display when validation fails
+ * @property {string[]} [types] - Array of type names that the property can have
+ *
+ * @typedef {Object} ValidationMetadata
+ * @memberOf module:decorator-validation
+ * @category Validation
  */
 export type ValidationMetadata = {
   [indexer: string]: any;
@@ -16,8 +24,15 @@ export type ValidationMetadata = {
 };
 
 /**
- * @summary Type for a validator property decorator definition
- * @memberOf module:decorator-validation.Validation
+ * @description Type definition for property-level validation decorator configuration
+ * @summary Defines the structure that associates a property with its validation decorators.
+ * This type is used to track which decorators are applied to a specific property during validation.
+ *
+ * @property {string|symbol} prop - The property name or symbol that the decorators are applied to
+ * @property {ValidationDecoratorDefinition[]} decorators - Array of decorator definitions applied to the property
+ *
+ * @typedef {Object} ValidationPropertyDecoratorDefinition
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export type ValidationPropertyDecoratorDefinition = {
@@ -26,8 +41,14 @@ export type ValidationPropertyDecoratorDefinition = {
 };
 
 /**
- * @summary Type for a validator decorator definition
- * @memberOf module:decorator-validation.Validation
+ * @description Type definition for individual validation decorator metadata
+ * @summary Extends the base DecoratorMetadata type with validation-specific properties.
+ * This type represents the metadata for a single validation decorator applied to a property.
+ *
+ * @property {ValidationElementDefinition} props - The validation element properties and configuration
+ *
+ * @typedef {Object} ValidationDecoratorDefinition
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export type ValidationDecoratorDefinition = DecoratorMetadata & {
@@ -36,7 +57,7 @@ export type ValidationDecoratorDefinition = DecoratorMetadata & {
 
 /**
  * @summary Type for a validator element metadata
- * @memberOf module:decorator-validation.Validation
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export type ValidationElementDefinition = {
@@ -49,14 +70,14 @@ export type ValidationElementDefinition = {
 
 /**
  * @summary Type for a model errors
- * @memberOf module:decorator-validation.Validation
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export type ModelErrors = Record<string, Record<string, string | undefined>>;
 
 /**
  * @summary Util type for {@link Validator} configuration
- * @memberOf module:decorator-validation.Validation
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export type ValidatorDefinition = {
@@ -66,89 +87,175 @@ export type ValidatorDefinition = {
 };
 
 /**
- * @summary Base API for a {@link Validator} registry
+ * @description Interface for a registry that manages validator instances
+ * @summary Defines the contract for a registry that stores and retrieves validators.
+ * The registry is responsible for maintaining a collection of validators and providing
+ * access to them by key.
  *
- * @interface ValidatorRegistry
- * @extends IRegistry
- *
+ * @interface IValidatorRegistry
+ * @template T Type of validator, must extend Validator
+ * @extends IRegistry<T>
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
   /**
-   * @summary retrieves the custom keys
-   * @method
+   * @description Retrieves custom validation keys defined in the registry
+   * @summary Returns a mapping of custom validation keys to their corresponding standard keys.
+   * This allows for aliasing validation keys for specific use cases.
+   *
+   * @return {Record<string, string>} Object mapping custom keys to standard validation keys
    */
   getCustomKeys(): Record<string, string>;
 
   /**
-   * @summary Retrieves the Registered validator keys
-   * @return {string[]} the registered validators keys
-   * @method
+   * @description Gets all registered validator keys
+   * @summary Returns an array of all validation keys that have registered validators.
+   *
+   * @return {string[]} Array of registered validator keys
    */
   getKeys(): string[];
 
   /**
-   * @summary Registers the provided validators onto the registry
+   * @description Registers one or more validators with the registry
+   * @summary Adds validators to the registry, making them available for validation operations.
+   * Validators can be provided as instances or as validator definitions.
    *
-   * @typedef T extends Validator
-   * @param {T[] | ValidatorDefinition[]} validator
-   * @method
+   * @param {...(T|ValidatorDefinition)} validator - Validator instances or definitions to register
+   * @return {void}
    */
   register<T extends Validator>(
     ...validator: (T | ValidatorDefinition)[]
   ): void;
 
   /**
-   * @summary Retrieves the Validator constructor if registered
+   * @description Retrieves a validator by its key
+   * @summary Looks up a validator in the registry using its validation key.
+   * Returns the validator if found, or undefined if no validator is registered for the key.
    *
-   * @typedef T extends Validator
-   * @param {string} key one of the {@link ValidationKeys}
-   * @return {Validator | undefined} the registered Validator or undefined if there is nono matching the provided key
-   * @method
+   * @param {string} key - The validation key to look up, typically one of the {@link ValidationKeys}
+   * @return {T|undefined} The registered validator or undefined if none matches the provided key
    */
   get<T extends Validator>(key: string): T | undefined;
 }
 
+/**
+ * @description Base options type for all validators
+ * @summary Defines the common properties available to all validators
+ * @typedef ValidatorOptions
+ * @property {string} [message] - Custom error message to display when validation fails
+ * @memberOf module:decorator-validation
+ */
 export type ValidatorOptions = {
   message?: string;
 };
 
+/**
+ * @description URL validation options interface
+ * @summary Defines options for URL validation, including allowed URL types
+ * @interface URLValidatorOptions
+ * @property {(string|string[]|{ name: string })} types - Specifies the allowed URL types or patterns
+ * @memberOf module:decorator-validation
+ */
 export interface URLValidatorOptions extends ValidatorOptions {
   types: string | string[] | { name: string };
 }
 
+/**
+ * @description Type validation options interface
+ * @summary Defines options for type validation, specifying allowed types
+ * @interface TypeValidatorOptions
+ * @property {(string|string[]|{ name: string })} types - Specifies the allowed data types
+ * @memberOf module:decorator-validation
+ */
 export interface TypeValidatorOptions extends ValidatorOptions {
   types: string | string[] | { name: string };
 }
 
+/**
+ * @description Step validation options interface
+ * @summary Defines options for step validation, specifying the step increment
+ * @interface StepValidatorOptions
+ * @property {(number|string)} [ValidationKeys.STEP] - The step value for numerical validation
+ * @memberOf module:decorator-validation
+ */
 export interface StepValidatorOptions extends ValidatorOptions {
   [ValidationKeys.STEP]: number | string;
 }
 
+/**
+ * @description Pattern validation options interface
+ * @summary Defines options for pattern validation using regular expressions
+ * @interface PatternValidatorOptions
+ * @property {(RegExp|string)} [ValidationKeys.PATTERN] - The pattern to match against
+ * @memberOf module:decorator-validation
+ */
 export interface PatternValidatorOptions extends ValidatorOptions {
   [ValidationKeys.PATTERN]?: RegExp | string;
 }
 
+/**
+ * @description Minimum value validation options interface
+ * @summary Defines options for minimum value validation
+ * @interface MinValidatorOptions
+ * @property {(number|Date|string)} [ValidationKeys.MIN] - The minimum allowed value
+ * @memberOf module:decorator-validation
+ */
 export interface MinValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MIN]: number | Date | string;
 }
 
+/**
+ * @description Minimum length validation options interface
+ * @summary Defines options for minimum length validation
+ * @interface MinLengthValidatorOptions
+ * @property {number} [ValidationKeys.MIN_LENGTH] - The minimum allowed length
+ * @memberOf module:decorator-validation
+ */
 export interface MinLengthValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MIN_LENGTH]: number;
 }
 
+/**
+ * @description Maximum value validation options interface
+ * @summary Defines options for maximum value validation
+ * @interface MaxValidatorOptions
+ * @property {(number|Date|string)} [ValidationKeys.MAX] - The maximum allowed value
+ * @memberOf module:decorator-validation
+ */
 export interface MaxValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MAX]: number | Date | string;
 }
 
+/**
+ * @description Maximum length validation options interface
+ * @summary Defines options for maximum length validation
+ * @interface MaxLengthValidatorOptions
+ * @property {number} [ValidationKeys.MAX_LENGTH] - The maximum allowed length
+ * @memberOf module:decorator-validation
+ */
 export interface MaxLengthValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MAX_LENGTH]: number;
 }
 
+/**
+ * @description List validation options interface
+ * @summary Defines options for list validation
+ * @interface ListValidatorOptions
+ * @property {string[]} clazz - Array of allowed class names or types
+ * @memberOf module:decorator-validation
+ */
 export interface ListValidatorOptions extends ValidatorOptions {
   clazz: string[];
 }
 
+/**
+ * @description Date validation options interface
+ * @summary Defines options for date validation
+ * @interface DateValidatorOptions
+ * @property {string} [ValidationKeys.FORMAT] - The expected date format pattern
+ * @memberOf module:decorator-validation
+ */
 export interface DateValidatorOptions extends ValidatorOptions {
   [ValidationKeys.FORMAT]?: string;
 }

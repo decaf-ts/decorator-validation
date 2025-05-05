@@ -13,14 +13,28 @@ import { Validation } from "./Validation";
 import { Decoration } from "../utils/Decoration";
 
 /**
- * @summary Marks the property as required.
- * @description Validators to validate a decorated property must use key {@link ValidationKeys#REQUIRED}
+ * @description Property decorator that marks a field as required
+ * @summary Marks the property as required, causing validation to fail if the property is undefined, null, or empty.
+ * Validators to validate a decorated property must use key {@link ValidationKeys#REQUIRED}.
+ * This decorator is commonly used as the first validation step for important fields.
  *
- * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#REQUIRED}
+ * @param {string} [message] - The error message to display when validation fails. Defaults to {@link DEFAULT_ERROR_MESSAGES#REQUIRED}
+ * @return {PropertyDecorator} A decorator function that can be applied to class properties
  *
  * @function required
- *
+ * @memberOf module:decorator-validation
  * @category Decorators
+ *
+ * @example
+ * ```typescript
+ * class User {
+ *   @required()
+ *   username: string;
+ *
+ *   @required("Email address is mandatory")
+ *   email: string;
+ * }
+ * ```
  */
 export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
   const key = Validation.key(ValidationKeys.REQUIRED);
@@ -34,15 +48,29 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
 }
 
 /**
- * @summary Defines a minimum value for the property
- * @description Validators to validate a decorated property must use key {@link ValidationKeys#MIN}
+ * @description Property decorator that enforces a minimum value constraint
+ * @summary Defines a minimum value for the property, causing validation to fail if the property value is less than the specified minimum.
+ * Validators to validate a decorated property must use key {@link ValidationKeys#MIN}.
+ * This decorator works with numeric values and dates.
  *
- * @param {number | Date} value
- * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MIN}
+ * @param {number | Date | string} value - The minimum value allowed. For dates, can be a Date object or a string that can be converted to a date
+ * @param {string} [message] - The error message to display when validation fails. Defaults to {@link DEFAULT_ERROR_MESSAGES#MIN}
+ * @return {PropertyDecorator} A decorator function that can be applied to class properties
  *
  * @function min
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
+ *
+ * @example
+ * ```typescript
+ * class Product {
+ *   @min(0)
+ *   price: number;
+ *
+ *   @min(new Date(2023, 0, 1), "Date must be after January 1, 2023")
+ *   releaseDate: Date;
+ * }
+ * ```
  */
 export function min(
   value: number | Date | string,
@@ -68,7 +96,7 @@ export function min(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MAX}
  *
  * @function max
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function max(
@@ -95,7 +123,7 @@ export function max(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#STEP}
  *
  * @function step
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function step(
@@ -122,7 +150,7 @@ export function step(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MIN_LENGTH}
  *
  * @function minlength
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function minlength(
@@ -149,7 +177,7 @@ export function minlength(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MAX_LENGTH}
  *
  * @function maxlength
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function maxlength(
@@ -176,7 +204,7 @@ export function maxlength(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#PATTERN}
  *
  * @function pattern
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function pattern(
@@ -203,7 +231,7 @@ export function pattern(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#EMAIL}
  *
  * @function email
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
@@ -226,7 +254,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#URL}
  *
  * @function url
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
@@ -250,7 +278,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#TYPE}
  *
  * @function type
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function type(
@@ -276,11 +304,10 @@ export function type(
  *
  * @param {string} format accepted format according to {@link formatDate}
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#DATE}
- * @param {Constructor<Validator>} [validator] the Validator to be used. Defaults to {@link DateValidator}
  *
  * @function date
  *
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function date(
@@ -330,13 +357,12 @@ export function date(
  * @summary Password Handler Decorator
  * @description Validators to validate a decorated property must use key {@link ValidationKeys#PASSWORD}
  *
- * @param {RegExp} [pattern] defaults to {@link PasswordPatterns#CHAR8_ONE_OF_EACH}
+ * @param {RegExp} [pattern] defaults to {@link DEFAULT_PATTERNS#CHAR8_ONE_OF_EACH}
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#PASSWORD}
- * @param {Constructor<Validator>} [validator] Defaults to {@link PasswordValidator}
  *
  * @function password
  *
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function password(
@@ -362,11 +388,10 @@ export function password(
  * @param {ModelConstructor} clazz
  * @param {string} [collection] The collection being used. defaults to Array
  * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#LIST}
- * @param {Constructor<Validator>} [validator] defaults to {@link ListValidator}
  *
  * @function list
  *
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function list(
@@ -392,11 +417,10 @@ export function list(
  *
  * @param {ModelConstructor} clazz
  * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#LIST}
- * @param {Constructor<Validator>} [validator]
  *
  * @function set
  *
- * @memberOf module:decorator-validation.Decorators.Validation
+ * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function set(

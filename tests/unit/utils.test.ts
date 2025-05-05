@@ -1,12 +1,4 @@
-import {
-  hashedBy,
-  Hashing,
-  isModel,
-  model,
-  Model,
-  ModelArg,
-  required,
-} from "../../src";
+import { hashedBy, Hashing, model, Model, ModelArg, required } from "../../src";
 import { HashingFunction } from "../../src";
 
 @model()
@@ -119,14 +111,14 @@ describe("Hashing methods", function () {
 describe("Model Verification", function () {
   it("Fails to Detects a model for normal serialization", function () {
     const tm = new TestModel();
-    expect(isModel(tm)).toBe(true);
-    expect(isModel(JSON.parse(JSON.stringify(tm)))).toBe(false);
+    expect(Model.isModel(tm)).toBe(true);
+    expect(Model.isModel(JSON.parse(JSON.stringify(tm)))).toBe(false);
   });
 
   it("Detects a model when properly serialized", function () {
     const tm = new TestModel();
-    expect(isModel(tm)).toBe(true);
-    expect(isModel(Model.deserialize(tm.serialize()))).toBe(true);
-    expect(isModel({})).toBe(false);
+    expect(Model.isModel(tm)).toBe(true);
+    expect(Model.isModel(Model.deserialize(tm.serialize()))).toBe(true);
+    expect(Model.isModel({})).toBe(false);
   });
 });

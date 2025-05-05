@@ -22,67 +22,88 @@ import { jsTypes, ReservedModels } from "./constants";
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
 
-export function isPropertyModel<M extends Model>(
-  target: M,
-  attribute: string
-): boolean | string | undefined {
-  if (isModel((target as Record<string, any>)[attribute])) return true;
-  const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
-  return Model.get(metadata.name) ? metadata.name : undefined;
-}
-
 /**
- * @summary For Serialization/deserialization purposes.
- * @description Reads the {@link ModelKeys.ANCHOR} property of a {@link Model} to discover the class to instantiate
- *
- * @function isModel
- * @memberOf module:decorator-validation.Validation
- * @category Validation
- */
-export function isModel(target: Record<string, any>) {
-  try {
-    return target instanceof Model || !!Model.getMetadata(target as any);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e: any) {
-    return false;
-  }
-}
-
-/**
- * @summary ModelRegistry Interface
+ * @description Registry type for storing and retrieving model constructors
+ * @summary The ModelRegistry type defines a registry for model constructors that extends
+ * the BuilderRegistry interface. It provides a standardized way to register, retrieve,
+ * and build model instances, enabling the model system to work with different types of models.
  *
  * @interface ModelRegistry
- * @extends BuilderRegistry<Model>
- *
- * @category Model
+ * @template T Type of model that can be registered, must extend Model
+ * @extends BuilderRegistry<T>
+ * @memberOf module:decorator-validation
  */
 export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
 
 /**
- * @summary Util class to enable serialization and correct rebuilding
+ * @description Registry manager for model constructors that enables serialization and rebuilding
+ * @summary The ModelRegistryManager implements the ModelRegistry interface and provides
+ * functionality for registering, retrieving, and building model instances. It maintains
+ * a cache of model constructors indexed by name, allowing for efficient lookup and instantiation.
+ * This class is essential for the serialization and deserialization of model objects.
  *
- * @param {string} anchorKey defaults to {@link ModelKeys.ANCHOR}. The property name where the registered class name is stored;
- * @param {function(Record<string, any>): boolean} [testFunction] method to test if the provided object is a Model Object. defaults to {@link isModel}
+ * @param {function(Record<string, any>): boolean} [testFunction] - Function to test if an object is a model, defaults to {@link isModel}
  *
  * @class ModelRegistryManager
- * @implements ModelRegistry
+ * @template M Type of model that can be registered, must extend Model
+ * @implements ModelRegistry<M>
+ * @memberOf module:decorator-validation
  *
- * @category Model
+ * @example
+ * ```typescript
+ * // Create a model registry
+ * const registry = new ModelRegistryManager();
+ *
+ * // Register a model class
+ * registry.register(User);
+ *
+ * // Retrieve a model constructor by name
+ * const UserClass = registry.get("User");
+ *
+ * // Build a model instance from a plain object
+ * const userData = { name: "John", age: 30 };
+ * const user = registry.build(userData, "User");
+ * ```
+ *
+ * @mermaid
+ * sequenceDiagram
+ *   participant C as Client
+ *   participant R as ModelRegistryManager
+ *   participant M as Model Class
+ *
+ *   C->>R: new ModelRegistryManager(testFunction)
+ *   C->>R: register(ModelClass)
+ *   R->>R: Store in cache
+ *   C->>R: get("ModelName")
+ *   R-->>C: ModelClass constructor
+ *   C->>R: build(data, "ModelName")
+ *   R->>R: Get constructor from cache
+ *   R->>M: new ModelClass(data)
+ *   M-->>R: Model instance
+ *   R-->>C: Model instance
  */
-export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
-  private cache: Record<string, ModelConstructor<T>> = {};
+export class ModelRegistryManager<M extends Model> implements ModelRegistry<M> {
+  private cache: Record<string, ModelConstructor<M>> = {};
   private readonly testFunction: (obj: object) => boolean;
 
-  constructor(testFunction: (obj: Record<string, any>) => boolean = isModel) {
+  constructor(
+    testFunction: (obj: Record<string, any>) => boolean = Model.isModel
+  ) {
     this.testFunction = testFunction;
   }
 
   /**
-   * @summary register new Models
-   * @param {any} constructor
-   * @param {string} [name] when not defined, the name of the constructor will be used
+   * @description Registers a model constructor with the registry
+   * @summary Adds a model constructor to the registry cache, making it available for
+   * later retrieval and instantiation. If no name is provided, the constructor's name
+   * property is used as the key in the registry.
+   *
+   * @param {ModelConstructor<M>} constructor - The model constructor to register
+   * @param {string} [name] - Optional name to register the constructor under, defaults to constructor.name
+   * @return {void}
+   * @throws {Error} If the constructor is not a function
    */
-  register(constructor: ModelConstructor<T>, name?: string): void {
+  register(constructor: ModelConstructor<M>, name?: string): void {
     if (typeof constructor !== "function")
       throw new Error(
         "Model registering failed. Missing Class name or constructor"
@@ -95,7 +116,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
    * @summary Gets a registered Model {@link ModelConstructor}
    * @param {string} name
    */
-  get(name: string): ModelConstructor<T> | undefined {
+  get(name: string): ModelConstructor<M> | undefined {
     try {
       return this.cache[name];
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -110,7 +131,7 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
    *
    * @throws Error If clazz is not found, or obj is not a {@link Model} meaning it has no {@link ModelKeys.ANCHOR} property
    */
-  build(obj: Record<string, any> = {}, clazz?: string): T {
+  build(obj: Record<string, any> = {}, clazz?: string): M {
     if (!clazz && !this.testFunction(obj))
       throw new Error("Provided obj is not a Model object");
     const name = clazz || Model.getMetadata(obj as any);
@@ -128,18 +149,17 @@ export class ModelRegistryManager<T extends Model> implements ModelRegistry<T> {
  *
  * @param {Array<Constructor<T>> | Array<{name: string, constructor: Constructor<T>}>} [models]
  *
- * @memberOf module:decorator-validation.Model
- * @category Model
+ * @memberOf module:decorator-validation
  */
-export function bulkModelRegister<T extends Model>(
-  ...models: (Constructor<T> | { name: string; constructor: Constructor<T> })[]
+export function bulkModelRegister<M extends Model>(
+  ...models: (Constructor<M> | { name: string; constructor: Constructor<M> })[]
 ) {
   models.forEach(
-    (m: Constructor<T> | { name: string; constructor: Constructor<T> }) => {
-      const constructor: Constructor<T> = (
+    (m: Constructor<M> | { name: string; constructor: Constructor<M> }) => {
+      const constructor: Constructor<M> = (
         m.constructor ? m.constructor : m
-      ) as Constructor<T>;
-      Model.register(constructor, (m as Constructor<T>).name);
+      ) as Constructor<M>;
+      Model.register(constructor, (m as Constructor<M>).name);
     }
   );
 }
@@ -152,7 +172,7 @@ export function bulkModelRegister<T extends Model>(
  *  - Have all their required properties marked with '!';
  *  - Have all their optional properties marked as '?':
  *
- * @param {Model | {}} model base object from which to populate properties from
+ * @param {ModelArg<Model>} model base object from which to populate properties from
  *
  * @class Model
  * @abstract
@@ -274,7 +294,7 @@ export abstract class Model
       (self as Record<string, any>)[prop] =
         (obj as Record<string, any>)[prop] || undefined;
       if (typeof (self as any)[prop] !== "object") continue;
-      const propM = isPropertyModel(self, prop);
+      const propM = Model.isPropertyModel(self, prop);
       if (propM) {
         try {
           (self as Record<string, any>)[prop] = Model.build(
@@ -508,7 +528,53 @@ export abstract class Model
     return ModelKeys.REFLECT + str;
   }
 
+  /**
+   * @description Determines if an object is a model instance or has model metadata
+   * @summary Checks whether a given object is either an instance of the Model class or
+   * has model metadata attached to it. This function is essential for serialization and
+   * deserialization processes, as it helps identify model objects that need special handling.
+   * It safely handles potential errors during metadata retrieval.
+   *
+   * @param {Record<string, any>} target - The object to check
+   * @return {boolean} True if the object is a model instance or has model metadata, false otherwise
+   *
+   * @example
+   * ```typescript
+   * // Check if an object is a model
+   * const user = new User({ name: "John" });
+   * const isUserModel = isModel(user); // true
+   *
+   * // Check a plain object
+   * const plainObject = { name: "John" };
+   * const isPlainObjectModel = isModel(plainObject); // false
+   * ```
+   */
   static isModel(target: Record<string, any>) {
-    return isModel(target);
+    try {
+      return target instanceof Model || !!Model.getMetadata(target as any);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: any) {
+      return false;
+    }
+  }
+
+  /**
+   * @description Checks if a property of a model is itself a model or has a model type
+   * @summary Determines whether a specific property of a model instance is either a model instance
+   * or has a type that is registered as a model. This function is used for model serialization
+   * and deserialization to properly handle nested models.
+   * @template M extends {@link Model}
+   * @param {M} target - The model instance to check
+   * @param {string} attribute - The property name to check
+   * @return {boolean | string | undefined} Returns true if the property is a model instance,
+   * the model name if the property has a model type, or undefined if not a model
+   */
+  static isPropertyModel<M extends Model>(
+    target: M,
+    attribute: string
+  ): boolean | string | undefined {
+    if (Model.isModel((target as Record<string, any>)[attribute])) return true;
+    const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
+    return Model.get(metadata.name) ? metadata.name : undefined;
   }
 }

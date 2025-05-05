@@ -32,8 +32,8 @@
       "useLongnameInNav": false
     },
     "better-docs": {
-      "name": "ts-template",
-      "title": "TypeScript workspace template",
+      "name": "Decaf's Decorator Validation",
+      "title": "Standalone repository for declarative model validation and core library to the decaf framework",
       "hideGenerator": true,
       "useLongnameInNav": false,
       "navLinks": [
@@ -43,7 +43,7 @@
         },
         {
           "label": "Test Coverage",
-          "href": "workdocs/reports/coverage"
+          "href": "workdocs/reports/coverage/lcov-report"
         },
         {
           "label": "Github Repository",

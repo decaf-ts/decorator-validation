@@ -13,7 +13,7 @@ import { sf } from "./strings";
  * @return {Date} the date from the format or the standard new Date({@prop date}) if the string couldn't be parsed (are you sure the format matches the string?)
  *
  * @function dateFromFormat
- * @memberOf module:decorator-validation.Utils.Dates
+ * @memberOf module:decorator-validation
  * @category Format
  */
 export function dateFromFormat(date: string, format: string) {
@@ -129,10 +129,15 @@ export function dateFromFormat(date: string, format: string) {
 }
 
 /**
- * @summary Binds a date format to a string
- * @param {Date} [date]
- * @param {string} [format]
- * @memberOf module:decorator-validation.Utils.Format
+ * @description Binds a specific date format to a Date object's toString and toISOString methods
+ * @summary Modifies a Date object to return a formatted string when toString or toISOString is called.
+ * This function overrides the default toString and toISOString methods of the Date object to return
+ * the date formatted according to the specified format string.
+ * @param {Date} [date] The Date object to modify
+ * @param {string} [format] The format string to use for formatting the date
+ * @return {Date|undefined} The modified Date object or undefined if no date was provided
+ * @function bindDateToString
+ * @memberOf module:decorator-validation
  * @category Utilities
  */
 export function bindDateToString(date: Date | undefined, format: string) {
@@ -153,9 +158,14 @@ export function bindDateToString(date: Date | undefined, format: string) {
 }
 
 /**
- * @summary Helper function to be used instead of instanceOf Date
- * @param date
- * @memberOf module:decorator-validation.Utils.Dates
+ * @description Safely checks if a value is a valid Date object
+ * @summary A utility function that determines if a value is a valid Date object.
+ * This function is more reliable than using instanceof Date as it also checks
+ * that the date is not NaN, which can happen with invalid date strings.
+ * @param {any} date The value to check
+ * @return {boolean} True if the value is a valid Date object, false otherwise
+ * @function isValidDate
+ * @memberOf module:decorator-validation
  * @category Validation
  */
 export function isValidDate(date: any): boolean {
@@ -173,7 +183,7 @@ export function isValidDate(date: any): boolean {
  * @return {string}
  *
  * @function twoDigitPad
- * @memberOf module:decorator-validation.Utils.Format
+ * @memberOf module:decorator-validation
  * @category Format
  */
 export function twoDigitPad(num: number): string {
@@ -205,7 +215,7 @@ export function twoDigitPad(num: number): string {
  * @return {string} the formatted date
  *
  * @function formatDate
- * @memberOf module:decorator-validation.Utils.Dates
+ * @memberOf module:decorator-validation
  * @category Format
  */
 export function formatDate(date: Date, patternStr: string = "yyyy/MM/dd") {
@@ -262,7 +272,7 @@ export function formatDate(date: Date, patternStr: string = "yyyy/MM/dd") {
  * @summary Parses a date from a specified format
  * @param {string} format
  * @param {string | Date | number} [v]
- * @memberOf module:decorator-validation.Utils.Dates
+ * @memberOf module:decorator-validation
  * @category Format
  */
 export function parseDate(format: string, v?: string | Date | number) {

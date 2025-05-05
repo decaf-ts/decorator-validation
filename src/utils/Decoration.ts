@@ -17,13 +17,11 @@ function defaultFlavourResolver(target: object) {
  * @description A decorator management class that handles flavoured decorators
  * @summary The Decoration class provides a builder pattern for creating and managing decorators with different flavours.
  * It supports registering, extending, and applying decorators with context-aware flavour resolution.
- *
+ * The class implements a fluent interface for defining, extending, and applying decorators with different flavours,
+ * allowing for framework-specific decorator implementations while maintaining a consistent API.
  * @template T Type of the decorator (ClassDecorator | PropertyDecorator | MethodDecorator)
- *
  * @param {string} [flavour] Optional flavour parameter for the decorator context
- *
  * @class
- *
  * @example
  * ```typescript
  * // Create a new decoration for 'component' with default flavour
@@ -40,7 +38,6 @@ function defaultFlavourResolver(target: object) {
  * @componentDecorator
  * class MyComponent {}
  * ```
- *
  * @mermaid
  * sequenceDiagram
  *   participant C as Client
@@ -78,7 +75,7 @@ export class Decoration implements IDecorationBuilder {
    * @description Function to resolve flavour from a target
    * @summary Resolver function that determines the appropriate flavour for a given target
    */
-  private static flavourResolver: FlavourResolver = () => DefaultFlavour;
+  private static flavourResolver: FlavourResolver = defaultFlavourResolver;
 
   /**
    * @description Set of decorators for the current context
@@ -97,10 +94,6 @@ export class Decoration implements IDecorationBuilder {
    */
   private key?: string;
 
-  /**
-   * @description Creates a new Decoration instance
-   * @param {string} [flavour=DefaultFlavour] The flavour for the decoration
-   */
   constructor(private flavour: string = DefaultFlavour) {}
 
   /**
@@ -118,7 +111,7 @@ export class Decoration implements IDecorationBuilder {
    * @description Adds decorators to the current context
    * @summary Internal method to add decorators with addon support
    * @param {boolean} [addon=false] Whether the decorators are addons
-   * @param {(ClassDecorator | PropertyDecorator | MethodDecorator)[]} decorators Array of decorators
+   * @param decorators Array of decorators
    * @return {this} Current instance for chaining
    */
   private decorate(
@@ -145,8 +138,8 @@ export class Decoration implements IDecorationBuilder {
   /**
    * @description Defines the base decorators
    * @summary Sets the primary decorators for the current context
-   * @param {(ClassDecorator | PropertyDecorator | MethodDecorator)[]} decorators Decorators to define
-   * @return {DecorationBuilderEnd & DecorationBuilderBuild} Builder instance for finishing the chain
+   * @param decorators Decorators to define
+   * @return Builder instance for finishing the chain
    */
   define(
     ...decorators: (ClassDecorator | PropertyDecorator | MethodDecorator)[]
@@ -157,7 +150,7 @@ export class Decoration implements IDecorationBuilder {
   /**
    * @description Extends existing decorators
    * @summary Adds additional decorators to the current context
-   * @param {(ClassDecorator | PropertyDecorator | MethodDecorator)[]} decorators Additional decorators
+   * @param decorators Additional decorators
    * @return {DecorationBuilderBuild} Builder instance for building the decorator
    */
   extend(
@@ -220,8 +213,8 @@ export class Decoration implements IDecorationBuilder {
    * @summary Internal method to store decorators in the static registry
    * @param {string} key Decorator key
    * @param {string} flavour Decorator flavour
-   * @param {Set<ClassDecorator | PropertyDecorator | MethodDecorator>} [decorators] Primary decorators
-   * @param {Set<ClassDecorator | PropertyDecorator | MethodDecorator>} [extras] Additional decorators
+   * @param [decorators] Primary decorators
+   * @param [extras] Additional decorators
    */
   private static register(
     key: string,

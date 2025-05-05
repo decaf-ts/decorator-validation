@@ -3,8 +3,7 @@ import { Model } from "./Model";
 
 /**
  * @summary Typo of a Model builder function
- * @memberOf module:decorator-validation.Construction
- * @category Construction
+ * @memberOf module:decorator-validation
  */
 export type ModelBuilderFunction = <T extends Model>(
   self: T,
@@ -14,12 +13,11 @@ export type ModelBuilderFunction = <T extends Model>(
 /**
  * @summary Definition of a Model Constructor Argument
  *
- * @memberOf module:decorator-validation.Model
- * @category Model
+ * @memberOf module:decorator-validation
  *
  * @see ModelConstructor
  */
-export type ModelArg<T> = T | Record<string, any>;
+export type ModelArg<T> = T | Partial<T> | Record<string, any>;
 
 /**
  * @summary Definition of a Class Constructor
@@ -28,8 +26,7 @@ export type ModelArg<T> = T | Record<string, any>;
  * @typedef Constructor
  *
  * @param {any[]} [args]
- * @memberOf module:decorator-validation.Model
- * @category Model
+ * @memberOf module:decorator-validation
  */
 export type Constructor<T> = {
   new (...args: any[]): T;
@@ -43,8 +40,7 @@ export type Constructor<T> = {
  *
  * @param {ModelArg<T>} [model]
  * @param {any[]} [args]
- * @memberOf module:decorator-validation.Model
- * @category Construction
+ * @memberOf module:decorator-validation
  */
 export type ModelConstructor<T extends Model> = {
   new (model?: ModelArg<T>, ...args: any[]): T;
@@ -81,10 +77,32 @@ export interface Serializable {
   serialize(): string;
 }
 
+/**
+ * @summary Interface for objects that can be hashed
+ * @interface Hashable
+ */
 export interface Hashable {
+  /**
+   * @summary Generates a hash string representation of the object
+   * @method
+   * @returns {string} Hash value representing the object
+   */
   hash(): string;
 }
 
+/**
+ * @summary Interface for objects that can be compared for equality
+ * @interface Comparable
+ * @template T The type of object to compare against
+ */
+
 export interface Comparable<T> {
+  /**
+   * @summary Compares this object with another for equality
+   * @method
+   * @param {T} other - The object to compare with
+   * @param {...any[]} args - Additional arguments for comparison
+   * @returns {boolean} True if the objects are equal, false otherwise
+   */
   equals(other: T, ...args: any[]): boolean;
 }

@@ -4,15 +4,55 @@ import { Reflection } from "@decaf-ts/reflection";
 import { ValidatorOptions } from "../types";
 
 /**
- * @summary Base Implementation for Validators
- * @description Provides the underlying functionality for {@link Validator}s
- *
- * @param {string} validationKey the key to register the validator under
- * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#DEFAULT}
- * @param {string[]} [acceptedTypes] defines the value types this validator can validate
- *
+ * @description Abstract base class for all validators in the validation framework
+ * @summary The Validator class provides the foundation for all validator implementations.
+ * It handles type checking, error message formatting, and defines the common interface
+ * that all validators must implement. This class is designed to be extended by specific
+ * validator implementations that provide concrete validation logic.
+ * 
+ * @param {string} message - Default error message to display when validation fails, defaults to {@link DEFAULT_ERROR_MESSAGES#DEFAULT}
+ * @param {string[]} acceptedTypes - Array of type names that this validator can validate
+ * 
  * @class Validator
  * @abstract
+ * 
+ * @example
+ * ```typescript
+ * // Example of extending the Validator class to create a custom validator
+ * class CustomValidator extends Validator<CustomValidatorOptions> {
+ *   constructor(message: string = "Custom validation failed") {
+ *     // Specify that this validator accepts String and Number types
+ *     super(message, String.name, Number.name);
+ *   }
+ *   
+ *   public hasErrors(value: any, options?: CustomValidatorOptions): string | undefined {
+ *     // Implement custom validation logic
+ *     if (someCondition) {
+ *       return this.getMessage(options?.message || this.message);
+ *     }
+ *     return undefined; // No errors
+ *   }
+ * }
+ * ```
+ * 
+ * @mermaid
+ * sequenceDiagram
+ *   participant C as Client
+ *   participant V as Validator Subclass
+ *   participant B as Base Validator
+ *   
+ *   C->>V: new CustomValidator(message)
+ *   V->>B: super(message, acceptedTypes)
+ *   B->>B: Store message and types
+ *   B->>B: Wrap hasErrors with type checking
+ *   C->>V: hasErrors(value, options)
+ *   alt value type not in acceptedTypes
+ *     B-->>C: Type error message
+ *   else value type is accepted
+ *     V->>V: Custom validation logic
+ *     V-->>C: Validation result
+ *   end
+ * 
  * @category Validators
  */
 export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
@@ -31,9 +71,14 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
   }
 
   /**
-   * @summary builds the error message
-   * @param {string} message
-   * @param {any[]} args
+   * @description Formats an error message with optional arguments
+   * @summary Creates a formatted error message by replacing placeholders with provided arguments.
+   * This method uses the string formatting utility to generate consistent error messages
+   * across all validators.
+   *
+   * @param {string} message - The message template with placeholders
+   * @param {...any} args - Values to insert into the message template
+   * @return {string} The formatted error message
    * @protected
    */
   protected getMessage(message: string, ...args: any[]) {
@@ -41,8 +86,13 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
   }
 
   /**
-   * @summary Validates type
-   * @param {any} unbound
+   * @description Creates a type-checking wrapper around the hasErrors method
+   * @summary Wraps the hasErrors method with type validation logic to ensure that
+   * the value being validated is of an accepted type before performing specific validation.
+   * This method is called during construction if acceptedTypes are provided.
+   *
+   * @param {Function} unbound - The original hasErrors method to be wrapped
+   * @return {Function} A new function that performs type checking before calling the original method
    * @private
    */
   private checkTypeAndHasErrors(
@@ -66,13 +116,20 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
   }
 
   /**
-   * @summary Validates an attribute
-   * @param {any} value
-   * @param {ValidatorOptions} [options] Validate options for customizing the model validation behavior
+   * @description Validates a value against specific validation rules
+   * @summary Abstract method that must be implemented by all validator subclasses.
+   * This method contains the core validation logic that determines whether a value
+   * is valid according to the specific rules of the validator. If the value is valid,
+   * the method returns undefined; otherwise, it returns an error message.
+   *
+   * @param {any} value - The value to validate
+   * @param {V} [options] - Optional configuration options for customizing validation behavior
+   *
+   * @return {string | undefined} Error message if validation fails, undefined if validation passes
    *
    * @abstract
    *
-   * @see Model#hasErrors
+   * @see Model#validate
    */
   public abstract hasErrors(value: any, options?: V): string | undefined;
 }
