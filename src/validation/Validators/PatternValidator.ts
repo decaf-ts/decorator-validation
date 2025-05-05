@@ -11,6 +11,7 @@ import { PatternValidatorOptions } from "../types";
  *
  * @const {RegExp}
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export const regexpParser: RegExp = new RegExp("^/(.+)/([gimus]*)$");
 

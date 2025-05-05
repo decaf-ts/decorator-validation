@@ -22,6 +22,7 @@ function defaultFlavourResolver(target: object) {
  * @template T Type of the decorator (ClassDecorator | PropertyDecorator | MethodDecorator)
  * @param {string} [flavour] Optional flavour parameter for the decorator context
  * @class
+ * @category Model
  * @example
  * ```typescript
  * // Create a new decoration for 'component' with default flavour

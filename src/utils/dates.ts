@@ -14,7 +14,7 @@ import { sf } from "./strings";
  *
  * @function dateFromFormat
  * @memberOf module:decorator-validation
- * @category Format
+ * @category Model
  */
 export function dateFromFormat(date: string, format: string) {
   let formatRegexp: string = format;
@@ -138,7 +138,7 @@ export function dateFromFormat(date: string, format: string) {
  * @return {Date|undefined} The modified Date object or undefined if no date was provided
  * @function bindDateToString
  * @memberOf module:decorator-validation
- * @category Utilities
+ * @category Model
  */
 export function bindDateToString(date: Date | undefined, format: string) {
   if (!date) return;
@@ -184,7 +184,7 @@ export function isValidDate(date: any): boolean {
  *
  * @function twoDigitPad
  * @memberOf module:decorator-validation
- * @category Format
+ * @category Model
  */
 export function twoDigitPad(num: number): string {
   return num < 10 ? "0" + num : num.toString();
@@ -216,7 +216,7 @@ export function twoDigitPad(num: number): string {
  *
  * @function formatDate
  * @memberOf module:decorator-validation
- * @category Format
+ * @category Model
  */
 export function formatDate(date: Date, patternStr: string = "yyyy/MM/dd") {
   const day: number = date.getDate(),
@@ -273,7 +273,7 @@ export function formatDate(date: Date, patternStr: string = "yyyy/MM/dd") {
  * @param {string} format
  * @param {string | Date | number} [v]
  * @memberOf module:decorator-validation
- * @category Format
+ * @category Model
  */
 export function parseDate(format: string, v?: string | Date | number) {
   let value: Date | undefined = undefined;

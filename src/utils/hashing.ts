@@ -5,8 +5,8 @@
  * @return {number} hash value of obj
  *
  * @function hashCode
- * @memberOf module:decorator-validation.Utils.Hashing
- * @category Hashing
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export function hashCode(obj: string | number | symbol | Date): string {
   obj = String(obj);
@@ -21,8 +21,8 @@ export function hashCode(obj: string | number | symbol | Date): string {
 
 /**
  * @summary Defines teh type for a Hashing function
- * @memberOf module:decorator-validation.Utils.Hashing
- * @category Hashing
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export type HashingFunction = (value: any, ...args: any[]) => string;
 
@@ -33,8 +33,8 @@ export type HashingFunction = (value: any, ...args: any[]) => string;
  * @return {string} the resulting hash
  *
  * @function hashObj
- * @memberOf module:decorator-validation.Utils.Hashing
- * @category Hashing
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export function hashObj(obj: Record<string, any> | any[]): string {
   const hashReducer = function (h: number | string, el: any): string | number {
@@ -69,20 +69,64 @@ export function hashObj(obj: Record<string, any> | any[]): string {
 
 export const DefaultHashingMethod = "default";
 
+/**
+ * @description Manages hashing methods and provides a unified hashing interface
+ * @summary A utility class that provides a registry for different hashing functions and methods to hash objects.
+ * The class maintains a cache of registered hashing functions and allows setting a default hashing method.
+ * It prevents direct instantiation and provides static methods for registration and hashing.
+ *
+ * @class Hashing
+ * @category Model
+ *
+ * @example
+ * ```typescript
+ * // Register a custom hashing function
+ * Hashing.register('md5', (obj) => createMD5Hash(obj), true);
+ *
+ * // Hash an object using default method
+ * const hash1 = Hashing.hash(myObject);
+ *
+ * // Hash using specific method
+ * const hash2 = Hashing.hash(myObject, 'md5');
+ * ```
+ */
 export class Hashing {
+  /**
+   * @description Current default hashing method identifier
+   * @private
+   */
   private static current: string = DefaultHashingMethod;
 
+  /**
+   * @description Cache of registered hashing functions
+   * @private
+   */
   private static cache: Record<string, HashingFunction> = {
     default: hashObj,
   };
 
   private constructor() {}
 
+  /**
+   * @description Retrieves a registered hashing function
+   * @summary Fetches a hashing function from the cache by its key. Throws an error if the method is not registered.
+   *
+   * @param {string} key - The identifier of the hashing function to retrieve
+   * @return {HashingFunction} The requested hashing function
+   * @private
+   */
   private static get(key: string): any {
     if (key in this.cache) return this.cache[key];
     throw new Error(`No hashing method registered under ${key}`);
   }
 
+  /**
+   * @description Registers a new hashing function
+   * @summary Adds a new hashing function to the registry. Optionally sets it as the default method.
+   * Throws an error if a method with the same key is already registered.
+   *
+   * @param {string} key - The identifier for the hashing function
+   */
   static register(
     key: string,
     func: HashingFunction,

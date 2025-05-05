@@ -7,7 +7,7 @@
  * @property {string} BIGINT references the bigint primitive
  *
  * @constant Primitives
- * @memberOf module:decorator-validation.Model
+ * @memberOf module:decorator-validation
  */
 export enum Primitives {
   STRING = "string",
@@ -27,7 +27,7 @@ export enum Primitives {
  * @property {string} DATE
  *
  * @constant ReservedModels
- * @memberOf module:decorator-validation.Model
+ * @memberOf module:decorator-validation
  */
 export enum ReservedModels {
   STRING = "string",
@@ -53,7 +53,7 @@ export enum ReservedModels {
  * @property {string} BIGINT
  *
  * @constant jsTypes
- * @memberOf module:decorator-validation.Model
+ * @memberOf module:decorator-validation
  */
 export const jsTypes = [
   "string",

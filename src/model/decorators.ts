@@ -1,13 +1,13 @@
 import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
-import { apply, metadata } from "@decaf-ts/reflection";
-import { Decoration } from "../utils/Decoration";
+import { metadata } from "@decaf-ts/reflection";
 
 /**
  * @summary defines the tpe os an InstanceCallback function
  *
- * @memberOf module:decorator-validation.Model
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export type InstanceCallback = (instance: any, ...args: any[]) => void;
 
@@ -24,11 +24,9 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  *
  * @function model
  *
- * @memberOf module:decorator-validation.Model
- *
+ * @category Decorators
  */
 export function model(instanceCallback?: InstanceCallback) {
-  const key = Model.key(ModelKeys.MODEL);
   function modelDec(original: any) {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {

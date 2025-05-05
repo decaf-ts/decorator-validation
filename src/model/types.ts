@@ -50,7 +50,7 @@ export type ModelConstructor<T extends Model> = {
  * @summary Defines the Validation API for validatable models
  * @interface Validatable
  *
- * @category Validation
+ * @category Model
  */
 export interface Validatable {
   /**
@@ -67,7 +67,7 @@ export interface Validatable {
  *
  * @interface Serializable
  *
- * @category Serialization
+ * @category Model
  */
 export interface Serializable {
   /**
@@ -80,6 +80,7 @@ export interface Serializable {
 /**
  * @summary Interface for objects that can be hashed
  * @interface Hashable
+ * @category Model
  */
 export interface Hashable {
   /**
@@ -94,8 +95,8 @@ export interface Hashable {
  * @summary Interface for objects that can be compared for equality
  * @interface Comparable
  * @template T The type of object to compare against
+ * @category Model
  */
-
 export interface Comparable<T> {
   /**
    * @summary Compares this object with another for equality

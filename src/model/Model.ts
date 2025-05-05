@@ -32,6 +32,7 @@ let actingModelRegistry: BuilderRegistry<any>;
  * @template T Type of model that can be registered, must extend Model
  * @extends BuilderRegistry<T>
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
 
@@ -47,7 +48,7 @@ export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
  * @class ModelRegistryManager
  * @template M Type of model that can be registered, must extend Model
  * @implements ModelRegistry<M>
- * @memberOf module:decorator-validation
+ * @category Model
  *
  * @example
  * ```typescript
@@ -150,6 +151,7 @@ export class ModelRegistryManager<M extends Model> implements ModelRegistry<M> {
  * @param {Array<Constructor<T>> | Array<{name: string, constructor: Constructor<T>}>} [models]
  *
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export function bulkModelRegister<M extends Model>(
   ...models: (Constructor<M> | { name: string; constructor: Constructor<M> })[]
@@ -175,6 +177,7 @@ export function bulkModelRegister<M extends Model>(
  * @param {ModelArg<Model>} model base object from which to populate properties from
  *
  * @class Model
+ * @category Model
  * @abstract
  * @implements Validatable
  * @implements Serializable

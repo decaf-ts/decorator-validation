@@ -8,7 +8,7 @@ import { Model } from "./Model";
  * @return {T} the new instance
  *
  * @function construct
- * @memberOf module:decorator-validation.Construction
+ * @memberOf module:decorator-validation
  */
 export function construct<T extends Model>(
   constructor: any,
@@ -24,7 +24,7 @@ export function construct<T extends Model>(
  * @param {object} obj
  *
  * @function findLastProtoBeforeObject
- * @memberOf module:decorator-validation.Construction
+ * @memberOf module:decorator-validation
  */
 export function findLastProtoBeforeObject(obj: object): object {
   let prototype: any = Object.getPrototypeOf(obj);
@@ -43,7 +43,7 @@ export function findLastProtoBeforeObject(obj: object): object {
  * @param {unknown} obj
  *
  * @function bindModelPrototype
- * @memberOf module:decorator-validation.Construction
+ * @memberOf module:decorator-validation
  */
 export function bindModelPrototype(obj: unknown) {
   if (obj instanceof Model) return;

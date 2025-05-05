@@ -22,7 +22,6 @@ import { Decoration } from "../utils/Decoration";
  * @return {PropertyDecorator} A decorator function that can be applied to class properties
  *
  * @function required
- * @memberOf module:decorator-validation
  * @category Decorators
  *
  * @example
@@ -58,7 +57,6 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
  * @return {PropertyDecorator} A decorator function that can be applied to class properties
  *
  * @function min
- * @memberOf module:decorator-validation
  * @category Decorators
  *
  * @example
@@ -96,7 +94,6 @@ export function min(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MAX}
  *
  * @function max
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function max(
@@ -123,7 +120,6 @@ export function max(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#STEP}
  *
  * @function step
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function step(
@@ -150,7 +146,6 @@ export function step(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MIN_LENGTH}
  *
  * @function minlength
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function minlength(
@@ -177,7 +172,6 @@ export function minlength(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MAX_LENGTH}
  *
  * @function maxlength
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function maxlength(
@@ -204,7 +198,6 @@ export function maxlength(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#PATTERN}
  *
  * @function pattern
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function pattern(
@@ -231,7 +224,6 @@ export function pattern(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#EMAIL}
  *
  * @function email
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
@@ -254,7 +246,6 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#URL}
  *
  * @function url
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
@@ -278,7 +269,6 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#TYPE}
  *
  * @function type
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function type(
@@ -307,7 +297,6 @@ export function type(
  *
  * @function date
  *
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function date(
@@ -362,7 +351,6 @@ export function date(
  *
  * @function password
  *
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function password(
@@ -391,7 +379,6 @@ export function password(
  *
  * @function list
  *
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function list(
@@ -420,7 +407,6 @@ export function list(
  *
  * @function set
  *
- * @memberOf module:decorator-validation
  * @category Decorators
  */
 export function set(

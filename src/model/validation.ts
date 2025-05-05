@@ -21,8 +21,8 @@ import { ValidatorOptions } from "../validation/types";
  * @prop {string[]} [propsToIgnore] object properties to ignore in the validation
  *
  * @function validate
- * @memberOf module:decorator-validation.Validation
- * @category Validation
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export function validate<T extends Model>(
   obj: T,

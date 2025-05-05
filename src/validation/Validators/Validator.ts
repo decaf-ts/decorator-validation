@@ -9,13 +9,13 @@ import { ValidatorOptions } from "../types";
  * It handles type checking, error message formatting, and defines the common interface
  * that all validators must implement. This class is designed to be extended by specific
  * validator implementations that provide concrete validation logic.
- * 
+ *
  * @param {string} message - Default error message to display when validation fails, defaults to {@link DEFAULT_ERROR_MESSAGES#DEFAULT}
  * @param {string[]} acceptedTypes - Array of type names that this validator can validate
- * 
+ *
  * @class Validator
  * @abstract
- * 
+ *
  * @example
  * ```typescript
  * // Example of extending the Validator class to create a custom validator
@@ -24,7 +24,7 @@ import { ValidatorOptions } from "../types";
  *     // Specify that this validator accepts String and Number types
  *     super(message, String.name, Number.name);
  *   }
- *   
+ *
  *   public hasErrors(value: any, options?: CustomValidatorOptions): string | undefined {
  *     // Implement custom validation logic
  *     if (someCondition) {
@@ -34,13 +34,13 @@ import { ValidatorOptions } from "../types";
  *   }
  * }
  * ```
- * 
+ *
  * @mermaid
  * sequenceDiagram
  *   participant C as Client
  *   participant V as Validator Subclass
  *   participant B as Base Validator
- *   
+ *
  *   C->>V: new CustomValidator(message)
  *   V->>B: super(message, acceptedTypes)
  *   B->>B: Store message and types
@@ -52,7 +52,7 @@ import { ValidatorOptions } from "../types";
  *     V->>V: Custom validation logic
  *     V-->>C: Validation result
  *   end
- * 
+ *
  * @category Validators
  */
 export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
@@ -122,6 +122,7 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
    * is valid according to the specific rules of the validator. If the value is valid,
    * the method returns undefined; otherwise, it returns an error message.
    *
+   * @template V - Type of the options object that can be passed to the validator
    * @param {any} value - The value to validate
    * @param {V} [options] - Optional configuration options for customizing validation behavior
    *
@@ -132,4 +133,12 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
    * @see Model#validate
    */
   public abstract hasErrors(value: any, options?: V): string | undefined;
+
+  /**
+   * @summary Duck typing for Validators
+   * @param val
+   */
+  static isValidator(val: any): boolean {
+    return val.constructor && !!val["hasErrors"];
+  }
 }

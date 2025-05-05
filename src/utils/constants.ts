@@ -40,6 +40,6 @@ export enum ModelKeys {
  *
  * @const {string}
  * @memberOf module:decorator-validation
- * @category Constants
+ * @category Model
  */
 export const DefaultFlavour = "decaf";

@@ -7,6 +7,7 @@ import { Model } from "../model";
  *
  * @interface DecorationBuilderBuild
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export interface DecorationBuilderBuild {
   /**
@@ -30,6 +31,7 @@ export interface DecorationBuilderBuild {
  *
  * @interface DecorationBuilderEnd
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export interface DecorationBuilderEnd {
   /**
@@ -52,6 +54,7 @@ export interface DecorationBuilderEnd {
  *
  * @interface DecorationBuilderMid
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export interface DecorationBuilderMid extends DecorationBuilderEnd {
   /**
@@ -71,6 +74,7 @@ export interface DecorationBuilderMid extends DecorationBuilderEnd {
  *
  * @interface DecorationBuilderStart
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export interface DecorationBuilderStart {
   /**
@@ -92,6 +96,7 @@ export interface DecorationBuilderStart {
  *
  * @interface IDecorationBuilder
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export interface IDecorationBuilder
   extends DecorationBuilderStart,
@@ -109,6 +114,7 @@ export interface IDecorationBuilder
  * @param {object} target - The target object to resolve the flavour for
  * @return {string} The resolved flavour identifier
  * @memberOf module:decorator-validation
+ * @category Model
  */
 export type FlavourResolver = (target: object) => string;
 
@@ -120,9 +126,9 @@ export type FlavourResolver = (target: object) => string;
  * @interface Serializer
  * @template T Type of model that can be serialized, must extend Model
  * @memberOf module:decorator-validation
- * @category Serialization
+ * @category Model
  */
-export interface Serializer<T extends Model> {
+export interface Serializer<M extends Model> {
   /**
    * @description Converts a model object to a string representation
    * @summary Serializes a model instance into a string format that can be stored or transmitted.
@@ -133,7 +139,7 @@ export interface Serializer<T extends Model> {
    * @return {string} The serialized representation of the model
    * @throws {Error} If the model cannot be serialized
    */
-  serialize(model: T, ...args: any[]): string;
+  serialize(model: M, ...args: any[]): string;
 
   /**
    * @description Reconstructs a model object from its string representation
@@ -145,5 +151,5 @@ export interface Serializer<T extends Model> {
    * @return {T} The reconstructed model instance
    * @throws {Error} If the string cannot be deserialized into a valid model
    */
-  deserialize(str: string, ...args: any[]): T;
+  deserialize(str: string, ...args: any[]): M;
 }

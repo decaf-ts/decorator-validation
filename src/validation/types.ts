@@ -145,6 +145,7 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
  * @typedef ValidatorOptions
  * @property {string} [message] - Custom error message to display when validation fails
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export type ValidatorOptions = {
   message?: string;
@@ -156,6 +157,7 @@ export type ValidatorOptions = {
  * @interface URLValidatorOptions
  * @property {(string|string[]|{ name: string })} types - Specifies the allowed URL types or patterns
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface URLValidatorOptions extends ValidatorOptions {
   types: string | string[] | { name: string };
@@ -167,6 +169,7 @@ export interface URLValidatorOptions extends ValidatorOptions {
  * @interface TypeValidatorOptions
  * @property {(string|string[]|{ name: string })} types - Specifies the allowed data types
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface TypeValidatorOptions extends ValidatorOptions {
   types: string | string[] | { name: string };
@@ -178,6 +181,7 @@ export interface TypeValidatorOptions extends ValidatorOptions {
  * @interface StepValidatorOptions
  * @property {(number|string)} [ValidationKeys.STEP] - The step value for numerical validation
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface StepValidatorOptions extends ValidatorOptions {
   [ValidationKeys.STEP]: number | string;
@@ -189,6 +193,7 @@ export interface StepValidatorOptions extends ValidatorOptions {
  * @interface PatternValidatorOptions
  * @property {(RegExp|string)} [ValidationKeys.PATTERN] - The pattern to match against
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface PatternValidatorOptions extends ValidatorOptions {
   [ValidationKeys.PATTERN]?: RegExp | string;
@@ -200,6 +205,7 @@ export interface PatternValidatorOptions extends ValidatorOptions {
  * @interface MinValidatorOptions
  * @property {(number|Date|string)} [ValidationKeys.MIN] - The minimum allowed value
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface MinValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MIN]: number | Date | string;
@@ -211,6 +217,7 @@ export interface MinValidatorOptions extends ValidatorOptions {
  * @interface MinLengthValidatorOptions
  * @property {number} [ValidationKeys.MIN_LENGTH] - The minimum allowed length
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface MinLengthValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MIN_LENGTH]: number;
@@ -222,6 +229,7 @@ export interface MinLengthValidatorOptions extends ValidatorOptions {
  * @interface MaxValidatorOptions
  * @property {(number|Date|string)} [ValidationKeys.MAX] - The maximum allowed value
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface MaxValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MAX]: number | Date | string;
@@ -233,6 +241,7 @@ export interface MaxValidatorOptions extends ValidatorOptions {
  * @interface MaxLengthValidatorOptions
  * @property {number} [ValidationKeys.MAX_LENGTH] - The maximum allowed length
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface MaxLengthValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MAX_LENGTH]: number;
@@ -244,6 +253,7 @@ export interface MaxLengthValidatorOptions extends ValidatorOptions {
  * @interface ListValidatorOptions
  * @property {string[]} clazz - Array of allowed class names or types
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface ListValidatorOptions extends ValidatorOptions {
   clazz: string[];
@@ -255,6 +265,7 @@ export interface ListValidatorOptions extends ValidatorOptions {
  * @interface DateValidatorOptions
  * @property {string} [ValidationKeys.FORMAT] - The expected date format pattern
  * @memberOf module:decorator-validation
+ * @category Validation
  */
 export interface DateValidatorOptions extends ValidatorOptions {
   [ValidationKeys.FORMAT]?: string;

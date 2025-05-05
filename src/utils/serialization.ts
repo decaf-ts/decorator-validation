@@ -16,7 +16,7 @@ export const DefaultSerializationMethod = "json";
  * @class JSONSerializer
  * @implements Serializer
  *
- * @category Serialization
+ * @category Model
  */
 export class JSONSerializer<T extends Model> implements Serializer<T> {
   constructor() {}

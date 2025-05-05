@@ -6,8 +6,8 @@
  * @return {string} formatted string
  *
  * @function stringFormat
- * @memberOf module:decorator-validation.Utils.Format
- * @category Format
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export function stringFormat(string: string, ...args: (string | number)[]) {
   return string.replace(/{(\d+)}/g, function (match, number) {
@@ -26,7 +26,7 @@ export function stringFormat(string: string, ...args: (string | number)[]) {
  * @return {string} formatted string
  *
  * @function sf
- * @memberOf module:decorator-validation.Utils.Format
- * @category Format
+ * @memberOf module:decorator-validation
+ * @category Model
  */
 export const sf = stringFormat;

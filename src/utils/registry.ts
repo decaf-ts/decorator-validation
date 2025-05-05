@@ -5,7 +5,7 @@ import { Constructor } from "../model/types";
  *
  * @interface IRegistry
  *
- * @category Utilities
+ * @category Model
  */
 export interface IRegistry<T> {
   /**
@@ -36,7 +36,7 @@ export interface IRegistry<T> {
  * @typedef T
  * @interface BuilderRegistry<T>
  *
- * @category Construction
+ * @category Model
  */
 export interface BuilderRegistry<T> extends IRegistry<Constructor<T>> {
   /**
