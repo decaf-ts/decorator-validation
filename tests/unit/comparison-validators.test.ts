@@ -19,44 +19,77 @@ import {
 
 describe("Comparison Validators", () => {
   describe("General", () => {
+    @model()
+    class SimpleChildTestModel extends Model {
+      @eq("../parentValue")
+      value: any;
+
+      @eq("../parentArray.4")
+      elementValue: number = 5;
+
+      constructor(model?: ModelArg<SimpleChildTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class SimpleParentTestModel extends Model {
+      @required()
+      parentValue: any;
+
+      @required()
+      parentArray: number[] = [1, 2, 3, 4, 5];
+
+      @required()
+      @type(SimpleChildTestModel.name)
+      child: SimpleChildTestModel = new SimpleChildTestModel();
+
+      constructor(model?: ModelArg<SimpleParentTestModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
     it("should delete VALIDATION_PARENT_KEY after validation", () => {
-      @model()
-      class SimpleChildTestModel extends Model {
-        @eq("../parentValue")
-        value: any;
-
-        constructor(model?: ModelArg<SimpleChildTestModel>) {
-          super();
-          Model.fromModel(this, model);
-        }
-      }
-
-      @model()
-      class SimpleParentTestModel extends Model {
-        @required()
-        parentValue: any;
-
-        @required()
-        @type(SimpleChildTestModel.name)
-        child?: SimpleChildTestModel;
-
-        constructor(model?: ModelArg<SimpleParentTestModel>) {
-          super();
-          Model.fromModel(this, model);
-        }
-      }
-
       const instance = new SimpleParentTestModel({
         parentValue: "parentValue",
         child: new SimpleChildTestModel({
           value: "parentValue",
         }),
-      });
+      }) as any;
 
       instance.child[VALIDATION_PARENT_KEY] = instance;
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeDefined();
       expect(instance.hasErrors()).toBeUndefined();
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeUndefined();
+    });
+
+    it("should fail when parent array element does not exist", () => {
+      const instance = new SimpleParentTestModel({
+        parentValue: "parentValue",
+        parentArray: [1, 2, 3],
+        child: new SimpleChildTestModel({
+          value: "parentValue",
+          elementValue: 10,
+        }),
+      });
+
+      expect(instance.hasErrors()).toEqual({
+        child: {
+          elementValue: {
+            equals: sf(
+              COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_ON_PARENT,
+              "../parentArray.4",
+              "4"
+            ),
+          },
+        },
+      });
+
+      instance.parentArray = [1, 2, 3, 4, 5];
+      instance.child.elementValue = instance.parentArray[4];
+      expect(instance.hasErrors()).toBeUndefined();
     });
   });
 
