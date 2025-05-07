@@ -2,7 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import type { ComparisonValidatorOptions } from "../types";
-import { getValueByPath, isGreaterThan, isLessThan } from "./utils";
+import { getValueByPath, isGreaterThan } from "./utils";
 
 /**
  * @summary Greater Than Validator
