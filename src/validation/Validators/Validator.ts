@@ -67,8 +67,11 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
 
   /**
    * @summary Validates an attribute
-   * @param {any} value
+   * @param {any} value - The value to be validated.
    * @param {ValidatorOptions} [options] Validate options for customizing the model validation behavior
+   * @param {any} [instanceObj] - The object instance that contains the key-value being validated. Used for cross-field validation. Defaults to an empty object.
+   *
+   * @returns An error message string if validation fails; otherwise, `undefined`.
    *
    * @abstract
    *
@@ -77,6 +80,6 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
   public abstract hasErrors(
     value: any,
     options?: V,
-    instanceObj: any = {} // TODO: Assert type and deep Object.freeze
+    instanceObj?: any
   ): string | undefined;
 }

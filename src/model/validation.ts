@@ -149,7 +149,7 @@ export function validate<T extends Model>(
 
           try {
             if (value && !value[VALIDATION_PARENT_KEY])
-              value[VALIDATION_PARENT_KEY] = obj; // TODO: freeze
+              value[VALIDATION_PARENT_KEY] = obj; // TODO: freeze?
 
             return isModel(value)
               ? value.hasErrors()
