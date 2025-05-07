@@ -1,4 +1,6 @@
 import { VALIDATION_PARENT_KEY } from "../../constants";
+import { sf } from "../../utils/strings";
+import { COMPARISON_ERROR_MESSAGES } from "./constants";
 
 /**
  * Safely retrieves a nested property value from an object using a dot-notated path string.
@@ -14,9 +16,7 @@ import { VALIDATION_PARENT_KEY } from "../../constants";
  */
 export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
   if (typeof path !== "string" || !path.trim()) {
-    throw new Error(
-      `Invalid path argument. Expected non-empty string but received: '${path}'`
-    );
+    throw new Error(sf(COMPARISON_ERROR_MESSAGES.INVALID_PATH, path));
   }
 
   // Process parent directory access (../)
@@ -29,13 +29,13 @@ export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
   for (let i = 0; i < parentLevel; i++) {
     if (!currentContext || typeof currentContext !== "object") {
       throw new Error(
-        `Unable to access parent at level ${i + 1} for path '${path}': current context is not an object`
+        sf(COMPARISON_ERROR_MESSAGES.CONTEXT_NOT_OBJECT_COMPARISON, i + 1, path)
       );
     }
 
     if (!currentContext[VALIDATION_PARENT_KEY]) {
       throw new Error(
-        `Unable to access parent at level ${i + 1} for path '${path}': no parent available`
+        sf(COMPARISON_ERROR_MESSAGES.NO_PARENT_COMPARISON, i + 1, path)
       );
     }
 
@@ -44,7 +44,7 @@ export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
 
   // Process dot notation path
   const parts = cleanPath.split(".");
-  let currentValue: unknown = currentContext;
+  let currentValue: any = currentContext;
 
   for (const part of parts) {
     if (
@@ -54,16 +54,14 @@ export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
     ) {
       currentValue = (currentValue as Record<string, any>)[part];
     } else {
-      const parentInfo =
+      const errorMsgTemplate =
         parentLevel === 0
-          ? ""
+          ? COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND
           : parentLevel === 1
-            ? " on parent"
-            : ` after ${parentLevel} parent level(s)`;
+            ? COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_ON_PARENT
+            : COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_AFTER_PARENT;
 
-      throw new Error(
-        `Failed to resolve path ${path}: property '${part}' does not exist${parentInfo}.`
-      );
+      throw new Error(sf(errorMsgTemplate, path, part, parentLevel));
     }
   }
 
@@ -95,7 +93,7 @@ export function isValidForGteOrLteComparison(a: any, b: any): boolean {
   const bType = b === null ? "null" : b instanceof Date ? "Date" : typeof b;
 
   throw new TypeError(
-    `Unsupported types for comparison: '${aType}' and '${bType}'`
+    sf(COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON, aType, bType)
   );
 }
 
@@ -113,7 +111,7 @@ export function isValidForGteOrLteComparison(a: any, b: any): boolean {
  */
 export function isLessThan(a: any, b: any): boolean {
   if ([null, undefined].includes(a) || [null, undefined].includes(b))
-    throw new Error("Comparison failed due to null or undefined value");
+    throw new Error(COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON);
 
   // Validate type compatibility
   const aType = typeof a;
@@ -128,25 +126,27 @@ export function isLessThan(a: any, b: any): boolean {
       return (a as number) < Number(b);
     }
     throw new TypeError(
-      `Cannot compare values of different types: '${aType}' and '${bType}'`
+      sf(COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON, aType, bType)
     );
   }
 
   if (typeof a === "number" && typeof b === "number") {
     if (Number.isNaN(a) || Number.isNaN(b)) {
-      throw new TypeError("Comparison not supported for NaN values");
+      throw new TypeError(COMPARISON_ERROR_MESSAGES.NAN_COMPARISON);
     }
     return a < b;
   }
 
   if (a instanceof Date && b instanceof Date) {
     if (isNaN(a.getTime()) || isNaN(b.getTime())) {
-      throw new TypeError("Invalid Date objects are not comparable");
+      throw new TypeError(COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON);
     }
     return a.getTime() < b.getTime();
   }
 
-  throw new TypeError(`Unsupported types for lessThan comparison: '${aType}'`);
+  throw new TypeError(
+    sf(COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON, aType, bType)
+  );
 }
 
 /**
@@ -163,7 +163,7 @@ export function isLessThan(a: any, b: any): boolean {
  */
 export function isGreaterThan(a: any, b: any): boolean {
   if ([null, undefined].includes(a) || [null, undefined].includes(b))
-    throw new Error("Comparison failed due to null or undefined value");
+    throw new Error(COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON);
 
   const aType = typeof a;
   const bType = typeof b;
@@ -174,22 +174,24 @@ export function isGreaterThan(a: any, b: any): boolean {
       return Number(a) > (b as number);
     if (aType === "number" && bType === "bigint")
       return (a as number) > Number(b);
-    throw new Error(`The types '${aType}' and '${bType}' cannot be compared`);
+    throw new Error(
+      sf(COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON, aType, bType)
+    );
   }
 
   if (aType === "number" && bType === "number") {
     if (Number.isNaN(a) || Number.isNaN(b))
-      throw new TypeError("Comparison not supported for NaN values");
+      throw new TypeError(COMPARISON_ERROR_MESSAGES.NAN_COMPARISON);
     return a > b;
   }
 
   if (a instanceof Date && b instanceof Date) {
     if (isNaN(a.getTime()) || isNaN(b.getTime()))
-      throw new TypeError("Invalid Date objects are not comparable");
+      throw new TypeError(COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON);
     return a.getTime() > b.getTime();
   }
 
   throw new TypeError(
-    `Unsupported types for greaterThan comparison: '${aType}'`
+    sf(COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON, aType, bType)
   );
 }

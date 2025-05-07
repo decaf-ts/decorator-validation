@@ -7,4 +7,4 @@
  * @constant VALIDATION_PARENT_KEY
  * @memberOf module:decorator-validation.Model
  */
-export const VALIDATION_PARENT_KEY = Symbol("_validationParent");
+export const VALIDATION_PARENT_KEY = Symbol("_validationParentRef");

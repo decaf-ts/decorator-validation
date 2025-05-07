@@ -1,4 +1,5 @@
 import {
+  COMPARISON_ERROR_MESSAGES,
   date,
   diff,
   eq,
@@ -10,8 +11,10 @@ import {
   Model,
   ModelArg,
   required,
+  sf,
   ValidationKeys,
 } from "../../src";
+import { VALIDATION_PARENT_KEY } from "../../src/constants";
 
 describe("Comparison Validators", () => {
   const initialDate = new Date();
@@ -736,7 +739,8 @@ describe("Comparison Validators", () => {
       expect(model.grandparentNumber).toBeUndefined();
       expect(model.parent.parentNumber).toBeDefined();
       expect(errors.parent?.parentNumber).toEqual({
-        [ValidationKeys.LESS_THAN]: "Cannot compare null or undefined values",
+        [ValidationKeys.LESS_THAN]:
+          COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
       });
       expect(
         Object.prototype.hasOwnProperty.call(
@@ -889,7 +893,7 @@ describe("Comparison Validators", () => {
         },
         testValue: {
           [ValidationKeys.LESS_THAN]: expect.stringContaining(
-            "Cannot compare null or undefined values"
+            COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
           ),
         },
       });
@@ -902,7 +906,11 @@ describe("Comparison Validators", () => {
       expect(typeMismatchModel.hasErrors()).toEqual({
         testValue: {
           [ValidationKeys.LESS_THAN]: expect.stringContaining(
-            "Cannot compare values of different types"
+            sf(
+              COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+              typeof typeMismatchModel.testValue,
+              typeof typeMismatchModel.comparisonValue
+            )
           ),
         },
       });
@@ -915,7 +923,7 @@ describe("Comparison Validators", () => {
       expect(nanModel.hasErrors()).toEqual({
         testValue: {
           [ValidationKeys.LESS_THAN]: expect.stringContaining(
-            "Cannot compare NaN values"
+            COMPARISON_ERROR_MESSAGES.NAN_COMPARISON
           ),
         },
       });
@@ -927,9 +935,8 @@ describe("Comparison Validators", () => {
       });
       expect(invalidDateModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN]: expect.stringContaining(
-            "Cannot compare invalid Date objects"
-          ),
+          [ValidationKeys.LESS_THAN]:
+            COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
         },
       });
 
@@ -940,8 +947,10 @@ describe("Comparison Validators", () => {
       });
       expect(unsupportedTypeModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN]: expect.stringContaining(
-            "Unsupported types for lessThan comparison"
+          [ValidationKeys.LESS_THAN]: sf(
+            COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+            typeof unsupportedTypeModel.testValue,
+            typeof unsupportedTypeModel.comparisonValue
           ),
         },
       });
@@ -1044,7 +1053,7 @@ describe("Comparison Validators", () => {
       expect(model.parent.parentNumber).toBeDefined();
       expect(errors.parent?.parentNumber).toEqual({
         [ValidationKeys.LESS_THAN_OR_EQUAL]:
-          "Cannot compare null or undefined values",
+          COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
       });
       expect(
         Object.prototype.hasOwnProperty.call(
@@ -1158,20 +1167,22 @@ describe("Comparison Validators", () => {
         },
         testValue: {
           [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-            "Cannot compare null or undefined values"
+            COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
           ),
         },
       });
 
       // diff type
       const typeMismatchModel = new LteTestModel({
-        testValue: "string",
+        testValue: new Date(),
         comparisonValue: 10,
       });
       expect(typeMismatchModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-            "Unsupported types for comparison: 'string' and 'number'"
+          [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+            typeof typeMismatchModel.testValue,
+            typeof typeMismatchModel.comparisonValue
           ),
         },
       });
@@ -1183,9 +1194,8 @@ describe("Comparison Validators", () => {
       });
       expect(nanModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-            "Cannot compare NaN values"
-          ),
+          [ValidationKeys.LESS_THAN_OR_EQUAL]:
+            COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
         },
       });
 
@@ -1196,9 +1206,8 @@ describe("Comparison Validators", () => {
       });
       expect(invalidDateModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-            "Cannot compare invalid Date objects"
-          ),
+          [ValidationKeys.LESS_THAN_OR_EQUAL]:
+            COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
         },
       });
 
@@ -1209,8 +1218,10 @@ describe("Comparison Validators", () => {
       });
       expect(unsupportedTypeModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-            "Unsupported types for comparison"
+          [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+            typeof unsupportedTypeModel.testValue,
+            typeof unsupportedTypeModel.comparisonValue
           ),
         },
       });
@@ -1222,8 +1233,10 @@ describe("Comparison Validators", () => {
       });
       expect(unsupportedEqTypeModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-            "Unsupported types for comparison"
+          [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+            typeof unsupportedEqTypeModel.testValue,
+            typeof unsupportedEqTypeModel.comparisonValue
           ),
         },
       });
@@ -1326,7 +1339,7 @@ describe("Comparison Validators", () => {
       expect(model.parent.parentNumber).toBeDefined();
       expect(errors.parent?.parentNumber).toEqual({
         [ValidationKeys.GREATER_THAN]:
-          "Cannot compare null or undefined values",
+          COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
       });
       expect(
         Object.prototype.hasOwnProperty.call(
@@ -1482,7 +1495,7 @@ describe("Comparison Validators", () => {
         },
         testValue: {
           [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-            "Cannot compare null or undefined values"
+            COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
           ),
         },
       });
@@ -1495,7 +1508,11 @@ describe("Comparison Validators", () => {
       expect(typeMismatchModel.hasErrors()).toEqual({
         testValue: {
           [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-            "Cannot compare values of different types"
+            sf(
+              COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+              typeof typeMismatchModel.testValue,
+              typeof typeMismatchModel.comparisonValue
+            )
           ),
         },
       });
@@ -1507,9 +1524,8 @@ describe("Comparison Validators", () => {
       });
       expect(nanModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-            "Cannot compare NaN values"
-          ),
+          [ValidationKeys.GREATER_THAN]:
+            COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
         },
       });
 
@@ -1520,9 +1536,8 @@ describe("Comparison Validators", () => {
       });
       expect(invalidDateModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-            "Cannot compare invalid date objects"
-          ),
+          [ValidationKeys.GREATER_THAN]:
+            COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
         },
       });
 
@@ -1533,8 +1548,10 @@ describe("Comparison Validators", () => {
       });
       expect(unsupportedTypeModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-            "Unsupported types for greaterThan comparison"
+          [ValidationKeys.GREATER_THAN]: sf(
+            COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+            typeof unsupportedTypeModel.testValue,
+            typeof unsupportedTypeModel.comparisonValue
           ),
         },
       });
@@ -1654,7 +1671,7 @@ describe("Comparison Validators", () => {
       expect(model.parent.parentNumber).toBeDefined();
       expect(errors.parent?.parentNumber).toEqual({
         [ValidationKeys.GREATER_THAN_OR_EQUAL]:
-          "Cannot compare null or undefined values",
+          COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
       });
       expect(
         Object.prototype.hasOwnProperty.call(
@@ -1773,20 +1790,22 @@ describe("Comparison Validators", () => {
         },
         testValue: {
           [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-            "Cannot compare null or undefined values"
+            COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
           ),
         },
       });
 
       // diff type
       const typeMismatchModel = new GteTestModel({
-        testValue: "string",
+        testValue: new Date(),
         comparisonValue: 10,
       });
       expect(typeMismatchModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-            "Unsupported types for comparison: 'string' and 'number'"
+          [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+            typeof typeMismatchModel.testValue,
+            typeof typeMismatchModel.comparisonValue
           ),
         },
       });
@@ -1798,9 +1817,8 @@ describe("Comparison Validators", () => {
       });
       expect(nanModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-            "Cannot compare NaN values"
-          ),
+          [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+            COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
         },
       });
 
@@ -1811,9 +1829,8 @@ describe("Comparison Validators", () => {
       });
       expect(invalidDateModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-            "Cannot compare invalid date objects"
-          ),
+          [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+            COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
         },
       });
 
@@ -1824,8 +1841,10 @@ describe("Comparison Validators", () => {
       });
       expect(unsupportedTypeModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-            "Unsupported types for comparison"
+          [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+            typeof unsupportedTypeModel.testValue,
+            typeof unsupportedTypeModel.comparisonValue
           ),
         },
       });
@@ -1837,8 +1856,10 @@ describe("Comparison Validators", () => {
       });
       expect(unsupportedEqTypeModel.hasErrors()).toEqual({
         testValue: {
-          [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-            "Unsupported types for comparison"
+          [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+            typeof unsupportedEqTypeModel.testValue,
+            typeof unsupportedEqTypeModel.comparisonValue
           ),
         },
       });
