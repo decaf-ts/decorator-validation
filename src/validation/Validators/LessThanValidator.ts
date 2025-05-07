@@ -46,11 +46,13 @@ export class LessThanValidator extends Validator<ComparisonValidatorOptions> {
       return this.getMessage(e.message || this.message);
     }
 
-    return isLessThan(value, comparisonPropertyValue)
-      ? undefined
-      : this.getMessage(
-          options.message || this.message,
-          options.propertyToCompare
-        );
+    try {
+      if (!isLessThan(value, comparisonPropertyValue))
+        throw new Error(options.message || this.message);
+    } catch (e: any) {
+      return this.getMessage(e.message, options.propertyToCompare);
+    }
+
+    return undefined;
   }
 }

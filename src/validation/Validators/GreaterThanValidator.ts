@@ -2,7 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import type { ComparisonValidatorOptions } from "../types";
-import { getValueByPath, isGreaterThan } from "./utils";
+import { getValueByPath, isGreaterThan, isLessThan } from "./utils";
 
 /**
  * @summary Greater Than Validator
@@ -46,11 +46,13 @@ export class GreaterThanValidator extends Validator<ComparisonValidatorOptions> 
       return this.getMessage(e.message || this.message);
     }
 
-    return isGreaterThan(value, comparisonPropertyValue)
-      ? undefined
-      : this.getMessage(
-          options.message || this.message,
-          options.propertyToCompare
-        );
+    try {
+      if (!isGreaterThan(value, comparisonPropertyValue))
+        throw new Error(options.message || this.message);
+    } catch (e: any) {
+      return this.getMessage(e.message, options.propertyToCompare);
+    }
+
+    return undefined;
   }
 }

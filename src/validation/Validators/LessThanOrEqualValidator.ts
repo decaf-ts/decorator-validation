@@ -2,7 +2,11 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import type { ComparisonValidatorOptions } from "../types";
-import { getValueByPath, isLessThan } from "./utils";
+import {
+  getValueByPath,
+  isLessThan,
+  isValidForGteOrLteComparison,
+} from "./utils";
 import { isEqual } from "@decaf-ts/reflection";
 
 /**
@@ -47,15 +51,17 @@ export class LessThanOrEqualValidator extends Validator<ComparisonValidatorOptio
       return this.getMessage(e.message || this.message);
     }
 
-    const p1 = isLessThan(value, comparisonPropertyValue);
-    const p2 = isEqual(value, comparisonPropertyValue);
-    const p = p1 || p2;
+    try {
+      if (
+        (isValidForGteOrLteComparison(value, comparisonPropertyValue) &&
+          isEqual(value, comparisonPropertyValue)) ||
+        isLessThan(value, comparisonPropertyValue)
+      )
+        return undefined;
 
-    return p
-      ? undefined
-      : this.getMessage(
-          options.message || this.message,
-          options.propertyToCompare
-        );
+      throw new Error(options.message || this.message);
+    } catch (e: any) {
+      return this.getMessage(e.message, options.propertyToCompare);
+    }
   }
 }
