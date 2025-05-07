@@ -3,6 +3,7 @@ import { DecoratorMetadata, Reflection } from "@decaf-ts/reflection";
 import { ModelKeys } from "../utils/constants";
 import { sf } from "../utils/strings";
 import { ReservedModels } from "./constants";
+import { VALIDATION_PARENT_KEY } from "../constants";
 import { Validatable } from "./types";
 import { isModel, Model } from "./Model";
 import { Validation } from "../validation/Validation";
@@ -10,8 +11,8 @@ import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
   ValidationPropertyDecoratorDefinition,
+  ValidatorOptions,
 } from "../validation/types";
-import { ValidatorOptions } from "../validation/types";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
@@ -143,12 +144,22 @@ export function validate<T extends Model>(
         }
 
         const validate = (prop: string, value: any): any => {
-          if (typeof value === "object" || typeof value === "function")
+          if (typeof value !== "object" && typeof value !== "function")
+            return undefined;
+
+          try {
+            if (value && !value[VALIDATION_PARENT_KEY])
+              value[VALIDATION_PARENT_KEY] = obj; // TODO: freeze
+
             return isModel(value)
-              ? (value as Model).hasErrors()
+              ? value.hasErrors()
               : allowedTypes.includes(typeof value)
                 ? undefined
                 : "Value has no validatable type";
+          } finally {
+            if (value && value[VALIDATION_PARENT_KEY])
+              delete value[VALIDATION_PARENT_KEY];
+          }
         };
 
         switch (c) {
