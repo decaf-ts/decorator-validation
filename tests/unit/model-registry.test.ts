@@ -1,4 +1,5 @@
-import { model, Model, ModelArg } from "../../src";
+import { model, Model } from "../../src";
+import type { ModelArg } from "../../src";
 import "reflect-metadata";
 
 @model()

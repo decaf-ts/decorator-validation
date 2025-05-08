@@ -1,4 +1,5 @@
-import { Model, ModelArg, ModelKeys, required } from "../../src";
+import { Model, ModelKeys, required } from "../../src";
+import type { ModelArg } from "../../src";
 import { metadata } from "@decaf-ts/reflection";
 
 describe("metadata", () => {

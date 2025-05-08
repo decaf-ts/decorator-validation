@@ -196,10 +196,10 @@ export class Decoration implements IDecorationBuilder {
   /**
    * @description Creates the final decorator function
    * @summary Builds and returns the decorator factory function
-   * @return {function(object, any?, TypedPropertyDescriptor?): any} The generated decorator function
+   * @return {function(any, any?, TypedPropertyDescriptor?): any} The generated decorator function
    */
   apply(): (
-    target: object,
+    target: any,
     propertyKey?: any,
     descriptor?: TypedPropertyDescriptor<any>
   ) => any {

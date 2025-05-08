@@ -1,5 +1,6 @@
 import { Model } from "../../src";
-import { ModelArg, required } from "../../src";
+import { required } from "../../src";
+import type { ModelArg } from "../../src";
 import { model } from "../../src";
 import { list } from "../../src";
 import { minlength, maxlength } from "../../src";

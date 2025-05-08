@@ -1,4 +1,5 @@
-import { model, Model, ModelArg, prop } from "../../src";
+import type { ModelArg } from "../../src";
+import { model, Model, prop } from "../../src";
 
 @model()
 class TestModel extends Model {

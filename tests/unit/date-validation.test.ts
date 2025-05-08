@@ -9,9 +9,9 @@ import {
   parseDate,
   formatDate,
   twoDigitPad,
-  ModelArg,
   prop,
 } from "../../src";
+import type { ModelArg } from "../../src";
 
 @model()
 class TestModel extends Model {

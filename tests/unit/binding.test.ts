@@ -2,10 +2,10 @@ import {
   findLastProtoBeforeObject,
   Model,
   model,
-  ModelArg,
   ModelErrorDefinition,
   required,
 } from "../../src";
+import type { ModelArg } from "../../src";
 
 describe("decorating non model classes", () => {
   describe("Binding", () => {

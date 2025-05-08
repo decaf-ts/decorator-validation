@@ -18,7 +18,7 @@ export interface DecorationBuilderBuild {
    * @returns {function} A decorator function that can be applied to a target
    */
   apply(): (
-    target: object,
+    target: any,
     propertyKey?: any,
     descriptor?: TypedPropertyDescriptor<any>
   ) => any;

@@ -1,11 +1,5 @@
-import {
-  model,
-  Model,
-  ModelArg,
-  ModelErrorDefinition,
-  prop,
-  step,
-} from "../../src";
+import { model, Model, ModelErrorDefinition, prop, step } from "../../src";
+import type { ModelArg } from "../../src";
 import {
   email,
   max,

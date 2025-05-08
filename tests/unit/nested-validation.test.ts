@@ -3,10 +3,10 @@ import {
   minlength,
   model,
   Model,
-  ModelArg,
   ModelErrorDefinition,
   required,
 } from "../../src";
+import type { ModelArg } from "../../src";
 
 @model()
 class InnerTestModel extends Model {

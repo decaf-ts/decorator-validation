@@ -1,4 +1,5 @@
-import { hashedBy, Hashing, model, Model, ModelArg, required } from "../../src";
+import { hashedBy, Hashing, model, Model, required } from "../../src";
+import type { ModelArg } from "../../src";
 import { HashingFunction } from "../../src";
 
 @model()
