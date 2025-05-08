@@ -21,3 +21,4 @@ export * from "./TypeValidator";
 export * from "./URLValidator";
 export * from "./Validator";
 export * from "./ValidatorRegistry";
+export * from "./utils";

@@ -150,7 +150,7 @@ export const COMPARISON_ERROR_MESSAGES = {
   PROPERTY_NOT_FOUND_ON_PARENT:
     "Failed to resolve path {0}: property '{1}' does not exist on parent.",
   PROPERTY_NOT_FOUND_AFTER_PARENT:
-    "Failed to resolve path {0}: property '{1}' does not exist after ${2} parent level(s).",
+    "Failed to resolve path {0}: property '{1}' does not exist after {2} parent level(s).",
   UNSUPPORTED_TYPES_COMPARISON:
     "Unsupported types for comparison: '{0}' and '{1}'",
   NULL_OR_UNDEFINED_COMPARISON:

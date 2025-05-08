@@ -68,6 +68,29 @@ export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
   return currentValue as T;
 }
 
+const getTypeName = (value: unknown): string => {
+  if (value === null) return "null";
+  if (value instanceof Date) return "Date";
+  if (Number.isNaN(value)) return "NaN";
+  if (value === Infinity) return "Infinity";
+  if (value === -Infinity) return "-Infinity";
+  if (Array.isArray(value)) return "array";
+  return typeof value;
+};
+
+const isSupported = (
+  value: unknown
+): value is undefined | number | bigint | Date => {
+  if (value === undefined || value instanceof Date) return true;
+
+  if (typeof value === "bigint") return true;
+
+  // Numbers must be finite (excludes NaN, Infinity, -Infinity)
+  if (typeof value === "number") return Number.isFinite(value);
+
+  return false;
+};
+
 /**
  * Validates whether two values are eligible for comparison using >= or <= operators.
  *
@@ -81,19 +104,14 @@ export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
  * @throws {TypeError} If either value is of an unsupported type.
  */
 export function isValidForGteOrLteComparison(a: any, b: any): boolean {
-  const isSupported = (value: any): boolean =>
-    value === undefined ||
-    typeof value === "number" ||
-    typeof value === "bigint" ||
-    value instanceof Date;
-
   if (isSupported(a) && isSupported(b)) return true;
 
-  const aType = a === null ? "null" : a instanceof Date ? "Date" : typeof a;
-  const bType = b === null ? "null" : b instanceof Date ? "Date" : typeof b;
-
   throw new TypeError(
-    sf(COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON, aType, bType)
+    sf(
+      COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+      getTypeName(a),
+      getTypeName(b)
+    )
   );
 }
 
@@ -119,33 +137,36 @@ export function isLessThan(a: any, b: any): boolean {
 
   if (aType !== bType) {
     // Allow number X bigint
-    if (aType === "bigint" && bType === "number") {
+    if (aType === "bigint" && bType === "number")
       return Number(a) < (b as number);
-    }
-    if (aType === "number" && bType === "bigint") {
+    if (aType === "number" && bType === "bigint")
       return (a as number) < Number(b);
-    }
     throw new TypeError(
       sf(COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON, aType, bType)
     );
   }
 
-  if (typeof a === "number" && typeof b === "number") {
-    if (Number.isNaN(a) || Number.isNaN(b)) {
+  if (
+    (aType === "number" && bType === "number") ||
+    (aType === "bigint" && bType === "bigint")
+  ) {
+    if (Number.isNaN(a) || Number.isNaN(b))
       throw new TypeError(COMPARISON_ERROR_MESSAGES.NAN_COMPARISON);
-    }
     return a < b;
   }
 
   if (a instanceof Date && b instanceof Date) {
-    if (isNaN(a.getTime()) || isNaN(b.getTime())) {
+    if (isNaN(a.getTime()) || isNaN(b.getTime()))
       throw new TypeError(COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON);
-    }
     return a.getTime() < b.getTime();
   }
 
   throw new TypeError(
-    sf(COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON, aType, bType)
+    sf(
+      COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+      getTypeName(a),
+      getTypeName(b)
+    )
   );
 }
 
@@ -179,7 +200,10 @@ export function isGreaterThan(a: any, b: any): boolean {
     );
   }
 
-  if (aType === "number" && bType === "number") {
+  if (
+    (aType === "number" && bType === "number") ||
+    (aType === "bigint" && bType === "bigint")
+  ) {
     if (Number.isNaN(a) || Number.isNaN(b))
       throw new TypeError(COMPARISON_ERROR_MESSAGES.NAN_COMPARISON);
     return a > b;
@@ -192,6 +216,10 @@ export function isGreaterThan(a: any, b: any): boolean {
   }
 
   throw new TypeError(
-    sf(COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON, aType, bType)
+    sf(
+      COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+      getTypeName(a),
+      getTypeName(b)
+    )
   );
 }
