@@ -55,6 +55,28 @@ describe("Comparison Validators", () => {
       }
     }
 
+    it("should exclude VALIDATION_PARENT_KEY from object keys", () => {
+      const instance = new SimpleParentTestModel({
+        parentValue: "parentValue",
+        parentArray: [1, 2, 3, 4, 5],
+        child: new SimpleChildTestModel({
+          value: "parentValue",
+          elementValue: 5,
+        }),
+      }) as any;
+
+      instance.child[VALIDATION_PARENT_KEY] = instance;
+      expect(Object.keys(instance.child)).toMatchObject([
+        "elementValue",
+        "value",
+      ]);
+
+      const obj = { numberValue: 123, [VALIDATION_PARENT_KEY]: "value" };
+      expect(obj[VALIDATION_PARENT_KEY]).toBeDefined();
+      expect(obj[VALIDATION_PARENT_KEY]).toEqual("value");
+      expect(Object.keys(obj)).toMatchObject(["numberValue"]);
+    });
+
     it("should delete VALIDATION_PARENT_KEY after validation", () => {
       const instance = new SimpleParentTestModel({
         parentValue: "parentValue",
@@ -1998,8 +2020,11 @@ describe("Comparison Validators", () => {
         });
         expect(nanModel.hasErrors()).toEqual({
           testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]:
-              COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
+            [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+              "NaN",
+              typeof nanModel.comparisonValue
+            ),
           },
         });
 
@@ -2621,8 +2646,11 @@ describe("Comparison Validators", () => {
         });
         expect(nanModel.hasErrors()).toEqual({
           testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]:
-              COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
+            [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+              "NaN",
+              typeof nanModel.comparisonValue
+            ),
           },
         });
 
