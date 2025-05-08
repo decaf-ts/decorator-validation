@@ -18,6 +18,10 @@ import {
 } from "../../src";
 
 describe("Comparison Validators", () => {
+  const initialDate = new Date();
+  const pastDate = new Date(initialDate.getTime() - 86400000); // 1d before
+  const futureDate = new Date(initialDate.getTime() + 86400000); // 1d after
+
   describe("General", () => {
     @model()
     class SimpleChildTestModel extends Model {
@@ -54,8 +58,10 @@ describe("Comparison Validators", () => {
     it("should delete VALIDATION_PARENT_KEY after validation", () => {
       const instance = new SimpleParentTestModel({
         parentValue: "parentValue",
+        parentArray: [1, 2, 3, 4, 5],
         child: new SimpleChildTestModel({
           value: "parentValue",
+          elementValue: 5,
         }),
       }) as any;
 
@@ -65,7 +71,7 @@ describe("Comparison Validators", () => {
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeUndefined();
     });
 
-    it("should fail when parent array element does not exist", () => {
+    it("should fail when referencing a non-existent parent array element", () => {
       const instance = new SimpleParentTestModel({
         parentValue: "parentValue",
         parentArray: [1, 2, 3],
@@ -819,10 +825,6 @@ describe("Comparison Validators", () => {
   });
 
   describe("Parent Comparison", () => {
-    const initialDate = new Date();
-    const pastDate = new Date(initialDate.getTime() - 86400000); // 1d before
-    const futureDate = new Date(initialDate.getTime() + 86400000); // 1d after
-
     class ModelBuilder<T> {
       private readonly initialInstance: any;
       private instance?: T;
@@ -2679,6 +2681,178 @@ describe("Comparison Validators", () => {
           comparisonValue: BigInt(5),
         });
         expect(numberModel.hasErrors()).toBeUndefined();
+      });
+    });
+  });
+
+  describe("Bidirectional Comparison", () => {
+    @model()
+    class BidirectionalChildModel extends Model {
+      @required()
+      @eq("../parentName")
+      childName: string = "";
+
+      @required()
+      @diff("../parentNumber")
+      childNumber: number = 0;
+
+      @required()
+      @date()
+      @lt("../parentDate")
+      childDate: Date = new Date();
+
+      constructor(model?: ModelArg<BidirectionalChildModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class BidirectionalParentModel extends Model {
+      @required()
+      @eq("child.childName")
+      parentName: string = "";
+
+      @required()
+      @diff("child.childNumber")
+      parentNumber: number = 0;
+
+      @required()
+      @date()
+      @gt("child.childDate")
+      parentDate: Date = new Date();
+
+      @required()
+      @type(BidirectionalChildModel.name)
+      child: BidirectionalChildModel = new BidirectionalChildModel();
+
+      constructor(model?: ModelArg<BidirectionalParentModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should pass validations", () => {
+      const model = new BidirectionalParentModel({
+        parentName: "Parent",
+        parentNumber: 100,
+        parentDate: futureDate,
+        child: new BidirectionalChildModel({
+          childName: "Parent",
+          childNumber: 200,
+          childDate: pastDate,
+        }),
+      });
+
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+    });
+
+    it("should fail validations", () => {
+      const model = new BidirectionalParentModel({
+        parentName: "Parent",
+        parentNumber: 100,
+        parentDate: pastDate,
+        child: new BidirectionalChildModel({
+          childName: "Wrong",
+          childNumber: 100,
+          childDate: pastDate,
+        }),
+      });
+
+      expect(model.hasErrors()).toEqual({
+        parentName: {
+          [ValidationKeys.EQUALS]:
+            "This field must be equal to field child.childName",
+        },
+        parentNumber: {
+          [ValidationKeys.DIFF]:
+            "This field must be different from field child.childNumber",
+        },
+        parentDate: {
+          [ValidationKeys.GREATER_THAN]:
+            "This field must be greater than field child.childDate",
+        },
+        child: {
+          childName: {
+            [ValidationKeys.EQUALS]:
+              "This field must be equal to field ../parentName",
+          },
+          childNumber: {
+            [ValidationKeys.DIFF]:
+              "This field must be different from field ../parentNumber",
+          },
+          childDate: {
+            [ValidationKeys.LESS_THAN]:
+              "This field must be less than field ../parentDate",
+          },
+        },
+      });
+    });
+  });
+
+  describe("Conflicting Comparison", () => {
+    @model()
+    class ConflictingChildModel extends Model {
+      @required()
+      @eq("../parentValue") // Requires to be EQUAL to parent value
+      childValue: string = "";
+
+      constructor(model?: ModelArg<ConflictingChildModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    @model()
+    class ConflictingParentModel extends Model {
+      @required()
+      @diff("child.childValue") // Requires to be DIFFERENT from the child value
+      parentValue: string = "";
+
+      @required()
+      @type(ConflictingChildModel.name)
+      child: ConflictingChildModel = new ConflictingChildModel();
+
+      constructor(model?: ModelArg<ConflictingParentModel>) {
+        super();
+        Model.fromModel(this, model);
+      }
+    }
+
+    it("should always fail when validations conflict (eq in child vs diff in parent)", () => {
+      // equal values (should fail for parent)
+      const model1 = new ConflictingParentModel({
+        parentValue: "testValue",
+        child: new ConflictingChildModel({
+          childValue: "testValue",
+        }),
+      });
+
+      expect(model1.hasErrors()).toEqual({
+        parentValue: {
+          [ValidationKeys.DIFF]:
+            "This field must be different from field child.childValue",
+        },
+        // Child has no error because it matches the parent
+      });
+
+      // different values (should fail for child)
+      const model2 = new ConflictingParentModel({
+        parentValue: "value1",
+        child: new ConflictingChildModel({
+          childValue: "value2",
+        }),
+      });
+
+      expect(model2.hasErrors()).toEqual({
+        child: {
+          childValue: {
+            [ValidationKeys.EQUALS]:
+              "This field must be equal to field ../parentValue",
+          },
+        },
+        // Parent has no error because it differs from the child
       });
     });
   });
