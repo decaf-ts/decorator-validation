@@ -27,7 +27,7 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  * @category Decorators
  */
 export function model(instanceCallback?: InstanceCallback) {
-  function modelDec(original: any) {
+  return ((original: any) => {
     // the new constructor behaviour
     const newConstructor: any = function (...args: any[]) {
       const instance: ReturnType<typeof original> = construct(
@@ -62,10 +62,7 @@ export function model(instanceCallback?: InstanceCallback) {
 
     // return new constructor (will override original)
     return newConstructor;
-  }
-  // return Decoration.for(key).define(modelDec).apply();
-
-  return modelDec;
+  }) as any;
 }
 
 export function hashedBy(algorithm: string, ...args: any[]) {
