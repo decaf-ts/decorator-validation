@@ -1,4 +1,4 @@
-import { model, Model, ModelErrorDefinition, prop, step } from "../../src";
+import { model, Model, ModelErrorDefinition } from "../../src";
 import type { ModelArg } from "../../src";
 import {
   email,
@@ -6,17 +6,12 @@ import {
   maxlength,
   min,
   minlength,
-  model,
-  Model,
-  ModelArg,
-  ModelErrorDefinition,
   password,
   pattern,
   prop,
   required,
   step,
   type,
-  url,
 } from "../../src";
 import { url } from "../../src";
 

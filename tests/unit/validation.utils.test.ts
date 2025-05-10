@@ -5,8 +5,8 @@ import {
   isLessThan,
   isValidForGteOrLteComparison,
   sf,
-  VALIDATION_PARENT_KEY,
 } from "../../src";
+import { VALIDATION_PARENT_KEY } from "../../src/constants";
 
 describe("Validation Utils", () => {
   describe("getValueByPath", () => {

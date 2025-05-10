@@ -13,9 +13,9 @@ import {
   required,
   sf,
   type,
-  VALIDATION_PARENT_KEY,
   ValidationKeys,
 } from "../../src";
+import { VALIDATION_PARENT_KEY } from "../../src/constants";
 
 describe("Comparison Validators", () => {
   const initialDate = new Date();
