@@ -201,7 +201,9 @@ export abstract class Model
    *
    * @param {any[]} [exceptions] properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    */
-  public hasErrors(...exceptions: any[]): ModelErrorDefinition | undefined {
+  public hasErrors(
+    ...exceptions: (keyof this)[]
+  ): ModelErrorDefinition | undefined {
     return validate(this, ...exceptions);
   }
 
@@ -489,15 +491,15 @@ export abstract class Model
     return result;
   }
 
-  static equals<V extends Model>(obj1: V, obj2: V, ...exceptions: any[]) {
+  static equals<M extends Model>(obj1: M, obj2: M, ...exceptions: any[]) {
     return isEqual(obj1, obj2, ...exceptions);
   }
 
-  static hasErrors<V extends Model>(model: V, ...propsToIgnore: string[]) {
+  static hasErrors<M extends Model>(model: M, ...propsToIgnore: (keyof M)[]) {
     return validate(model, ...propsToIgnore);
   }
 
-  static serialize<V extends Model>(model: V) {
+  static serialize<M extends Model>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.SERIALIZATION),
       model.constructor
@@ -512,7 +514,7 @@ export abstract class Model
     return Serialization.serialize(model);
   }
 
-  static hash<V extends Model>(model: V) {
+  static hash<M extends Model>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.HASHING),
       model.constructor

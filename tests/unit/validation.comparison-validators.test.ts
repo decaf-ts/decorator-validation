@@ -9,12 +9,12 @@ import {
   lte,
   model,
   Model,
-  ModelArg,
   required,
   sf,
   type,
   ValidationKeys,
 } from "../../src";
+import type { ModelArg } from "../../src";
 import { VALIDATION_PARENT_KEY } from "../../src/constants";
 
 describe("Comparison Validators", () => {

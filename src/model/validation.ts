@@ -1,7 +1,6 @@
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { DecoratorMetadata, Reflection } from "@decaf-ts/reflection";
 import { ModelKeys } from "../utils/constants";
-import { sf } from "../utils/strings";
 import { ReservedModels } from "./constants";
 import { VALIDATION_PARENT_KEY } from "../constants";
 import { Validatable } from "./types";
@@ -17,17 +16,17 @@ import {
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
  *
- * @typedef T extends Model
- * @prop {T} obj Model object to validate
+ * @typedef M extends Model
+ * @prop {M} obj Model object to validate
  * @prop {string[]} [propsToIgnore] object properties to ignore in the validation
  *
  * @function validate
  * @memberOf module:decorator-validation
  * @category Model
  */
-export function validate<T extends Model>(
-  obj: T,
-  ...propsToIgnore: string[]
+export function validate<M extends Model>(
+  obj: M,
+  ...propsToIgnore: (keyof M)[]
 ): ModelErrorDefinition | undefined {
   const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
   for (const prop in obj)
@@ -189,8 +188,8 @@ export function validate<T extends Model>(
             try {
               if ((obj as Record<string, any>)[prop])
                 err = validate(prop, (obj as any)[prop]);
-            } catch (e: any) {
-              console.warn(sf("Model should be validatable but its not: " + e));
+            } catch (e: unknown) {
+              console.warn(`Model should be validatable but its not: ${e}`);
             }
         }
       }

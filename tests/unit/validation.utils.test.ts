@@ -33,7 +33,7 @@ describe("Validation Utils", () => {
       ],
     };
 
-    parent[VALIDATION_PARENT_KEY] = grandparent;
+    (parent as any)[VALIDATION_PARENT_KEY] = grandparent;
 
     const testObj = {
       name: "Test Object",
@@ -54,7 +54,7 @@ describe("Validation Utils", () => {
       [VALIDATION_PARENT_KEY]: parent,
     };
 
-    testObj.array[1].deep[VALIDATION_PARENT_KEY] = testObj.array[1];
+    (testObj.array[1].deep as any)[VALIDATION_PARENT_KEY] = testObj.array[1];
 
     it("should get direct property", () => {
       expect(getValueByPath(testObj, "name")).toBe("Test Object");
