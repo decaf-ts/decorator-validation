@@ -6,10 +6,17 @@ import {
   maxlength,
   min,
   minlength,
+  model,
+  Model,
+  ModelArg,
+  ModelErrorDefinition,
   password,
   pattern,
+  prop,
   required,
+  step,
   type,
+  url,
 } from "../../src";
 import { url } from "../../src";
 
@@ -232,7 +239,7 @@ describe("Validation by decorators test", function () {
     }
   });
 
-  it("Handles Passwords", () => {
+  it("handles Passwords", () => {
     let p: Model = new PasswordTestModel({
       password: "testssdfdsg",
     });

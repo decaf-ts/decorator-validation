@@ -295,7 +295,7 @@ export abstract class Model
 
     for (const prop of props) {
       (self as Record<string, any>)[prop] =
-        (obj as Record<string, any>)[prop] || undefined;
+        (obj as Record<string, any>)[prop] ?? undefined;
       if (typeof (self as any)[prop] !== "object") continue;
       const propM = Model.isPropertyModel(self, prop);
       if (propM) {

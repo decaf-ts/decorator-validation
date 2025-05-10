@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ValidationMetadata } from "./types";
+import { type ComparisonValidatorOptions, ValidationMetadata } from "./types";
 import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
@@ -414,4 +414,172 @@ export function set(
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   return list(clazz, "Set", message);
+}
+
+/**
+ * @summary Declares that the decorated property must be equal to another specified property.
+ * @description Applies the {@link ValidationKeys.EQUALS} validator to ensure the decorated value matches the value of the given property.
+ *
+ * @param {string} propertyToMatch - The name of the property to compare equality against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.EQUALS] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the equality validation metadata.
+ *
+ * @function eq
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function eq(
+  propertyToMatch: string,
+  message: string = DEFAULT_ERROR_MESSAGES.EQUALS
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToCompare: propertyToMatch,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.EQUALS),
+    options as ValidationMetadata
+  );
+}
+
+/**
+ * @summary Declares that the decorated property must be different from another specified property.
+ * @description Applies the {@link ValidationKeys.DIFF} validator to ensure the decorated value is different from the value of the given property.
+ *
+ * @param {string} propertyToCompare - The name of the property to compare difference against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.DIFF] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the difference validation metadata.
+ *
+ * @function diff
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function diff(
+  propertyToCompare: string,
+  message: string = DEFAULT_ERROR_MESSAGES.DIFF
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToCompare: propertyToCompare,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.DIFF),
+    options as ValidationMetadata
+  );
+}
+
+/**
+ * @summary Declares that the decorated property must be less than another specified property.
+ * @description Applies the {@link ValidationKeys.LESS_THAN} validator to ensure the decorated value is less than the value of the given property.
+ *
+ * @param {string} propertyToCompare - The name of the property to compare against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.LESS_THAN] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the less than validation metadata.
+ *
+ * @function lt
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function lt(
+  propertyToCompare: string,
+  message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToCompare: propertyToCompare,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.LESS_THAN),
+    options as ValidationMetadata
+  );
+}
+
+/**
+ * @summary Declares that the decorated property must be equal or less than another specified property.
+ * @description Applies the {@link ValidationKeys.LESS_THAN_OR_EQUAL} validator to ensure the decorated value is equal or less than the value of the given property.
+ *
+ * @param {string} propertyToCompare - The name of the property to compare against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the less than or equal validation metadata.
+ *
+ * @function lte
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function lte(
+  propertyToCompare: string,
+  message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToCompare: propertyToCompare,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.LESS_THAN_OR_EQUAL),
+    options as ValidationMetadata
+  );
+}
+
+/**
+ * @summary Declares that the decorated property must be greater than another specified property.
+ * @description Applies the {@link ValidationKeys.GREATER_THAN} validator to ensure the decorated value is greater than the value of the given property.
+ *
+ * @param {string} propertyToCompare - The name of the property to compare against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.GREATER_THAN] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the greater than validation metadata.
+ *
+ * @function gt
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function gt(
+  propertyToCompare: string,
+  message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToCompare: propertyToCompare,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.GREATER_THAN),
+    options as ValidationMetadata
+  );
+}
+
+/**
+ * @summary Declares that the decorated property must be equal or greater than another specified property.
+ * @description Applies the {@link ValidationKeys.GREATER_THAN_OR_EQUAL} validator to ensure the decorated value is equal or greater than the value of the given property.
+ *
+ * @param {string} propertyToCompare - The name of the property to compare against.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL] - Custom error message to return if validation fails.
+ *
+ * @returns {PropertyDecorator} A property decorator used to register the greater than or equal validation metadata.
+ *
+ * @function gte
+ * @memberOf module:decorator-validation.Decorators.Validation
+ * @category Decorators
+ */
+export function gte(
+  propertyToCompare: string,
+  message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL
+) {
+  const options: ComparisonValidatorOptions = {
+    message: message,
+    propertyToCompare: propertyToCompare,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.GREATER_THAN_OR_EQUAL),
+    options as ValidationMetadata
+  );
 }

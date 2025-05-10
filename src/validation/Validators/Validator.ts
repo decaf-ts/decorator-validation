@@ -132,7 +132,11 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
    *
    * @see Model#validate
    */
-  public abstract hasErrors(value: any, options?: V): string | undefined;
+  public abstract hasErrors(
+    value: any,
+    options?: V,
+    instanceObj?: any
+  ): string | undefined;
 
   /**
    * @summary Duck typing for Validators
