@@ -42,7 +42,7 @@ export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
  * a cache of model constructors indexed by name, allowing for efficient lookup and instantiation.
  * This class is essential for the serialization and deserialization of model objects.
  *
- * @param {function(Record<string, any>): boolean} [testFunction] - Function to test if an object is a model, defaults to {@link isModel}
+ * @param {function(Record<string, any>): boolean} [testFunction] - Function to test if an object is a model, defaults to {@link Model#isModel}
  *
  * @class ModelRegistryManager
  * @template M Type of model that can be registered, must extend Model
