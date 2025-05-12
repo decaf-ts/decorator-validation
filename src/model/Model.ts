@@ -16,7 +16,6 @@ import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
-import { sf } from "../utils/strings";
 import { jsTypes, ReservedModels } from "./constants";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
@@ -138,7 +137,7 @@ export class ModelRegistryManager<M extends Model> implements ModelRegistry<M> {
     const name = clazz || Model.getMetadata(obj as any);
     if (!(name in this.cache))
       throw new Error(
-        sf("Provided class {0} is not a registered Model object", name)
+        `Provided class ${name} is not a registered Model object`
       );
     return new this.cache[name](obj);
   }
@@ -201,9 +200,7 @@ export abstract class Model
    *
    * @param {any[]} [exceptions] properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    */
-  public hasErrors(
-    ...exceptions: (keyof this)[]
-  ): ModelErrorDefinition | undefined {
+  public hasErrors(...exceptions: string[]): ModelErrorDefinition | undefined {
     return validate(this, ...exceptions);
   }
 
@@ -323,7 +320,7 @@ export abstract class Model
           [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(d.key) !== -1
       );
       if (!decorators || !decorators.length)
-        throw new Error(sf("failed to find decorators for property {0}", prop));
+        throw new Error(`failed to find decorators for property ${prop}`);
       dec = decorators.pop() as DecoratorMetadata;
       const clazz = dec.props.name
         ? [dec.props.name]
@@ -495,7 +492,7 @@ export abstract class Model
     return isEqual(obj1, obj2, ...exceptions);
   }
 
-  static hasErrors<M extends Model>(model: M, ...propsToIgnore: (keyof M)[]) {
+  static hasErrors<M extends Model>(model: M, ...propsToIgnore: string[]) {
     return validate(model, ...propsToIgnore);
   }
 

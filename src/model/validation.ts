@@ -26,7 +26,7 @@ import {
  */
 export function validate<M extends Model>(
   obj: M,
-  ...propsToIgnore: (keyof M)[]
+  ...propsToIgnore: string[]
 ): ModelErrorDefinition | undefined {
   const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
   for (const prop in obj)

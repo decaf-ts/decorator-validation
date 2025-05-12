@@ -33,7 +33,7 @@ export interface IRegistry<T> {
 /**
  * @summary Basic Builder Registry Interface
  *
- * @typedef T
+ * @template T
  * @interface BuilderRegistry<T>
  *
  * @category Model
