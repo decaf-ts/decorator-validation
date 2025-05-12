@@ -147,7 +147,8 @@ export class ModelRegistryManager<M extends Model> implements ModelRegistry<M> {
  * @summary Bulk Registers Models
  * @description Useful when using bundlers that might not evaluate all the code at once
  *
- * @param {Array<Constructor<T>> | Array<{name: string, constructor: Constructor<T>}>} [models]
+ * @template M extends Model
+ * @param {Array<Constructor<M>> | Array<{name: string, constructor: Constructor<M>}>} [models]
  *
  * @memberOf module:decorator-validation
  * @category Model
@@ -200,7 +201,7 @@ export abstract class Model
    *
    * @param {any[]} [exceptions] properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    */
-  public hasErrors(...exceptions: string[]): ModelErrorDefinition | undefined {
+  public hasErrors(...exceptions: any[]): ModelErrorDefinition | undefined {
     return validate(this, ...exceptions);
   }
 
