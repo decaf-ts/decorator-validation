@@ -362,7 +362,7 @@ export function set(
  * @summary Declares that the decorated property must be equal to another specified property.
  * @description Applies the {@link ValidationKeys.EQUALS} validator to ensure the decorated value matches the value of the given property.
  *
- * @param {string} propertyToMatch - The name of the property to compare equality against.
+ * @param {string} propertyToCompare - The name of the property to compare equality against.
  * @param {string} [message=DEFAULT_ERROR_MESSAGES.EQUALS] - Custom error message to return if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the equality validation metadata.
@@ -372,12 +372,12 @@ export function set(
  * @category Decorators
  */
 export function eq(
-  propertyToMatch: string,
+  propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
   const options: ComparisonValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToMatch,
+    propertyToCompare: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(

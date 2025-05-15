@@ -1,6 +1,29 @@
 import { ModelKeys } from "../../utils/constants";
 
 /**
+ * @summary Keys used for comparison-based validations.
+ *
+ * @property {string} EQUALS - Validates if two values are equal.
+ * @property {string} DIFF - Validates if two values are different.
+ * @property {string} LESS_THAN - Validates if a value is less than another.
+ * @property {string} LESS_THAN_OR_EQUAL - Validates if a value is less than or equal to another.
+ * @property {string} GREATER_THAN - Validates if a value is greater than another.
+ * @property {string} GREATER_THAN_OR_EQUAL - Validates if a value is greater than or equal to another.
+ *
+ * @constant ComparisonValidationKeys
+ * @memberof module:decorator-validation.Validation
+ * @category Validation
+ */
+export const ComparisonValidationKeys = {
+  EQUALS: "equals",
+  DIFF: "different",
+  LESS_THAN: "lessThan",
+  LESS_THAN_OR_EQUAL: "lessThanOrEqual",
+  GREATER_THAN: "greaterThan",
+  GREATER_THAN_OR_EQUAL: "greaterThanOrEqual",
+} as const;
+
+/**
  * @summary The keys used for validation
  *
  * @property {string} REFLECT prefixes others
@@ -39,12 +62,7 @@ export const ValidationKeys = {
   PASSWORD: "password",
   LIST: "list",
   FORMAT: "format",
-  EQUALS: "equals",
-  DIFF: "different",
-  LESS_THAN: "lessThan",
-  LESS_THAN_OR_EQUAL: "lessThanOrEqual",
-  GREATER_THAN: "greaterThan",
-  GREATER_THAN_OR_EQUAL: "greaterThanOrEqual",
+  ...ComparisonValidationKeys,
 } as const;
 
 /**
