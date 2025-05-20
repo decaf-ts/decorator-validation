@@ -153,6 +153,26 @@ export interface DateValidatorOptions extends ValidatorOptions {
   [ValidationKeys.FORMAT]?: string;
 }
 
-export interface ComparisonValidatorOptions extends ValidatorOptions {
-  propertyToCompare: string;
+export interface EqualsValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.EQUALS]: string;
+}
+
+export interface DiffValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.DIFF]: string;
+}
+
+export interface LessThanValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.LESS_THAN]: string;
+}
+
+export interface LessThanOrEqualValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.LESS_THAN_OR_EQUAL]: string;
+}
+
+export interface GreaterThanValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.GREATER_THAN]: string;
+}
+
+export interface GreaterThanOrEqualValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.GREATER_THAN_OR_EQUAL]: string;
 }

@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import type { ComparisonValidatorOptions } from "../types";
+import { EqualsValidatorOptions } from "../types";
 import { isEqual } from "@decaf-ts/reflection";
 import { getValueByPath } from "./utils";
 
@@ -16,7 +16,7 @@ import { getValueByPath } from "./utils";
  * @category Validators
  */
 @validator(ValidationKeys.EQUALS)
-export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
+export class EqualsValidator extends Validator<EqualsValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.EQUALS) {
     super(message);
   }
@@ -34,14 +34,14 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
    */
   public hasErrors(
     value: any,
-    options: ComparisonValidatorOptions,
+    options: EqualsValidatorOptions,
     instance: any
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
       comparisonPropertyValue = getValueByPath(
         instance,
-        options.propertyToCompare
+        options[ValidationKeys.EQUALS]
       );
     } catch (e: any) {
       return this.getMessage(e.message || this.message);
@@ -51,7 +51,7 @@ export class EqualsValidator extends Validator<ComparisonValidatorOptions> {
       ? undefined
       : this.getMessage(
           options.message || this.message,
-          options.propertyToCompare
+          options[ValidationKeys.EQUALS]
         );
   }
 }
