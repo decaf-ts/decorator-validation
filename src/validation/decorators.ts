@@ -77,7 +77,7 @@ export function min(
   const key = Validation.key(ValidationKeys.MIN);
   return Decoration.for(key)
     .define(
-      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.MIN), {
+      propMetadata<ValidationMetadata>(key, {
         [ValidationKeys.MIN]: value,
         message: message,
         types: [Number.name, Date.name],
@@ -207,7 +207,7 @@ export function pattern(
   const key = Validation.key(ValidationKeys.PATTERN);
   return Decoration.for(key)
     .define(
-      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.PATTERN), {
+      propMetadata<ValidationMetadata>(key, {
         [ValidationKeys.PATTERN]:
           typeof value === "string" ? value : value.toString(),
         message: message,
@@ -230,7 +230,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
   const key = Validation.key(ValidationKeys.EMAIL);
   return Decoration.for(key)
     .define(
-      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.EMAIL), {
+      propMetadata<ValidationMetadata>(key, {
         [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
         message: message,
         types: [String.name],
@@ -252,7 +252,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
   const key = Validation.key(ValidationKeys.URL);
   return Decoration.for(key)
     .define(
-      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.URL), {
+      propMetadata<ValidationMetadata>(key, {
         [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
         message: message,
         types: [String.name],
@@ -278,7 +278,7 @@ export function type(
   const key = Validation.key(ValidationKeys.TYPE);
   return Decoration.for(key)
     .define(
-      propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.TYPE), {
+      propMetadata<ValidationMetadata>(key, {
         customTypes: types,
         message: message,
       })
