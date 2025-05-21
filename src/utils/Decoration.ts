@@ -121,7 +121,11 @@ export class Decoration implements IDecorationBuilder {
   ): this {
     if (!this.key)
       throw new Error("key must be provided before decorators can be added");
-    if (!addon && !this.decorators && this.flavour !== DefaultFlavour)
+    if (
+      (!decorators || !decorators.length) &&
+      !addon &&
+      this.flavour !== DefaultFlavour
+    )
       throw new Error(
         "Must provide overrides or addons to override or extend decaf's decorators"
       );
@@ -168,7 +172,9 @@ export class Decoration implements IDecorationBuilder {
     ) {
       const flavour = Decoration.flavourResolver(target);
       let decorators;
-      const extras = Decoration.decorators[key][flavour].extras;
+      const extras = Decoration.decorators[key][flavour]
+        ? Decoration.decorators[key][flavour].extras
+        : Decoration.decorators[key][DefaultFlavour].extras;
       if (
         Decoration.decorators[key] &&
         Decoration.decorators[key][flavour] &&

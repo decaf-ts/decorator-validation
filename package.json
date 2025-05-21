@@ -2,10 +2,9 @@
   "name": "@decaf-ts/decorator-validation",
   "version": "1.6.3",
   "description": "simple decorator based validation engine",
-  "type": "module",
   "exports": {
-    "require": "./lib/index.cjs",
-    "import": "./lib/esm/index.js"
+    "require": "./lib/index.js",
+    "import": "./lib/esm/index.mjs"
   },
   "types": "lib/index.d.ts",
   "scripts": {

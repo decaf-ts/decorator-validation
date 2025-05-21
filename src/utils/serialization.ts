@@ -2,6 +2,7 @@ import { Constructor } from "../model/types";
 import { Serializer } from "./types";
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
+import { getMetadata } from "../model/utils";
 
 export const DefaultSerializationMethod = "json";
 
@@ -31,7 +32,7 @@ export class JSONSerializer<T extends Model> implements Serializer<T> {
   protected preSerialize(model: T) {
     // TODO: nested preserialization (so increase performance when deserializing)
     const toSerialize: Record<string, any> = Object.assign({}, model);
-    const metadata = Model.getMetadata(model);
+    const metadata = getMetadata(model);
     toSerialize[ModelKeys.ANCHOR] = metadata || model.constructor.name;
     return toSerialize;
   }

@@ -11,7 +11,7 @@ describe("Distribution Tests", () => {
         Validation,
         MinValidator,
         Validator,
-      } = require("../../lib/index.cjs");
+      } = require("../../lib/index.js");
       expect(ValidationKeys).toBeDefined();
       expect(Validation).toBeDefined();
       expect(MinValidator).toBeDefined();
