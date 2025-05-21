@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import type { ComparisonValidatorOptions } from "../types";
+import { GreaterThanValidatorOptions } from "../types";
 import { getValueByPath, isGreaterThan } from "./utils";
 
 /**
@@ -15,7 +15,7 @@ import { getValueByPath, isGreaterThan } from "./utils";
  * @category Validators
  */
 @validator(ValidationKeys.GREATER_THAN)
-export class GreaterThanValidator extends Validator<ComparisonValidatorOptions> {
+export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN) {
     super(message);
   }
@@ -33,14 +33,14 @@ export class GreaterThanValidator extends Validator<ComparisonValidatorOptions> 
    */
   public hasErrors(
     value: any,
-    options: ComparisonValidatorOptions,
+    options: GreaterThanValidatorOptions,
     instance: any
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
       comparisonPropertyValue = getValueByPath(
         instance,
-        options.propertyToCompare
+        options[ValidationKeys.GREATER_THAN]
       );
     } catch (e: any) {
       return this.getMessage(e.message || this.message);
@@ -50,7 +50,7 @@ export class GreaterThanValidator extends Validator<ComparisonValidatorOptions> 
       if (!isGreaterThan(value, comparisonPropertyValue))
         throw new Error(options.message || this.message);
     } catch (e: any) {
-      return this.getMessage(e.message, options.propertyToCompare);
+      return this.getMessage(e.message, options[ValidationKeys.GREATER_THAN]);
     }
 
     return undefined;

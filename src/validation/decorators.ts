@@ -1,5 +1,13 @@
 import "reflect-metadata";
-import { type ComparisonValidatorOptions, ValidationMetadata } from "./types";
+import {
+  DiffValidatorOptions,
+  EqualsValidatorOptions,
+  GreaterThanOrEqualValidatorOptions,
+  GreaterThanValidatorOptions,
+  LessThanOrEqualValidatorOptions,
+  LessThanValidatorOptions,
+  ValidationMetadata,
+} from "./types";
 import {
   DEFAULT_ERROR_MESSAGES,
   DEFAULT_PATTERNS,
@@ -420,7 +428,7 @@ export function set(
  * @summary Declares that the decorated property must be equal to another specified property.
  * @description Applies the {@link ValidationKeys.EQUALS} validator to ensure the decorated value matches the value of the given property.
  *
- * @param {string} propertyToMatch - The name of the property to compare equality against.
+ * @param {string} propertyToCompare - The name of the property to compare equality against.
  * @param {string} [message=DEFAULT_ERROR_MESSAGES.EQUALS] - Custom error message to return if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the equality validation metadata.
@@ -430,12 +438,12 @@ export function set(
  * @category Decorators
  */
 export function eq(
-  propertyToMatch: string,
+  propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
-  const options: ComparisonValidatorOptions = {
+  const options: EqualsValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToMatch,
+    [ValidationKeys.EQUALS]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -461,9 +469,9 @@ export function diff(
   propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.DIFF
 ) {
-  const options: ComparisonValidatorOptions = {
+  const options: DiffValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToCompare,
+    [ValidationKeys.DIFF]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -489,9 +497,9 @@ export function lt(
   propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN
 ) {
-  const options: ComparisonValidatorOptions = {
+  const options: LessThanValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToCompare,
+    [ValidationKeys.LESS_THAN]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -517,9 +525,9 @@ export function lte(
   propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL
 ) {
-  const options: ComparisonValidatorOptions = {
+  const options: LessThanOrEqualValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToCompare,
+    [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -545,9 +553,9 @@ export function gt(
   propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN
 ) {
-  const options: ComparisonValidatorOptions = {
+  const options: GreaterThanValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToCompare,
+    [ValidationKeys.GREATER_THAN]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -573,9 +581,9 @@ export function gte(
   propertyToCompare: string,
   message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL
 ) {
-  const options: ComparisonValidatorOptions = {
+  const options: GreaterThanOrEqualValidatorOptions = {
     message: message,
-    propertyToCompare: propertyToCompare,
+    [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(

@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import type { ComparisonValidatorOptions } from "../types";
+import { DiffValidatorOptions } from "../types";
 import { isEqual } from "@decaf-ts/reflection";
 import { getValueByPath } from "./utils";
 
@@ -16,7 +16,7 @@ import { getValueByPath } from "./utils";
  * @category Validators
  */
 @validator(ValidationKeys.DIFF)
-export class DiffValidator extends Validator<ComparisonValidatorOptions> {
+export class DiffValidator extends Validator<DiffValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.DIFF) {
     super(message);
   }
@@ -34,14 +34,14 @@ export class DiffValidator extends Validator<ComparisonValidatorOptions> {
    */
   public hasErrors(
     value: any,
-    options: ComparisonValidatorOptions,
+    options: DiffValidatorOptions,
     instance: any
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
       comparisonPropertyValue = getValueByPath(
         instance,
-        options.propertyToCompare
+        options[ValidationKeys.DIFF]
       );
     } catch (e: any) {
       return this.getMessage(e.message || this.message);
@@ -50,7 +50,7 @@ export class DiffValidator extends Validator<ComparisonValidatorOptions> {
     return isEqual(value, comparisonPropertyValue)
       ? this.getMessage(
           options.message || this.message,
-          options.propertyToCompare
+          options[ValidationKeys.DIFF]
         )
       : undefined;
   }

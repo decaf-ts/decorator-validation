@@ -1,7 +1,7 @@
 import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
-import type { ComparisonValidatorOptions } from "../types";
+import { LessThanValidatorOptions } from "../types";
 import { getValueByPath, isLessThan } from "./utils";
 
 /**
@@ -15,7 +15,7 @@ import { getValueByPath, isLessThan } from "./utils";
  * @category Validators
  */
 @validator(ValidationKeys.LESS_THAN)
-export class LessThanValidator extends Validator<ComparisonValidatorOptions> {
+export class LessThanValidator extends Validator<LessThanValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN) {
     super(message);
   }
@@ -33,14 +33,14 @@ export class LessThanValidator extends Validator<ComparisonValidatorOptions> {
    */
   public hasErrors(
     value: any,
-    options: ComparisonValidatorOptions,
+    options: LessThanValidatorOptions,
     instance: any
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
       comparisonPropertyValue = getValueByPath(
         instance,
-        options.propertyToCompare
+        options[ValidationKeys.LESS_THAN]
       );
     } catch (e: any) {
       return this.getMessage(e.message || this.message);
@@ -50,7 +50,7 @@ export class LessThanValidator extends Validator<ComparisonValidatorOptions> {
       if (!isLessThan(value, comparisonPropertyValue))
         throw new Error(options.message || this.message);
     } catch (e: any) {
-      return this.getMessage(e.message, options.propertyToCompare);
+      return this.getMessage(e.message, options[ValidationKeys.LESS_THAN]);
     }
 
     return undefined;
