@@ -17,6 +17,7 @@ import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
+import { getModelKey, getMetadata } from "./utils";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -461,16 +462,8 @@ export abstract class Model
     return Model.getRegistry().build(obj, clazz);
   }
 
-  static getMetadata<V extends Model>(model: V) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.MODEL),
-      model.constructor
-    );
-    if (!metadata)
-      throw new Error(
-        "could not find metadata for provided " + model.constructor.name
-      );
-    return metadata;
+  static getMetadata<M extends Model>(model: M) {
+    return getMetadata<M>(model);
   }
 
   static getAttributes<V extends Model>(model: Constructor<V> | V) {
@@ -528,7 +521,7 @@ export abstract class Model
    * @param {string} str
    */
   static key(str: string) {
-    return ModelKeys.REFLECT + str;
+    return getModelKey(str);
   }
 
   /**
