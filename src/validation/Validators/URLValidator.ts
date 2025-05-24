@@ -13,38 +13,38 @@ import { PatternValidatorOptions } from "../types";
  * It extends the PatternValidator and uses a robust URL regex pattern to validate web addresses.
  * The pattern is sourced from {@link https://gist.github.com/dperini/729294} and is widely
  * recognized for its accuracy in validating URLs. This validator is typically used with the @url decorator.
- * 
+ *
  * @param {string} [message] - Custom error message to display when validation fails, defaults to {@link DEFAULT_ERROR_MESSAGES#URL}
- * 
+ *
  * @class URLValidator
  * @extends PatternValidator
- * 
+ *
  * @example
  * ```typescript
  * // Create a URL validator with default error message
  * const urlValidator = new URLValidator();
- * 
+ *
  * // Create a URL validator with custom error message
  * const customUrlValidator = new URLValidator("Please enter a valid web address");
- * 
+ *
  * // Validate a URL
  * const result = urlValidator.hasErrors("https://example.com"); // undefined (valid)
  * const invalidResult = urlValidator.hasErrors("not-a-url"); // Returns error message (invalid)
  * ```
- * 
+ *
  * @mermaid
  * sequenceDiagram
  *   participant C as Client
  *   participant U as URLValidator
  *   participant P as PatternValidator
- *   
+ *
  *   C->>U: new URLValidator(message)
  *   U->>P: super(message)
  *   C->>U: hasErrors(value, options)
  *   U->>P: super.hasErrors(value, options with URL pattern)
  *   P-->>U: validation result
  *   U-->>C: validation result
- * 
+ *
  * @category Validators
  */
 @validator(ValidationKeys.URL)
@@ -68,7 +68,7 @@ export class URLValidator extends PatternValidator {
    *
    * @see PatternValidator#hasErrors
    */
-  public hasErrors(
+  public override hasErrors(
     value: string,
     options: PatternValidatorOptions = {}
   ): string | undefined {

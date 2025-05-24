@@ -31,7 +31,7 @@ export class PasswordValidator extends PatternValidator {
    *
    * @see PatternValidator#hasErrors
    */
-  public hasErrors(
+  public override hasErrors(
     value: string,
     options: PatternValidatorOptions = {}
   ): string | undefined {
