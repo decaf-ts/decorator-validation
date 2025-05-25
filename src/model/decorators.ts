@@ -48,6 +48,14 @@ export function model(instanceCallback?: InstanceCallback) {
 
     // copy prototype so instanceof operator still works
     newConstructor.prototype = original.prototype;
+
+    Reflect.getMetadataKeys(original).forEach((key) => {
+      Reflect.defineMetadata(
+        key,
+        Reflect.getMetadata(key, original),
+        newConstructor
+      );
+    });
     // Sets the proper constructor name for type verification
     Object.defineProperty(newConstructor, "name", {
       writable: false,
