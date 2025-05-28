@@ -30,7 +30,7 @@ import { Decoration } from "../utils/Decoration";
  * @return {PropertyDecorator} A decorator function that can be applied to class properties
  *
  * @function required
- * @category Decorators
+ * @category Property Decorators
  *
  * @example
  * ```typescript
@@ -65,7 +65,7 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
  * @return {PropertyDecorator} A decorator function that can be applied to class properties
  *
  * @function min
- * @category Decorators
+ * @category Property Decorators
  *
  * @example
  * ```typescript
@@ -102,7 +102,7 @@ export function min(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MAX}
  *
  * @function max
- * @category Decorators
+ * @category Property Decorators
  */
 export function max(
   value: number | Date | string,
@@ -128,7 +128,7 @@ export function max(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#STEP}
  *
  * @function step
- * @category Decorators
+ * @category Property Decorators
  */
 export function step(
   value: number,
@@ -154,7 +154,7 @@ export function step(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MIN_LENGTH}
  *
  * @function minlength
- * @category Decorators
+ * @category Property Decorators
  */
 export function minlength(
   value: number,
@@ -180,7 +180,7 @@ export function minlength(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#MAX_LENGTH}
  *
  * @function maxlength
- * @category Decorators
+ * @category Property Decorators
  */
 export function maxlength(
   value: number,
@@ -206,7 +206,7 @@ export function maxlength(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#PATTERN}
  *
  * @function pattern
- * @category Decorators
+ * @category Property Decorators
  */
 export function pattern(
   value: RegExp | string,
@@ -232,7 +232,7 @@ export function pattern(
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#EMAIL}
  *
  * @function email
- * @category Decorators
+ * @category Property Decorators
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
   const key = Validation.key(ValidationKeys.EMAIL);
@@ -254,7 +254,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#URL}
  *
  * @function url
- * @category Decorators
+ * @category Property Decorators
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
   const key = Validation.key(ValidationKeys.URL);
@@ -277,7 +277,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
  * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#TYPE}
  *
  * @function type
- * @category Decorators
+ * @category Property Decorators
  */
 export function type(
   types: string[] | string,
@@ -305,7 +305,7 @@ export function type(
  *
  * @function date
  *
- * @category Decorators
+ * @category Property Decorators
  */
 export function date(
   format: string = "dd/MM/yyyy",
@@ -359,7 +359,7 @@ export function date(
  *
  * @function password
  *
- * @category Decorators
+ * @category Property Decorators
  */
 export function password(
   pattern: RegExp = DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
@@ -387,7 +387,7 @@ export function password(
  *
  * @function list
  *
- * @category Decorators
+ * @category Property Decorators
  */
 export function list(
   clazz: ModelConstructor<any> | ModelConstructor<any>[],
@@ -415,7 +415,7 @@ export function list(
  *
  * @function set
  *
- * @category Decorators
+ * @category Property Decorators
  */
 export function set(
   clazz: ModelConstructor<any>,
@@ -434,8 +434,7 @@ export function set(
  * @returns {PropertyDecorator} A property decorator used to register the equality validation metadata.
  *
  * @function eq
- * @memberOf module:decorator-validation.Decorators.Validation
- * @category Decorators
+ * @category Property Decorators
  */
 export function eq(
   propertyToCompare: string,
@@ -462,8 +461,7 @@ export function eq(
  * @returns {PropertyDecorator} A property decorator used to register the difference validation metadata.
  *
  * @function diff
- * @memberOf module:decorator-validation.Decorators.Validation
- * @category Decorators
+ * @category Property Decorators
  */
 export function diff(
   propertyToCompare: string,
@@ -490,8 +488,7 @@ export function diff(
  * @returns {PropertyDecorator} A property decorator used to register the less than validation metadata.
  *
  * @function lt
- * @memberOf module:decorator-validation.Decorators.Validation
- * @category Decorators
+ * @category Property Decorators
  */
 export function lt(
   propertyToCompare: string,
@@ -518,8 +515,7 @@ export function lt(
  * @returns {PropertyDecorator} A property decorator used to register the less than or equal validation metadata.
  *
  * @function lte
- * @memberOf module:decorator-validation.Decorators.Validation
- * @category Decorators
+ * @category Property Decorators
  */
 export function lte(
   propertyToCompare: string,
@@ -546,8 +542,7 @@ export function lte(
  * @returns {PropertyDecorator} A property decorator used to register the greater than validation metadata.
  *
  * @function gt
- * @memberOf module:decorator-validation.Decorators.Validation
- * @category Decorators
+ * @category Property Decorators
  */
 export function gt(
   propertyToCompare: string,
@@ -574,8 +569,7 @@ export function gt(
  * @returns {PropertyDecorator} A property decorator used to register the greater than or equal validation metadata.
  *
  * @function gte
- * @memberOf module:decorator-validation.Decorators.Validation
- * @category Decorators
+ * @category Property Decorators
  */
 export function gte(
   propertyToCompare: string,

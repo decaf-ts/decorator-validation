@@ -24,7 +24,7 @@ export type InstanceCallback = (instance: any, ...args: any[]) => void;
  *
  * @function model
  *
- * @category Decorators
+ * @category Class Decorators
  */
 export function model(instanceCallback?: InstanceCallback) {
   return ((original: any) => {
@@ -73,6 +73,21 @@ export function model(instanceCallback?: InstanceCallback) {
   }) as any;
 }
 
+/**
+ * @summary Defines the hashing algorithm to use on the model
+ * @description
+ *
+ * - Registers the class under the model registry so it can be easily rebuilt;
+ * - Overrides the class constructor;
+ * - Runs the global {@link ModelBuilderFunction} if defined;
+ * - Runs the optional {@link InstanceCallback} if provided;
+ *
+ * @param {string} algorithm the algorithm to use
+ *
+ * @function hashedBy
+ *
+ * @category Class Decorators
+ */
 export function hashedBy(algorithm: string, ...args: any[]) {
   return metadata(Model.key(ModelKeys.HASHING), {
     algorithm: algorithm,
@@ -80,6 +95,15 @@ export function hashedBy(algorithm: string, ...args: any[]) {
   });
 }
 
+/**
+ * @summary Defines the serialization algorithm to use on the model
+ *
+ * @param {string} serializer the algorithm to use
+ *
+ * @function serializedBy
+ *
+ * @category Class Decorators
+ */
 export function serializedBy(serializer: string, ...args: any[]) {
   return metadata(Model.key(ModelKeys.SERIALIZATION), {
     serializer: serializer,

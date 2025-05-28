@@ -3,17 +3,19 @@ import { Model } from "./Model";
 /**
  * @summary Helper Function to override constructors
  *
+ * @template M the model instance type
+ *
  * @param {Function} constructor
  * @param {any[]} [args]
- * @return {T} the new instance
+ * @return {M} the new instance
  *
  * @function construct
  * @memberOf module:decorator-validation
  */
-export function construct<T extends Model>(
+export function construct<M extends Model>(
   constructor: any,
   ...args: any[]
-): T {
+): M {
   const _constr = (...argz: any[]) => new constructor(...argz);
   _constr.prototype = constructor.prototype;
   return _constr(...args);

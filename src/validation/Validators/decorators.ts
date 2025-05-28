@@ -13,7 +13,7 @@ import { ValidatorDefinition } from "../types";
  *
  * @function validator
  *
- * @category Decorators
+ * @category Class Decorators
  */
 export function validator<T extends Validator>(...keys: string[]) {
   return apply(

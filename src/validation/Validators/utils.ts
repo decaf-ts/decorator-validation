@@ -13,6 +13,7 @@ import { COMPARISON_ERROR_MESSAGES } from "./constants";
  * @returns {T} - The value found at the specified path
  *
  * @throws {Error} - Throws an error if the path is not a non-empty string or if any part of the path does not exist in the object.
+ * @memberOf module:decorator-validation
  */
 export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
   if (typeof path !== "string" || !path.trim()) {
@@ -102,6 +103,7 @@ const isSupported = (
  * @returns {boolean} True if both values are of supported types.
  *
  * @throws {TypeError} If either value is of an unsupported type.
+ * @memberOf module:decorator-validation
  */
 export function isValidForGteOrLteComparison(a: any, b: any): boolean {
   if (isSupported(a) && isSupported(b)) return true;
@@ -126,6 +128,7 @@ export function isValidForGteOrLteComparison(a: any, b: any): boolean {
  *
  * @throws {Error} If either `a` or `b` is `null` or `undefined`.
  * @throws {TypeError} If values are of mismatched or unsupported types.
+ * @memberOf module:decorator-validation
  */
 export function isLessThan(a: any, b: any): boolean {
   if ([null, undefined].includes(a) || [null, undefined].includes(b))
@@ -181,6 +184,7 @@ export function isLessThan(a: any, b: any): boolean {
  *
  * @throws {Error} If either `a` or `b` is `null` or `undefined`.
  * @throws {TypeError} If values are of mismatched or unsupported types.
+ * @memberOf module:decorator-validation
  */
 export function isGreaterThan(a: any, b: any): boolean {
   if ([null, undefined].includes(a) || [null, undefined].includes(b))
