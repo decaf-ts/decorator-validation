@@ -9,4 +9,10 @@ export * from "./utils";
 export * from "./validation";
 export * from "./model";
 
+/**
+ * @description Current version of the reflection package
+ * @summary Stores the semantic version number of the package
+ * @const VERSION
+ * @memberOf module:decorator-validation
+ */
 export const VERSION = "##VERSION##";
