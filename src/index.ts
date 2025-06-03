@@ -5,6 +5,7 @@
  * It exposes utility functions, validation decorators, and model-related functionality for
  * implementing type-safe, declarative validation in TypeScript applications.
  */
+export * from "./constants";
 export * from "./utils";
 export * from "./validation";
 export * from "./model";
