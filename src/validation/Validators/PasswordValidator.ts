@@ -1,5 +1,9 @@
 import { PatternValidator } from "./PatternValidator";
-import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
+import {
+  DEFAULT_ERROR_MESSAGES,
+  DEFAULT_PATTERNS,
+  ValidationKeys,
+} from "./constants";
 import { validator } from "./decorators";
 import { PatternValidatorOptions } from "../types";
 
@@ -38,6 +42,8 @@ export class PasswordValidator extends PatternValidator {
     return super.hasErrors(value, {
       ...options,
       message: options.message || this.message,
+      [ValidationKeys.PATTERN]:
+        options?.pattern || DEFAULT_PATTERNS.PASSWORD.CHAR8_ONE_OF_EACH,
     });
   }
 }

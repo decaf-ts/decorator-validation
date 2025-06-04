@@ -73,6 +73,7 @@ export class EmailValidator extends PatternValidator {
   ): string | undefined {
     return super.hasErrors(value, {
       ...options,
+      message: options.message || this.message,
       pattern: options?.pattern || DEFAULT_PATTERNS.EMAIL,
     });
   }
