@@ -122,6 +122,6 @@ export class PathProxyEngine {
   private static parsePath(path: string): string[] {
     if (typeof path !== "string" || !path.trim())
       throw new Error(sf(COMPARISON_ERROR_MESSAGES.INVALID_PATH, path));
-    return path.match(/(\.\.|[^\/.]+)/g) || [];
+    return path.match(/(\.\.|[^/.]+)/g) || [];
   }
 }
