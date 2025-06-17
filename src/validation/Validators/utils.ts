@@ -1,73 +1,72 @@
-import { VALIDATION_PARENT_KEY } from "../../constants";
-import { sf } from "../../utils/strings";
-import { COMPARISON_ERROR_MESSAGES } from "./constants";
+import { COMPARISON_ERROR_MESSAGES } from "../../constants";
+import { sf } from "../../utils";
 
-/**
- * Safely retrieves a nested property value from an object using a dot-notated path string.
- *
- * @template T - The expected return type of the property value.
- *
- * @param {Record<string, any>} obj - The source object to retrieve the value from.
- * @param {string} path - A dot-separated string representing the path to the desired property (e.g., "user.address.street").
- *
- * @returns {T} - The value found at the specified path
- *
- * @throws {Error} - Throws an error if the path is not a non-empty string or if any part of the path does not exist in the object.
- * @memberOf module:decorator-validation
- */
-export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
-  if (typeof path !== "string" || !path.trim()) {
-    throw new Error(sf(COMPARISON_ERROR_MESSAGES.INVALID_PATH, path));
-  }
-
-  // Process parent directory access (../)
-  const parentAccessors = path.match(/\.\.\//g) || [];
-  const parentLevel = parentAccessors.length;
-  const cleanPath = path.replace(/\.\.\//g, "");
-
-  // Navigate up the parent chain
-  let currentContext: any = obj;
-  for (let i = 0; i < parentLevel; i++) {
-    if (!currentContext || typeof currentContext !== "object") {
-      throw new Error(
-        sf(COMPARISON_ERROR_MESSAGES.CONTEXT_NOT_OBJECT_COMPARISON, i + 1, path)
-      );
-    }
-
-    if (!currentContext[VALIDATION_PARENT_KEY]) {
-      throw new Error(
-        sf(COMPARISON_ERROR_MESSAGES.NO_PARENT_COMPARISON, i + 1, path)
-      );
-    }
-
-    currentContext = currentContext[VALIDATION_PARENT_KEY];
-  }
-
-  // Process dot notation path
-  const parts = cleanPath.split(".");
-  let currentValue: any = currentContext;
-
-  for (const part of parts) {
-    if (
-      currentValue !== null &&
-      typeof currentValue === "object" &&
-      part in currentValue
-    ) {
-      currentValue = (currentValue as Record<string, any>)[part];
-    } else {
-      const errorMsgTemplate =
-        parentLevel === 0
-          ? COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND
-          : parentLevel === 1
-            ? COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_ON_PARENT
-            : COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_AFTER_PARENT;
-
-      throw new Error(sf(errorMsgTemplate, path, part, parentLevel));
-    }
-  }
-
-  return currentValue as T;
-}
+// /**
+//  * Safely retrieves a nested property value from an object using a dot-notated path string.
+//  *
+//  * @template T - The expected return type of the property value.
+//  *
+//  * @param {Record<string, any>} obj - The source object to retrieve the value from.
+//  * @param {string} path - A dot-separated string representing the path to the desired property (e.g., "user.address.street").
+//  *
+//  * @returns {T} - The value found at the specified path
+//  *
+//  * @throws {Error} - Throws an error if the path is not a non-empty string or if any part of the path does not exist in the object.
+//  * @memberOf module:decorator-validation
+//  */
+// export function getValueByPath<T>(obj: Record<string, any>, path: string): T {
+//   if (typeof path !== "string" || !path.trim()) {
+//     throw new Error(sf(COMPARISON_ERROR_MESSAGES.INVALID_PATH, path));
+//   }
+//
+//   // Process parent directory access (../)
+//   const parentAccessors = path.match(/\.\.\//g) || [];
+//   const parentLevel = parentAccessors.length;
+//   const cleanPath = path.replace(/\.\.\//g, "");
+//
+//   // Navigate up the parent chain
+//   let currentContext: any = obj;
+//   for (let i = 0; i < parentLevel; i++) {
+//     if (!currentContext || typeof currentContext !== "object") {
+//       throw new Error(
+//         sf(COMPARISON_ERROR_MESSAGES.CONTEXT_NOT_OBJECT_COMPARISON, i + 1, path)
+//       );
+//     }
+//
+//     if (!currentContext[VALIDATION_PARENT_KEY]) {
+//       throw new Error(
+//         sf(COMPARISON_ERROR_MESSAGES.NO_PARENT_COMPARISON, i + 1, path)
+//       );
+//     }
+//
+//     currentContext = currentContext[VALIDATION_PARENT_KEY];
+//   }
+//
+//   // Process dot notation path
+//   const parts = cleanPath.split(".");
+//   let currentValue: any = currentContext;
+//
+//   for (const part of parts) {
+//     if (
+//       currentValue !== null &&
+//       typeof currentValue === "object" &&
+//       part in currentValue
+//     ) {
+//       currentValue = (currentValue as Record<string, any>)[part];
+//     } else {
+//       const errorMsgTemplate =
+//         parentLevel === 0
+//           ? COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND
+//           : parentLevel === 1
+//             ? COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_ON_PARENT
+//             : COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_AFTER_PARENT;
+//
+//       throw new Error(sf(errorMsgTemplate, path, part, parentLevel));
+//     }
+//   }
+//
+//   return currentValue as T;
+// }
 
 const getTypeName = (value: unknown): string => {
   if (value === null) return "null";
