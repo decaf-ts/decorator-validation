@@ -1,12 +1,12 @@
 import {
   COMPARISON_ERROR_MESSAGES,
-  getValueByPath,
   isGreaterThan,
   isLessThan,
   isValidForGteOrLteComparison,
+  PathProxyEngine,
   sf,
+  VALIDATION_PARENT_KEY,
 } from "../../src";
-import { VALIDATION_PARENT_KEY } from "../../src/constants";
 
 describe("Validation Utils", () => {
   describe("getValueByPath", () => {
@@ -56,88 +56,94 @@ describe("Validation Utils", () => {
 
     (testObj.array[1].deep as any)[VALIDATION_PARENT_KEY] = testObj.array[1];
 
+    const proxy = PathProxyEngine.create(testObj);
+
     it("should get direct property", () => {
-      expect(getValueByPath(testObj, "name")).toBe("Test Object");
+      expect(proxy.getValueFromPath("name")).toBe("Test Object");
     });
 
     it("should get nested property", () => {
-      expect(getValueByPath(testObj, "nested.value")).toBe("Nested Value");
+      expect(proxy.getValueFromPath("nested.value")).toBe("Nested Value");
     });
 
     it("should get array element from nested property", () => {
-      expect(getValueByPath(testObj, "nested.array.2")).toBe(300);
+      expect(proxy.getValueFromPath("nested.array.2")).toBe(300);
     });
 
     it("should access parent value", () => {
-      expect(getValueByPath(testObj, "../name")).toBe("Parent");
-      expect(getValueByPath(testObj, "../value")).toBe("parent.value");
+      expect(proxy.getValueFromPath("../name")).toBe("Parent");
+      expect(proxy.getValueFromPath("../value")).toBe("parent.value");
     });
 
     it("should access grandparent value", () => {
-      expect(getValueByPath(testObj, "../../name")).toBe("Grandparent");
-      expect(getValueByPath(testObj, "../../value")).toBe("Root Value");
+      expect(proxy.getValueFromPath("../../name")).toBe("Grandparent");
+      expect(proxy.getValueFromPath("../../value")).toBe("Root Value");
     });
 
     it("should combine parent access and normal path", () => {
-      expect(getValueByPath(testObj, "../child.value")).toBe(
+      expect(proxy.getValueFromPath("../child.value")).toBe(
         "parent.child.value"
       );
     });
 
     it("should work with array indices", () => {
-      expect(getValueByPath(testObj, "array.1.id")).toBe(2);
-      expect(getValueByPath(testObj, "array.1.name")).toBe("Second");
+      expect(proxy.getValueFromPath("array.1.id")).toBe(2);
+      expect(proxy.getValueFromPath("array.1.name")).toBe("Second");
     });
 
     it("should work with parent access from array items", () => {
-      expect(getValueByPath(testObj, "../array.0.id")).toBe("P0");
-      expect(getValueByPath(testObj, "../array.0.name")).toBe("Parent Item 0");
+      expect(proxy.getValueFromPath("../array.0.id")).toBe("P0");
+      expect(proxy.getValueFromPath("../array.0.name")).toBe("Parent Item 0");
     });
 
     it("should work with grandparent access from array items", () => {
-      expect(getValueByPath(testObj, "../../array.1.id")).toBe("GP1");
-      expect(getValueByPath(testObj, "../../array.1.name")).toBe(
+      expect(proxy.getValueFromPath("../../array.1.id")).toBe("GP1");
+      expect(proxy.getValueFromPath("../../array.1.name")).toBe(
         "GrandParent id GP1"
       );
     });
 
     it("should throw for non-existent property", () => {
-      expect(() => getValueByPath(testObj, "nonexistent")).toThrow(
-        "Failed to resolve path nonexistent: property 'nonexistent' does not exist."
+      expect(() => proxy.getValueFromPath("nonexistent")).toThrow(
+        "Failed to resolve path: property 'nonexistent' does not exist."
       );
     });
 
     it("should throw for too many parent accesses", () => {
-      expect(() => getValueByPath(testObj, "../../../tooFar")).toThrow(
-        "Unable to access parent at level 3 for path '../../../tooFar': no parent available"
+      expect(() => proxy.getValueFromPath("../../../tooFar")).toThrow(
+        "Unable to access parent at level 3 for path '../../../tooFar': current context is not an object"
       );
     });
 
     it("should throw for invalid path type", () => {
-      expect(() => getValueByPath(testObj, 123 as any)).toThrow(
+      expect(() => proxy.getValueFromPath(123 as any)).toThrow(
         "Invalid path argument. Expected non-empty string but received: '123'"
       );
     });
 
     it("should throw for empty path", () => {
-      expect(() => getValueByPath(testObj, "")).toThrow(
+      expect(() => proxy.getValueFromPath("")).toThrow(
         "Invalid path argument. Expected non-empty string but received: ''"
       );
 
-      expect(() => getValueByPath(testObj, " ")).toThrow(
+      expect(() => proxy.getValueFromPath(" ")).toThrow(
         "Invalid path argument. Expected non-empty string but received: ' '"
       );
     });
 
     it("should throw when parent access is undefined", () => {
-      const badObj = { test: "value", [VALIDATION_PARENT_KEY]: undefined };
-      expect(() => getValueByPath(badObj, "../test")).toThrow(
-        "Unable to access parent at level 1 for path '../test': no parent available"
+      const badProxy = PathProxyEngine.create({
+        test: "value",
+        [VALIDATION_PARENT_KEY]: undefined,
+      });
+      expect(() => badProxy.getValueFromPath("../test")).toThrow(
+        "Unable to access parent at level 1 for path '../test': current context is not an object"
       );
     });
 
     it("should throw when access hits non-object", () => {
-      expect(() => getValueByPath("not-an-object" as any, "../test")).toThrow(
+      const badProxy = PathProxyEngine.create("not-an-object" as any);
+      expect(() => badProxy.getValueFromPath("../test")).toThrow(
         "Unable to access parent at level 1 for path '../test': current context is not an object"
       );
     });
@@ -147,13 +153,17 @@ describe("Validation Utils", () => {
         test: "value",
         [VALIDATION_PARENT_KEY]: "not-an-object",
       };
-      expect(() => getValueByPath(badObj, "../test")).toThrow(
-        "Failed to resolve path ../test: property 'test' does not exist on parent."
+      const badProxy = PathProxyEngine.create(badObj);
+
+      expect(() => badProxy.getValueFromPath("../test")).toThrow(
+        "Unable to access parent at level 1 for path '../test': current context is not an object"
       );
 
-      const grandparentBadObj = { [VALIDATION_PARENT_KEY]: badObj };
-      expect(() => getValueByPath(grandparentBadObj, "../../test")).toThrow(
-        "Failed to resolve path ../../test: property 'test' does not exist after 2 parent level(s)."
+      const grandparentBadProxy = PathProxyEngine.create({
+        [VALIDATION_PARENT_KEY]: badObj,
+      });
+      expect(() => grandparentBadProxy.getValueFromPath("../../test")).toThrow(
+        "Unable to access parent at level 2 for path '../../test': current context is not an object"
       );
     });
   });
