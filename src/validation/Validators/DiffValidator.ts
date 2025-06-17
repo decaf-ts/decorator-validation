@@ -3,7 +3,7 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { DiffValidatorOptions } from "../types";
 import { isEqual } from "@decaf-ts/reflection";
-import { getValueByPath } from "./utils";
+import type { PathProxy } from "../../utils";
 
 /**
  * @summary Diff Validator
@@ -25,7 +25,8 @@ export class DiffValidator extends Validator<DiffValidatorOptions> {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {ComparisonValidatorOptions} options
+   * @param {DiffValidatorOptions} options
+   * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
    *
@@ -35,12 +36,11 @@ export class DiffValidator extends Validator<DiffValidatorOptions> {
   public hasErrors(
     value: any,
     options: DiffValidatorOptions,
-    instance: any
+    accessor: PathProxy<any>
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
-      comparisonPropertyValue = getValueByPath(
-        instance,
+      comparisonPropertyValue = accessor.getValueFromPath(
         options[ValidationKeys.DIFF]
       );
     } catch (e: any) {

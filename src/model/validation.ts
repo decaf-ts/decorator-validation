@@ -12,6 +12,7 @@ import {
   ValidationPropertyDecoratorDefinition,
   ValidatorOptions,
 } from "../validation/types";
+import { PathProxyEngine } from "../utils/PathProxy";
 
 /**
  * @summary Analyses the decorations of the properties and validates the obj according to them
@@ -79,7 +80,7 @@ export function validate<M extends Model>(
       const err: string | undefined = validator.hasErrors(
         (obj as any)[prop.toString()],
         decoratorProps as ValidatorOptions,
-        obj // TODO: Assert type and deep Object.freeze
+        PathProxyEngine.create(obj, { ignoreUndefined: true, ignoreNull: true })
       );
 
       if (err) {

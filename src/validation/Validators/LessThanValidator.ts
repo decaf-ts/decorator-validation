@@ -2,7 +2,8 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { LessThanValidatorOptions } from "../types";
-import { getValueByPath, isLessThan } from "./utils";
+import { isLessThan } from "./utils";
+import type { PathProxy } from "../../utils/PathProxy";
 
 /**
  * @summary Less Than Validator
@@ -24,7 +25,8 @@ export class LessThanValidator extends Validator<LessThanValidatorOptions> {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {ComparisonValidatorOptions} options
+   * @param {LessThanValidatorOptions} options
+   * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
    *
@@ -34,12 +36,11 @@ export class LessThanValidator extends Validator<LessThanValidatorOptions> {
   public hasErrors(
     value: any,
     options: LessThanValidatorOptions,
-    instance: any
+    accessor: PathProxy
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
-      comparisonPropertyValue = getValueByPath(
-        instance,
+      comparisonPropertyValue = accessor.getValueFromPath(
         options[ValidationKeys.LESS_THAN]
       );
     } catch (e: any) {

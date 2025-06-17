@@ -2,6 +2,7 @@ import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { sf } from "../../utils/strings";
 import { Reflection } from "@decaf-ts/reflection";
 import { ValidatorOptions } from "../types";
+import type { PathProxy } from "../../utils";
 
 /**
  * @description Abstract base class for all validators in the validation framework
@@ -125,7 +126,7 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
    * @template V - Type of the options object that can be passed to the validator
    * @param {any} value - The value to validate
    * @param {V} [options] - Optional configuration options for customizing validation behavior
-   *
+   * @param {PathProxy<any>} proxy -
    * @return {string | undefined} Error message if validation fails, undefined if validation passes
    *
    * @abstract
@@ -135,7 +136,7 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
   public abstract hasErrors(
     value: any,
     options?: V,
-    instanceObj?: any
+    proxy?: PathProxy<any>
   ): string | undefined;
 
   /**

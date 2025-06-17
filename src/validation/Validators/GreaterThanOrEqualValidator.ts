@@ -2,12 +2,9 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { GreaterThanOrEqualValidatorOptions } from "../types";
-import {
-  getValueByPath,
-  isGreaterThan,
-  isValidForGteOrLteComparison,
-} from "./utils";
+import { isGreaterThan, isValidForGteOrLteComparison } from "./utils";
 import { isEqual } from "@decaf-ts/reflection";
+import type { PathProxy } from "../../utils/PathProxy";
 
 /**
  * @summary Greater Than or Equal Validator
@@ -29,7 +26,8 @@ export class GreaterThanOrEqualValidator extends Validator<GreaterThanOrEqualVal
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {ComparisonValidatorOptions} options
+   * @param {GreaterThanOrEqualValidatorOptions} options
+   * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
    *
@@ -39,12 +37,11 @@ export class GreaterThanOrEqualValidator extends Validator<GreaterThanOrEqualVal
   public hasErrors(
     value: any,
     options: GreaterThanOrEqualValidatorOptions,
-    instance: any
+    accessor: PathProxy<any>
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
-      comparisonPropertyValue = getValueByPath(
-        instance,
+      comparisonPropertyValue = accessor.getValueFromPath(
         options[ValidationKeys.GREATER_THAN_OR_EQUAL]
       );
     } catch (e: any) {

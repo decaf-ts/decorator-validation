@@ -3,7 +3,7 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { EqualsValidatorOptions } from "../types";
 import { isEqual } from "@decaf-ts/reflection";
-import { getValueByPath } from "./utils";
+import type { PathProxy } from "../../utils";
 
 /**
  * @summary Equals Validator
@@ -25,7 +25,8 @@ export class EqualsValidator extends Validator<EqualsValidatorOptions> {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {ComparisonValidatorOptions} options
+   * @param {EqualsValidatorOptions} options
+   * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
    *
@@ -35,12 +36,11 @@ export class EqualsValidator extends Validator<EqualsValidatorOptions> {
   public hasErrors(
     value: any,
     options: EqualsValidatorOptions,
-    instance: any
+    accessor: PathProxy<any>
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
-      comparisonPropertyValue = getValueByPath(
-        instance,
+      comparisonPropertyValue = accessor.getValueFromPath(
         options[ValidationKeys.EQUALS]
       );
     } catch (e: any) {

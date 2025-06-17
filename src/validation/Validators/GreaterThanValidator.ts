@@ -2,7 +2,8 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { GreaterThanValidatorOptions } from "../types";
-import { getValueByPath, isGreaterThan } from "./utils";
+import { isGreaterThan } from "./utils";
+import type { PathProxy } from "../../utils/PathProxy";
 
 /**
  * @summary Greater Than Validator
@@ -24,7 +25,8 @@ export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions>
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {ComparisonValidatorOptions} options
+   * @param {GreaterThanValidatorOptions} options
+   * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
    *
@@ -34,12 +36,11 @@ export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions>
   public hasErrors(
     value: any,
     options: GreaterThanValidatorOptions,
-    instance: any
+    accessor: PathProxy<any>
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
-      comparisonPropertyValue = getValueByPath(
-        instance,
+      comparisonPropertyValue = accessor.getValueFromPath(
         options[ValidationKeys.GREATER_THAN]
       );
     } catch (e: any) {
