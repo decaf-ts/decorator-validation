@@ -1,3 +1,4 @@
+import type { ModelArg } from "../../src";
 import {
   COMPARISON_ERROR_MESSAGES,
   date,
@@ -12,10 +13,9 @@ import {
   required,
   sf,
   type,
+  VALIDATION_PARENT_KEY,
   ValidationKeys,
 } from "../../src";
-import type { ModelArg } from "../../src";
-import { VALIDATION_PARENT_KEY } from "../../src/constants";
 
 describe("Comparison Validators", () => {
   const initialDate = new Date();
@@ -106,11 +106,7 @@ describe("Comparison Validators", () => {
       expect(instance.hasErrors()).toEqual({
         child: {
           elementValue: {
-            equals: sf(
-              COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_FOUND_ON_PARENT,
-              "../parentArray.4",
-              "4"
-            ),
+            equals: sf(COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST, "4"),
           },
         },
       });
@@ -272,8 +268,10 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.stringValue).toEqual({
-          [ValidationKeys.EQUALS]:
-            "Failed to resolve path mirror.stringValue: property 'stringValue' does not exist.",
+          [ValidationKeys.EQUALS]: sf(
+            COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST,
+            "stringValue"
+          ),
         });
         expect(Object.keys(errors || {}).length).toEqual(1);
       });
@@ -377,8 +375,10 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.stringValue).toEqual({
-          [ValidationKeys.DIFF]:
-            "Failed to resolve path mirror.stringValue: property 'stringValue' does not exist.",
+          [ValidationKeys.DIFF]: sf(
+            COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST,
+            "stringValue"
+          ),
         });
         expect(Object.keys(errors || {}).length).toEqual(1);
       });
@@ -486,8 +486,10 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.numberValue).toEqual({
-          [ValidationKeys.LESS_THAN]:
-            "Failed to resolve path mirror.invalidField: property 'invalidField' does not exist.",
+          [ValidationKeys.LESS_THAN]: sf(
+            COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST,
+            "invalidField"
+          ),
         });
         expect(Object.keys(errors || {}).length).toEqual(1);
       });
@@ -609,8 +611,10 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.numberValue).toEqual({
-          [ValidationKeys.GREATER_THAN]:
-            "Failed to resolve path mirror.inexistentField: property 'inexistentField' does not exist.",
+          [ValidationKeys.GREATER_THAN]: sf(
+            COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST,
+            "inexistentField"
+          ),
         });
       });
     });
@@ -723,8 +727,10 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.numberValue).toEqual({
-          [ValidationKeys.GREATER_THAN_OR_EQUAL]:
-            "Failed to resolve path mirror.invalidField: property 'invalidField' does not exist.",
+          [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST,
+            "invalidField"
+          ),
         });
         expect(Object.keys(errors || {}).length).toEqual(1);
       });
@@ -838,8 +844,10 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.numberValue).toEqual({
-          [ValidationKeys.LESS_THAN_OR_EQUAL]:
-            "Failed to resolve path mirror.invalidField: property 'invalidField' does not exist.",
+          [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+            COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST,
+            "invalidField"
+          ),
         });
         expect(Object.keys(errors || {}).length).toEqual(1);
       });
