@@ -68,7 +68,9 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
 
     if (acceptedTypes.length) this.acceptedTypes = acceptedTypes;
     if (this.acceptedTypes)
-      this.hasErrors = this.checkTypeAndHasErrors(this.hasErrors.bind(this));
+      this.hasErrors = this.checkTypeAndHasErrors(
+        this.hasErrors.bind(this)
+      ) as any;
   }
 
   /**
@@ -102,17 +104,19 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
     return function (
       this: Validator,
       value: any,
+      options: ValidatorOptions,
+      proxy?: PathProxy<any>,
       ...args: any[]
-    ): string | undefined {
+    ) {
       if (value === undefined || !this.acceptedTypes)
-        return unbound(value, ...args);
+        return unbound(value, options, proxy, ...args);
       if (!Reflection.checkTypes(value, this.acceptedTypes))
         return this.getMessage(
           DEFAULT_ERROR_MESSAGES.TYPE,
           this.acceptedTypes.join(", "),
           typeof value
         );
-      return unbound(value, ...args);
+      return unbound(value, options, proxy, ...args);
     }.bind(this);
   }
 
@@ -133,11 +137,11 @@ export abstract class Validator<V extends ValidatorOptions = ValidatorOptions> {
    *
    * @see Model#validate
    */
-  public abstract hasErrors(
+  public abstract hasErrors<Async extends boolean = false>(
     value: any,
     options?: V,
     proxy?: PathProxy<any>
-  ): string | undefined;
+  ): Async extends true ? Promise<string | undefined> : string | undefined;
 
   /**
    * @summary Duck typing for Validators
