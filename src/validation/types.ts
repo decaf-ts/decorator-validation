@@ -260,6 +260,18 @@ export interface ListValidatorOptions extends ValidatorOptions {
 }
 
 /**
+ * @description Unique validation options interface
+ * @summary Defines options for unique validation
+ * @interface UniqueValidatorOptions
+ * @property {string} unique - Array of allowed class names or types
+ * @memberOf module:decorator-validation
+ * @category Validation
+ */
+export interface UniqueValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.UNIQUE]: string;
+}
+
+/**
  * @description Date validation options interface
  * @summary Defines options for date validation
  * @interface DateValidatorOptions
