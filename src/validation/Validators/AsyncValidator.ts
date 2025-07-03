@@ -1,6 +1,7 @@
-import { ValidatorOptions } from "../types";
+import type { ValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
-import { Validator } from "./Validator";
+import { BaseValidator } from "./BaseValidator";
+import { DEFAULT_ERROR_MESSAGES } from "./constants";
 
 /**
  * @description
@@ -55,10 +56,16 @@ import { Validator } from "./Validator";
  *
  * @see {@link Validator} For the base synchronous validator.
  */
-
 export abstract class AsyncValidator<
   V extends ValidatorOptions,
-> extends Validator<V> {
+> extends BaseValidator<V, true> {
+  protected constructor(
+    message: string = DEFAULT_ERROR_MESSAGES.DEFAULT,
+    ...acceptedTypes: string[]
+  ) {
+    super(true, message, ...acceptedTypes);
+  }
+
   /**
    * @description
    * Asynchronously validates a value.
@@ -71,7 +78,6 @@ export abstract class AsyncValidator<
    *
    * @see {@link Validator}
    */
-  // @ts-expect-error Override forces async-only behavior
   public abstract override hasErrors(
     value: any,
     options?: V,
