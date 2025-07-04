@@ -18,6 +18,7 @@ import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
 import { getModelKey, getMetadata } from "./utils";
+import { ConditionalAsync } from "../validation";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -191,11 +192,15 @@ export function bulkModelRegister<M extends Model>(
  *          optionalPropertyName?: PropertyType;
  *      }
  */
-export abstract class Model
-  implements Validatable, Serializable, Hashable, Comparable<Model>
+export abstract class Model<Async extends boolean = false>
+  implements
+    Validatable<Async>,
+    Serializable,
+    Hashable,
+    Comparable<Model<Async>>
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected constructor(arg?: ModelArg<Model>) {}
+  protected constructor(arg?: ModelArg<Model<Async>>) {}
 
   /**
    * @description Validates the model object against its defined validation rules
@@ -204,8 +209,10 @@ export abstract class Model
    * @param {any[]} [exceptions] - Properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    * @return {ModelErrorDefinition | undefined} - Returns a ModelErrorDefinition object if validation errors exist, otherwise undefined
    */
-  public hasErrors(...exceptions: any[]): ModelErrorDefinition | undefined {
-    return validate(this, ...exceptions);
+  public hasErrors(
+    ...exceptions: any[]
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
+    return validate<Async, any>(this, ...exceptions);
   }
 
   /**
@@ -223,7 +230,7 @@ export abstract class Model
   /**
    * @description Converts the model to a serialized string representation
    * @summary Returns the serialized model according to the currently defined {@link Serializer}
-   * 
+   *
    * @return {string} - The serialized string representation of the model
    */
   serialize(): string {
@@ -233,7 +240,7 @@ export abstract class Model
   /**
    * @description Provides a human-readable string representation of the model
    * @summary Override the implementation for js's 'toString()' to provide a more useful representation
-   * 
+   *
    * @return {string} - A string representation of the model including its class name and JSON representation
    * @override
    */
@@ -244,7 +251,7 @@ export abstract class Model
   /**
    * @description Generates a hash string for the model object
    * @summary Defines a default implementation for object hash, relying on a basic implementation based on Java's string hash
-   * 
+   *
    * @return {string} - A hash string representing the model
    */
   public hash(): string {
@@ -302,14 +309,14 @@ export abstract class Model
    * @param {T} self - The target model instance to update
    * @param {T | Record<string, any>} [obj] - The source object containing properties to copy
    * @return {T} - The updated model instance with rebuilt nested models
-   * 
+   *
    * @mermaid
    * sequenceDiagram
    *   participant C as Client
    *   participant M as Model.fromModel
    *   participant B as Model.build
    *   participant R as Reflection
-   *   
+   *
    *   C->>M: fromModel(self, obj)
    *   M->>M: Get attributes from self
    *   loop For each property
@@ -490,10 +497,10 @@ export abstract class Model
    * @param {ModelConstructor<T>} constructor - The model constructor to register
    * @param {string} [name] - Optional name to register the constructor under, defaults to constructor.name
    * @return {void}
-   * 
+   *
    * @see ModelRegistry
    */
-  static register<T extends Model>(
+  static register<T extends Model<true | false>>(
     constructor: ModelConstructor<T>,
     name?: string
   ): void {
@@ -507,10 +514,12 @@ export abstract class Model
    * @template T
    * @param {string} name - The name of the model constructor to retrieve
    * @return {ModelConstructor<T> | undefined} - The model constructor if found, undefined otherwise
-   * 
+   *
    * @see ModelRegistry
    */
-  static get<T extends Model>(name: string): ModelConstructor<T> | undefined {
+  static get<T extends Model<true | false>>(
+    name: string
+  ): ModelConstructor<T> | undefined {
     return Model.getRegistry().get(name);
   }
 
@@ -526,7 +535,7 @@ export abstract class Model
    *
    * @see ModelRegistry
    */
-  static build<T extends Model>(
+  static build<T extends Model<true | false>>(
     obj: Record<string, any> = {},
     clazz?: string
   ): T {
@@ -541,7 +550,7 @@ export abstract class Model
    * @param {M} model - The model instance to get metadata from
    * @return {string} - The model metadata (typically the class name)
    */
-  static getMetadata<M extends Model>(model: M) {
+  static getMetadata<M extends Model<true | false>>(model: M) {
     return getMetadata<M>(model);
   }
 
@@ -553,7 +562,9 @@ export abstract class Model
    * @param {Constructor<V> | V} model - The model class or instance to get attributes from
    * @return {string[]} - Array of attribute names defined in the model
    */
-  static getAttributes<V extends Model>(model: Constructor<V> | V) {
+  static getAttributes<V extends Model<true | false>>(
+    model: Constructor<V> | V
+  ) {
     const result: string[] = [];
     let prototype =
       model instanceof Model
@@ -579,7 +590,11 @@ export abstract class Model
    * @param {any[]} [exceptions] - Property names to exclude from comparison
    * @return {boolean} - True if the models are equal, false otherwise
    */
-  static equals<M extends Model>(obj1: M, obj2: M, ...exceptions: any[]) {
+  static equals<M extends Model<true | false>>(
+    obj1: M,
+    obj2: M,
+    ...exceptions: any[]
+  ) {
     return isEqual(obj1, obj2, ...exceptions);
   }
 
@@ -592,8 +607,11 @@ export abstract class Model
    * @param {string[]} [propsToIgnore] - Properties to exclude from validation
    * @return {ModelErrorDefinition | undefined} - Returns validation errors if any, otherwise undefined
    */
-  static hasErrors<M extends Model>(model: M, ...propsToIgnore: string[]) {
-    return validate(model, ...propsToIgnore);
+  static hasErrors<Async extends boolean, M extends Model<Async>>(
+    model: M,
+    ...propsToIgnore: string[]
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
+    return validate<Async, any>(model, ...propsToIgnore);
   }
 
   /**
@@ -604,7 +622,7 @@ export abstract class Model
    * @param {M} model - The model instance to serialize
    * @return {string} - The serialized string representation of the model
    */
-  static serialize<M extends Model>(model: M) {
+  static serialize<M extends Model<true | false>>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.SERIALIZATION),
       model.constructor
@@ -627,7 +645,7 @@ export abstract class Model
    * @param {M} model - The model instance to hash
    * @return {string} - The hash string representing the model
    */
-  static hash<M extends Model>(model: M) {
+  static hash<M extends Model<true | false>>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.HASHING),
       model.constructor
@@ -689,7 +707,7 @@ export abstract class Model
    * @return {boolean | string | undefined} - Returns true if the property is a model instance,
    * the model name if the property has a model type, or undefined if not a model
    */
-  static isPropertyModel<M extends Model>(
+  static isPropertyModel<M extends Model<true | false>>(
     target: M,
     attribute: string
   ): boolean | string | undefined {
