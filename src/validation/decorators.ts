@@ -49,6 +49,7 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
     .define(
       propMetadata<ValidationMetadata>(key, {
         message: message,
+        async: false,
       })
     )
     .apply();
@@ -89,6 +90,7 @@ export function min(
         [ValidationKeys.MIN]: value,
         message: message,
         types: [Number.name, Date.name],
+        async: false,
       })
     )
     .apply();
@@ -115,6 +117,7 @@ export function max(
         [ValidationKeys.MAX]: value,
         message: message,
         types: [Number.name, Date.name],
+        async: false,
       })
     )
     .apply();
@@ -141,6 +144,7 @@ export function step(
         [ValidationKeys.STEP]: value,
         message: message,
         types: [Number.name],
+        async: false,
       })
     )
     .apply();
@@ -167,6 +171,7 @@ export function minlength(
         [ValidationKeys.MIN_LENGTH]: value,
         message: message,
         types: [String.name, Array.name, Set.name],
+        async: false,
       })
     )
     .apply();
@@ -193,6 +198,7 @@ export function maxlength(
         [ValidationKeys.MAX_LENGTH]: value,
         message: message,
         types: [String.name, Array.name, Set.name],
+        async: false,
       })
     )
     .apply();
@@ -220,6 +226,7 @@ export function pattern(
           typeof value === "string" ? value : value.toString(),
         message: message,
         types: [String.name],
+        async: false,
       })
     )
     .apply();
@@ -242,6 +249,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
         [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
         message: message,
         types: [String.name],
+        async: false,
       })
     )
     .apply();
@@ -264,6 +272,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
         [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
         message: message,
         types: [String.name],
+        async: false,
       })
     )
     .apply();
@@ -289,6 +298,7 @@ export function type(
       propMetadata<ValidationMetadata>(key, {
         customTypes: types,
         message: message,
+        async: false,
       })
     )
     .apply();
@@ -442,6 +452,7 @@ export function eq(
 ) {
   const options: EqualsValidatorOptions = {
     message: message,
+    async: false,
     [ValidationKeys.EQUALS]: propertyToCompare,
   };
 
@@ -469,6 +480,7 @@ export function diff(
 ) {
   const options: DiffValidatorOptions = {
     message: message,
+    async: false,
     [ValidationKeys.DIFF]: propertyToCompare,
   };
 
@@ -496,6 +508,7 @@ export function lt(
 ) {
   const options: LessThanValidatorOptions = {
     message: message,
+    async: false,
     [ValidationKeys.LESS_THAN]: propertyToCompare,
   };
 
@@ -523,6 +536,7 @@ export function lte(
 ) {
   const options: LessThanOrEqualValidatorOptions = {
     message: message,
+    async: false,
     [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
   };
 
@@ -550,6 +564,7 @@ export function gt(
 ) {
   const options: GreaterThanValidatorOptions = {
     message: message,
+    async: false,
     [ValidationKeys.GREATER_THAN]: propertyToCompare,
   };
 
@@ -577,6 +592,7 @@ export function gte(
 ) {
   const options: GreaterThanOrEqualValidatorOptions = {
     message: message,
+    async: false,
     [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
   };
 

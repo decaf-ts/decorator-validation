@@ -11,6 +11,8 @@ import { IRegistry } from "../utils";
  * @property {any[]} [args] - Optional arguments for the validator
  * @property {string} message - Error message to display when validation fails
  * @property {string[]} [types] - Array of type names that the property can have
+ * @property {boolean} async - Indicates whether the validator associated with the decorator performs asynchronous validation logic.
+ * Use `true` when the validator returns a Promise, and `false` when the validation is synchronous.
  *
  * @typedef {Object} ValidationMetadata
  * @memberOf module:decorator-validation
@@ -21,6 +23,7 @@ export type ValidationMetadata = {
   args?: any[];
   message: string;
   types?: string[];
+  async: boolean;
 };
 
 /**
@@ -279,30 +282,30 @@ export interface UniqueValidatorOptions extends ValidatorOptions {
  * @memberOf module:decorator-validation
  * @category Validation
  */
-export interface DateValidatorOptions extends ValidatorOptions {
+export interface DateValidatorOptions extends ValidationMetadata {
   [ValidationKeys.FORMAT]?: string;
 }
 
-export interface EqualsValidatorOptions extends ValidatorOptions {
+export interface EqualsValidatorOptions extends ValidationMetadata {
   [ValidationKeys.EQUALS]: string;
 }
 
-export interface DiffValidatorOptions extends ValidatorOptions {
+export interface DiffValidatorOptions extends ValidationMetadata {
   [ValidationKeys.DIFF]: string;
 }
 
-export interface LessThanValidatorOptions extends ValidatorOptions {
+export interface LessThanValidatorOptions extends ValidationMetadata {
   [ValidationKeys.LESS_THAN]: string;
 }
 
-export interface LessThanOrEqualValidatorOptions extends ValidatorOptions {
+export interface LessThanOrEqualValidatorOptions extends ValidationMetadata {
   [ValidationKeys.LESS_THAN_OR_EQUAL]: string;
 }
 
-export interface GreaterThanValidatorOptions extends ValidatorOptions {
+export interface GreaterThanValidatorOptions extends ValidationMetadata {
   [ValidationKeys.GREATER_THAN]: string;
 }
 
-export interface GreaterThanOrEqualValidatorOptions extends ValidatorOptions {
+export interface GreaterThanOrEqualValidatorOptions extends ValidationMetadata {
   [ValidationKeys.GREATER_THAN_OR_EQUAL]: string;
 }

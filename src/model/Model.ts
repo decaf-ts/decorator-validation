@@ -17,7 +17,7 @@ import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
-import { getModelKey, getMetadata } from "./utils";
+import { getMetadata, getModelKey } from "./utils";
 import { ConditionalAsync } from "../validation";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
@@ -209,10 +209,10 @@ export abstract class Model<Async extends boolean = false>
    * @param {any[]} [exceptions] - Properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    * @return {ModelErrorDefinition | undefined} - Returns a ModelErrorDefinition object if validation errors exist, otherwise undefined
    */
-  public hasErrors(
+  public hasErrors<IsAsync extends boolean = Async>(
     ...exceptions: any[]
-  ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
-    return validate<Async, any>(this, ...exceptions);
+  ): ConditionalAsync<IsAsync, ModelErrorDefinition | undefined> {
+    return validate<IsAsync, any>(this, ...exceptions);
   }
 
   /**
@@ -607,7 +607,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {string[]} [propsToIgnore] - Properties to exclude from validation
    * @return {ModelErrorDefinition | undefined} - Returns validation errors if any, otherwise undefined
    */
-  static hasErrors<Async extends boolean, M extends Model<Async>>(
+  static hasErrors<Async extends boolean, M extends Model<true | false>>(
     model: M,
     ...propsToIgnore: string[]
   ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
@@ -655,6 +655,7 @@ export abstract class Model<Async extends boolean = false>
       return Hashing.hash(model, metadata.algorithm, ...(metadata.args || []));
     return Hashing.hash(model);
   }
+
   /**
    * @description Creates a metadata key for use with the Reflection API
    * @summary Builds the key to store as Metadata under Reflections
