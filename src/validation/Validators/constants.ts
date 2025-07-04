@@ -155,6 +155,7 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   GREATER_THAN: "This field must be greater than field {0}",
   GREATER_THAN_OR_EQUAL:
     "This field must be greater than or equal to field {0}",
+  UNIQUE: "Duplicate found, this field must be unique.",
 };
 
 /**

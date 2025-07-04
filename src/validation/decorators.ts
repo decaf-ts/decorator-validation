@@ -6,6 +6,7 @@ import {
   GreaterThanValidatorOptions,
   LessThanOrEqualValidatorOptions,
   LessThanValidatorOptions,
+  UniqueValidatorOptions,
   ValidationMetadata,
 } from "./types";
 import {
@@ -323,10 +324,11 @@ export function date(
 ) {
   const key = Validation.key(ValidationKeys.DATE);
   const dateDec = (target: Record<string, any>, propertyKey?: any): any => {
-    propMetadata(key, {
+    propMetadata<ValidationMetadata>(key, {
       [ValidationKeys.FORMAT]: format,
       message: message,
       types: [Date.name],
+      async: false,
     })(target, propertyKey);
 
     const values = new WeakMap();
@@ -378,10 +380,11 @@ export function password(
   const key = Validation.key(ValidationKeys.PASSWORD);
   return Decoration.for(key)
     .define(
-      propMetadata(key, {
+      propMetadata<ValidationMetadata>(key, {
         [ValidationKeys.PATTERN]: pattern,
         message: message,
         types: [String.name],
+        async: false,
       })
     )
     .apply();
@@ -407,10 +410,11 @@ export function list(
   const key = Validation.key(ValidationKeys.LIST);
   return Decoration.for(key)
     .define(
-      propMetadata(key, {
+      propMetadata<ValidationMetadata>(key, {
         clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
         type: collection,
         message: message,
+        async: false,
       })
     )
     .apply();
@@ -452,13 +456,12 @@ export function eq(
 ) {
   const options: EqualsValidatorOptions = {
     message: message,
-    async: false,
     [ValidationKeys.EQUALS]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.EQUALS),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -480,14 +483,13 @@ export function diff(
 ) {
   const options: DiffValidatorOptions = {
     message: message,
-    async: false,
     [ValidationKeys.DIFF]: propertyToCompare,
   };
 
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.DIFF),
-    options as ValidationMetadata
-  );
+  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.DIFF), {
+    ...options,
+    async: false,
+  } as ValidationMetadata);
 }
 
 /**
@@ -508,13 +510,12 @@ export function lt(
 ) {
   const options: LessThanValidatorOptions = {
     message: message,
-    async: false,
     [ValidationKeys.LESS_THAN]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.LESS_THAN),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -536,13 +537,12 @@ export function lte(
 ) {
   const options: LessThanOrEqualValidatorOptions = {
     message: message,
-    async: false,
     [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.LESS_THAN_OR_EQUAL),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -564,13 +564,12 @@ export function gt(
 ) {
   const options: GreaterThanValidatorOptions = {
     message: message,
-    async: false,
     [ValidationKeys.GREATER_THAN]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.GREATER_THAN),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -592,12 +591,39 @@ export function gte(
 ) {
   const options: GreaterThanOrEqualValidatorOptions = {
     message: message,
-    async: false,
     [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
   };
 
   return propMetadata<ValidationMetadata>(
     Validation.key(ValidationKeys.GREATER_THAN_OR_EQUAL),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
+  );
+}
+
+/**
+ * @description Declares that the decorated property must have a unique value across the specified properties.
+ * @summary Applies the {@link ValidationKeys.UNIQUE} validator to ensure that the combination of the given properties is unique.
+ *
+ * @param {string[]} properties - The list of property names that together must form a unique combination.
+ * @param {string} [message=DEFAULT_ERROR_MESSAGES.UNIQUE] - Optional custom error message to be returned if validation fails.
+ *
+ * @return {PropertyDecorator} A property decorator used to register the uniqueness validation metadata.
+ *
+ * @function unique
+ * @category Property Decorators
+ */
+
+export function unique(
+  properties: string[],
+  message: string = DEFAULT_ERROR_MESSAGES.UNIQUE
+) {
+  const options: UniqueValidatorOptions = {
+    message: message,
+    [ValidationKeys.UNIQUE]: properties,
+  };
+
+  return propMetadata<ValidationMetadata>(
+    Validation.key(ValidationKeys.UNIQUE),
+    { ...options, async: true } as ValidationMetadata
   );
 }

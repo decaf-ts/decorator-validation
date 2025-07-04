@@ -266,12 +266,12 @@ export interface ListValidatorOptions extends ValidatorOptions {
  * @description Unique validation options interface
  * @summary Defines options for unique validation
  * @interface UniqueValidatorOptions
- * @property {string} unique - Array of allowed class names or types
+ * @property {string[]} unique - Array of allowed class names or types
  * @memberOf module:decorator-validation
  * @category Validation
  */
 export interface UniqueValidatorOptions extends ValidatorOptions {
-  [ValidationKeys.UNIQUE]: string;
+  [ValidationKeys.UNIQUE]: string[];
 }
 
 /**
@@ -282,30 +282,30 @@ export interface UniqueValidatorOptions extends ValidatorOptions {
  * @memberOf module:decorator-validation
  * @category Validation
  */
-export interface DateValidatorOptions extends ValidationMetadata {
+export interface DateValidatorOptions extends ValidatorOptions {
   [ValidationKeys.FORMAT]?: string;
 }
 
-export interface EqualsValidatorOptions extends ValidationMetadata {
+export interface EqualsValidatorOptions extends ValidatorOptions {
   [ValidationKeys.EQUALS]: string;
 }
 
-export interface DiffValidatorOptions extends ValidationMetadata {
+export interface DiffValidatorOptions extends ValidatorOptions {
   [ValidationKeys.DIFF]: string;
 }
 
-export interface LessThanValidatorOptions extends ValidationMetadata {
+export interface LessThanValidatorOptions extends ValidatorOptions {
   [ValidationKeys.LESS_THAN]: string;
 }
 
-export interface LessThanOrEqualValidatorOptions extends ValidationMetadata {
+export interface LessThanOrEqualValidatorOptions extends ValidatorOptions {
   [ValidationKeys.LESS_THAN_OR_EQUAL]: string;
 }
 
-export interface GreaterThanValidatorOptions extends ValidationMetadata {
+export interface GreaterThanValidatorOptions extends ValidatorOptions {
   [ValidationKeys.GREATER_THAN]: string;
 }
 
-export interface GreaterThanOrEqualValidatorOptions extends ValidationMetadata {
+export interface GreaterThanOrEqualValidatorOptions extends ValidatorOptions {
   [ValidationKeys.GREATER_THAN_OR_EQUAL]: string;
 }
