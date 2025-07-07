@@ -21,11 +21,12 @@ export type DecoratorMetadataAsync = DecoratorMetadata & { async: boolean };
 
 export function validateNestedProps<M extends Model>(
   obj: M,
-  result: ModelErrors | undefined
+  props: string[]
 ): ModelErrors | undefined {
-  for (const prop of Object.keys(obj).filter((k) => !result || !result[k])) {
+  let errs: ModelErrors | undefined = undefined;
+
+  for (const prop of props) {
     let err: string | undefined;
-    // if a nested Model
     const allDecorators = Reflection.getPropertyDecorators(
       ValidationKeys.REFLECT,
       obj,
@@ -39,7 +40,6 @@ export function validateNestedProps<M extends Model>(
     if (!decorators || !decorators.length) continue;
 
     const dec = decorators.pop() as DecoratorMetadata;
-
     const clazz = dec.props.name
       ? [dec.props.name]
       : Array.isArray(dec.props.customTypes)
@@ -101,6 +101,7 @@ export function validateNestedProps<M extends Model>(
               )
                 .map((v: Validatable<true | false>) => validate(prop, v))
                 .filter((e: any) => !!e) as any;
+
               if (!err?.length) {
                 err = undefined;
               }
@@ -116,13 +117,13 @@ export function validateNestedProps<M extends Model>(
       }
 
       if (err) {
-        result = result || {};
-        result[prop] = err as any;
+        errs = errs || {};
+        errs[prop] = err as any;
       }
     }
   }
 
-  return result;
+  return errs;
 }
 
 export function getValidatableProperties(
@@ -216,8 +217,14 @@ export function validate<M extends Model>(
     }
   }
 
-  // tests nested classes
-  result = validateNestedProps(obj, result);
+  const hasErrors = (errs?: ModelErrors) => errs && Object.keys(errs).length > 0;
+  const mergedErrors = {
+    ...result,
+    ...validateNestedProps(
+      obj,
+      Object.keys(obj).filter((prop) => !result?.[prop])
+    ),
+  };
 
-  return result ? new ModelErrorDefinition(result) : undefined;
+  return hasErrors(mergedErrors) ? new ModelErrorDefinition(mergedErrors) : undefined;
 }
