@@ -74,14 +74,14 @@ export abstract class BaseValidator<
 > {
   readonly message: string;
   readonly acceptedTypes?: string[];
-
-  // readonly async: IsAsync = IsAsync;
+  readonly async?: Async;
 
   protected constructor(
-    public readonly async: Async,
+    async: Async,
     message: string = DEFAULT_ERROR_MESSAGES.DEFAULT,
     ...acceptedTypes: string[]
   ) {
+    this.async = async;
     this.message = message;
 
     if (acceptedTypes.length) this.acceptedTypes = acceptedTypes;
