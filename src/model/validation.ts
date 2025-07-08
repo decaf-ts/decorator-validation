@@ -4,10 +4,11 @@ import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { Validation } from "../validation/Validation";
 import { ValidationKeys } from "../validation/Validators/constants";
-import { ModelErrors, ValidationDecoratorDefinition, ValidatorOptions } from "../validation/types";
+import { ModelErrors, ValidationDecoratorDefinition } from "../validation/types";
 import { PathProxyEngine } from "../utils/PathProxy";
 import { ReservedModels } from "./constants";
 import { VALIDATION_PARENT_KEY } from "../constants";
+import { ConditionalAsync } from "../validation";
 import { Validatable } from "./types";
 
 export type ValidationDecoratorDefinitionAsync = ValidationDecoratorDefinition & { async: boolean };
@@ -152,8 +153,8 @@ export function validateDecorators<IsAsync extends boolean = false>(
   prop: string | symbol,
   decorators: DecoratorMetadataAsync[],
   async?: IsAsync
-): Record<string, string | undefined> | undefined {
-  let errs: Record<string, string | undefined> | undefined = undefined;
+): ConditionalAsync<IsAsync, Record<string, string>> | undefined {
+  const result: Record<string, string | Promise<string>> = {};
 
   for (const decorator of decorators) {
     const validator = Validation.get(decorator.key);
@@ -161,70 +162,147 @@ export function validateDecorators<IsAsync extends boolean = false>(
       throw new Error(`Missing validator for ${decorator.key}`);
     }
 
+    if (validator.async && !async) {
+      console.warn("...");
+      continue;
+    }
+
     const decoratorProps =
       decorator.key === ModelKeys.TYPE ? [decorator.props] : decorator.props || {};
 
-    const err: string | undefined = validator.hasErrors(
-      (obj as any)[prop.toString()],
-      decoratorProps as ValidatorOptions,
-      PathProxyEngine.create(obj, { ignoreUndefined: true, ignoreNull: true })
-    );
+    const value = (obj as any)[prop.toString()];
+    const context = PathProxyEngine.create(obj, {
+      ignoreUndefined: true,
+      ignoreNull: true,
+    });
 
-    if (err) {
-      errs = errs || {};
-      errs[decorator.key] = err;
+    const maybeError = validator.hasErrors(value, decoratorProps, context); // string | undefined
+    if (async) {
+      result[decorator.key] = Promise.resolve(maybeError);
+    } else if (maybeError) {
+      result[decorator.key] = maybeError;
     }
   }
 
-  return errs;
+  if (async) {
+    const keys = Object.keys(result);
+    const promises = Object.values(result) as Promise<string | undefined>[];
+    return Promise.all(promises).then((resolvedValues) => {
+      const res: Record<string, string> = {};
+      for (let i = 0; i < resolvedValues.length; i++) {
+        const val = resolvedValues[i];
+        if (val !== undefined) {
+          res[keys[i]] = val;
+        }
+      }
+      return Object.keys(res).length > 0 ? res : undefined;
+    }) as any;
+  }
+
+  return Object.keys(result).length > 0 ? (result as any) : undefined;
 }
 
-export function validate<M extends Model>(
+export function validate<M extends Model, Async extends boolean = false>(
   obj: M,
+  async?: Async,
   ...propsToIgnore: string[]
-): ModelErrorDefinition | undefined {
+): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
   const decoratedProperties: ValidationPropertyDecoratorDefinitionAsync[] =
     getValidatableProperties(obj, propsToIgnore);
 
-  let result: ModelErrors | undefined = undefined;
+  const result: ModelErrors | Promise<ModelErrors> = {};
 
   for (const decoratedProperty of decoratedProperties) {
-    const { prop, decorators } = decoratedProperty as ValidationPropertyDecoratorDefinitionAsync;
+    const { prop, decorators } = decoratedProperty;
 
-    if (!decorators || !decorators.length) continue;
+    if (!decorators?.length) continue;
 
-    const defaultTypeDecorator: DecoratorMetadata = decorators[0];
+    const defaultTypeDecorator = decorators[0];
 
-    // tries to find any type decorators or other decorators that already enforce type (the ones with the allowed types property defined). if so, skip the default type verification
-    if (
-      decorators.find((d) => {
-        if (d.key === ValidationKeys.TYPE) return true;
-        return !!d.props.types?.find((t) => t === defaultTypeDecorator.props.name);
-      })
-    ) {
-      decorators.shift(); // remove the design:type decorator, since the type will already be checked
+    const hasExplicitType = decorators.find((d) => {
+      if (d.key === ValidationKeys.TYPE) return true;
+      return !!d.props.types?.find((t) => t === defaultTypeDecorator.props.name);
+    });
+
+    if (hasExplicitType) {
+      decorators.shift(); // remove the design:type decorator
     }
 
-    const errs: Record<string, string | undefined> | undefined = validateDecorators(
-      obj,
-      prop,
-      decorators
-    );
-
+    const errs = validateDecorators(obj, prop, decorators, async);
     if (errs) {
-      result = result || {};
-      result[decoratedProperty.prop.toString()] = errs;
+      (result as any)[prop.toString()] = errs;
     }
   }
 
-  const hasErrors = (errs?: ModelErrors) => errs && Object.keys(errs).length > 0;
-  const mergedErrors = {
-    ...result,
-    ...validateNestedProps(
-      obj,
-      Object.keys(obj).filter((prop) => !result?.[prop])
-    ),
-  };
+  const nestedErrors = validateNestedProps(
+    obj,
+    Object.keys(obj).filter((prop) => !result?.[prop]),
+    async
+  );
 
-  return hasErrors(mergedErrors) ? new ModelErrorDefinition(mergedErrors) : undefined;
+  const merged = {
+    ...result,
+    // ...(nestedErrors || {})
+  } as ModelErrors;
+
+  if (!async) {
+    const hasErrors = Object.keys(merged).length > 0;
+    return (hasErrors ? new ModelErrorDefinition(merged) : undefined) as any;
+  }
+
+  // flat promises
+  const keys = Object.keys(merged);
+  // const promises = keys.map((key: string) => {
+  //   const val = merged[key];
+  //   if (val && typeof val === "object" && val.constructor === Object) {
+  //     // nested Record<string, Promise<string>>
+  //     const nestedKeys = Object.keys(val);
+  //     const nestedPromises = Object.values(val) as unknown as Promise<
+  //       string | string[] | undefined
+  //     >[];
+  //     return Promise.all(nestedPromises).then((resolved) => {
+  //       const final: any = {};
+  //       for (let i = 0; i < resolved.length; i++) {
+  //         const r = resolved[i];
+  //         if (r !== undefined) {
+  //           final[nestedKeys[i]] = r;
+  //         }
+  //       }
+  //       return [key, Object.keys(final).length ? final : undefined];
+  //     });
+  //   } else {
+  //     return Promise.resolve([key, undefined]); // shouldn't happen
+  //   }
+  // });
+
+  // return Promise.all(Object.values(merged)).then((entries) => {
+  //   const final: ModelErrors = {};
+  //   for (const [key, val] of entries) {
+  //     if (val !== undefined) {
+  //       final[key] = val;
+  //     }
+  //   }
+  //   return (Object.keys(final).length > 0 ? new ModelErrorDefinition(final) : undefined) as any;
+  // }) as any;
+
+  const promises = Object.values(merged);
+  return Promise.allSettled(promises).then((results) => {
+    const result: ModelErrors = {};
+    for (let i = 0; i < results.length; i++) {
+      const key = keys[i];
+      const res = results[i];
+
+      if (res.status === "fulfilled" && res.value !== undefined) {
+        (result as any)[key] = res.value;
+      }
+
+      if (res.status === "rejected")
+        (result as any)[key] =
+          res.reason instanceof Error
+            ? res.reason.message
+            : String(res.reason || "Validation failed");
+    }
+
+    return new ModelErrorDefinition(result);
+  }) as any;
 }
