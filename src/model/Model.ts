@@ -697,4 +697,23 @@ export abstract class Model
     const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
     return Model.get(metadata.name) ? metadata.name : undefined;
   }
+
+  static describe<M extends Model>(model: M | Constructor<M>, key?: keyof M) {
+    const descKey = Model.key(ModelKeys.DESCRIPTION);
+    if (key) {
+      model = model instanceof Model ? model : new model();
+      return (
+        Reflect.getMetadataKeys(model.constructor, key.toString())
+          .find((k) => k === descKey)
+          ?.toString() || model.toString()
+      );
+    }
+
+    return (
+      Reflect.getMetadata(
+        Model.key(ModelKeys.DESCRIPTION),
+        model instanceof Model ? model.constructor : model
+      ) || model.toString()
+    );
+  }
 }
