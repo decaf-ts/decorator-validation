@@ -65,6 +65,7 @@ export type ValidationElementDefinition = {
 
   value?: string | number;
   message: string;
+  description: string;
   types?: string[];
 };
 
@@ -142,22 +143,20 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
 /**
  * @description Base options type for all validators
  * @summary Defines the common properties available to all validators
- * @typedef ValidatorOptions
+ * @interface ValidatorOptions
  * @property {string} [message] - Custom error message to display when validation fails
- * @memberOf module:decorator-validation
  * @category Validation
  */
-export type ValidatorOptions = {
+export interface ValidatorOptions {
   message?: string;
-  description: string;
-};
+  description?: string;
+}
 
 /**
  * @description URL validation options interface
  * @summary Defines options for URL validation, including allowed URL types
  * @interface URLValidatorOptions
  * @property {(string|string[]|{ name: string })} types - Specifies the allowed URL types or patterns
- * @memberOf module:decorator-validation
  * @category Validation
  */
 export interface URLValidatorOptions extends ValidatorOptions {
@@ -186,6 +185,7 @@ export interface TypeValidatorOptions extends ValidatorOptions {
  */
 export interface StepValidatorOptions extends ValidatorOptions {
   [ValidationKeys.STEP]: number | string;
+  types?: string[];
 }
 
 /**
@@ -198,6 +198,7 @@ export interface StepValidatorOptions extends ValidatorOptions {
  */
 export interface PatternValidatorOptions extends ValidatorOptions {
   [ValidationKeys.PATTERN]?: RegExp | string;
+  types?: string[];
 }
 
 /**
@@ -210,6 +211,7 @@ export interface PatternValidatorOptions extends ValidatorOptions {
  */
 export interface MinValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MIN]: number | Date | string;
+  types?: string[];
 }
 
 /**
@@ -222,6 +224,7 @@ export interface MinValidatorOptions extends ValidatorOptions {
  */
 export interface MinLengthValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MIN_LENGTH]: number;
+  types?: string[];
 }
 
 /**
@@ -234,6 +237,7 @@ export interface MinLengthValidatorOptions extends ValidatorOptions {
  */
 export interface MaxValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MAX]: number | Date | string;
+  types?: string[];
 }
 
 /**
@@ -246,6 +250,7 @@ export interface MaxValidatorOptions extends ValidatorOptions {
  */
 export interface MaxLengthValidatorOptions extends ValidatorOptions {
   [ValidationKeys.MAX_LENGTH]: number;
+  types?: string[];
 }
 
 /**

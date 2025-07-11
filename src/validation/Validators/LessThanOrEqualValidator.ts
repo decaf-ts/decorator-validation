@@ -37,7 +37,7 @@ export class LessThanOrEqualValidator extends Validator<LessThanOrEqualValidator
   public hasErrors(
     value: any,
     options: LessThanOrEqualValidatorOptions,
-    accessor: PathProxy
+    accessor: PathProxy<any>
   ): string | undefined {
     let comparisonPropertyValue: any;
     try {
