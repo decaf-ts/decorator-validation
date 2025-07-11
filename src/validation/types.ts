@@ -149,6 +149,7 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
  */
 export type ValidatorOptions = {
   message?: string;
+  description: string;
 };
 
 /**

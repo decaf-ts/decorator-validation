@@ -49,6 +49,7 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
     .define(
       propMetadata<ValidationMetadata>(key, {
         message: message,
+        description: `defines the attribute as required`,
       })
     )
     .apply();
@@ -89,6 +90,7 @@ export function min(
         [ValidationKeys.MIN]: value,
         message: message,
         types: [Number.name, Date.name],
+        description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
       })
     )
     .apply();
@@ -115,6 +117,7 @@ export function max(
         [ValidationKeys.MAX]: value,
         message: message,
         types: [Number.name, Date.name],
+        description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
       })
     )
     .apply();
@@ -141,6 +144,7 @@ export function step(
         [ValidationKeys.STEP]: value,
         message: message,
         types: [Number.name],
+        description: `defines the step of the attribute as ${value}`,
       })
     )
     .apply();
@@ -167,6 +171,7 @@ export function minlength(
         [ValidationKeys.MIN_LENGTH]: value,
         message: message,
         types: [String.name, Array.name, Set.name],
+        description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
       })
     )
     .apply();
@@ -193,6 +198,7 @@ export function maxlength(
         [ValidationKeys.MAX_LENGTH]: value,
         message: message,
         types: [String.name, Array.name, Set.name],
+        description: `defines the max length of the attribute as ${value} (applies to strings or lists)`,
       })
     )
     .apply();
@@ -220,6 +226,7 @@ export function pattern(
           typeof value === "string" ? value : value.toString(),
         message: message,
         types: [String.name],
+        description: `assigns the ${value === "string" ? value : value.toString()} pattern to the attribute`,
       })
     )
     .apply();
@@ -242,6 +249,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
         [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
         message: message,
         types: [String.name],
+        description: "marks the attribute as an email",
       })
     )
     .apply();
@@ -264,6 +272,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
         [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
         message: message,
         types: [String.name],
+        description: "marks the attribute as an url",
       })
     )
     .apply();
@@ -289,6 +298,7 @@ export function type(
       propMetadata<ValidationMetadata>(key, {
         customTypes: types,
         message: message,
+        description: "defines the accepted classes",
       })
     )
     .apply();
@@ -317,6 +327,7 @@ export function date(
       [ValidationKeys.FORMAT]: format,
       message: message,
       types: [Date.name],
+      description: `defines the attribute as a date with the format ${format}`,
     })(target, propertyKey);
 
     const values = new WeakMap();
@@ -372,6 +383,7 @@ export function password(
         [ValidationKeys.PATTERN]: pattern,
         message: message,
         types: [String.name],
+        description: `attribute as a password`,
       })
     )
     .apply();
@@ -401,6 +413,7 @@ export function list(
         clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
         type: collection,
         message: message,
+        description: `defines the attribute as a ${collection} of ${(clazz as ModelConstructor<any>).name}`,
       })
     )
     .apply();
@@ -443,6 +456,7 @@ export function eq(
   const options: EqualsValidatorOptions = {
     message: message,
     [ValidationKeys.EQUALS]: propertyToCompare,
+    description: `defines attribute as equal to ${propertyToCompare}`,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -470,6 +484,7 @@ export function diff(
   const options: DiffValidatorOptions = {
     message: message,
     [ValidationKeys.DIFF]: propertyToCompare,
+    description: `defines attribute as different to ${propertyToCompare}`,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -497,6 +512,7 @@ export function lt(
   const options: LessThanValidatorOptions = {
     message: message,
     [ValidationKeys.LESS_THAN]: propertyToCompare,
+    description: `defines attribute as less than to ${propertyToCompare}`,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -524,6 +540,7 @@ export function lte(
   const options: LessThanOrEqualValidatorOptions = {
     message: message,
     [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
+    description: `defines attribute as less or equal to ${propertyToCompare}`,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -551,6 +568,7 @@ export function gt(
   const options: GreaterThanValidatorOptions = {
     message: message,
     [ValidationKeys.GREATER_THAN]: propertyToCompare,
+    description: `defines attribute as greater than ${propertyToCompare}`,
   };
 
   return propMetadata<ValidationMetadata>(
@@ -578,6 +596,7 @@ export function gte(
   const options: GreaterThanOrEqualValidatorOptions = {
     message: message,
     [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
+    description: `defines attribute as greater or equal to ${propertyToCompare}`,
   };
 
   return propMetadata<ValidationMetadata>(
