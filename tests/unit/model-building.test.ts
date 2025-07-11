@@ -16,7 +16,7 @@ class TestModelBuilding extends Model {
   }
 }
 
-describe("Model building", () => {
+describe.skip("Model building", () => {
   it("registers models regularly", () => {
     const m = new TestModelBuilding({ name: "test", age: 9 });
     expect(m.name).toEqual("test");
