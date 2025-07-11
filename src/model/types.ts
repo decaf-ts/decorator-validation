@@ -50,7 +50,7 @@ export type Constructor<T> = {
  * @typedef ModelConstructor
  * @memberOf module:decorator-validation
  */
-export type ModelConstructor<T extends Model> = {
+export type ModelConstructor<T extends Model<true | false>> = {
   new (model?: ModelArg<T>, ...args: any[]): T;
 };
 

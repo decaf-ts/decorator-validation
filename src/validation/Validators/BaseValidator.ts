@@ -4,6 +4,7 @@ import { Reflection } from "@decaf-ts/reflection";
 import { ValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
 import type { ConditionalAsync } from "./types";
+import { Validatable } from "../../model";
 
 /**
  * @description Abstract base class for all validators in the validation framework.
@@ -71,7 +72,8 @@ import type { ConditionalAsync } from "./types";
 export abstract class BaseValidator<
   V extends ValidatorOptions = ValidatorOptions,
   Async extends boolean = false,
-> {
+> implements Validatable<Async>
+{
   readonly message: string;
   readonly acceptedTypes?: string[];
   readonly async?: Async;

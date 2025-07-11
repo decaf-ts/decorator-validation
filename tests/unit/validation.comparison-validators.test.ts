@@ -6,10 +6,12 @@ import {
   eq,
   gt,
   gte,
+  list,
   lt,
   lte,
   model,
   Model,
+  ModelErrorDefinition,
   required,
   sf,
   type,
@@ -43,6 +45,7 @@ describe("Comparison Validators", () => {
       parentValue: any;
 
       @required()
+      @list(Number)
       parentArray: number[] = [1, 2, 3, 4, 5];
 
       @required()
@@ -67,6 +70,7 @@ describe("Comparison Validators", () => {
 
       instance.child[VALIDATION_PARENT_KEY] = instance;
       expect(Object.keys(instance.child)).toMatchObject([
+        "async",
         "elementValue",
         "value",
       ]);
@@ -89,7 +93,8 @@ describe("Comparison Validators", () => {
 
       instance.child[VALIDATION_PARENT_KEY] = instance;
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeDefined();
-      expect(instance.hasErrors()).toBeUndefined();
+      const errors = instance.hasErrors();
+      expect(errors).toBeUndefined();
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeUndefined();
     });
 
@@ -103,13 +108,13 @@ describe("Comparison Validators", () => {
         }),
       });
 
-      expect(instance.hasErrors()).toEqual({
-        child: {
-          elementValue: {
+      expect(instance.hasErrors()).toEqual(
+        new ModelErrorDefinition({
+          "child.elementValue": {
             equals: sf(COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST, "4"),
           },
-        },
-      });
+        })
+      );
 
       instance.parentArray = [1, 2, 3, 4, 5];
       instance.child.elementValue = instance.parentArray[4];
@@ -138,6 +143,7 @@ describe("Comparison Validators", () => {
       anyBooleanValue: boolean = false;
 
       @required()
+      @list(String)
       arrayValue: string[] = [];
 
       @required()
@@ -176,6 +182,7 @@ describe("Comparison Validators", () => {
         booleanValue: boolean = false;
 
         @eq("mirror.arrayValue")
+        @list(String)
         arrayValue: string[] = [];
 
         @eq("mirror.objectValue")
@@ -242,9 +249,10 @@ describe("Comparison Validators", () => {
 
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
-        expect(Object.keys(new MultiTypeMirrorModel({})).length).toEqual(
-          Object.keys(fieldMapping).length
-        );
+        expect(
+          Object.keys(new MultiTypeMirrorModel({})).filter((k) => k !== "async")
+            .length
+        ).toEqual(Object.keys(fieldMapping).length);
         for (const [parentKey, mirrorKey] of Object.entries(fieldMapping)) {
           expect(errors?.[parentKey]).toEqual({
             [ValidationKeys.EQUALS]:

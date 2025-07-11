@@ -4,9 +4,10 @@ import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { Validation } from "../validation/Validation";
 import { ValidationKeys } from "../validation/Validators/constants";
-import {
+import type {
   ModelErrors,
   ValidationDecoratorDefinition,
+  ValidatorOptions,
 } from "../validation/types";
 import { PathProxyEngine } from "../utils/PathProxy";
 import { ConditionalAsync } from "../validation";
@@ -56,10 +57,6 @@ export function validateDecorator<IsAsync extends boolean = false>(
     throw new Error(`Missing validator for ${decorator.key}`);
   }
 
-  if (validator.async && !async) {
-    console.warn("...");
-  }
-
   const decoratorProps =
     decorator.key === ModelKeys.TYPE
       ? [decorator.props]
@@ -70,7 +67,11 @@ export function validateDecorator<IsAsync extends boolean = false>(
     ignoreNull: true,
   });
 
-  const maybeError = validator.hasErrors(value, decoratorProps, context) as any; // string | undefined
+  const maybeError = validator.hasErrors(
+    value,
+    decoratorProps as ValidatorOptions,
+    context
+  ) as any; // string | undefined
   // @ts-expect-error ...
   return async ? Promise.resolve(maybeError) : maybeError;
 }
@@ -84,21 +85,49 @@ export function validateDecorators<IsAsync extends boolean = false>(
   const result: Record<string, string | Promise<string>> = {};
 
   for (const decorator of decorators) {
+    // skip async decorators if validateDecorators is called synchronously (async = false)
+    if (!async && decorator.props.async) continue;
+
     let err = validateDecorator(obj, value, decorator, async);
 
-    // if decorator is a list and has values, and no errors, so, each element must be check
-    if (!err && decorator.key === ValidationKeys.LIST) {
+    /*
+    If the decorator is a list, each element must be checked.
+    When 'async' is true, the 'err' will always be a pending promise initially,
+    so the '!err' check will evaluate to false (even if the promise later resolves with no errors)
+    */
+    if ((!err || async) && decorator.key === ValidationKeys.LIST) {
       const values = value instanceof Set ? [...value] : value;
       if (values && values.length > 0) {
-        const types = decorator.props.class || decorator.props.customTypes;
+        const types =
+          decorator.props.class ||
+          decorator.props.clazz ||
+          decorator.props.customTypes;
+
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
-        const errs = values.flatMap((v: any) => {
-          if (Model.isModel(v)) return v.hasErrors() || [];
+        // const errs = values.flatMap((v: any) => {
+        //   if (Model.isModel(v)) return v.hasErrors() || [];
+        //
+        //   return allowedTypes.includes(typeof v)
+        //     ? []
+        //     : ["Value has no validatable type"];
+        // });
+        const errs = values.map((v: any) => {
+          if (Model.isModel(v)) return v.hasErrors();
+
           return allowedTypes.includes(typeof v)
-            ? []
-            : ["Value has no validatable type"];
+            ? undefined
+            : "Value has no validatable type";
         });
-        err = errs.length > 0 ? errs : undefined;
+
+        if (async) {
+          err = Promise.all(errs).then((result) => {
+            const allEmpty = result.every((r) => !r);
+            return allEmpty ? undefined : result;
+          }) as any;
+        } else {
+          const allEmpty = errs.every((r: string | undefined) => !r);
+          err = errs.length > 0 && !allEmpty ? errs : undefined;
+        }
       }
     }
 
@@ -122,6 +151,57 @@ export function validateDecorators<IsAsync extends boolean = false>(
   }) as any;
 }
 
+/**
+ * @function validate
+ * @template M
+ * @template Async
+ * @memberOf module:decorator-validation
+ * @category Model
+ *
+ * @description
+ * Validates the properties of a {@link Model} instance using registered decorators.
+ * Supports both synchronous and asynchronous validation flows, depending on the `async` flag.
+ *
+ * @summary
+ * This function inspects a given model object, identifies decorated properties that require validation,
+ * and applies the corresponding validation rules. It also supports nested model validation and gracefully
+ * merges any validation errors. For collections (Array/Set), it enforces the presence of the `@list` decorator
+ * and checks the type of elements. If a property is a nested model, it will call `hasErrors` on it and flatten
+ * the nested error keys using dot notation.
+ *
+ * @param {M} obj - The model instance to be validated. Must extend from {@link Model}.
+ * @param {Async} [async] - A flag indicating whether validation should be asynchronous.
+ * @param {...string} propsToIgnore - A variadic list of property names that should be skipped during validation.
+ *
+ * @returns {ConditionalAsync<Async, ModelErrorDefinition | undefined>}
+ * Returns either a {@link ModelErrorDefinition} containing validation errors,
+ * or `undefined` if no errors are found. When `async` is `true`, returns a Promise.
+ *
+ * @see {@link Model}
+ * @see {@link ModelErrorDefinition}
+ * @see {@link validateDecorators}
+ * @see {@link getValidatableProperties}
+ *
+ * @mermaid
+ * sequenceDiagram
+ *     participant Caller
+ *     participant validate
+ *     participant getValidatableProperties
+ *     participant validateDecorators
+ *     participant ModelInstance
+ *     Caller->>validate: call with obj, async, propsToIgnore
+ *     validate->>getValidatableProperties: retrieve decorated props
+ *     loop for each property
+ *         validate->>validateDecorators: validate using decorators
+ *         alt is nested model
+ *             validate->>ModelInstance: call hasErrors()
+ *         end
+ *     end
+ *     alt async
+ *         validate->>validate: Promise.allSettled for errors
+ *     end
+ *     validate-->>Caller: return ModelErrorDefinition | undefined
+ */
 export function validate<M extends Model, Async extends boolean = false>(
   obj: M,
   async?: Async,
@@ -131,83 +211,131 @@ export function validate<M extends Model, Async extends boolean = false>(
     getValidatableProperties(obj, propsToIgnore);
 
   const result: Record<string, any> = {};
+
+  const nestedErrors: Record<string, any> = {};
   for (const { prop, decorators } of decoratedProperties) {
+    const propKey = String(prop);
     const propValue = (obj as any)[prop];
 
     if (!decorators?.length) continue;
 
-    // check if we can skip the default type validator
-    const designTypeDec = [...(decorators || [])].find((d) =>
+    // Get the default type validator
+    const designTypeDec = decorators.find((d) =>
       [ModelKeys.TYPE, ValidationKeys.TYPE].includes(d.key as any)
     );
     if (!designTypeDec) continue;
 
     const designType = designTypeDec.props.name;
 
+    // Handle array or Set types and enforce the presence of @list decorator
     if ([Array.name, Set.name].includes(designType)) {
-      // Check for @list decorator on array or Set properties
-      if (!decorators.some((d) => d.key === ValidationKeys.LIST))
-        throw new Error(
-          `Property '${String(prop)}' requires a @list decorator`
-        );
+      if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
+        result[propKey] = {
+          [ValidationKeys.TYPE]: `Property '${propKey}' requires a @list decorator`,
+        };
+        continue;
+      }
 
-      if (propValue && !(Array.isArray(propValue) || propValue instanceof Set))
-        throw new Error(
-          `Property '${String(prop)}' must be either an array or a Set`
-        );
+      if (
+        propValue &&
+        !(Array.isArray(propValue) || propValue instanceof Set)
+      ) {
+        result[propKey] = {
+          [ValidationKeys.TYPE]: `Property '${String(prop)}' must be either an array or a Set`,
+        };
+        continue;
+      }
 
-      // remove design:type decorator, becauf of @list decorator
+      // Remove design:type decorator, since @list decorator already ensures type
       for (let i = decorators.length - 1; i >= 0; i--) {
         if (decorators[i].key === ModelKeys.TYPE) {
-          decorators.splice(i, 1); // Remove apenas ModelKeys.TYPE se houver ValidationKeys.TYPE
+          decorators.splice(i, 1);
         }
       }
     }
 
-    let errs: Record<string, any> =
+    const propErrors: Record<string, any> =
       validateDecorators(obj, propValue, decorators, async) || {};
 
-    // check for nested props
-    // errors para evitar processamento desnecessário; propValue pra caso o valor for undefined;
-    const Constr = Model.isPropertyModel(obj, String(prop));
-    if (propValue && Constr) {
+    // Check for nested properties.
+    // To prevent unnecessary processing, "propValue" must be defined and validatable
+    // let nestedErrors: Record<string, any> = {};
+    const isConstr = Model.isPropertyModel(obj, propKey);
+    if (propValue && isConstr) {
       const instance: Model = propValue;
       if (
         typeof instance !== "object" ||
         !instance.hasErrors ||
         typeof instance.hasErrors !== "function"
       ) {
-        errs[ValidationKeys.TYPE] = "Model should be validatable but it's not."; // if async, the error is return/exist
+        propErrors[ValidationKeys.TYPE] =
+          "Model should be validatable but it's not.";
       } else {
-        const validationErrors = instance.hasErrors();
-        const nestedErrors = Object.entries(validationErrors || {}).reduce(
-          (accumulatedErrors, [field, error]) => ({
-            ...accumulatedErrors,
-            [`${String(prop)}.${field}`]: error,
-          }),
-          {}
-        );
+        // nestedErrors = instance.hasErrors() as any;
+        nestedErrors[propKey] = instance.hasErrors();
 
-        if (Object.keys(nestedErrors).length > 0)
-          errs = Object.assign({}, errs, nestedErrors);
+        // Build nested errors with dot notation
+        // nestedErrors = Object.entries(validationErrors || {}).reduce(
+        //   (acc, [field, error]) => ({
+        //     ...acc,
+        //     [`${propKey}.${field}`]: error,
+        //   }),
+        //   {}
+        // );
+
+        // Merge nested errors with property errors
+        // if (Object.keys(nestedErrors).length > 0) {
+        //   propErrors = Object.assign({}, propErrors, nestedErrors);
+        // }
       }
     }
 
-    if (Object.keys(errs).length > 0) result[String(prop)] = errs;
+    // Add to the result if we have any errors
+    // Async mode returns a Promise that resolves to undefined when no errors exist
+    if (Object.keys(propErrors).length > 0 || async)
+      result[propKey] = propErrors;
+
+    // Then merge any nested errors
+    if (!async) {
+      Object.entries(nestedErrors[propKey] || {}).forEach(([key, error]) => {
+        if (error !== undefined) {
+          result[`${propKey}.${key}`] = error;
+        }
+      });
+    }
   }
 
-  const merged: any = result; // aplicar filtro
-
-  if (!async)
-    return Object.keys(merged).length > 0
-      ? new ModelErrorDefinition(merged)
+  // Synchronous return
+  if (!async) {
+    return Object.keys(result).length > 0
+      ? new ModelErrorDefinition(result)
       : undefined;
+  }
 
-  // flat promises
+  const merged: any = result; // TODO: apply filtering
+
   const keys = Object.keys(merged);
   const promises = Object.values(merged);
   return Promise.allSettled(promises).then(async (results) => {
     const result: ModelErrors = {};
+
+    for (const [parentProp, nestedErrPromise] of Object.entries(nestedErrors)) {
+      const nestedPropDecErrors = (await nestedErrPromise) as Record<
+        string,
+        any
+      >;
+
+      if (nestedPropDecErrors)
+        Object.entries(nestedPropDecErrors).forEach(
+          ([nestedProp, nestedPropDecError]) => {
+            if (nestedPropDecError !== undefined) {
+              const nestedKey = [parentProp, nestedProp].join(".");
+              result[nestedKey] = nestedPropDecError;
+            }
+          }
+        );
+    }
+
     for (let i = 0; i < results.length; i++) {
       const key = keys[i];
       const res = results[i];
@@ -221,6 +349,7 @@ export function validate<M extends Model, Async extends boolean = false>(
             : String(res.reason || "Validation failed");
       }
     }
+
     return Object.keys(result).length > 0
       ? new ModelErrorDefinition(result)
       : undefined;

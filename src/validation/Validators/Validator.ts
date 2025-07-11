@@ -45,7 +45,7 @@ import { BaseValidator } from "./BaseValidator";
  * @see {@link ValidatorOptions} For the base validator options.
  */
 export abstract class Validator<
-  V extends ValidatorOptions,
+  V extends ValidatorOptions = ValidatorOptions,
 > extends BaseValidator<V, false> {
   protected constructor(
     message: string = DEFAULT_ERROR_MESSAGES.DEFAULT,

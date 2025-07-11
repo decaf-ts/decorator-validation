@@ -8,6 +8,7 @@ import {
   Validator,
   validator,
   ValidatorOptions,
+  ModelErrorDefinition,
 } from "../../src";
 
 function generateGtin() {
@@ -106,18 +107,21 @@ describe("Validation with custom decorators test", function () {
     expect(errors).toBeDefined();
     if (errors) {
       expect(Object.keys(errors)).toBeInstanceOf(Array);
-      expect(Object.keys(errors).length).toBe(1);
-      expect(errors.toString()).toBe("customProp - Not a valid Gtin");
+      expect(errors).toEqual(
+        new ModelErrorDefinition({
+          customProp: {
+            gtin: "Not a valid Gtin",
+          },
+        })
+      );
     }
   });
 
   it("Valid test", function () {
+    Validation.register(new GtinValidator());
     const dm = new TestModel({
       customProp: validGtin,
     });
-
-    Validation.register(new GtinValidator() as Validator);
-
     const errors = dm.hasErrors();
     expect(errors).toBeUndefined();
   });

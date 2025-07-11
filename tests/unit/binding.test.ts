@@ -1,3 +1,4 @@
+import type { ModelArg } from "../../src";
 import {
   findLastProtoBeforeObject,
   Model,
@@ -5,7 +6,6 @@ import {
   ModelErrorDefinition,
   required,
 } from "../../src";
-import type { ModelArg } from "../../src";
 
 describe("decorating non model classes", () => {
   describe("Binding", () => {
@@ -51,7 +51,15 @@ describe("decorating non model classes", () => {
 
     it("still properly handles non Model based classes by injecting himself on the top of the prototype chain", () => {
       let model = new NonModel();
-      expect(model.hasErrors()).toBeDefined();
+      const errs = model.hasErrors();
+      expect(errs).toBeDefined();
+      expect(errs).toEqual(
+        new ModelErrorDefinition({
+          arg1: {
+            required: "This field is required",
+          },
+        })
+      );
       expect(model instanceof Model).toEqual(true);
 
       model = new NonModel({
