@@ -4,13 +4,15 @@ import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { Validation } from "../validation/Validation";
 import { ValidationKeys } from "../validation/Validators/constants";
-import { ModelErrors, ValidationDecoratorDefinition } from "../validation/types";
+import {
+  ModelErrors,
+  ValidationDecoratorDefinition,
+} from "../validation/types";
 import { PathProxyEngine } from "../utils/PathProxy";
-import { ReservedModels } from "./constants";
-import { VALIDATION_PARENT_KEY } from "../constants";
 import { ConditionalAsync } from "../validation";
 
-export type ValidationDecoratorDefinitionAsync = ValidationDecoratorDefinition & { async: boolean };
+export type ValidationDecoratorDefinitionAsync =
+  ValidationDecoratorDefinition & { async: boolean };
 
 export type ValidationPropertyDecoratorDefinitionAsync = {
   prop: string | symbol;
@@ -19,141 +21,6 @@ export type ValidationPropertyDecoratorDefinitionAsync = {
 
 export type DecoratorMetadataAsync = DecoratorMetadata & { async: boolean };
 
-export function validateNestedProps<M extends Model, Async extends boolean = false>(
-  obj: M,
-  props: string[],
-  async?: Async
-): ConditionalAsync<Async, ModelErrors> | undefined {
-  const result: Record<string, string | string[] | Promise<string | string[] | undefined>> = {};
-  const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase());
-
-  for (const prop of props) {
-    const allDecorators = Reflection.getPropertyDecorators(
-      ValidationKeys.REFLECT,
-      obj,
-      prop
-    ).decorators;
-
-    const decorators = [...allDecorators].filter((d) =>
-      [ModelKeys.TYPE, ValidationKeys.TYPE as string].includes(d.key)
-    );
-
-    if (!decorators || !decorators.length) continue;
-
-    const dec = decorators.pop() as DecoratorMetadata;
-
-    const clazz = dec.props.name
-      ? [dec.props.name]
-      : Array.isArray(dec.props.customTypes)
-        ? dec.props.customTypes
-        : [dec.props.customTypes];
-
-    for (const c of clazz) {
-      if (!reserved.includes(c.toLowerCase())) continue;
-
-      const rawValue = (obj as any)[prop];
-      const typeDecoratorKey = Array.isArray(rawValue) ? ValidationKeys.LIST : ValidationKeys.TYPE;
-
-      const types = (allDecorators.find((d) => {
-        return d.key === typeDecoratorKey;
-      }) || {}) as DecoratorMetadata<any>;
-
-      let allowedTypes: string[] = [];
-      if (types?.props) {
-        const customTypes = Array.isArray(rawValue) ? types.props.class : types.props.customTypes;
-
-        if (customTypes) {
-          allowedTypes = Array.isArray(customTypes)
-            ? customTypes.map((t) => `${t}`.toLowerCase())
-            : [customTypes.toLowerCase()];
-        }
-      }
-
-      const validate = (value: any): any => {
-        if (typeof value !== "object" && typeof value !== "function") {
-          return async ? Promise.resolve(undefined) : undefined;
-        }
-
-        try {
-          if (value && !value[VALIDATION_PARENT_KEY]) value[VALIDATION_PARENT_KEY] = obj;
-
-          if (Model.isModel(value)) {
-            return async ? Promise.resolve(value.hasErrors()) : value.hasErrors();
-          }
-
-          const isValidType = allowedTypes.includes(typeof value);
-          const errorMessage = "Value has no validatable type";
-          if (async) {
-            return isValidType ? Promise.resolve(undefined) : Promise.resolve(errorMessage);
-          }
-
-          return isValidType ? undefined : errorMessage;
-        } catch (e: any) {
-          const msg = e instanceof Error ? e.message : "Validation exception";
-          return async ? Promise.resolve(msg) : msg;
-        } finally {
-          if (value && value[VALIDATION_PARENT_KEY]) delete value[VALIDATION_PARENT_KEY];
-        }
-      };
-
-      let err: Promise<any | any[] | undefined> | any | any[] | undefined;
-      switch (c) {
-        case Array.name:
-        case Set.name: {
-          const listDec = allDecorators.find((d) => d.key === ValidationKeys.LIST);
-
-          if (listDec && rawValue) {
-            const iterable = c === Array.name ? rawValue : rawValue.values(); // .values() if is a set
-            const validations = Array.from(iterable).map((v) => validate(v)); // Always resolves as Promise.resolve()
-            if (async) {
-              // TODO: change to allSettled
-              err = Promise.all(validations).then((results) => {
-                const filtered = results.filter((r) => r !== undefined);
-                return filtered.length ? filtered : undefined;
-              });
-            } else {
-              const filtered = validations.filter((r) => r !== undefined);
-              err = filtered.length ? filtered : undefined;
-            }
-          }
-          break;
-        }
-        default: {
-          if (rawValue) {
-            err = validate(rawValue);
-          }
-        }
-      }
-
-      if (err) {
-        result[prop] = err;
-      }
-    }
-  }
-
-  if (!async) return Object.keys(result).length ? (result as any) : undefined;
-
-  const keys = Object.keys(result);
-  const promises = Object.values(result) as Promise<string | string[] | undefined>[];
-
-  return Promise.allSettled(promises).then((resolved) => {
-    const response: ModelErrors = {};
-    for (let i = 0; i < resolved.length; i++) {
-      const r = resolved[i];
-      const key = keys[i];
-
-      if (r.status === "fulfilled" && r.value !== undefined) {
-        (response as any)[key] = r.value;
-      } else if (r.status === "rejected") {
-        (response as any)[key] =
-          r.reason instanceof Error ? r.reason.message : String(r.reason || "Validation failed");
-      }
-    }
-
-    return Object.keys(response).length ? response : undefined;
-  }) as any;
-}
-
 export function getValidatableProperties(
   obj: any,
   propsToIgnore: string[]
@@ -161,7 +28,10 @@ export function getValidatableProperties(
   const decoratedProperties: ValidationPropertyDecoratorDefinitionAsync[] = [];
 
   for (const prop in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, prop) && !propsToIgnore.includes(prop)) {
+    if (
+      Object.prototype.hasOwnProperty.call(obj, prop) &&
+      !propsToIgnore.includes(prop)
+    ) {
       decoratedProperties.push(
         Reflection.getPropertyDecorators(
           ValidationKeys.REFLECT,
@@ -175,58 +45,81 @@ export function getValidatableProperties(
   return decoratedProperties;
 }
 
+export function validateDecorator<IsAsync extends boolean = false>(
+  obj: any,
+  value: any,
+  decorator: DecoratorMetadataAsync,
+  async?: IsAsync
+): ConditionalAsync<IsAsync, string | undefined> {
+  const validator = Validation.get(decorator.key);
+  if (!validator) {
+    throw new Error(`Missing validator for ${decorator.key}`);
+  }
+
+  if (validator.async && !async) {
+    console.warn("...");
+  }
+
+  const decoratorProps =
+    decorator.key === ModelKeys.TYPE
+      ? [decorator.props]
+      : decorator.props || {};
+
+  const context = PathProxyEngine.create(obj, {
+    ignoreUndefined: true,
+    ignoreNull: true,
+  });
+
+  const maybeError = validator.hasErrors(value, decoratorProps, context) as any; // string | undefined
+  // @ts-expect-error ...
+  return async ? Promise.resolve(maybeError) : maybeError;
+}
+
 export function validateDecorators<IsAsync extends boolean = false>(
   obj: any,
-  prop: string | symbol,
+  value: any,
   decorators: DecoratorMetadataAsync[],
   async?: IsAsync
 ): ConditionalAsync<IsAsync, Record<string, string>> | undefined {
   const result: Record<string, string | Promise<string>> = {};
 
   for (const decorator of decorators) {
-    const validator = Validation.get(decorator.key);
-    if (!validator) {
-      throw new Error(`Missing validator for ${decorator.key}`);
-    }
+    let err = validateDecorator(obj, value, decorator, async);
 
-    if (validator.async && !async) {
-      console.warn("...");
-      continue;
-    }
-
-    const decoratorProps =
-      decorator.key === ModelKeys.TYPE ? [decorator.props] : decorator.props || {};
-
-    const value = (obj as any)[prop.toString()];
-    const context = PathProxyEngine.create(obj, {
-      ignoreUndefined: true,
-      ignoreNull: true,
-    });
-
-    const maybeError = validator.hasErrors(value, decoratorProps, context); // string | undefined
-    if (async) {
-      result[decorator.key] = Promise.resolve(maybeError);
-    } else if (maybeError) {
-      result[decorator.key] = maybeError;
-    }
-  }
-
-  if (async) {
-    const keys = Object.keys(result);
-    const promises = Object.values(result) as Promise<string | undefined>[];
-    return Promise.all(promises).then((resolvedValues) => {
-      const res: Record<string, string> = {};
-      for (let i = 0; i < resolvedValues.length; i++) {
-        const val = resolvedValues[i];
-        if (val !== undefined) {
-          res[keys[i]] = val;
-        }
+    // if decorator is a list and has values, and no errors, so, each element must be check
+    if (!err && decorator.key === ValidationKeys.LIST) {
+      const values = value instanceof Set ? [...value] : value;
+      if (values && values.length > 0) {
+        const types = decorator.props.class || decorator.props.customTypes;
+        const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
+        const errs = values.flatMap((v: any) => {
+          if (Model.isModel(v)) return v.hasErrors() || [];
+          return allowedTypes.includes(typeof v)
+            ? []
+            : ["Value has no validatable type"];
+        });
+        err = errs.length > 0 ? errs : undefined;
       }
-      return Object.keys(res).length > 0 ? res : undefined;
-    }) as any;
+    }
+
+    if (err) (result as any)[decorator.key] = err;
   }
 
-  return Object.keys(result).length > 0 ? (result as any) : undefined;
+  if (!async)
+    return Object.keys(result).length > 0 ? (result as any) : undefined;
+
+  const keys = Object.keys(result);
+  const promises = Object.values(result) as Promise<string | undefined>[];
+  return Promise.all(promises).then((resolvedValues) => {
+    const res: Record<string, string> = {};
+    for (let i = 0; i < resolvedValues.length; i++) {
+      const val = resolvedValues[i];
+      if (val !== undefined) {
+        res[keys[i]] = val;
+      }
+    }
+    return Object.keys(res).length > 0 ? res : undefined;
+  }) as any;
 }
 
 export function validate<M extends Model, Async extends boolean = false>(
@@ -237,70 +130,99 @@ export function validate<M extends Model, Async extends boolean = false>(
   const decoratedProperties: ValidationPropertyDecoratorDefinitionAsync[] =
     getValidatableProperties(obj, propsToIgnore);
 
-  const result: ModelErrors | Promise<ModelErrors> | undefined = {};
-
+  const result: Record<string, any> = {};
   for (const { prop, decorators } of decoratedProperties) {
-    // const { prop, decorators } = decoratedProperty;
+    const propValue = (obj as any)[prop];
 
     if (!decorators?.length) continue;
 
-    const defaultTypeDecorator = decorators[0];
+    // check if we can skip the default type validator
+    const designTypeDec = [...(decorators || [])].find((d) =>
+      [ModelKeys.TYPE, ValidationKeys.TYPE].includes(d.key as any)
+    );
+    if (!designTypeDec) continue;
 
-    const hasExplicitType = decorators.find((d) => {
-      if (d.key === ValidationKeys.TYPE) return true;
-      return !!d.props.types?.find((t) => t === defaultTypeDecorator.props.name);
-    });
+    const designType = designTypeDec.props.name;
 
-    if (hasExplicitType) {
-      decorators.shift(); // remove the design:type decorator
-    }
+    if ([Array.name, Set.name].includes(designType)) {
+      // Check for @list decorator on array or Set properties
+      if (!decorators.some((d) => d.key === ValidationKeys.LIST))
+        throw new Error(
+          `Property '${String(prop)}' requires a @list decorator`
+        );
 
-    const errs = validateDecorators(obj, prop, decorators, async);
-    if (errs) {
-      (result as any)[prop.toString()] = errs;
-    }
-  }
+      if (propValue && !(Array.isArray(propValue) || propValue instanceof Set))
+        throw new Error(
+          `Property '${String(prop)}' must be either an array or a Set`
+        );
 
-  const nestedProps = Object.keys(obj).filter((prop) => Model.isModel((obj as any)[prop]));
-  const nestedErrors = validateNestedProps(obj, nestedProps, async);
-
-  if (!async) {
-    const merged = {
-      ...result,
-      ...(nestedErrors || {}),
-    } as ModelErrors;
-    const hasErrors = Object.keys(merged).length > 0;
-    return (hasErrors ? new ModelErrorDefinition(merged) : undefined) as any;
-  }
-
-  return (nestedErrors as Promise<ModelErrors | undefined>).then((nestedResolved) => {
-    const merged = {
-      ...result,
-      ...(nestedResolved || {}),
-    } as ModelErrors;
-
-    // flat promises
-    const keys = Object.keys(merged);
-    const promises = Object.values(merged);
-
-    return Promise.allSettled(promises).then(async (results) => {
-      const result: ModelErrors = {};
-
-      for (let i = 0; i < results.length; i++) {
-        const key = keys[i];
-        const res = results[i];
-
-        if (res.status === "fulfilled" && res.value !== undefined) {
-          (result as any)[key] = res.value;
-        } else if (res.status === "rejected") {
-          (result as any)[key] =
-            res.reason instanceof Error
-              ? res.reason.message
-              : String(res.reason || "Validation failed");
+      // remove design:type decorator, becauf of @list decorator
+      for (let i = decorators.length - 1; i >= 0; i--) {
+        if (decorators[i].key === ModelKeys.TYPE) {
+          decorators.splice(i, 1); // Remove apenas ModelKeys.TYPE se houver ValidationKeys.TYPE
         }
       }
+    }
 
-      return Object.keys(result).length > 0 ? new ModelErrorDefinition(result) : undefined;
-    });
+    let errs: Record<string, any> =
+      validateDecorators(obj, propValue, decorators, async) || {};
+
+    // check for nested props
+    // errors para evitar processamento desnecessário; propValue pra caso o valor for undefined;
+    const Constr = Model.isPropertyModel(obj, String(prop));
+    if (propValue && Constr) {
+      const instance: Model = propValue;
+      if (
+        typeof instance !== "object" ||
+        !instance.hasErrors ||
+        typeof instance.hasErrors !== "function"
+      ) {
+        errs[ValidationKeys.TYPE] = "Model should be validatable but it's not."; // if async, the error is return/exist
+      } else {
+        const validationErrors = instance.hasErrors();
+        const nestedErrors = Object.entries(validationErrors || {}).reduce(
+          (accumulatedErrors, [field, error]) => ({
+            ...accumulatedErrors,
+            [`${String(prop)}.${field}`]: error,
+          }),
+          {}
+        );
+
+        if (Object.keys(nestedErrors).length > 0)
+          errs = Object.assign({}, errs, nestedErrors);
+      }
+    }
+
+    if (Object.keys(errs).length > 0) result[String(prop)] = errs;
+  }
+
+  const merged: any = result; // aplicar filtro
+
+  if (!async)
+    return Object.keys(merged).length > 0
+      ? new ModelErrorDefinition(merged)
+      : undefined;
+
+  // flat promises
+  const keys = Object.keys(merged);
+  const promises = Object.values(merged);
+  return Promise.allSettled(promises).then(async (results) => {
+    const result: ModelErrors = {};
+    for (let i = 0; i < results.length; i++) {
+      const key = keys[i];
+      const res = results[i];
+
+      if (res.status === "fulfilled" && res.value !== undefined) {
+        (result as any)[key] = res.value;
+      } else if (res.status === "rejected") {
+        (result as any)[key] =
+          res.reason instanceof Error
+            ? res.reason.message
+            : String(res.reason || "Validation failed");
+      }
+    }
+    return Object.keys(result).length > 0
+      ? new ModelErrorDefinition(result)
+      : undefined;
   }) as any;
 }
