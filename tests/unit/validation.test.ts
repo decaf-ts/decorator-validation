@@ -1,4 +1,4 @@
-import { model, Model, ModelErrorDefinition } from "../../src";
+import { list, model, Model, ModelErrorDefinition } from "../../src";
 import type { ModelArg } from "../../src";
 import {
   email,
@@ -73,7 +73,7 @@ class PasswordTestModel extends Model {
 
 @model()
 class ListModelTest extends Model {
-  // @list(String)
+  @list(String)
   @maxlength(2)
   @minlength(1)
   @required()

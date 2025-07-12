@@ -23,7 +23,7 @@ import {
   ValidationKeys,
 } from "./Validators/constants";
 import { sf } from "../utils/strings";
-import { ModelConstructor } from "../model/types";
+import { Constructor, ModelConstructor } from "../model/types";
 import { parseDate } from "../utils/dates";
 import { propMetadata } from "../utils/decorators";
 import { Validation } from "./Validation";
@@ -318,7 +318,7 @@ export function type(
   const meta: TypeMetadata = {
     customTypes: types,
     message: message,
-    description: "defines the accepted classes",
+    description: "defines the accepted types for the attribute",
   };
   return Decoration.for(key)
     .define(validationMetadata<TypeMetadata>(type, key, meta))
@@ -422,7 +422,7 @@ export interface ListMetadata extends ListValidatorOptions {
  * @summary List Decorator
  * @description Also sets the {@link type} to the provided collection
  *
- * @param {ModelConstructor} clazz
+ * @param {Constructor} clazz
  * @param {string} [collection] The collection being used. defaults to Array
  * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#LIST}
  *
@@ -431,7 +431,7 @@ export interface ListMetadata extends ListValidatorOptions {
  * @category Property Decorators
  */
 export function list(
-  clazz: ModelConstructor<any> | ModelConstructor<any>[],
+  clazz: Constructor<any> | Constructor<any>[],
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
