@@ -4,8 +4,14 @@
   "description": "simple decorator based validation engine",
   "type": "module",
   "exports": {
-    "require": "./lib/index.cjs",
-    "import": "./lib/esm/index.js"
+    ".": {
+      "require": "./lib/index.cjs",
+      "import": "./lib/esm/index.js"
+    },
+    "./mcp": {
+      "require": "./lib/mcp/index.cjs",
+      "import": "./lib/esm/mcp/index.js"
+    }
   },
   "types": "lib/index.d.ts",
   "scripts": {
@@ -23,6 +29,8 @@
     "test:integration": "jest --testPathPattern=\"/tests/(integration)\" --passWithNoTests --detectOpenHandles",
     "test:all": "jest --testPathPattern=\"/tests\" --passWithNoTests --detectOpenHandles",
     "test:circular": "dpdm -T --no-warning --no-tree ./src/index.ts",
+    "test:fuzz": "npm run test:all -- --testRegex='/tests/.*\\.fuzz\\.ts' --passWithNoTests",
+    "test:property": "npm run test:fuzz -- --testRegex='/tests/.*\\.property\\.fuzz\\.ts'",
     "coverage": "rimraf ./workdocs/reports/data/*.json && npm run test:all -- --coverage --config=./workdocs/reports/jest.coverage.config.ts",
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
@@ -80,6 +88,8 @@
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "fast-check": "^4.2.0",
+    "fastmcp": "^3.8.4",
     "globals": "^16.0.0",
     "jest": "^29.7.0",
     "jest-html-reporters": "^3.1.7",
@@ -101,6 +111,7 @@
   },
   "peerDependencies": {
     "@decaf-ts/reflection": "latest",
-    "reflect-metadata": "^0.2.1"
+    "reflect-metadata": "^0.2.1",
+    "typed-object-accumulator": "^0.1.5"
   }
 }

@@ -21,8 +21,7 @@ class TestModel extends Model {
   dateProp?: Date;
 
   constructor(model?: ModelArg<TestModel>) {
-    super();
-    Model.fromObject<TestModel>(this, model);
+    super(model);
   }
 }
 
@@ -31,8 +30,7 @@ class TestModel2 extends Model {
   dateProp?: Date;
 
   constructor(model?: ModelArg<TestModel2>) {
-    super();
-    Model.fromObject(this, model);
+    super(model);
   }
 }
 
@@ -45,7 +43,6 @@ class TestModelInner extends Model {
 
   constructor(model?: ModelArg<TestModelInner>) {
     super(model);
-    Model.fromModel(this, model);
   }
 }
 
@@ -55,8 +52,7 @@ class NestedTestModel extends Model {
   test!: TestModelInner;
 
   constructor(model?: ModelArg<NestedTestModel>) {
-    super();
-    Model.fromModel(this, model);
+    super(model);
   }
 }
 

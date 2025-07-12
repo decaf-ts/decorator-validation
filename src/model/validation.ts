@@ -1,5 +1,9 @@
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
-import { DecoratorMetadata, Reflection } from "@decaf-ts/reflection";
+import {
+  DecoratorMetadata,
+  Reflection,
+  FullPropertyDecoratorList,
+} from "@decaf-ts/reflection";
 import { ModelKeys } from "../utils/constants";
 import { ReservedModels } from "./constants";
 import { VALIDATION_PARENT_KEY } from "../constants";
@@ -34,14 +38,16 @@ export function validate<M extends Model>(
     if (
       Object.prototype.hasOwnProperty.call(obj, prop) &&
       propsToIgnore.indexOf(prop) === -1
-    )
+    ) {
       decoratedProperties.push(
+        // @ts-ignore
         Reflection.getPropertyDecorators(
           ValidationKeys.REFLECT,
           obj,
           prop
-        ) as ValidationPropertyDecoratorDefinition
+        ) as FullPropertyDecoratorList
       );
+    }
 
   let result: ModelErrors | undefined = undefined;
 
