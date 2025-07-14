@@ -423,7 +423,10 @@ export abstract class Model
                 }
                 break;
               default:
-                if ((self as Record<string, any>)[prop])
+                if (
+                  typeof self[prop as keyof typeof self] !== "undefined" &&
+                  Model.get(c)
+                )
                   (self as Record<string, any>)[prop] = Model.build(
                     (self as any)[prop],
                     c
