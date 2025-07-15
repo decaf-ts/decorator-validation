@@ -1,11 +1,12 @@
 import {
   email,
+  list,
   max,
   maxlength,
   min,
   minlength,
-  model,
   Model,
+  model,
   ModelArg,
   ModelErrorDefinition,
   password,
@@ -16,7 +17,6 @@ import {
   type,
   url,
   ValidationKeys,
-  list,
 } from "../../src";
 
 @model()
@@ -62,7 +62,6 @@ class TestModel extends Model {
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);
-    Model.fromModel<TestModel>(this, model);
   }
 }
 
@@ -72,8 +71,7 @@ class PasswordTestModel extends Model {
   password?: string;
 
   constructor(model?: ModelArg<PasswordTestModel>) {
-    super();
-    Model.fromModel(this, model);
+    super(model);
   }
 }
 
@@ -86,8 +84,7 @@ class ListModelTest extends Model {
   strings!: string[];
 
   constructor(model?: ModelArg<ListModelTest>) {
-    super();
-    Model.fromModel(this, model);
+    super(model);
   }
 }
 

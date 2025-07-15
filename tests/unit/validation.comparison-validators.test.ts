@@ -35,7 +35,6 @@ describe("Comparison Validators", () => {
 
       constructor(model?: ModelArg<SimpleChildTestModel>) {
         super();
-        Model.fromModel(this, model);
       }
     }
 
@@ -54,7 +53,6 @@ describe("Comparison Validators", () => {
 
       constructor(model?: ModelArg<SimpleParentTestModel>) {
         super();
-        Model.fromModel(this, model);
       }
     }
 
@@ -150,8 +148,7 @@ describe("Comparison Validators", () => {
       objectValue: Record<string, any> = {};
 
       constructor(model?: ModelArg<MultiTypeMirrorModel>) {
-        super();
-        Model.fromModel(this, model);
+        super(model);
       }
     }
 
@@ -164,8 +161,7 @@ describe("Comparison Validators", () => {
       mirrorDateValue: Date = new Date(0);
 
       constructor(model?: ModelArg<LessThanTestModel>) {
-        super();
-        Model.fromModel(this, model);
+        super(model);
       }
     }
 
@@ -192,8 +188,7 @@ describe("Comparison Validators", () => {
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeEqualsModel>) {
-          super();
-          Model.fromModel(this, model);
+          super(model);
         }
       }
 
@@ -206,8 +201,7 @@ describe("Comparison Validators", () => {
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeEqualsModel>) {
-          super();
-          Model.fromModel(this, model);
+          super(model);
         }
       }
 
@@ -308,8 +302,7 @@ describe("Comparison Validators", () => {
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
-          super();
-          Model.fromModel(this, model);
+          super(model);
         }
       }
 
@@ -323,7 +316,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -409,7 +401,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeLessThanModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -423,7 +414,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -517,7 +507,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -534,7 +523,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeGreaterThanModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -548,7 +536,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -641,7 +628,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -658,7 +644,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeGreaterThanOrEqualModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -672,7 +657,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -758,7 +742,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -775,7 +758,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeLessThanOrEqualModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -789,7 +771,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -926,7 +907,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -947,7 +927,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -972,7 +951,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqParentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -999,7 +977,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqGrandparentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1223,7 +1200,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1244,7 +1220,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1269,7 +1244,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffParentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1296,7 +1270,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffGrandparentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1489,7 +1462,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1504,7 +1476,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtParentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1522,7 +1493,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtGrandparentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1686,7 +1656,6 @@ describe("Comparison Validators", () => {
 
           constructor(model?: ModelArg<TestModel>) {
             super();
-            Model.fromModel(this, model);
           }
         }
 
@@ -1802,7 +1771,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1817,7 +1785,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteParentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1835,7 +1802,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteGrandparentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -1963,7 +1929,6 @@ describe("Comparison Validators", () => {
 
           constructor(model?: ModelArg<LteTestModel>) {
             super();
-            Model.fromModel(this, model);
           }
         }
 
@@ -2096,7 +2061,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtChildModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -2111,7 +2075,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtParentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 
@@ -2129,7 +2092,6 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtGrandparentModel>) {
           super();
-          Model.fromModel(this, model);
         }
       }
 

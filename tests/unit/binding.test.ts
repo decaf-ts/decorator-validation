@@ -28,9 +28,7 @@ describe("decorating non model classes", () => {
       @required()
       arg1?: string = undefined;
 
-      constructor(arg?: ModelArg<NonModel>) {
-        Model.fromObject(this, arg);
-      }
+      constructor(arg?: ModelArg<NonModel>) {}
 
       equals(obj: any, ...exceptions: string[]): boolean {
         return Model.equals(this, obj, ...exceptions);

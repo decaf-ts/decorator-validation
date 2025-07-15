@@ -22,6 +22,7 @@
  */
 export enum ModelKeys {
   REFLECT = "decaf.model.",
+  DESCRIPTION = "decaf.description.",
   TYPE = "design:type",
   PARAMS = "design:paramtypes",
   RETURN = "design:returntype",

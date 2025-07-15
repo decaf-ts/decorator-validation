@@ -438,7 +438,10 @@ export abstract class Model<Async extends boolean = false>
                 }
                 break;
               default:
-                if ((self as Record<string, any>)[prop])
+                if (
+                  typeof self[prop as keyof typeof self] !== "undefined" &&
+                  Model.get(c)
+                )
                   (self as Record<string, any>)[prop] = Model.build(
                     (self as any)[prop],
                     c
@@ -471,7 +474,7 @@ export abstract class Model<Async extends boolean = false>
    * @return {ModelBuilderFunction | undefined} - The current global builder function or undefined if not set
    */
   static getBuilder(): ModelBuilderFunction | undefined {
-    return modelBuilderFunction;
+    return modelBuilderFunction || Model.fromModel;
   }
 
   /**
@@ -725,5 +728,24 @@ export abstract class Model<Async extends boolean = false>
     if (Model.isModel((target as Record<string, any>)[attribute])) return true;
     const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
     return Model.get(metadata.name) ? metadata.name : undefined;
+  }
+
+  static describe<M extends Model>(model: M | Constructor<M>, key?: keyof M) {
+    const descKey = Model.key(ModelKeys.DESCRIPTION);
+    if (key) {
+      model = model instanceof Model ? model : new model();
+      return (
+        Reflect.getMetadataKeys(model.constructor, key.toString())
+          .find((k) => k === descKey)
+          ?.toString() || model.toString()
+      );
+    }
+
+    return (
+      Reflect.getMetadata(
+        Model.key(ModelKeys.DESCRIPTION),
+        model instanceof Model ? model.constructor : model
+      ) || model.toString()
+    );
   }
 }

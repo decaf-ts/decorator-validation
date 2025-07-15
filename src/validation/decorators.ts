@@ -1,25 +1,48 @@
 import "reflect-metadata";
 import {
+  DateValidatorOptions,
   DiffValidatorOptions,
   EqualsValidatorOptions,
   GreaterThanOrEqualValidatorOptions,
   GreaterThanValidatorOptions,
   LessThanOrEqualValidatorOptions,
   LessThanValidatorOptions,
+  ListValidatorOptions,
+  MaxLengthValidatorOptions,
+  MaxValidatorOptions,
+  MinLengthValidatorOptions,
+  MinValidatorOptions,
+  PatternValidatorOptions,
+  StepValidatorOptions,
   UniqueValidatorOptions,
   ValidationMetadata,
+  ValidatorOptions,
 } from "./types";
-import {
-  DEFAULT_ERROR_MESSAGES,
-  DEFAULT_PATTERNS,
-  ValidationKeys,
-} from "./Validators/constants";
+import { DEFAULT_ERROR_MESSAGES, DEFAULT_PATTERNS, ValidationKeys } from "./Validators/constants";
 import { sf } from "../utils/strings";
-import { ModelConstructor } from "../model/types";
+import { Constructor, ModelConstructor } from "../model/types";
 import { parseDate } from "../utils/dates";
 import { propMetadata } from "../utils/decorators";
 import { Validation } from "./Validation";
 import { Decoration } from "../utils/Decoration";
+import { apply } from "@decaf-ts/reflection";
+
+/**
+ * @description Combined property decorator factory for metadata and attribute marking
+ * @summary Creates a decorator that both marks a property as a model attribute and assigns metadata to it
+ *
+ * @template V
+ * @param {PropertyDecorator} decorator - The metadata key
+ * @param {string} key - The metadata key
+ * @param {V} value - The metadata value to associate with the property
+ * @return {Function} - Combined decorator function
+ * @function validationMetadata
+ * @category Property Decorators
+ */
+export function validationMetadata<V>(decorator: any, key: string, value: V) {
+  Validation.registerDecorator(key, decorator);
+  return apply(propMetadata<V>(key, value));
+}
 
 /**
  * @description Property decorator that marks a field as required
@@ -46,13 +69,13 @@ import { Decoration } from "../utils/Decoration";
  */
 export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
   const key = Validation.key(ValidationKeys.REQUIRED);
+  const meta: ValidatorOptions = {
+    message: message,
+    description: `defines the attribute as required`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        message: message,
-        async: false,
-      })
-    )
+    .define(validationMetadata<ValidatorOptions>(required, key, meta))
     .apply();
 }
 
@@ -85,15 +108,15 @@ export function min(
   message: string = DEFAULT_ERROR_MESSAGES.MIN
 ) {
   const key = Validation.key(ValidationKeys.MIN);
+  const meta: MinValidatorOptions = {
+    [ValidationKeys.MIN]: value,
+    message: message,
+    types: [Number.name, Date.name],
+    description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.MIN]: value,
-        message: message,
-        types: [Number.name, Date.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<MinValidatorOptions>(min, key, meta))
     .apply();
 }
 
@@ -112,15 +135,15 @@ export function max(
   message: string = DEFAULT_ERROR_MESSAGES.MAX
 ) {
   const key = Validation.key(ValidationKeys.MAX);
+  const meta: MaxValidatorOptions = {
+    [ValidationKeys.MAX]: value,
+    message: message,
+    types: [Number.name, Date.name],
+    description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.MAX]: value,
-        message: message,
-        types: [Number.name, Date.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<MaxValidatorOptions>(max, key, meta))
     .apply();
 }
 
@@ -139,15 +162,15 @@ export function step(
   message: string = DEFAULT_ERROR_MESSAGES.STEP
 ) {
   const key = Validation.key(ValidationKeys.STEP);
+  const meta: StepValidatorOptions = {
+    [ValidationKeys.STEP]: value,
+    message: message,
+    types: [Number.name],
+    description: `defines the step of the attribute as ${value}`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.STEP]: value,
-        message: message,
-        types: [Number.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<StepValidatorOptions>(step, key, meta))
     .apply();
 }
 
@@ -166,15 +189,15 @@ export function minlength(
   message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH
 ) {
   const key = Validation.key(ValidationKeys.MIN_LENGTH);
+  const meta: MinLengthValidatorOptions = {
+    [ValidationKeys.MIN_LENGTH]: value,
+    message: message,
+    types: [String.name, Array.name, Set.name],
+    description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.MIN_LENGTH]: value,
-        message: message,
-        types: [String.name, Array.name, Set.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<MinLengthValidatorOptions>(minlength, key, meta))
     .apply();
 }
 
@@ -193,15 +216,15 @@ export function maxlength(
   message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH
 ) {
   const key = Validation.key(ValidationKeys.MAX_LENGTH);
+  const meta: MaxLengthValidatorOptions = {
+    [ValidationKeys.MAX_LENGTH]: value,
+    message: message,
+    types: [String.name, Array.name, Set.name],
+    description: `defines the max length of the attribute as ${value} (applies to strings or lists)`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.MAX_LENGTH]: value,
-        message: message,
-        types: [String.name, Array.name, Set.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<MaxLengthValidatorOptions>(maxlength, key, meta))
     .apply();
 }
 
@@ -220,16 +243,16 @@ export function pattern(
   message: string = DEFAULT_ERROR_MESSAGES.PATTERN
 ) {
   const key = Validation.key(ValidationKeys.PATTERN);
+  const meta: PatternValidatorOptions = {
+    [ValidationKeys.PATTERN]:
+      typeof value === "string" ? value : value.toString(),
+    message: message,
+    types: [String.name],
+    description: `assigns the ${value === "string" ? value : value.toString()} pattern to the attribute`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.PATTERN]:
-          typeof value === "string" ? value : value.toString(),
-        message: message,
-        types: [String.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<PatternValidatorOptions>(pattern, key, meta))
     .apply();
 }
 
@@ -244,15 +267,15 @@ export function pattern(
  */
 export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
   const key = Validation.key(ValidationKeys.EMAIL);
+  const meta: PatternValidatorOptions = {
+    [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL.toString(),
+    message: message,
+    types: [String.name],
+    description: "marks the attribute as an email",
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL,
-        message: message,
-        types: [String.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<PatternValidatorOptions>(email, key, meta))
     .apply();
 }
 
@@ -267,16 +290,20 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
  */
 export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
   const key = Validation.key(ValidationKeys.URL);
+  const meta: PatternValidatorOptions = {
+    [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL.toString(),
+    message: message,
+    types: [String.name],
+    description: "marks the attribute as an url",
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL,
-        message: message,
-        types: [String.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata<PatternValidatorOptions>(url, key, meta))
     .apply();
+}
+
+export interface TypeMetadata extends ValidatorOptions {
+  customTypes: string[] | string;
 }
 
 /**
@@ -294,15 +321,19 @@ export function type(
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
   const key = Validation.key(ValidationKeys.TYPE);
+  const meta: TypeMetadata = {
+    customTypes: types,
+    message: message,
+    description: "defines the accepted types for the attribute",
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        customTypes: types,
-        message: message,
-        async: false,
-      })
-    )
+    .define(validationMetadata<TypeMetadata>(type, key, meta))
     .apply();
+}
+
+export interface DateMetadata extends DateValidatorOptions {
+  types: string[];
 }
 
 /**
@@ -323,13 +354,15 @@ export function date(
   message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
   const key = Validation.key(ValidationKeys.DATE);
+  const meta: DateMetadata = {
+    [ValidationKeys.FORMAT]: format,
+    message: message,
+    types: [Date.name],
+    description: `defines the attribute as a date with the format ${format}`,
+    async: false,
+  };
   const dateDec = (target: Record<string, any>, propertyKey?: any): any => {
-    propMetadata<ValidationMetadata>(key, {
-      [ValidationKeys.FORMAT]: format,
-      message: message,
-      types: [Date.name],
-      async: false,
-    })(target, propertyKey);
+    validationMetadata(date, key, meta)(target, propertyKey);
 
     const values = new WeakMap();
 
@@ -378,16 +411,20 @@ export function password(
   message: string = DEFAULT_ERROR_MESSAGES.PASSWORD
 ) {
   const key = Validation.key(ValidationKeys.PASSWORD);
+  const meta: PatternValidatorOptions = {
+    [ValidationKeys.PATTERN]: pattern.toString(),
+    message: message,
+    types: [String.name],
+    description: `attribute as a password`,
+    async: false,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        [ValidationKeys.PATTERN]: pattern,
-        message: message,
-        types: [String.name],
-        async: false,
-      })
-    )
+    .define(validationMetadata(password, key, meta))
     .apply();
+}
+
+export interface ListMetadata extends ListValidatorOptions {
+  type: "Array" | "Set";
 }
 
 /**
@@ -403,20 +440,20 @@ export function password(
  * @category Property Decorators
  */
 export function list(
-  clazz: ModelConstructor<any> | ModelConstructor<any>[],
+  clazz: Constructor<any> | Constructor<any>[],
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   const key = Validation.key(ValidationKeys.LIST);
+  const meta: ListMetadata = {
+    clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
+    type: collection,
+    message: message,
+    async: false,
+    description: `defines the attribute as a ${collection} of ${(clazz as ModelConstructor<any>).name}`,
+  };
   return Decoration.for(key)
-    .define(
-      propMetadata<ValidationMetadata>(key, {
-        clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
-        type: collection,
-        message: message,
-        async: false,
-      })
-    )
+    .define(validationMetadata(list, key, meta))
     .apply();
 }
 
@@ -457,9 +494,11 @@ export function eq(
   const options: EqualsValidatorOptions = {
     message: message,
     [ValidationKeys.EQUALS]: propertyToCompare,
+    description: `defines attribute as equal to ${propertyToCompare}`,
   };
 
-  return propMetadata<ValidationMetadata>(
+  return validationMetadata<ValidationMetadata>(
+    eq,
     Validation.key(ValidationKeys.EQUALS),
     { ...options, async: false } as ValidationMetadata
   );
@@ -484,12 +523,17 @@ export function diff(
   const options: DiffValidatorOptions = {
     message: message,
     [ValidationKeys.DIFF]: propertyToCompare,
+    description: `defines attribute as different to ${propertyToCompare}`,
   };
 
-  return propMetadata<ValidationMetadata>(Validation.key(ValidationKeys.DIFF), {
-    ...options,
-    async: false,
-  } as ValidationMetadata);
+  return validationMetadata<ValidationMetadata>(
+    diff,
+    Validation.key(ValidationKeys.DIFF),
+    {
+      ...options,
+      async: false,
+    } as ValidationMetadata
+  );
 }
 
 /**
@@ -511,9 +555,11 @@ export function lt(
   const options: LessThanValidatorOptions = {
     message: message,
     [ValidationKeys.LESS_THAN]: propertyToCompare,
+    description: `defines attribute as less than to ${propertyToCompare}`,
   };
 
-  return propMetadata<ValidationMetadata>(
+  return validationMetadata<ValidationMetadata>(
+    lt,
     Validation.key(ValidationKeys.LESS_THAN),
     { ...options, async: false } as ValidationMetadata
   );
@@ -538,9 +584,11 @@ export function lte(
   const options: LessThanOrEqualValidatorOptions = {
     message: message,
     [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
+    description: `defines attribute as less or equal to ${propertyToCompare}`,
   };
 
-  return propMetadata<ValidationMetadata>(
+  return validationMetadata<ValidationMetadata>(
+    lte,
     Validation.key(ValidationKeys.LESS_THAN_OR_EQUAL),
     { ...options, async: false } as ValidationMetadata
   );
@@ -565,9 +613,11 @@ export function gt(
   const options: GreaterThanValidatorOptions = {
     message: message,
     [ValidationKeys.GREATER_THAN]: propertyToCompare,
+    description: `defines attribute as greater than ${propertyToCompare}`,
   };
 
-  return propMetadata<ValidationMetadata>(
+  return validationMetadata<ValidationMetadata>(
+    gt,
     Validation.key(ValidationKeys.GREATER_THAN),
     { ...options, async: false } as ValidationMetadata
   );
@@ -592,9 +642,11 @@ export function gte(
   const options: GreaterThanOrEqualValidatorOptions = {
     message: message,
     [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
+    description: `defines attribute as greater or equal to ${propertyToCompare}`,
   };
 
-  return propMetadata<ValidationMetadata>(
+  return validationMetadata<ValidationMetadata>(
+    gte,
     Validation.key(ValidationKeys.GREATER_THAN_OR_EQUAL),
     { ...options, async: false } as ValidationMetadata
   );

@@ -8,7 +8,6 @@ class TestModel extends Model {
 
   constructor(model?: TestModel | Record<any, any>) {
     super(model);
-    Model.fromObject<TestModel>(this, model);
   }
 }
 
@@ -73,8 +72,7 @@ describe("Hashing methods", function () {
     hashMe!: string;
 
     constructor(arg?: ModelArg<HashModel1>) {
-      super();
-      Model.fromObject(this, arg);
+      super(arg);
     }
   }
 

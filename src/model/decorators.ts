@@ -2,6 +2,7 @@ import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { metadata } from "@decaf-ts/reflection";
+import { propMetadata } from "../utils";
 
 /**
  * @summary defines the tpe os an InstanceCallback function
@@ -109,4 +110,17 @@ export function serializedBy(serializer: string, ...args: any[]) {
     serializer: serializer,
     args: args,
   });
+}
+
+/**
+ * @summary Applies descriptive metadata to a class, property or method
+ *
+ * @param {string} description the description to apply
+ *
+ * @function description
+ *
+ * @category Decorators
+ */
+export function description(description: string) {
+  return metadata(Model.key(ModelKeys.DESCRIPTION), description);
 }

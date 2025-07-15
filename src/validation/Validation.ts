@@ -15,6 +15,7 @@ export class Validation {
   private static actingValidatorRegistry?: IValidatorRegistry<Validator> =
     undefined;
 
+  private static loadedDecorators: Record<string, PropertyDecorator> = {};
   private constructor() {}
 
   /**
@@ -82,5 +83,16 @@ export class Validation {
    */
   static keys() {
     return this.getRegistry().getKeys();
+  }
+
+  static registerDecorator(key: string, decorator: PropertyDecorator) {
+    if (key in this.loadedDecorators) return;
+    this.loadedDecorators[key] = decorator;
+  }
+
+  static decoratorFromKey(key: string) {
+    if (!(key in this.loadedDecorators))
+      throw new Error(`No decorator registered under ${key}`);
+    return this.loadedDecorators[key];
   }
 }

@@ -8,7 +8,6 @@ class TestModel extends Model {
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);
-    Model.fromObject<TestModel>(this, model);
   }
 }
 
