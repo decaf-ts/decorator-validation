@@ -11,6 +11,7 @@ import type {
 } from "../validation/types";
 import { PathProxyEngine } from "../utils/PathProxy";
 import { ConditionalAsync } from "../validation";
+import { VALIDATION_PARENT_KEY } from "../constants";
 
 export type ValidationDecoratorDefinitionAsync =
   ValidationDecoratorDefinition & { async: boolean };
@@ -71,7 +72,7 @@ export function validateDecorator<IsAsync extends boolean = false>(
     value,
     decoratorProps as ValidatorOptions,
     context
-  ) as any; // string | undefined
+  );
   // @ts-expect-error ...
   return async ? Promise.resolve(maybeError) : maybeError;
 }
@@ -271,8 +272,14 @@ export function validate<M extends Model, Async extends boolean = false>(
         propErrors[ValidationKeys.TYPE] =
           "Model should be validatable but it's not.";
       } else {
-        // nestedErrors = instance.hasErrors() as any;
+        if (propValue && !propValue[VALIDATION_PARENT_KEY])
+          propValue[VALIDATION_PARENT_KEY] = obj;
+
         nestedErrors[propKey] = instance.hasErrors();
+
+        // remove after validation
+        if (propValue && propValue[VALIDATION_PARENT_KEY])
+          delete propValue[VALIDATION_PARENT_KEY];
 
         // Build nested errors with dot notation
         // nestedErrors = Object.entries(validationErrors || {}).reduce(

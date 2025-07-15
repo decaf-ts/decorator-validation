@@ -199,8 +199,16 @@ export abstract class Model<Async extends boolean = false>
     Hashable,
     Comparable<Model<Async>>
 {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected constructor(arg?: ModelArg<Model<Async>>) {}
+  protected async: Async;
+
+  // protected constructor(arg?: ModelArg<Model>);
+  // protected constructor(arg: ModelArg<Model<true>> | undefined, async: true);
+  protected constructor(
+    arg: ModelArg<Model<Async>> | undefined = undefined,
+    async?: Async
+  ) {
+    this.async = !!async as any;
+  }
 
   /**
    * @description Validates the model object against its defined validation rules
@@ -212,7 +220,7 @@ export abstract class Model<Async extends boolean = false>
   public hasErrors<IsAsync extends boolean = Async>(
     ...exceptions: any[]
   ): ConditionalAsync<IsAsync, ModelErrorDefinition | undefined> {
-    return validate<IsAsync, any>(this, ...exceptions);
+    return validate<any, Async>(this, this.async, ...exceptions) as any;
   }
 
   /**
@@ -290,7 +298,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {T | Record<string, any>} [obj] - The source object containing properties to copy
    * @return {T} - The updated model instance
    */
-  static fromObject<T extends Model>(
+  static fromObject<T extends Model<any>>(
     self: T,
     obj?: T | Record<string, any>
   ): T {
@@ -604,14 +612,16 @@ export abstract class Model<Async extends boolean = false>
    *
    * @template M
    * @param {M} model - The model instance to validate
+   * @param {boolean} async - A flag indicating whether validation should be asynchronous.
    * @param {string[]} [propsToIgnore] - Properties to exclude from validation
    * @return {ModelErrorDefinition | undefined} - Returns validation errors if any, otherwise undefined
    */
-  static hasErrors<Async extends boolean, M extends Model<true | false>>(
+  static hasErrors<M extends Model<Async>, Async extends boolean = false>(
     model: M,
+    async: Async,
     ...propsToIgnore: string[]
   ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
-    return validate<Async, any>(model, ...propsToIgnore);
+    return validate<any, Async>(model, async, ...propsToIgnore) as any;
   }
 
   /**
