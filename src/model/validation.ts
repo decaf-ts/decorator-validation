@@ -58,6 +58,9 @@ export function validateDecorator<IsAsync extends boolean = false>(
     throw new Error(`Missing validator for ${decorator.key}`);
   }
 
+  // skip async decorators if validateDecorators is called synchronously (async = false)
+  if (!async && decorator.props.async) return undefined as any;
+
   const decoratorProps =
     decorator.key === ModelKeys.TYPE
       ? [decorator.props]
@@ -216,7 +219,7 @@ export function validate<M extends Model, Async extends boolean = false>(
   const nestedErrors: Record<string, any> = {};
   for (const { prop, decorators } of decoratedProperties) {
     const propKey = String(prop);
-    const propValue = (obj as any)[prop];
+    let propValue = (obj as any)[prop];
 
     if (!decorators?.length) continue;
 
@@ -253,6 +256,7 @@ export function validate<M extends Model, Async extends boolean = false>(
           decorators.splice(i, 1);
         }
       }
+      propValue = propValue instanceof Set ? [...propValue] : propValue;
     }
 
     const propErrors: Record<string, any> =
