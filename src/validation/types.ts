@@ -148,11 +148,14 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
  * @summary Defines the common properties available to all validators
  * @interface ValidatorOptions
  * @property {string} [message] - Custom error message to display when validation fails
+ * @property {boolean} async - Indicates whether the validator associated with the decorator performs asynchronous validation logic.
+ * Use `true` when the validator returns a Promise, and `false` when the validation is synchronous.
  * @category Validation
  */
 export interface ValidatorOptions {
   message?: string;
   description?: string;
+  async: boolean;
 }
 
 /**

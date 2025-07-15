@@ -4,7 +4,7 @@ import { Reflection } from "@decaf-ts/reflection";
 import { ValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
 import type { ConditionalAsync } from "./types";
-import { Validatable } from "../../model";
+import { ModelErrorDefinition, Validatable } from "../../model";
 
 /**
  * @description Abstract base class for all validators in the validation framework.
@@ -72,8 +72,7 @@ import { Validatable } from "../../model";
 export abstract class BaseValidator<
   V extends ValidatorOptions = ValidatorOptions,
   Async extends boolean = false,
-> implements Validatable<Async>
-{
+> {
   readonly message: string;
   readonly acceptedTypes?: string[];
   readonly async?: Async;
@@ -166,7 +165,7 @@ export abstract class BaseValidator<
     value: any,
     options?: V,
     proxy?: PathProxy<any>
-  ): ConditionalAsync<Async, string | undefined>;
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined>;
 
   /**
    * @summary Duck typing for Validators

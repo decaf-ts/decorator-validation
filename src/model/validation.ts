@@ -47,12 +47,15 @@ export function getValidatableProperties(
   return decoratedProperties;
 }
 
-export function validateDecorator<IsAsync extends boolean = false>(
-  obj: any,
+export function validateDecorator<
+  M extends Model,
+  Async extends boolean = false,
+>(
+  obj: M,
   value: any,
   decorator: DecoratorMetadataAsync,
-  async?: IsAsync
-): ConditionalAsync<IsAsync, string | undefined> {
+  async?: Async
+): ConditionalAsync<Async, string | undefined> {
   const validator = Validation.get(decorator.key);
   if (!validator) {
     throw new Error(`Missing validator for ${decorator.key}`);
@@ -76,12 +79,15 @@ export function validateDecorator<IsAsync extends boolean = false>(
     decoratorProps as ValidatorOptions,
     context
   );
-  // @ts-expect-error ...
-  return async ? Promise.resolve(maybeError) : maybeError;
+
+  return (async ? Promise.resolve(maybeError) : maybeError) as any;
 }
 
-export function validateDecorators<IsAsync extends boolean = false>(
-  obj: any,
+export function validateDecorators<
+  M extends Model,
+  IsAsync extends boolean = false,
+>(
+  obj: M,
   value: any,
   decorators: DecoratorMetadataAsync[],
   async?: IsAsync
@@ -108,13 +114,6 @@ export function validateDecorators<IsAsync extends boolean = false>(
           decorator.props.customTypes;
 
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
-        // const errs = values.flatMap((v: any) => {
-        //   if (Model.isModel(v)) return v.hasErrors() || [];
-        //
-        //   return allowedTypes.includes(typeof v)
-        //     ? []
-        //     : ["Value has no validatable type"];
-        // });
         const errs = values.map((v: any) => {
           if (Model.isModel(v)) return v.hasErrors();
 
@@ -208,7 +207,7 @@ export function validateDecorators<IsAsync extends boolean = false>(
  */
 export function validate<M extends Model, Async extends boolean = false>(
   obj: M,
-  async?: Async,
+  async: Async,
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
   const decoratedProperties: ValidationPropertyDecoratorDefinitionAsync[] =
@@ -284,20 +283,6 @@ export function validate<M extends Model, Async extends boolean = false>(
         // remove after validation
         if (propValue && propValue[VALIDATION_PARENT_KEY])
           delete propValue[VALIDATION_PARENT_KEY];
-
-        // Build nested errors with dot notation
-        // nestedErrors = Object.entries(validationErrors || {}).reduce(
-        //   (acc, [field, error]) => ({
-        //     ...acc,
-        //     [`${propKey}.${field}`]: error,
-        //   }),
-        //   {}
-        // );
-
-        // Merge nested errors with property errors
-        // if (Object.keys(nestedErrors).length > 0) {
-        //   propErrors = Object.assign({}, propErrors, nestedErrors);
-        // }
       }
     }
 
@@ -318,9 +303,11 @@ export function validate<M extends Model, Async extends boolean = false>(
 
   // Synchronous return
   if (!async) {
-    return Object.keys(result).length > 0
-      ? new ModelErrorDefinition(result)
-      : undefined;
+    return (
+      Object.keys(result).length > 0
+        ? new ModelErrorDefinition(result)
+        : undefined
+    ) as any;
   }
 
   const merged: any = result; // TODO: apply filtering
