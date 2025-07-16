@@ -155,7 +155,7 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
 export interface ValidatorOptions {
   message?: string;
   description?: string;
-  async: boolean;
+  async?: boolean;
 }
 
 /**

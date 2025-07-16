@@ -192,22 +192,22 @@ export function bulkModelRegister<M extends Model>(
  *          optionalPropertyName?: PropertyType;
  *      }
  */
-export abstract class Model<Async extends boolean = false>
+export abstract class Model
   implements
-    Validatable<Async>,
+    Validatable<true | false>,
     Serializable,
     Hashable,
-    Comparable<Model<Async>>
+    Comparable<Model>
 {
-  protected async: Async;
+  protected async: boolean;
 
   // protected constructor(arg?: ModelArg<Model>);
   // protected constructor(arg: ModelArg<Model<true>> | undefined, async: true);
   protected constructor(
-    arg: ModelArg<Model<Async>> | undefined = undefined,
-    async?: Async
+    arg: ModelArg<Model> | undefined = undefined,
+    async?: boolean
   ) {
-    this.async = !!async as any;
+    this.async = !!async;
   }
 
   /**
@@ -217,10 +217,10 @@ export abstract class Model<Async extends boolean = false>
    * @param {any[]} [exceptions] - Properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    * @return {ModelErrorDefinition | undefined} - Returns a ModelErrorDefinition object if validation errors exist, otherwise undefined
    */
-  public hasErrors<IsAsync extends boolean = Async>(
+  public hasErrors<Async extends boolean = false>(
     ...exceptions: any[]
-  ): ConditionalAsync<IsAsync, ModelErrorDefinition | undefined> {
-    return validate<any, Async>(this, this.async, ...exceptions) as any;
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
+    return validate<any, Async>(this, this.async as any, ...exceptions) as any;
   }
 
   /**
@@ -298,7 +298,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {T | Record<string, any>} [obj] - The source object containing properties to copy
    * @return {T} - The updated model instance
    */
-  static fromObject<T extends Model<any>>(
+  static fromObject<T extends Model>(
     self: T,
     obj?: T | Record<string, any>
   ): T {
@@ -511,7 +511,7 @@ export abstract class Model<Async extends boolean = false>
    *
    * @see ModelRegistry
    */
-  static register<T extends Model<true | false>>(
+  static register<T extends Model>(
     constructor: ModelConstructor<T>,
     name?: string
   ): void {
@@ -528,9 +528,7 @@ export abstract class Model<Async extends boolean = false>
    *
    * @see ModelRegistry
    */
-  static get<T extends Model<true | false>>(
-    name: string
-  ): ModelConstructor<T> | undefined {
+  static get<T extends Model>(name: string): ModelConstructor<T> | undefined {
     return Model.getRegistry().get(name);
   }
 
@@ -546,7 +544,7 @@ export abstract class Model<Async extends boolean = false>
    *
    * @see ModelRegistry
    */
-  static build<T extends Model<true | false>>(
+  static build<T extends Model>(
     obj: Record<string, any> = {},
     clazz?: string
   ): T {
@@ -561,7 +559,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {M} model - The model instance to get metadata from
    * @return {string} - The model metadata (typically the class name)
    */
-  static getMetadata<M extends Model<true | false>>(model: M) {
+  static getMetadata<M extends Model>(model: M) {
     return getMetadata<M>(model);
   }
 
@@ -573,9 +571,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {Constructor<V> | V} model - The model class or instance to get attributes from
    * @return {string[]} - Array of attribute names defined in the model
    */
-  static getAttributes<V extends Model<true | false>>(
-    model: Constructor<V> | V
-  ) {
+  static getAttributes<V extends Model>(model: Constructor<V> | V) {
     const result: string[] = [];
     let prototype =
       model instanceof Model
@@ -601,11 +597,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {any[]} [exceptions] - Property names to exclude from comparison
    * @return {boolean} - True if the models are equal, false otherwise
    */
-  static equals<M extends Model<true | false>>(
-    obj1: M,
-    obj2: M,
-    ...exceptions: any[]
-  ) {
+  static equals<M extends Model>(obj1: M, obj2: M, ...exceptions: any[]) {
     return isEqual(obj1, obj2, ...exceptions);
   }
 
@@ -619,7 +611,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {string[]} [propsToIgnore] - Properties to exclude from validation
    * @return {ModelErrorDefinition | undefined} - Returns validation errors if any, otherwise undefined
    */
-  static hasErrors<M extends Model<Async>, Async extends boolean = false>(
+  static hasErrors<M extends Model, Async extends boolean = false>(
     model: M,
     async: Async,
     ...propsToIgnore: string[]
@@ -635,7 +627,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {M} model - The model instance to serialize
    * @return {string} - The serialized string representation of the model
    */
-  static serialize<M extends Model<true | false>>(model: M) {
+  static serialize<M extends Model>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.SERIALIZATION),
       model.constructor
@@ -658,7 +650,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {M} model - The model instance to hash
    * @return {string} - The hash string representing the model
    */
-  static hash<M extends Model<true | false>>(model: M) {
+  static hash<M extends Model>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.HASHING),
       model.constructor
@@ -721,7 +713,7 @@ export abstract class Model<Async extends boolean = false>
    * @return {boolean | string | undefined} - Returns true if the property is a model instance,
    * the model name if the property has a model type, or undefined if not a model
    */
-  static isPropertyModel<M extends Model<true | false>>(
+  static isPropertyModel<M extends Model>(
     target: M,
     attribute: string
   ): boolean | string | undefined {

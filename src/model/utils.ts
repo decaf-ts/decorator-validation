@@ -5,7 +5,7 @@ export function getModelKey(str: string) {
   return ModelKeys.REFLECT + str;
 }
 
-export function getMetadata<M extends Model<true | false>>(model: M) {
+export function getMetadata<M extends Model>(model: M) {
   const metadata = Reflect.getMetadata(
     getModelKey(ModelKeys.MODEL),
     model.constructor
