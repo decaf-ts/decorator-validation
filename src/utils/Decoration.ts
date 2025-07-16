@@ -184,13 +184,13 @@ export class Decoration implements IDecorationBuilder {
       } else {
         decorators = Decoration.decorators[key][DefaultFlavour].decorators;
       }
-      [
+      const toApply = [
         ...(decorators ? decorators.values() : []),
         ...(extras ? extras.values() : []),
-      ].forEach((d) => (d as any)(target, propertyKey, descriptor, descriptor));
-      // return apply(
-      //
-      // )(target, propertyKey, descriptor);
+      ];
+      toApply.forEach((d) =>
+        (d as any)(target, propertyKey, descriptor, descriptor)
+      );
     };
     Object.defineProperty(contextDecorator, "name", {
       value: [f, key].join("_decorator_for_"),
