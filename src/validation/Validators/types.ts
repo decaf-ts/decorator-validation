@@ -16,4 +16,6 @@
  * ```
  * @memberOf module:Validators
  */
-export type ConditionalAsync<Async, T> = Async extends true ? Promise<T> : T;
+export type ConditionalAsync<Async extends boolean, T> = Async extends true
+  ? Promise<T>
+  : T;

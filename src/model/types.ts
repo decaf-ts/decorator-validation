@@ -86,7 +86,7 @@ export type ModelConstructor<T extends Model> = {
  * }
  * ```
  */
-export interface Validatable<Async extends boolean> {
+export interface Validatable<Async extends boolean = false> {
   /**
    * @description Validates the object against its validation rules.
    * @summary Validates the model and returns the {@link ModelErrorDefinition} if any errors exist, or `undefined` if no errors.

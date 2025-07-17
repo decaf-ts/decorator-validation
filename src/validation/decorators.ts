@@ -18,7 +18,11 @@ import {
   ValidationMetadata,
   ValidatorOptions,
 } from "./types";
-import { DEFAULT_ERROR_MESSAGES, DEFAULT_PATTERNS, ValidationKeys } from "./Validators/constants";
+import {
+  DEFAULT_ERROR_MESSAGES,
+  DEFAULT_PATTERNS,
+  ValidationKeys,
+} from "./Validators/constants";
 import { sf } from "../utils/strings";
 import { Constructor, ModelConstructor } from "../model/types";
 import { parseDate } from "../utils/dates";
@@ -42,6 +46,14 @@ import { apply } from "@decaf-ts/reflection";
 export function validationMetadata<V>(decorator: any, key: string, value: V) {
   Validation.registerDecorator(key, decorator);
   return apply(propMetadata<V>(key, value));
+}
+
+export function async() {
+  return (model: object): void => {
+    const key = "_async";
+    if (!Object.prototype.hasOwnProperty.call(model, key))
+      (model as any)[key] = true;
+  };
 }
 
 /**

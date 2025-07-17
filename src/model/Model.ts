@@ -192,22 +192,19 @@ export function bulkModelRegister<M extends Model>(
  *          optionalPropertyName?: PropertyType;
  *      }
  */
-export abstract class Model
+export abstract class Model<Async extends boolean = false>
   implements
-    Validatable<true | false>,
+    Validatable<Async>,
     Serializable,
     Hashable,
-    Comparable<Model>
+    Comparable<Model<Async>>
 {
   protected async: boolean;
 
   // protected constructor(arg?: ModelArg<Model>);
   // protected constructor(arg: ModelArg<Model<true>> | undefined, async: true);
-  protected constructor(
-    arg: ModelArg<Model> | undefined = undefined,
-    async?: boolean
-  ) {
-    this.async = !!async;
+  protected constructor(arg: ModelArg<Model> | undefined = undefined) {
+    this.async = !!false;
   }
 
   /**
