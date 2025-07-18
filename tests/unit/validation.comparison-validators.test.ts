@@ -68,7 +68,6 @@ describe("Comparison Validators", () => {
 
       instance.child[VALIDATION_PARENT_KEY] = instance;
       expect(Object.keys(instance.child)).toMatchObject([
-        "async",
         "elementValue",
         "value",
       ]);

@@ -11,7 +11,7 @@ import type {
 } from "../validation/types";
 import { PathProxyEngine } from "../utils/PathProxy";
 import { ConditionalAsync } from "../validation";
-import { VALIDATION_PARENT_KEY } from "../constants";
+import { ASYNC_META_KEY, VALIDATION_PARENT_KEY } from "../constants";
 
 export type ValidationDecoratorDefinitionAsync =
   ValidationDecoratorDefinition & { async: boolean };
@@ -45,6 +45,32 @@ export function getValidatableProperties(
   }
 
   return decoratedProperties;
+}
+
+/**
+ * Executes validation with temporary context and returns the validation result
+ *
+ * @param targetInstance - The instance to validate
+ * @param parentReference - Reference to a parent object for nested validation
+ * @param isAsync - Whether to perform async validation
+ * @returns Validation result from hasErrors()
+ */
+function getNestedValidationErrors<M extends Model>(
+  targetInstance: M,
+  parentReference?: M,
+  isAsync: boolean = false
+): ModelErrorDefinition | undefined {
+  // Set temporary context for nested models
+  if (parentReference) {
+    setTemporaryContext(targetInstance, VALIDATION_PARENT_KEY, parentReference);
+  }
+  setTemporaryContext(targetInstance, ASYNC_META_KEY, isAsync);
+  const errs = targetInstance.hasErrors();
+  if (parentReference) {
+    cleanupTemporaryContext(targetInstance, VALIDATION_PARENT_KEY);
+  }
+  cleanupTemporaryContext(targetInstance, ASYNC_META_KEY);
+  return errs;
 }
 
 export function validateDecorator<
@@ -85,13 +111,13 @@ export function validateDecorator<
 
 export function validateDecorators<
   M extends Model,
-  IsAsync extends boolean = false,
+  Async extends boolean = false,
 >(
   obj: M,
   value: any,
   decorators: DecoratorMetadataAsync[],
-  async?: IsAsync
-): ConditionalAsync<IsAsync, Record<string, string>> | undefined {
+  async?: Async
+): ConditionalAsync<Async, Record<string, string>> | undefined {
   const result: Record<string, string | Promise<string>> = {};
 
   for (const decorator of decorators) {
@@ -115,7 +141,9 @@ export function validateDecorators<
 
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
         const errs = values.map((v: any) => {
-          if (Model.isModel(v)) return v.hasErrors();
+          if (Model.isModel(v)) {
+            return getNestedValidationErrors(v, obj, async);
+          }
 
           return allowedTypes.includes(typeof v)
             ? undefined
@@ -152,6 +180,24 @@ export function validateDecorators<
     }
     return Object.keys(res).length > 0 ? res : undefined;
   }) as any;
+}
+
+/**
+ * Safely sets temporary metadata on an object
+ */
+function setTemporaryContext(
+  target: any,
+  key: symbol | string,
+  value: unknown
+): void {
+  if (!Object.hasOwnProperty.call(target, key)) target[key] = value;
+}
+
+/**
+ * Safely removes temporary metadata from an object
+ */
+function cleanupTemporaryContext(target: any, key: symbol | string): void {
+  if (Object.hasOwnProperty.call(target, key)) delete target[key];
 }
 
 /**
@@ -205,7 +251,10 @@ export function validateDecorators<
  *     end
  *     validate-->>Caller: return ModelErrorDefinition | undefined
  */
-export function validate<M extends Model, Async extends boolean = false>(
+export function validate<
+  M extends Model<boolean>,
+  Async extends boolean = false,
+>(
   obj: M,
   async: Async,
   ...propsToIgnore: string[]
@@ -265,24 +314,19 @@ export function validate<M extends Model, Async extends boolean = false>(
     // To prevent unnecessary processing, "propValue" must be defined and validatable
     // let nestedErrors: Record<string, any> = {};
     const isConstr = Model.isPropertyModel(obj, propKey);
+    // if propValue !== undefined, null
     if (propValue && isConstr) {
       const instance: Model = propValue;
-      if (
+      const isInvalidModel =
         typeof instance !== "object" ||
         !instance.hasErrors ||
-        typeof instance.hasErrors !== "function"
-      ) {
+        typeof instance.hasErrors !== "function";
+
+      if (isInvalidModel) {
         propErrors[ValidationKeys.TYPE] =
           "Model should be validatable but it's not.";
       } else {
-        if (propValue && !propValue[VALIDATION_PARENT_KEY])
-          propValue[VALIDATION_PARENT_KEY] = obj;
-
-        nestedErrors[propKey] = instance.hasErrors();
-
-        // remove after validation
-        if (propValue && propValue[VALIDATION_PARENT_KEY])
-          delete propValue[VALIDATION_PARENT_KEY];
+        nestedErrors[propKey] = getNestedValidationErrors(instance, obj, async);
       }
     }
 

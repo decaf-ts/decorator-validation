@@ -19,6 +19,7 @@ import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
 import { getMetadata, getModelKey } from "./utils";
 import { ConditionalAsync } from "../validation";
+import { ASYNC_META_KEY } from "../constants";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -199,12 +200,13 @@ export abstract class Model<Async extends boolean = false>
     Hashable,
     Comparable<Model<Async>>
 {
-  protected async: boolean;
-
   // protected constructor(arg?: ModelArg<Model>);
   // protected constructor(arg: ModelArg<Model<true>> | undefined, async: true);
-  protected constructor(arg: ModelArg<Model> | undefined = undefined) {
-    this.async = !!false;
+  protected constructor(arg: ModelArg<Model> | undefined = undefined) {}
+
+  public isAsync(): boolean {
+    const self = this as any;
+    return !!(self[ASYNC_META_KEY] ?? self?.constructor[ASYNC_META_KEY]);
   }
 
   /**
@@ -214,10 +216,14 @@ export abstract class Model<Async extends boolean = false>
    * @param {any[]} [exceptions] - Properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    * @return {ModelErrorDefinition | undefined} - Returns a ModelErrorDefinition object if validation errors exist, otherwise undefined
    */
-  public hasErrors<Async extends boolean = false>(
+  public hasErrors(
     ...exceptions: any[]
   ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
-    return validate<any, Async>(this, this.async as any, ...exceptions) as any;
+    return validate<any, Async>(
+      this,
+      this.isAsync() as any,
+      ...exceptions
+    ) as any;
   }
 
   /**
@@ -295,7 +301,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {T | Record<string, any>} [obj] - The source object containing properties to copy
    * @return {T} - The updated model instance
    */
-  static fromObject<T extends Model>(
+  static fromObject<T extends Model<boolean>>(
     self: T,
     obj?: T | Record<string, any>
   ): T {
@@ -624,7 +630,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {M} model - The model instance to serialize
    * @return {string} - The serialized string representation of the model
    */
-  static serialize<M extends Model>(model: M) {
+  static serialize<M extends Model<boolean>>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.SERIALIZATION),
       model.constructor
@@ -647,7 +653,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {M} model - The model instance to hash
    * @return {string} - The hash string representing the model
    */
-  static hash<M extends Model>(model: M) {
+  static hash<M extends Model<boolean>>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.HASHING),
       model.constructor

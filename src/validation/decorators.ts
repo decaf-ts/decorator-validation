@@ -30,6 +30,7 @@ import { propMetadata } from "../utils/decorators";
 import { Validation } from "./Validation";
 import { Decoration } from "../utils/Decoration";
 import { apply } from "@decaf-ts/reflection";
+import { ASYNC_META_KEY } from "../constants";
 
 /**
  * @description Combined property decorator factory for metadata and attribute marking
@@ -50,9 +51,8 @@ export function validationMetadata<V>(decorator: any, key: string, value: V) {
 
 export function async() {
   return (model: object): void => {
-    const key = "_async";
-    if (!Object.prototype.hasOwnProperty.call(model, key))
-      (model as any)[key] = true;
+    if (!Object.prototype.hasOwnProperty.call(model, ASYNC_META_KEY))
+      (model as any)[ASYNC_META_KEY] = true;
   };
 }
 
