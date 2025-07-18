@@ -171,41 +171,32 @@ export class Decoration implements IDecorationBuilder {
       descriptor?: TypedPropertyDescriptor<any>
     ) {
       const flavour = Decoration.flavourResolver(target);
+      const cache = Decoration.decorators[key];
       let decorators;
-      const extras = Decoration.decorators[key][flavour]
-        ? Decoration.decorators[key][flavour].extras
-        : Decoration.decorators[key][DefaultFlavour].extras;
+      const extras = cache[flavour]
+        ? cache[flavour].extras
+        : cache[DefaultFlavour].extras;
       if (
-        Decoration.decorators[key] &&
-        Decoration.decorators[key][flavour] &&
-        Decoration.decorators[key][flavour].decorators
+        cache &&
+        cache[flavour] &&
+        cache[flavour].decorators &&
+        cache[flavour].decorators.size
       ) {
-        decorators = Decoration.decorators[key][flavour].decorators;
+        decorators = cache[flavour].decorators;
       } else {
-        decorators = Decoration.decorators[key][DefaultFlavour].decorators;
+        decorators = cache[DefaultFlavour].decorators;
       }
+
       const toApply = [
         ...(decorators ? decorators.values() : []),
         ...(extras ? extras.values() : []),
       ];
 
-      if (descriptor || (!propertyKey && !descriptor)) {
-        // it's a method|class decorator, and they need to 'return the descriptor|constructor'
-        // TODO this feels like it should be the only logic that would apply to all, but it fails for the date decorator
-        return toApply.reduce(
-          (acc, d) => {
-            if (!acc)
-              throw new Error(
-                "No decorators provided for the decoration builder"
-              );
-            return (d as any)(acc.target, acc.propertyKey, acc.descriptor);
-          },
-          { target, propertyKey, descriptor }
-        );
-      }
-
-      toApply.forEach((d) =>
-        (d as any)(target, propertyKey, descriptor, descriptor)
+      return toApply.reduce(
+        (_, d) => {
+          return (d as any)(target, propertyKey, descriptor);
+        },
+        { target, propertyKey, descriptor }
       );
     };
     Object.defineProperty(contextDecorator, "name", {
@@ -227,7 +218,12 @@ export class Decoration implements IDecorationBuilder {
   ) => any {
     if (!this.key)
       throw new Error("No key provided for the decoration builder");
-    Decoration.register(this.key, this.flavour, this.decorators, this.extras);
+    Decoration.register(
+      this.key,
+      this.flavour,
+      this.decorators || new Set(),
+      this.extras
+    );
     return this.decoratorFactory(this.key, this.flavour);
   }
 
@@ -245,7 +241,9 @@ export class Decoration implements IDecorationBuilder {
     decorators?: Set<ClassDecorator | PropertyDecorator | MethodDecorator>,
     extras?: Set<ClassDecorator | PropertyDecorator | MethodDecorator>
   ) {
-    if (!key) throw new Error("No key provided for the decoration builder");
+    if (!key) {
+      throw new Error("No key provided for the decoration builder");
+    }
     if (!decorators)
       throw new Error("No decorators provided for the decoration builder");
     if (!flavour)

@@ -1,6 +1,7 @@
 import { apply, metadata } from "@decaf-ts/reflection";
 import { ModelKeys } from "./constants";
 import { Decoration } from "./Decoration";
+import { Model } from "../model";
 
 /**
  * @description Property decorator factory for model attributes
@@ -28,16 +29,18 @@ import { Decoration } from "./Decoration";
  *    end
  */
 export function prop(key: string = ModelKeys.ATTRIBUTE) {
-  return (model: object, propertyKey?: any): void => {
-    let props: string[];
-    if (Object.prototype.hasOwnProperty.call(model, key)) {
-      props = (model as any)[key];
-    } else {
-      props = (model as any)[key] = [];
-    }
-    if (!props.includes(propertyKey as string))
-      props.push(propertyKey as string);
-  };
+  return Decoration.for(key)
+    .define(function prop(model: object, propertyKey?: any) {
+      let props: string[];
+      if (Object.prototype.hasOwnProperty.call(model, key)) {
+        props = (model as any)[key];
+      } else {
+        props = (model as any)[key] = [];
+      }
+      if (!props.includes(propertyKey as string))
+        props.push(propertyKey as string);
+    })
+    .apply();
 }
 
 /**
