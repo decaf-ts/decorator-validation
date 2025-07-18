@@ -353,11 +353,8 @@ export function date(
     types: [Date.name],
     description: `defines the attribute as a date with the format ${format}`,
   };
-  const dateDec = (target: Record<string, any>, propertyKey?: any): any => {
-    validationMetadata(date, key, meta)(target, propertyKey);
-
+  function dateDec(target: Record<string, any>, propertyKey?: any): any {
     const values = new WeakMap();
-
     Object.defineProperty(target, propertyKey, {
       configurable: false,
       set(this: any, newValue: string | Date) {
@@ -383,7 +380,8 @@ export function date(
         console.log("here");
       },
     });
-  };
+    return validationMetadata(date, key, meta)(target, propertyKey);
+  }
   return Decoration.for(key).define(dateDec).apply();
 }
 

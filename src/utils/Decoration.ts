@@ -188,6 +188,22 @@ export class Decoration implements IDecorationBuilder {
         ...(decorators ? decorators.values() : []),
         ...(extras ? extras.values() : []),
       ];
+
+      if (descriptor || (!propertyKey && !descriptor)) {
+        // it's a method|class decorator, and they need to 'return the descriptor|constructor'
+        // TODO this feels like it should be the only logic that would apply to all, but it fails for the date decorator
+        return toApply.reduce(
+          (acc, d) => {
+            if (!acc)
+              throw new Error(
+                "No decorators provided for the decoration builder"
+              );
+            return (d as any)(acc.target, acc.propertyKey, acc.descriptor);
+          },
+          { target, propertyKey, descriptor }
+        );
+      }
+
       toApply.forEach((d) =>
         (d as any)(target, propertyKey, descriptor, descriptor)
       );

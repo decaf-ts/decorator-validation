@@ -1,5 +1,6 @@
 import { apply, metadata } from "@decaf-ts/reflection";
 import { ModelKeys } from "./constants";
+import { Decoration } from "./Decoration";
 
 /**
  * @description Property decorator factory for model attributes

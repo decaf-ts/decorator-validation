@@ -288,6 +288,7 @@ export abstract class Model
     obj?: T | Record<string, any>
   ): T {
     if (!obj) obj = {};
+    const attr = Model.getAttributes(self);
     for (const prop of Model.getAttributes(self)) {
       (self as any)[prop] = (obj as any)[prop] || undefined;
     }
