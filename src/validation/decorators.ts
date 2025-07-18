@@ -14,7 +14,6 @@ import {
   MinValidatorOptions,
   PatternValidatorOptions,
   StepValidatorOptions,
-  UniqueValidatorOptions,
   ValidationMetadata,
   ValidatorOptions,
 } from "./types";
@@ -661,33 +660,5 @@ export function gte(
     gte,
     Validation.key(ValidationKeys.GREATER_THAN_OR_EQUAL),
     { ...options, async: false } as ValidationMetadata
-  );
-}
-
-/**
- * @description Declares that the decorated property must have a unique value across the specified properties.
- * @summary Applies the {@link ValidationKeys.UNIQUE} validator to ensure that the combination of the given properties is unique.
- *
- * @param {string[]} properties - The list of property names that together must form a unique combination.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.UNIQUE] - Optional custom error message to be returned if validation fails.
- *
- * @return {PropertyDecorator} A property decorator used to register the uniqueness validation metadata.
- *
- * @function unique
- * @category Property Decorators
- */
-
-export function unique(
-  properties: string[],
-  message: string = DEFAULT_ERROR_MESSAGES.UNIQUE
-) {
-  const options: UniqueValidatorOptions = {
-    message: message,
-    [ValidationKeys.UNIQUE]: properties,
-  };
-
-  return propMetadata<ValidationMetadata>(
-    Validation.key(ValidationKeys.UNIQUE),
-    { ...options, async: true } as ValidationMetadata
   );
 }
