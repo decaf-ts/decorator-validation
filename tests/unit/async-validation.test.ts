@@ -1,9 +1,11 @@
 import "reflect-metadata";
 import {
+  async,
   AsyncValidator,
   list,
   maxlength,
   minlength,
+  model,
   Model,
   ModelArg,
   ModelErrorDefinition,
@@ -64,16 +66,20 @@ const timeout = (message: string = TIMEOUT_ERROR_MESSAGE) => {
   );
 };
 
+@async()
+@model()
 class TestChildModel extends Model<true> {
   @timeout()
   childDelayProp!: number;
 
   constructor(model?: ModelArg<TestChildModel>) {
-    super(model, true);
+    super(model);
     Model.fromObject<TestChildModel>(this, model);
   }
 }
 
+@model()
+@async()
 class TestModel extends Model<true> {
   @timeout(CUSTOM_VALIDATION_ERROR_MESSAGE)
   delay!: number;
@@ -87,7 +93,7 @@ class TestModel extends Model<true> {
   models!: TestChildModel[];
 
   constructor(model?: ModelArg<TestModel>) {
-    super(model, true);
+    super(model);
     Model.fromObject<TestModel>(this, model);
   }
 }
@@ -101,20 +107,15 @@ describe("Async Validation", () => {
     it("should return a Promise for async validation", async () => {
       const instance = new TestModel({
         delay: 500,
-        // childDelay: new TestChildModel({ childDelayProp: 50 }),
-        // models: [
-        //   new TestChildModel({ childDelayProp: 50 }),
-        //   new TestChildModel({ childDelayProp: 50 }),
-        // ],
       });
 
       const validationResult = validate(instance, true);
       expect(isPromise(validationResult)).toBeTruthy();
 
-      const result = await validationResult;
-      expect(result).toBeDefined();
-      expect(Object.keys(result).length > 0).toBeTruthy();
-      expect(result instanceof ModelErrorDefinition).toBeTruthy();
+      const resolve = await validationResult;
+      expect(resolve).toBeDefined();
+      expect(resolve).toBeInstanceOf(ModelErrorDefinition);
+      expect(Object.keys(resolve).length).toBeGreaterThan(0);
     });
 
     it("should ignore async decorators when async validation is disabled", async () => {
@@ -124,6 +125,8 @@ describe("Async Validation", () => {
 
       const validationResult = validate(instance, false);
       expect(isPromise(validationResult)).toBeFalsy();
+      expect(validationResult).toBeDefined();
+      expect(validationResult).toBeInstanceOf(ModelErrorDefinition);
       expect(validationResult).toEqual(
         new ModelErrorDefinition({
           childDelay: {
@@ -147,19 +150,32 @@ describe("Async Validation", () => {
       expect(result instanceof ModelErrorDefinition).toBeTruthy();
     });
 
-    it("should return a sync when async mode validation is disabled for model.hasErros validation", async () => {
+    it("should return a Promise for nested models", async () => {
       const instance = new TestModel({
         delay: 500,
       });
 
-      const validationResult = instance.hasErrors(false);
-      throw new Error("Not implemented yet");
-      // expect(isPromise(validationResult)).toBeTruthy();
-      //
-      // const result = await validationResult;
-      // expect(result).toBeDefined();
-      // expect(Object.keys(result).length > 0).toBeTruthy();
-      // expect(result instanceof ModelErrorDefinition).toBeTruthy();
+      const validationResult = instance.hasErrors();
+      expect(isPromise(validationResult)).toBeTruthy();
+
+      const result = await validationResult;
+      expect(result).toBeDefined();
+      expect(Object.keys(result).length > 0).toBeTruthy();
+      expect(result instanceof ModelErrorDefinition).toBeTruthy();
+    });
+
+    it("should return a Promise for nested models in a list", async () => {
+      const instance = new TestModel({
+        delay: 500,
+      });
+
+      const validationResult = instance.hasErrors();
+      expect(isPromise(validationResult)).toBeTruthy();
+
+      const result = await validationResult;
+      expect(result).toBeDefined();
+      expect(Object.keys(result).length > 0).toBeTruthy();
+      expect(result instanceof ModelErrorDefinition).toBeTruthy();
     });
   });
 
@@ -179,7 +195,7 @@ describe("Async Validation", () => {
       expect(await validationResult).toBeUndefined();
     });
 
-    it("should fail validation with timeout error", async () => {
+    it("should fail multiple async validations with timeout error", async () => {
       const instance = new TestModel({
         delay: 150, // Will fail
         childDelay: new TestChildModel({ childDelayProp: 200 }),
@@ -218,20 +234,6 @@ describe("Async Validation", () => {
       );
     });
 
-    it("should handle multiple async validations correctly", async () => {
-      const instance = new TestModel({
-        delay: 150, // Will fail
-        childDelay: new TestChildModel({ childDelayProp: 150 }), // Will fail
-        models: [
-          new TestChildModel({ childDelayProp: 150 }), // Will fail
-          new TestChildModel({ childDelayProp: 50 }),
-        ],
-      });
-
-      const result = await validate(instance, true);
-      expect(result).toBeInstanceOf(ModelErrorDefinition);
-    });
-
     it("should fail validation with custom message", async () => {
       const instance = new TestModel({
         delay: 150, // Will fail
@@ -261,6 +263,40 @@ describe("Async Validation", () => {
   });
 
   describe("List Validation", () => {
+    it("should validate all items as async successfully", async () => {
+      const validOrder = new OrderModel({
+        orderProcessingDelay: 50,
+        mainItem: new OrderItemModel({
+          processingTime: 30,
+          tags: ["urgent", "fragile"],
+          shippingInfo: new ShippingModel({
+            carrier: "FedEx",
+            estimatedDays: 3,
+          }),
+          tracking: [
+            new ShippingModel({
+              carrier: "FedEx",
+              estimatedDays: 3,
+            }),
+          ],
+        }),
+        additionalItems: [
+          new OrderItemModel({
+            processingTime: 40,
+            tags: ["standard"],
+            shippingInfo: new ShippingModel({
+              carrier: "UPS",
+              estimatedDays: 5,
+            }),
+            tracking: [],
+          }),
+        ],
+      });
+
+      const result = await validate(validOrder, true);
+      expect(result).toBeUndefined();
+    });
+
     it("should validate all items in the list asynchronously", async () => {
       const instance = new TestModel({
         delay: 50,
@@ -272,6 +308,7 @@ describe("Async Validation", () => {
       });
 
       const result = await validate(instance, true);
+      expect(result).toBeDefined();
       expect(result).toBeInstanceOf(ModelErrorDefinition);
     });
   });

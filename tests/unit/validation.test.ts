@@ -1,4 +1,5 @@
 import {
+  async,
   email,
   list,
   max,
@@ -94,7 +95,6 @@ describe("Validation", function () {
       const empty = new TestModel();
       const keys = Object.keys(empty);
       expect(keys).toEqual([
-        "async",
         "id",
         "irrelevant",
         "prop1",
@@ -120,7 +120,6 @@ describe("Validation", function () {
       const output = dm.toString();
       expect(output).toBe(
         `TestModel: {
-  "async": false,
   "id": "id",
   "prop1": 23,
   "prop2": "tests",
@@ -163,6 +162,7 @@ describe("Validation", function () {
         prop7: new InnerTestModel(),
       });
 
+      dm.isAsync();
       const errors = dm.hasErrors();
       expect(errors).toBeUndefined();
     });
