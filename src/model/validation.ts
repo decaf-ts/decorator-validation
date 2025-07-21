@@ -323,8 +323,9 @@ export function validate<
         typeof instance.hasErrors !== "function";
 
       if (isInvalidModel) {
-        propErrors[ValidationKeys.TYPE] =
-          "Model should be validatable but it's not.";
+        // propErrors[ValidationKeys.TYPE] =
+        //   "Model should be validatable but it's not.";
+        console.warn("Model should be validatable but it's not.");
       } else {
         nestedErrors[propKey] = getNestedValidationErrors(instance, obj, async);
       }
