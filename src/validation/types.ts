@@ -41,6 +41,7 @@ export type ValidationMetadata = {
 export type ValidationPropertyDecoratorDefinition = {
   prop: string | symbol;
   decorators: ValidationDecoratorDefinition[];
+  async?: boolean;
 };
 
 /**
@@ -56,6 +57,7 @@ export type ValidationPropertyDecoratorDefinition = {
  */
 export type ValidationDecoratorDefinition = DecoratorMetadata & {
   props: ValidationElementDefinition;
+  async?: boolean;
 };
 
 /**

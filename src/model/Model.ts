@@ -18,7 +18,7 @@ import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
 import { getMetadata, getModelKey } from "./utils";
-import { ConditionalAsync } from "../validation";
+import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
@@ -85,7 +85,9 @@ export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
  *   M-->>R: Model instance
  *   R-->>C: Model instance
  */
-export class ModelRegistryManager<M extends Model> implements ModelRegistry<M> {
+export class ModelRegistryManager<M extends Model<true | false>>
+  implements ModelRegistry<M>
+{
   private cache: Record<string, ModelConstructor<M>> = {};
   private readonly testFunction: (obj: object) => boolean;
 
