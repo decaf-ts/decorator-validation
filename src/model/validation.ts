@@ -140,7 +140,12 @@ export function validateDecorators<
           decorator.props.customTypes;
 
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
+        // const reserved = Object.values(ReservedModels).map((v) =>
+        //   v.toLowerCase()
+        // ) as string[];
+
         const errs = values.map((v: any) => {
+          // if (Model.isModel(v) && !reserved.includes(v) {
           if (Model.isModel(v)) {
             return getNestedValidationErrors(v, obj, async);
           }
@@ -283,7 +288,7 @@ export function validate<
     if ([Array.name, Set.name].includes(designType)) {
       if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
         result[propKey] = {
-          [ValidationKeys.TYPE]: `Property '${propKey}' requires a @list decorator`,
+          [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
         };
         continue;
       }
