@@ -23,6 +23,29 @@ export type ValidationPropertyDecoratorDefinitionAsync = {
 
 export type DecoratorMetadataAsync = DecoratorMetadata & { async: boolean };
 
+/**
+ * Retrieves the validation metadata decorators associated with a specific property of a model,
+ * using the reflective metadata key.
+ *
+ * @param model - The model instance or class containing the decorated property.
+ * @param {string} prop - The name of the property whose decorators should be retrieved.
+ * @param {string} reflectKey - The metadata key used to retrieve the decorators.
+ *                     Defaults to `ValidationKeys.REFLECT`.
+ *
+ * @returns The validation decorators applied to the property
+ */
+export function getValidationDecorators<M extends Model>(
+  model: M,
+  prop: string,
+  reflectKey: string = ValidationKeys.REFLECT
+): ValidationPropertyDecoratorDefinitionAsync {
+  return Reflection.getPropertyDecorators(
+    reflectKey,
+    model,
+    prop
+  ) as unknown as ValidationPropertyDecoratorDefinitionAsync;
+}
+
 export function getValidatableProperties(
   obj: any,
   propsToIgnore: string[]
@@ -34,13 +57,8 @@ export function getValidatableProperties(
       Object.prototype.hasOwnProperty.call(obj, prop) &&
       !propsToIgnore.includes(prop)
     ) {
-      decoratedProperties.push(
-        Reflection.getPropertyDecorators(
-          ValidationKeys.REFLECT,
-          obj,
-          prop
-        ) as unknown as ValidationPropertyDecoratorDefinitionAsync
-      );
+      const dec = getValidationDecorators(obj, prop);
+      if (dec) decoratedProperties.push(dec);
     }
   }
 
