@@ -1,5 +1,4 @@
 import { min, minlength, Model, model, ModelArg, required } from "../../src";
-import { ModelBuilder } from "../../src/model/Builder";
 
 @model()
 class TestModelBuilding extends Model {
@@ -16,7 +15,7 @@ class TestModelBuilding extends Model {
   }
 }
 
-describe.skip("Model building", () => {
+describe("Model building", () => {
   it("registers models regularly", () => {
     const m = new TestModelBuilding({ name: "test", age: 9 });
     expect(m.name).toEqual("test");
@@ -26,7 +25,8 @@ describe.skip("Model building", () => {
     expect(m.hasErrors()).toBeFalsy();
   });
 
-  it("Builds a class", () => {
+  it.skip("Builds a class", () => {
+    // deprecated
     const builder = ModelBuilder.builder;
 
     const clazz = builder

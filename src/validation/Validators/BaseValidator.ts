@@ -3,7 +3,7 @@ import { sf } from "../../utils/strings";
 import { Reflection } from "@decaf-ts/reflection";
 import { ValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
-import type { ConditionalAsync } from "./types";
+import type { ConditionalAsync } from "../../types";
 
 /**
  * @description Abstract base class for all validators in the validation framework.

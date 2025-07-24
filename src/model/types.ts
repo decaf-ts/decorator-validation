@@ -1,4 +1,4 @@
-import type { ConditionalAsync } from "../validation";
+import type { ConditionalAsync } from "../types";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { Model } from "./Model";
 
