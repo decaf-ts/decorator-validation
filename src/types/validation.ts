@@ -17,7 +17,7 @@ import { Model, ModelErrorDefinition } from "../model";
  * // Asynchronous result
  * type AsyncResult: Promise<string | number> = ConditionalAsync<true, string | number>;
  * ```
- * @memberOf module:Validators
+ * @memberOf module:decorator-validation
  */
 export type ConditionalAsync<Async extends boolean, T> = Async extends true
   ? Promise<T>

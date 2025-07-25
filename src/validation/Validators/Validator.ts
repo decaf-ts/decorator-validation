@@ -2,7 +2,6 @@ import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { ValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
 import { BaseValidator } from "./BaseValidator";
-import { ModelErrorDefinition } from "../../model";
 
 /**
  * @description

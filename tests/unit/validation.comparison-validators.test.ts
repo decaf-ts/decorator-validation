@@ -35,6 +35,7 @@ describe("Comparison Validators", () => {
 
       constructor(model?: ModelArg<SimpleChildTestModel>) {
         super();
+        Model.fromObject(this, model);
       }
     }
 
@@ -53,6 +54,7 @@ describe("Comparison Validators", () => {
 
       constructor(model?: ModelArg<SimpleParentTestModel>) {
         super();
+        Model.fromObject(this, model);
       }
     }
 
@@ -315,6 +317,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -400,6 +403,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeLessThanModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -413,6 +417,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -506,6 +511,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -522,6 +528,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeGreaterThanModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -535,6 +542,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -627,6 +635,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -643,6 +652,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeGreaterThanOrEqualModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -656,6 +666,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -741,6 +752,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -757,6 +769,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeLessThanOrEqualModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -770,6 +783,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -906,6 +920,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -926,6 +941,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -950,6 +966,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -976,6 +993,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1199,6 +1217,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1219,6 +1238,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1243,6 +1263,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1269,6 +1290,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1461,6 +1483,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1475,6 +1498,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1492,6 +1516,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1655,6 +1680,7 @@ describe("Comparison Validators", () => {
 
           constructor(model?: ModelArg<TestModel>) {
             super();
+            Model.fromObject(this, model);
           }
         }
 
@@ -1770,6 +1796,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1784,6 +1811,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1801,6 +1829,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1928,6 +1957,7 @@ describe("Comparison Validators", () => {
 
           constructor(model?: ModelArg<LteTestModel>) {
             super();
+            Model.fromObject(this, model);
           }
         }
 
@@ -2060,6 +2090,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -2074,6 +2105,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -2091,6 +2123,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 

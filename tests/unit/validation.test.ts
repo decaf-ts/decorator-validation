@@ -1,5 +1,4 @@
 import {
-  async,
   email,
   list,
   max,

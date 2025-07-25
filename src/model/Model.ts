@@ -202,8 +202,7 @@ export abstract class Model<Async extends boolean = false>
     Hashable,
     Comparable<Model<Async>>
 {
-  // protected constructor(arg?: ModelArg<Model>);
-  // protected constructor(arg: ModelArg<Model<true>> | undefined, async: true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected constructor(arg: ModelArg<Model> | undefined = undefined) {}
 
   public isAsync(): boolean {
@@ -303,7 +302,7 @@ export abstract class Model<Async extends boolean = false>
    * @param {T | Record<string, any>} [obj] - The source object containing properties to copy
    * @return {T} - The updated model instance
    */
-  static fromObject<T extends Model<boolean>>(
+  static fromObject<T extends Model<any>>(
     self: T,
     obj?: T | Record<string, any>
   ): T {
