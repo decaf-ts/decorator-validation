@@ -6,3 +6,4 @@
  * @memberOf module:decorator-validation
  */
 export const VALIDATION_PARENT_KEY = Symbol("_parent");
+export const ASYNC_META_KEY = Symbol("isAsync");

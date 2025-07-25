@@ -2,7 +2,6 @@ import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { metadata } from "@decaf-ts/reflection";
-import { propMetadata } from "../utils";
 
 /**
  * @summary defines the tpe os an InstanceCallback function

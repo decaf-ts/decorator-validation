@@ -8,31 +8,31 @@ import { ListValidatorOptions } from "../types";
  * @summary The ListValidator validates that all elements in an array or Set match the expected types.
  * It checks each element against a list of allowed class types and ensures type consistency.
  * This validator is typically used with the @list decorator.
- * 
+ *
  * @param {string} [message] - Custom error message to display when validation fails, defaults to {@link DEFAULT_ERROR_MESSAGES#LIST}
- * 
+ *
  * @class ListValidator
  * @extends Validator
- * 
+ *
  * @example
  * ```typescript
  * // Create a list validator with default error message
  * const listValidator = new ListValidator();
- * 
+ *
  * // Create a list validator with custom error message
  * const customListValidator = new ListValidator("All items must be of the specified type");
- * 
+ *
  * // Validate a list
  * const options = { clazz: ["String", "Number"] };
  * const result = listValidator.hasErrors(["test", 123], options); // undefined (valid)
  * const invalidResult = listValidator.hasErrors([new Date()], options); // Returns error message (invalid)
  * ```
- * 
+ *
  * @mermaid
  * sequenceDiagram
  *   participant C as Client
  *   participant V as ListValidator
- *   
+ *
  *   C->>V: new ListValidator(message)
  *   C->>V: hasErrors(value, options)
  *   alt value is empty
@@ -45,7 +45,7 @@ import { ListValidatorOptions } from "../types";
  *       V-->>C: Error message
  *     end
  *   end
- * 
+ *
  * @category Validators
  */
 @validator(ValidationKeys.LIST)
@@ -56,7 +56,7 @@ export class ListValidator extends Validator<ListValidatorOptions> {
 
   /**
    * @description Checks if all elements in a list or set match the expected types
-   * @summary Validates that each element in the provided array or Set matches one of the 
+   * @summary Validates that each element in the provided array or Set matches one of the
    * class types specified in the options. For object types, it checks the constructor name,
    * and for primitive types, it compares against the lowercase type name.
    *
@@ -89,7 +89,7 @@ export class ListValidator extends Validator<ListValidatorOptions> {
       switch (typeof val) {
         case "object":
         case "function":
-          isValid = clazz.includes((val as object).constructor?.name);
+          isValid = clazz.includes(((val ?? {}) as object).constructor?.name); // null is an object
           break;
         default:
           isValid = clazz.some((c: string) => typeof val === c.toLowerCase());

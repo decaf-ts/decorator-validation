@@ -1,3 +1,4 @@
+import type { ModelArg } from "../../src";
 import {
   list,
   minlength,
@@ -6,7 +7,6 @@ import {
   ModelErrorDefinition,
   required,
 } from "../../src";
-import type { ModelArg } from "../../src";
 
 @model()
 class InnerTestModel extends Model {
@@ -88,10 +88,8 @@ describe("Nested Validation", () => {
       new ModelErrorDefinition({
         id: { required: "This field is required" },
         name: { required: "This field is required" },
-        child: new ModelErrorDefinition({
-          id: { required: "This field is required" },
-          value: { required: "This field is required" },
-        }),
+        "child.id": { required: "This field is required" },
+        "child.value": { required: "This field is required" },
       } as any)
     );
   });

@@ -27,7 +27,7 @@ export class MinLengthValidator extends Validator<MinLengthValidatorOptions> {
    *
    * @return {string | undefined}
    *
-   * @memberOf MinLengthValidator
+   * @memberOf module:decorator-validation
    * @override
    *
    * @see Validator#hasErrors

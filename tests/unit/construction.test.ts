@@ -1,9 +1,14 @@
-import { Model } from "../../src";
-import { required } from "../../src";
-import type { ModelArg } from "../../src";
-import { model } from "../../src";
-import { list } from "../../src";
-import { minlength, maxlength } from "../../src";
+import {
+  list,
+  maxlength,
+  minlength,
+  model,
+  Model,
+  ModelArg,
+  ModelErrorDefinition,
+  required,
+  ValidationKeys,
+} from "../../src";
 
 @model()
 class ConstructionTestModel extends Model {
@@ -51,10 +56,9 @@ class TestModelWithList extends Model {
 describe("Construction", () => {
   it("auto constructs when configured", () => {
     Model.setBuilder(Model.fromObject);
-    const r = {
+    const model = new ConstructionTestModel({
       prop1: "test",
-    };
-    const model = new ConstructionTestModel(r);
+    });
     expect(model.hasErrors()).toBeUndefined();
     Model.setBuilder();
   });
@@ -69,23 +73,28 @@ describe("Construction", () => {
     it("Only builds the parent class with the normal Builder function", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);
-      expect(model.hasErrors()).toBeDefined();
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+      // expect(errors).toEqual(
+      //   new ModelErrorDefinition({
+      //     child: {
+      //       [ValidationKeys.TYPE]: "Model should be validatable but it's not.",
+      //     },
+      //   })
+      // );
       Model.setBuilder();
     });
 
     describe("Properly builds with the Model Builder Function", () => {
-      const g = {
-        parent: r,
-      };
-
       beforeAll(() => {
-        // bulkModelRegister(ConstructionTestModel, ParentConstructionTestModel, GrandParentConstructionTestModel)
         Model.setBuilder(Model.fromModel);
       });
+
       afterEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
       });
+
       afterAll(() => {
         Model.setBuilder();
       });
@@ -100,8 +109,11 @@ describe("Construction", () => {
         expect(mock).toHaveBeenCalledTimes(1);
         expect(mock).toHaveReturnedWith(undefined);
       });
+
       it("Builds Another Class Properly", () => {
-        const model = new GrandParentConstructionTestModel(g);
+        const model = new GrandParentConstructionTestModel({
+          parent: r,
+        });
         expect(model.parent!).toBeInstanceOf(ParentConstructionTestModel);
         expect(model.parent!.child!).toBeInstanceOf(ConstructionTestModel);
         expect(model.hasErrors()).toBeUndefined();
@@ -115,7 +127,15 @@ describe("Construction", () => {
 
       it("handles lists properly", () => {
         let model = new TestModelWithList();
-        expect(model.hasErrors()).toBeDefined();
+        const errs = model.hasErrors();
+        expect(errs).toBeDefined();
+        expect(errs).toEqual(
+          new ModelErrorDefinition({
+            models: {
+              [ValidationKeys.REQUIRED]: "This field is required",
+            },
+          })
+        );
 
         model = new TestModelWithList({
           models: [

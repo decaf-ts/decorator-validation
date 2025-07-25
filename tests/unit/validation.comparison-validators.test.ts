@@ -6,10 +6,12 @@ import {
   eq,
   gt,
   gte,
+  list,
   lt,
   lte,
   model,
   Model,
+  ModelErrorDefinition,
   required,
   sf,
   type,
@@ -33,6 +35,7 @@ describe("Comparison Validators", () => {
 
       constructor(model?: ModelArg<SimpleChildTestModel>) {
         super();
+        Model.fromObject(this, model);
       }
     }
 
@@ -42,6 +45,7 @@ describe("Comparison Validators", () => {
       parentValue: any;
 
       @required()
+      @list(Number)
       parentArray: number[] = [1, 2, 3, 4, 5];
 
       @required()
@@ -50,6 +54,7 @@ describe("Comparison Validators", () => {
 
       constructor(model?: ModelArg<SimpleParentTestModel>) {
         super();
+        Model.fromObject(this, model);
       }
     }
 
@@ -87,7 +92,8 @@ describe("Comparison Validators", () => {
 
       instance.child[VALIDATION_PARENT_KEY] = instance;
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeDefined();
-      expect(instance.hasErrors()).toBeUndefined();
+      const errors = instance.hasErrors();
+      expect(errors).toBeUndefined();
       expect(instance.child[VALIDATION_PARENT_KEY]).toBeUndefined();
     });
 
@@ -101,13 +107,13 @@ describe("Comparison Validators", () => {
         }),
       });
 
-      expect(instance.hasErrors()).toEqual({
-        child: {
-          elementValue: {
+      expect(instance.hasErrors()).toEqual(
+        new ModelErrorDefinition({
+          "child.elementValue": {
             equals: sf(COMPARISON_ERROR_MESSAGES.PROPERTY_NOT_EXIST, "4"),
           },
-        },
-      });
+        })
+      );
 
       instance.parentArray = [1, 2, 3, 4, 5];
       instance.child.elementValue = instance.parentArray[4];
@@ -136,6 +142,7 @@ describe("Comparison Validators", () => {
       anyBooleanValue: boolean = false;
 
       @required()
+      @list(String)
       arrayValue: string[] = [];
 
       @required()
@@ -172,6 +179,7 @@ describe("Comparison Validators", () => {
         booleanValue: boolean = false;
 
         @eq("mirror.arrayValue")
+        @list(String)
         arrayValue: string[] = [];
 
         @eq("mirror.objectValue")
@@ -236,9 +244,10 @@ describe("Comparison Validators", () => {
 
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
-        expect(Object.keys(new MultiTypeMirrorModel({})).length).toEqual(
-          Object.keys(fieldMapping).length
-        );
+        expect(
+          Object.keys(new MultiTypeMirrorModel({})).filter((k) => k !== "async")
+            .length
+        ).toEqual(Object.keys(fieldMapping).length);
         for (const [parentKey, mirrorKey] of Object.entries(fieldMapping)) {
           expect(errors?.[parentKey]).toEqual({
             [ValidationKeys.EQUALS]:
@@ -284,6 +293,7 @@ describe("Comparison Validators", () => {
         booleanValue: boolean = false;
 
         @diff("mirror.arrayValue")
+        @list(String)
         arrayValue: string[] = [];
 
         @diff("mirror.objectValue")
@@ -307,6 +317,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -341,9 +352,11 @@ describe("Comparison Validators", () => {
 
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
-        expect(Object.keys(new MultiTypeMirrorModel({})).length).toEqual(
-          Object.keys(fieldMapping).length
-        );
+        expect(
+          Object.keys(new MultiTypeMirrorModel({})).filter(
+            (k) => !["async"].includes(k)
+          ).length
+        ).toEqual(Object.keys(fieldMapping).length);
         for (const [parentKey, mirrorKey] of Object.entries(fieldMapping)) {
           expect(errors?.[parentKey]).toEqual({
             [ValidationKeys.DIFF]:
@@ -390,6 +403,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeLessThanModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -403,6 +417,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -496,6 +511,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -512,6 +528,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeGreaterThanModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -525,6 +542,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -617,6 +635,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -633,6 +652,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeGreaterThanOrEqualModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -646,6 +666,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -731,6 +752,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MirrorTestModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -747,6 +769,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<MultiTypeLessThanOrEqualModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -760,6 +783,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -896,6 +920,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -907,6 +932,7 @@ describe("Comparison Validators", () => {
 
         @required()
         @eq("../../grandparentArray")
+        @list([String, Number])
         grandchildArray: string[] = [];
 
         @required()
@@ -915,6 +941,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -928,6 +955,7 @@ describe("Comparison Validators", () => {
         parentNumber: number = 100;
 
         @required()
+        @list([String, Number])
         parentArray: string[] = [];
 
         @required()
@@ -938,6 +966,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -953,6 +982,7 @@ describe("Comparison Validators", () => {
         grandparentBoolean: boolean = true;
 
         @required()
+        @list([String, Number])
         grandparentArray: string[] = [];
 
         @required()
@@ -963,6 +993,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<EqGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1013,16 +1044,16 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors() as Record<string, any>;
         expect(model.grandparentNumber).toBeUndefined();
         expect(model.parent.parentNumber).toBeUndefined();
-        expect(errors.parent.parentNumber).toBeDefined();
+        expect(errors["parent.parentNumber"]).toBeDefined();
         expect(
           Object.prototype.hasOwnProperty.call(
-            errors.parent.parentNumber,
+            errors["parent.parentNumber"],
             ValidationKeys.EQUALS
           )
         ).toBeFalsy();
         expect(
           Object.prototype.hasOwnProperty.call(
-            errors.parent.parentNumber,
+            errors["parent.parentNumber"],
             ValidationKeys.REQUIRED
           )
         ).toBeTruthy();
@@ -1040,118 +1071,102 @@ describe("Comparison Validators", () => {
           EqGrandparentModel,
           equalInitialInstance
         ).set("parent.child.childName", "WrongName");
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childName: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../parentName",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childName": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../parentName",
             },
-          },
-        });
+          })
+        );
 
         // childNumber !== parentNumber
         model.reset().set("parent.child.childNumber", 9999);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // parentNumber !== grandparentNumber
         model.reset().set("parent.parentNumber", Math.random());
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../parentNumber",
+            },
+            "parent.parentNumber": {
               [ValidationKeys.EQUALS]:
                 "This field must be equal to field ../grandparentNumber",
             },
-            child: {
-              childNumber: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../parentNumber",
-              },
-            },
-          },
-        });
+          })
+        );
 
         // childNumber !== parentNumber !== grandparentNumber
         model
           .reset()
           .set("grandparentNumber", 10 + Math.random())
           .set("parent.child.childNumber", 1000 + Math.random());
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.EQUALS]:
                 "This field must be equal to field ../grandparentNumber",
             },
-            child: {
-              childNumber: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../parentNumber",
-              },
+            "parent.child.childNumber": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // childBoolean !== grandparentBoolean
         model.reset().set("parent.child.childBoolean", true);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childBoolean: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../../grandparentBoolean",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childBoolean": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../../grandparentBoolean",
             },
-          },
-        });
+          })
+        );
 
         // parentArrayElement !== parentArray.1
         model.reset().set("parent.child2.parentArrayElement", Math.random());
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              parentArrayElement: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../parentArray.1",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.parentArrayElement": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../parentArray.1",
             },
-          },
-        });
+          })
+        );
 
         // grandchildArray !== grandparentArray -> mismatch element
         model.reset().set("parent.child2.grandchildArray", ["wrong", 1, 2, 3]);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              grandchildArray: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../../grandparentArray",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.grandchildArray": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../../grandparentArray",
             },
-          },
-        });
+          })
+        );
 
         // grandchildArray !== grandparentArray -> mismatch length
         model.reset().set("parent.child2.grandchildArray", ["wrong"]);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              grandchildArray: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../../grandparentArray",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.grandchildArray": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../../grandparentArray",
             },
-          },
-        });
+          })
+        );
 
         // childObject !== grandparentObject -> mismatch key
         model.reset().set("parent.child2.childObject", {
@@ -1159,16 +1174,14 @@ describe("Comparison Validators", () => {
           state: "Alabama",
           zip: "900077",
         });
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              childObject: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../../grandparentObject",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.childObject": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../../grandparentObject",
             },
-          },
-        });
+          })
+        );
 
         // childObject !== grandparentObject -> mismatch object
         model.reset().set("parent.child2.childObject", {
@@ -1176,16 +1189,14 @@ describe("Comparison Validators", () => {
           state: "Nowhere",
           zip: "00000",
         });
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              childObject: {
-                [ValidationKeys.EQUALS]:
-                  "This field must be equal to field ../../grandparentObject",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.childObject": {
+              [ValidationKeys.EQUALS]:
+                "This field must be equal to field ../../grandparentObject",
             },
-          },
-        });
+          })
+        );
       });
     });
 
@@ -1206,6 +1217,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1217,6 +1229,7 @@ describe("Comparison Validators", () => {
 
         @required()
         @diff("../../grandparentArray")
+        @list([String, Number])
         grandchildArray: string[] = [];
 
         @required()
@@ -1225,6 +1238,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1238,6 +1252,7 @@ describe("Comparison Validators", () => {
         parentNumber: number = 100;
 
         @required()
+        @list([String, Number])
         parentArray: string[] = [];
 
         @required()
@@ -1248,6 +1263,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1263,6 +1279,7 @@ describe("Comparison Validators", () => {
         grandparentBoolean: boolean = true;
 
         @required()
+        @list([String, Number])
         grandparentArray: string[] = [];
 
         @required()
@@ -1273,6 +1290,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<DiffGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1323,7 +1341,7 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors() as Record<string, any>;
         expect(model.grandparentNumber).toBeUndefined();
         expect(model.parent.parentNumber).toBeDefined();
-        expect(errors.parent.parentNumber).toBeUndefined();
+        expect(errors["parent.parentNumber"]).toBeUndefined();
         expect(
           Object.prototype.hasOwnProperty.call(
             errors.grandparentNumber,
@@ -1339,43 +1357,39 @@ describe("Comparison Validators", () => {
           diffInitialInstance
         ).set("parent.child.childName", "Parent");
 
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childName: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentName`,
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childName": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentName`,
             },
-          },
-        });
+          })
+        );
 
         // childNumber === parentNumber
         model
           .reset()
           .set("parent.child.childNumber", 2000)
           .set("parent.parentNumber", 2000);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentNumber`,
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentNumber`,
             },
-          },
-        });
+          })
+        );
 
         // parentNumber === grandparentNumber
         model
           .reset()
           .set("parent.parentNumber", 1000)
           .set("grandparentNumber", 1000);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../grandparentNumber`,
             },
-          },
-        });
+          })
+        );
 
         // childNumber === parentNumber === grandparentNumber
         model
@@ -1383,33 +1397,29 @@ describe("Comparison Validators", () => {
           .set("parent.child.childNumber", 20)
           .set("parent.parentNumber", 20)
           .set("grandparentNumber", 20);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../grandparentNumber`,
             },
-            child: {
-              childNumber: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentNumber`,
-              },
+            "parent.child.childNumber": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentNumber`,
             },
-          },
-        });
+          })
+        );
 
         // childBoolean === grandparentBoolean
         model
           .reset()
           .set("grandparentBoolean", false)
           .set("parent.child.childBoolean", false);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childBoolean: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../../grandparentBoolean`,
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childBoolean": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../../grandparentBoolean`,
             },
-          },
-        });
+          })
+        );
 
         // parentArrayElement === parentArray.1
         const r = Math.random();
@@ -1417,30 +1427,26 @@ describe("Comparison Validators", () => {
           .reset()
           .set("parent.parentArray", [1, r, 3, 4])
           .set("parent.child2.parentArrayElement", r);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              parentArrayElement: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentArray.1`,
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.parentArrayElement": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../parentArray.1`,
             },
-          },
-        });
+          })
+        );
 
         // grandchildArray === grandparentArray
         model
           .reset()
           .set("parent.child2.grandchildArray", [10, 20, 30])
           .set("grandparentArray", [10, 20, 30]);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              grandchildArray: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../../grandparentArray`,
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.grandchildArray": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../../grandparentArray`,
             },
-          },
-        });
+          })
+        );
 
         // childObject !== grandparentObject
         const obj = {
@@ -1453,15 +1459,13 @@ describe("Comparison Validators", () => {
           .reset()
           .set("parent.child2.childObject", obj)
           .set("grandparentObject", obj);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child2: {
-              childObject: {
-                [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../../grandparentObject`,
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child2.childObject": {
+              [ValidationKeys.DIFF]: `This field must be ${ValidationKeys.DIFF} from field ../../grandparentObject`,
             },
-          },
-        });
+          })
+        );
       });
     });
 
@@ -1479,6 +1483,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1493,6 +1498,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1510,6 +1516,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LtGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1542,7 +1549,7 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors() as Record<string, any>;
         expect(model.grandparentNumber).toBeUndefined();
         expect(model.parent.parentNumber).toBeDefined();
-        expect(errors.parent?.parentNumber).toEqual({
+        expect(errors["parent.parentNumber"]).toEqual({
           [ValidationKeys.LESS_THAN]:
             COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
         });
@@ -1563,32 +1570,28 @@ describe("Comparison Validators", () => {
           .set("parent.child.childNumber", 500)
           .set("parent.parentNumber", 500);
 
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.LESS_THAN]:
-                  "This field must be less than field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.LESS_THAN]:
+                "This field must be less than field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // childNumber >= parentNumber
         model
           .reset()
           .set("parent.child.childNumber", 600)
           .set("parent.parentNumber", 500);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.LESS_THAN]:
-                  "This field must be less than field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.LESS_THAN]:
+                "This field must be less than field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // childNumber === parentNumber === grandparentNumber
         model
@@ -1597,79 +1600,73 @@ describe("Comparison Validators", () => {
           .set("parent.parentNumber", 500)
           .set("grandparentNumber", 500);
 
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.LESS_THAN]:
                 "This field must be less than field ../grandparentNumber",
             },
-            child: {
-              childNumber: {
-                [ValidationKeys.LESS_THAN]:
-                  "This field must be less than field ../parentNumber",
-              },
+            "parent.child.childNumber": {
+              [ValidationKeys.LESS_THAN]:
+                "This field must be less than field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // childDate === grandparentDate
         model
           .reset()
           .set("parent.child.childDate", initialDate)
           .set("grandparentDate", initialDate);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childDate: {
-                [ValidationKeys.LESS_THAN]:
-                  "This field must be less than field ../../grandparentDate",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childDate": {
+              [ValidationKeys.LESS_THAN]:
+                "This field must be less than field ../../grandparentDate",
             },
-          },
-        });
+          })
+        );
 
         // childDate >= grandparentDate
         model
           .reset()
           .set("parent.child.childDate", initialDate)
           .set("grandparentDate", pastDate);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childDate: {
-                [ValidationKeys.LESS_THAN]:
-                  "This field must be less than field ../../grandparentDate",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childDate": {
+              [ValidationKeys.LESS_THAN]:
+                "This field must be less than field ../../grandparentDate",
             },
-          },
-        });
+          })
+        );
 
         // parentNumber >= grandparentNumber
         model
           .reset()
           .set("parent.parentNumber", 1001)
           .set("grandparentNumber", 1000);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.LESS_THAN]:
                 "This field must be less than field ../grandparentNumber",
             },
-          },
-        });
+          })
+        );
 
         model
           .reset()
           .set("parent.parentNumber", 1500)
           .set("grandparentNumber", 1500);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.LESS_THAN]:
                 "This field must be less than field ../grandparentNumber",
             },
-          },
-        });
+          })
+        );
       });
 
       it("should validate all LessThanError cases", () => {
@@ -1683,6 +1680,7 @@ describe("Comparison Validators", () => {
 
           constructor(model?: ModelArg<TestModel>) {
             super();
+            Model.fromObject(this, model);
           }
         }
 
@@ -1690,73 +1688,83 @@ describe("Comparison Validators", () => {
         const nullModel = new TestModel({
           testValue: 10,
         });
-        expect(nullModel.hasErrors()).toEqual({
-          comparisonValue: {
-            [ValidationKeys.REQUIRED]: "This field is required",
-          },
-          testValue: {
-            [ValidationKeys.LESS_THAN]: expect.stringContaining(
-              COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
-            ),
-          },
-        });
+        expect(nullModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.REQUIRED]: "This field is required",
+            },
+            testValue: {
+              [ValidationKeys.LESS_THAN]: expect.stringContaining(
+                COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
+              ),
+            },
+          })
+        );
 
         // diff type
         const typeMismatchModel = new TestModel({
           testValue: "string",
           comparisonValue: 10,
         });
-        expect(typeMismatchModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN]: expect.stringContaining(
-              sf(
-                COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
-                typeof typeMismatchModel.testValue,
-                typeof typeMismatchModel.comparisonValue
-              )
-            ),
-          },
-        });
+        expect(typeMismatchModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN]: expect.stringContaining(
+                sf(
+                  COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+                  typeof typeMismatchModel.testValue,
+                  typeof typeMismatchModel.comparisonValue
+                )
+              ),
+            },
+          })
+        );
 
         // NaN values
         const nanModel = new TestModel({
           testValue: NaN,
           comparisonValue: 10,
         });
-        expect(nanModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN]: expect.stringContaining(
-              COMPARISON_ERROR_MESSAGES.NAN_COMPARISON
-            ),
-          },
-        });
+        expect(nanModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN]: expect.stringContaining(
+                COMPARISON_ERROR_MESSAGES.NAN_COMPARISON
+              ),
+            },
+          })
+        );
 
         // invalid Dates
         const invalidDateModel = new TestModel({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
-        expect(invalidDateModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN]:
-              COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
-          },
-        });
+        expect(invalidDateModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN]:
+                COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
+            },
+          })
+        );
 
         // unsupported types
         const unsupportedTypeModel = new TestModel({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
-        expect(unsupportedTypeModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              typeof unsupportedTypeModel.testValue,
-              typeof unsupportedTypeModel.comparisonValue
-            ),
-          },
-        });
+        expect(unsupportedTypeModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                typeof unsupportedTypeModel.testValue,
+                typeof unsupportedTypeModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // bigInt and Number comparison (should work)
         const bigIntModel = new TestModel({
@@ -1788,6 +1796,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1802,6 +1811,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1819,6 +1829,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<LteGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -1851,15 +1862,12 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors() as Record<string, any>;
         expect(model.grandparentNumber).toBeUndefined();
         expect(model.parent.parentNumber).toBeDefined();
-        expect(errors.parent?.parentNumber).toEqual({
+        expect(errors["parent.parentNumber"]).toEqual({
           [ValidationKeys.LESS_THAN_OR_EQUAL]:
             COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
         });
         expect(
-          Object.prototype.hasOwnProperty.call(
-            errors.grandparentNumber,
-            ValidationKeys.REQUIRED
-          )
+          Object.prototype.hasOwnProperty.call(errors, "grandparentNumber")
         ).toBeTruthy();
       });
 
@@ -1879,16 +1887,14 @@ describe("Comparison Validators", () => {
           .reset()
           .set("parent.child.childNumber", 600)
           .set("parent.parentNumber", 500);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.LESS_THAN_OR_EQUAL]:
-                  "This field must be less than or equal to field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]:
+                "This field must be less than or equal to field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // childNumber === parentNumber === grandparentNumber
         model
@@ -1910,30 +1916,28 @@ describe("Comparison Validators", () => {
           .reset()
           .set("parent.child.childDate", initialDate)
           .set("grandparentDate", pastDate);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childDate: {
-                [ValidationKeys.LESS_THAN_OR_EQUAL]:
-                  "This field must be less than or equal to field ../../grandparentDate",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childDate": {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]:
+                "This field must be less than or equal to field ../../grandparentDate",
             },
-          },
-        });
+          })
+        );
 
         // parentNumber >= grandparentNumber
         model
           .reset()
           .set("parent.parentNumber", 1001)
           .set("grandparentNumber", 1000);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.LESS_THAN_OR_EQUAL]:
                 "This field must be less than or equal to field ../grandparentNumber",
             },
-          },
-        });
+          })
+        );
 
         model
           .reset()
@@ -1953,6 +1957,7 @@ describe("Comparison Validators", () => {
 
           constructor(model?: ModelArg<LteTestModel>) {
             super();
+            Model.fromObject(this, model);
           }
         }
 
@@ -1960,88 +1965,100 @@ describe("Comparison Validators", () => {
         const nullModel = new LteTestModel({
           testValue: 10,
         });
-        expect(nullModel.hasErrors()).toEqual({
-          comparisonValue: {
-            [ValidationKeys.REQUIRED]: "This field is required",
-          },
-          testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
-              COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
-            ),
-          },
-        });
+        expect(nullModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.REQUIRED]: "This field is required",
+            },
+            testValue: {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
+                COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
+              ),
+            },
+          })
+        );
 
         // diff type
         const typeMismatchModel = new LteTestModel({
           testValue: new Date(),
           comparisonValue: 10,
         });
-        expect(typeMismatchModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
-              typeof typeMismatchModel.testValue,
-              typeof typeMismatchModel.comparisonValue
-            ),
-          },
-        });
+        expect(typeMismatchModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+                typeof typeMismatchModel.testValue,
+                typeof typeMismatchModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // NaN values
         const nanModel = new LteTestModel({
           testValue: NaN,
           comparisonValue: 10,
         });
-        expect(nanModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              "NaN",
-              typeof nanModel.comparisonValue
-            ),
-          },
-        });
+        expect(nanModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                "NaN",
+                typeof nanModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // invalid Dates
         const invalidDateModel = new LteTestModel({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
-        expect(invalidDateModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]:
-              COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
-          },
-        });
+        expect(invalidDateModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]:
+                COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
+            },
+          })
+        );
 
         // unsupported types
         const unsupportedTypeModel = new LteTestModel({
           testValue: false,
           comparisonValue: true,
         });
-        expect(unsupportedTypeModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              typeof unsupportedTypeModel.testValue,
-              typeof unsupportedTypeModel.comparisonValue
-            ),
-          },
-        });
+        expect(unsupportedTypeModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                typeof unsupportedTypeModel.testValue,
+                typeof unsupportedTypeModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // unsupported types when equal
         const unsupportedEqTypeModel = new LteTestModel({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
-        expect(unsupportedEqTypeModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              typeof unsupportedEqTypeModel.testValue,
-              typeof unsupportedEqTypeModel.comparisonValue
-            ),
-          },
-        });
+        expect(unsupportedEqTypeModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                typeof unsupportedEqTypeModel.testValue,
+                typeof unsupportedEqTypeModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // bigInt and Number comparison (should work)
         const bigIntModel = new LteTestModel({
@@ -2073,6 +2090,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtChildModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -2087,6 +2105,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtParentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -2104,6 +2123,7 @@ describe("Comparison Validators", () => {
 
         constructor(model?: ModelArg<GtGrandparentModel>) {
           super();
+          Model.fromObject(this, model);
         }
       }
 
@@ -2136,20 +2156,16 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors() as Record<string, any>;
         expect(model.grandparentNumber).toBeUndefined();
         expect(model.parent.parentNumber).toBeDefined();
-        expect(errors.parent?.parentNumber).toEqual({
+        expect(errors["parent.parentNumber"]).toEqual({
           [ValidationKeys.GREATER_THAN]:
             COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
         });
         expect(
-          Object.prototype.hasOwnProperty.call(
-            errors.grandparentNumber,
-            ValidationKeys.REQUIRED
-          )
+          Object.prototype.hasOwnProperty.call(errors, "grandparentNumber")
         ).toBeTruthy();
       });
 
       it("should fail when child values are not greater than parent values", () => {
-        // childNumber === parentNumber
         const model = new ModelBuilder<GtGrandparentModel>(
           GtGrandparentModel,
           gtInitialInstance
@@ -2157,116 +2173,100 @@ describe("Comparison Validators", () => {
           .set("parent.child.childNumber", 500)
           .set("parent.parentNumber", 500);
 
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.GREATER_THAN]:
-                  "This field must be greater than field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.GREATER_THAN]:
+                "This field must be greater than field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
-        // childNumber <= parentNumber
         model
           .reset()
           .set("parent.child.childNumber", 500)
           .set("parent.parentNumber", 600);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.GREATER_THAN]:
-                  "This field must be greater than field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.GREATER_THAN]:
+                "This field must be greater than field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
-        // childNumber === parentNumber === grandparentNumber
         model
           .reset()
           .set("parent.child.childNumber", 500)
           .set("parent.parentNumber", 500)
           .set("grandparentNumber", 500);
 
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.GREATER_THAN]:
                 "This field must be greater than field ../grandparentNumber",
             },
-            child: {
-              childNumber: {
-                [ValidationKeys.GREATER_THAN]:
-                  "This field must be greater than field ../parentNumber",
-              },
+            "parent.child.childNumber": {
+              [ValidationKeys.GREATER_THAN]:
+                "This field must be greater than field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
-        // childDate === grandparentDate
         model
           .reset()
           .set("parent.child.childDate", initialDate)
           .set("grandparentDate", initialDate);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childDate: {
-                [ValidationKeys.GREATER_THAN]:
-                  "This field must be greater than field ../../grandparentDate",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childDate": {
+              [ValidationKeys.GREATER_THAN]:
+                "This field must be greater than field ../../grandparentDate",
             },
-          },
-        });
+          })
+        );
 
-        // childDate <= grandparentDate
         model
           .reset()
           .set("parent.child.childDate", pastDate)
           .set("grandparentDate", futureDate);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childDate: {
-                [ValidationKeys.GREATER_THAN]:
-                  "This field must be greater than field ../../grandparentDate",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childDate": {
+              [ValidationKeys.GREATER_THAN]:
+                "This field must be greater than field ../../grandparentDate",
             },
-          },
-        });
+          })
+        );
 
-        // parentNumber <= grandparentNumber
         model
           .reset()
           .set("parent.child.childNumber", 1000)
           .set("parent.parentNumber", 900)
           .set("grandparentNumber", 901);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.GREATER_THAN]:
                 "This field must be greater than field ../grandparentNumber",
             },
-          },
-        });
+          })
+        );
 
-        // parentNumber === grandparentNumber
         model
           .reset()
           .set("parent.child.childNumber", 1000)
           .set("parent.parentNumber", 900)
           .set("grandparentNumber", 900);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.GREATER_THAN]:
                 "This field must be greater than field ../grandparentNumber",
             },
-          },
-        });
+          })
+        );
       });
 
       it("should validate all GreaterThanError cases", () => {
@@ -2284,85 +2284,88 @@ describe("Comparison Validators", () => {
           }
         }
 
-        // null/undefined values
         const nullModel = new TestModel({
           testValue: 10,
         });
-        expect(nullModel.hasErrors()).toEqual({
-          comparisonValue: {
-            [ValidationKeys.REQUIRED]: "This field is required",
-          },
-          testValue: {
-            [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-              COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
-            ),
-          },
-        });
+        expect(nullModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.REQUIRED]: "This field is required",
+            },
+            testValue: {
+              [ValidationKeys.GREATER_THAN]: expect.stringContaining(
+                COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
+              ),
+            },
+          })
+        );
 
-        // diff type
         const typeMismatchModel = new TestModel({
           testValue: "string",
           comparisonValue: 10,
         });
-        expect(typeMismatchModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN]: expect.stringContaining(
-              sf(
-                COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
-                typeof typeMismatchModel.testValue,
-                typeof typeMismatchModel.comparisonValue
-              )
-            ),
-          },
-        });
+        expect(typeMismatchModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN]: expect.stringContaining(
+                sf(
+                  COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+                  typeof typeMismatchModel.testValue,
+                  typeof typeMismatchModel.comparisonValue
+                )
+              ),
+            },
+          })
+        );
 
-        // NaN values
         const nanModel = new TestModel({
           testValue: NaN,
           comparisonValue: 10,
         });
-        expect(nanModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN]:
-              COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
-          },
-        });
+        expect(nanModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN]:
+                COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
+            },
+          })
+        );
 
-        // invalid Dates
         const invalidDateModel = new TestModel({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
-        expect(invalidDateModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN]:
-              COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
-          },
-        });
+        expect(invalidDateModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN]:
+                COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
+            },
+          })
+        );
 
-        // unsupported types
         const unsupportedTypeModel = new TestModel({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
-        expect(unsupportedTypeModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              typeof unsupportedTypeModel.testValue,
-              typeof unsupportedTypeModel.comparisonValue
-            ),
-          },
-        });
+        expect(unsupportedTypeModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                typeof unsupportedTypeModel.testValue,
+                typeof unsupportedTypeModel.comparisonValue
+              ),
+            },
+          })
+        );
 
-        // bigInt and Number comparison (should work)
         const bigIntModel = new TestModel({
           testValue: BigInt(10),
           comparisonValue: 5,
         });
         expect(bigIntModel.hasErrors()).toBeUndefined();
 
-        // number and BigInt comparison (should work)
         const numberModel = new TestModel({
           testValue: 10,
           comparisonValue: BigInt(5),
@@ -2468,7 +2471,7 @@ describe("Comparison Validators", () => {
         const errors = model.hasErrors() as Record<string, any>;
         expect(model.grandparentNumber).toBeUndefined();
         expect(model.parent.parentNumber).toBeDefined();
-        expect(errors.parent?.parentNumber).toEqual({
+        expect(errors["parent.parentNumber"]).toEqual({
           [ValidationKeys.GREATER_THAN_OR_EQUAL]:
             COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON,
         });
@@ -2497,16 +2500,14 @@ describe("Comparison Validators", () => {
           .set("parent.child.childNumber", 200)
           .set("parent.parentNumber", 300)
           .set("grandparentNumber", 300);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childNumber: {
-                [ValidationKeys.GREATER_THAN_OR_EQUAL]:
-                  "This field must be greater than or equal to field ../parentNumber",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childNumber": {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+                "This field must be greater than or equal to field ../parentNumber",
             },
-          },
-        });
+          })
+        );
 
         // childNumber === parentNumber === grandparentNumber
         model
@@ -2529,16 +2530,14 @@ describe("Comparison Validators", () => {
           .reset()
           .set("parent.child.childDate", pastDate)
           .set("grandparentDate", futureDate);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            child: {
-              childDate: {
-                [ValidationKeys.GREATER_THAN_OR_EQUAL]:
-                  "This field must be greater than or equal to field ../../grandparentDate",
-              },
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.child.childDate": {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+                "This field must be greater than or equal to field ../../grandparentDate",
             },
-          },
-        });
+          })
+        );
 
         // parentNumber <= grandparentNumber
         model
@@ -2546,14 +2545,14 @@ describe("Comparison Validators", () => {
           .set("parent.child.childNumber", 1000)
           .set("parent.parentNumber", 900)
           .set("grandparentNumber", 901);
-        expect(model.get().hasErrors()).toEqual({
-          parent: {
-            parentNumber: {
+        expect(model.get().hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            "parent.parentNumber": {
               [ValidationKeys.GREATER_THAN_OR_EQUAL]:
                 "This field must be greater than or equal to field ../grandparentNumber",
             },
-          },
-        });
+          })
+        );
 
         // parentNumber === grandparentNumber
         model
@@ -2583,88 +2582,100 @@ describe("Comparison Validators", () => {
         const nullModel = new GteTestModel({
           testValue: 10,
         });
-        expect(nullModel.hasErrors()).toEqual({
-          comparisonValue: {
-            [ValidationKeys.REQUIRED]: "This field is required",
-          },
-          testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
-              COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
-            ),
-          },
-        });
+        expect(nullModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.REQUIRED]: "This field is required",
+            },
+            testValue: {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
+                COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
+              ),
+            },
+          })
+        );
 
         // diff type
         const typeMismatchModel = new GteTestModel({
           testValue: new Date(),
           comparisonValue: 10,
         });
-        expect(typeMismatchModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
-              typeof typeMismatchModel.testValue,
-              typeof typeMismatchModel.comparisonValue
-            ),
-          },
-        });
+        expect(typeMismatchModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
+                typeof typeMismatchModel.testValue,
+                typeof typeMismatchModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // NaN values
         const nanModel = new GteTestModel({
           testValue: NaN,
           comparisonValue: 10,
         });
-        expect(nanModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              "NaN",
-              typeof nanModel.comparisonValue
-            ),
-          },
-        });
+        expect(nanModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                "NaN",
+                typeof nanModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // invalid Dates
         const invalidDateModel = new GteTestModel({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
-        expect(invalidDateModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]:
-              COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
-          },
-        });
+        expect(invalidDateModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]:
+                COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
+            },
+          })
+        );
 
         // unsupported types
         const unsupportedTypeModel = new GteTestModel({
           testValue: true,
           comparisonValue: false,
         });
-        expect(unsupportedTypeModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              typeof unsupportedTypeModel.testValue,
-              typeof unsupportedTypeModel.comparisonValue
-            ),
-          },
-        });
+        expect(unsupportedTypeModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                typeof unsupportedTypeModel.testValue,
+                typeof unsupportedTypeModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // should throw when unsupported type even when values are equal
         const unsupportedEqTypeModel = new GteTestModel({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
-        expect(unsupportedEqTypeModel.hasErrors()).toEqual({
-          testValue: {
-            [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
-              COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
-              typeof unsupportedEqTypeModel.testValue,
-              typeof unsupportedEqTypeModel.comparisonValue
-            ),
-          },
-        });
+        expect(unsupportedEqTypeModel.hasErrors()).toEqual(
+          new ModelErrorDefinition({
+            testValue: {
+              [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
+                COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
+                typeof unsupportedEqTypeModel.testValue,
+                typeof unsupportedEqTypeModel.comparisonValue
+              ),
+            },
+          })
+        );
 
         // bigInt and Number comparison (should work)
         const bigIntModel = new GteTestModel({
@@ -2758,34 +2769,34 @@ describe("Comparison Validators", () => {
         }),
       });
 
-      expect(model.hasErrors()).toEqual({
-        parentName: {
-          [ValidationKeys.EQUALS]:
-            "This field must be equal to field child.childName",
-        },
-        parentNumber: {
-          [ValidationKeys.DIFF]:
-            "This field must be different from field child.childNumber",
-        },
-        parentDate: {
-          [ValidationKeys.GREATER_THAN]:
-            "This field must be greater than field child.childDate",
-        },
-        child: {
-          childName: {
+      expect(model.hasErrors()).toEqual(
+        new ModelErrorDefinition({
+          parentName: {
+            [ValidationKeys.EQUALS]:
+              "This field must be equal to field child.childName",
+          },
+          parentNumber: {
+            [ValidationKeys.DIFF]:
+              "This field must be different from field child.childNumber",
+          },
+          parentDate: {
+            [ValidationKeys.GREATER_THAN]:
+              "This field must be greater than field child.childDate",
+          },
+          "child.childName": {
             [ValidationKeys.EQUALS]:
               "This field must be equal to field ../parentName",
           },
-          childNumber: {
+          "child.childNumber": {
             [ValidationKeys.DIFF]:
               "This field must be different from field ../parentNumber",
           },
-          childDate: {
+          "child.childDate": {
             [ValidationKeys.LESS_THAN]:
               "This field must be less than field ../parentDate",
           },
-        },
-      });
+        })
+      );
     });
   });
 
@@ -2843,15 +2854,15 @@ describe("Comparison Validators", () => {
         }),
       });
 
-      expect(model2.hasErrors()).toEqual({
-        child: {
-          childValue: {
+      expect(model2.hasErrors()).toEqual(
+        new ModelErrorDefinition({
+          "child.childValue": {
             [ValidationKeys.EQUALS]:
               "This field must be equal to field ../parentValue",
           },
-        },
-        // Parent has no error because it differs from the child
-      });
+          // Parent has no error because it differs from the child
+        })
+      );
     });
   });
 });
