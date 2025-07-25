@@ -6,6 +6,7 @@
  * implementing type-safe, declarative validation in TypeScript applications.
  */
 export * from "./constants";
+export * from "./types";
 export * from "./utils";
 export * from "./validation";
 export * from "./model";

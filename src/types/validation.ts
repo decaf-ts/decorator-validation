@@ -1,5 +1,6 @@
 import { DecoratorMetadata } from "@decaf-ts/reflection";
-import { Model, ModelErrorDefinition } from "../model";
+import { Model } from "../model/Model";
+import { ModelErrorDefinition } from "../model/ModelErrorDefinition";
 
 /**
  * @description Conditionally wraps a type in a `Promise` based on the `Async` flag.
