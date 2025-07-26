@@ -121,6 +121,39 @@ function getNestedValidationErrors<
   return errs as any;
 }
 
+export function validateChildValue<M extends Model>(
+  childValue: any,
+  parentModel: M,
+  allowedTypes: string[],
+  async: boolean
+): string | undefined | ModelErrorDefinition {
+  let err: ModelErrorDefinition | string | undefined = undefined;
+  let atLeastOneMatched = false;
+  for (const allowedType of allowedTypes) {
+    const Constr = Model.get(allowedType) as any;
+    if (!Constr) {
+      err = new ModelErrorDefinition({
+        [ValidationKeys.TYPE]: `Unable to verify type consistency, missing model registry for ${allowedType}`,
+      });
+    }
+
+    if (childValue instanceof Constr) {
+      atLeastOneMatched = true;
+      err = getNestedValidationErrors(childValue, parentModel, async);
+      break;
+    }
+  }
+
+  if (atLeastOneMatched) return err;
+
+  return (
+    err ||
+    new ModelErrorDefinition({
+      [ValidationKeys.TYPE]: `Value must be an instance of one of the expected types: ${allowedTypes.join(", ")}`,
+    })
+  );
+}
+
 export function validateDecorator<
   M extends Model,
   Async extends boolean = false,
@@ -208,10 +241,9 @@ export function validateDecorators<
     if (decorator.key === ValidationKeys.LIST && (!validationErrors || async)) {
       const values = value instanceof Set ? [...value] : value;
       if (values && values.length > 0) {
-        const types =
-          decorator.props.class ||
+        const types = (decorator.props.class ||
           decorator.props.clazz ||
-          decorator.props.customTypes;
+          decorator.props.customTypes) as string | string[];
 
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
         // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
@@ -219,7 +251,13 @@ export function validateDecorators<
         const errs = values.map((childValue: any) => {
           // if (Model.isModel(v) && !reserved.includes(v) {
           if (Model.isModel(childValue)) {
-            return getNestedValidationErrors(childValue, model, async);
+            return validateChildValue(
+              childValue,
+              model,
+              [types].flat(),
+              !!async
+            );
+            // return getNestedValidationErrors(childValue, model, async);
           }
 
           return allowedTypes.includes(typeof childValue)
@@ -376,23 +414,31 @@ export function validate<
     // To prevent unnecessary processing, "propValue" must be defined and validatable
     // let nestedErrors: Record<string, any> = {};
     const isConstr = Model.isPropertyModel(model, propKey);
-    // if propValue !== undefined, null
-    if (propValue && isConstr) {
-      const instance: Model = propValue;
+    const hasPropValue = propValue !== null && propValue !== undefined;
+    if (isConstr && hasPropValue) {
+      const instance = propValue as Model;
       const isInvalidModel =
         typeof instance !== "object" ||
-        !instance.hasErrors ||
         typeof instance.hasErrors !== "function";
 
       if (isInvalidModel) {
         // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
         console.warn("Model should be validatable but it's not.");
       } else {
-        nestedErrors[propKey] = getNestedValidationErrors(
-          instance,
-          model,
-          async
-        );
+        const Constr = Model.get(designType) as any;
+
+        // Ensure instance is of the expected model class.
+        if (!Constr || !(instance instanceof Constr)) {
+          propErrors[ValidationKeys.TYPE] = !Constr
+            ? `Unable to verify type consistency, missing model registry for ${designType} on prop ${propKey}`
+            : `Value must be an instance of ${Constr.name}`;
+        } else {
+          nestedErrors[propKey] = getNestedValidationErrors(
+            instance,
+            model,
+            async
+          );
+        }
       }
     }
 
