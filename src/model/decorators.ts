@@ -9,6 +9,15 @@ export function modelBaseDecorator(original: any) {
   const newConstructor: any = function (...args: any[]) {
     const instance: ReturnType<typeof original> = construct(original, ...args);
     bindModelPrototype(instance);
+
+    // re-apply original constructor
+    Object.defineProperty(instance, "constructor", {
+      writable: false,
+      enumerable: false,
+      configurable: false,
+      value: original,
+    });
+
     // run a builder function if defined with the first argument (The ModelArg)
     const builder = Model.getBuilder();
     if (builder) builder(instance, args.length ? args[0] : undefined);
@@ -37,14 +46,22 @@ export function modelBaseDecorator(original: any) {
     configurable: false,
     value: original.prototype.constructor.name,
   });
-
-  // Stores the original constructor for future reference
-  Object.defineProperty(newConstructor, "original", {
-    writable: false,
-    enumerable: true,
-    configurable: false,
-    value: original,
-  });
+  //
+  // // anchors the original constructor for future reference
+  // Object.defineProperty(newConstructor, ModelKeys.ANCHOR, {
+  //   writable: false,
+  //   enumerable: true,
+  //   configurable: false,
+  //   value: original,
+  // });
+  //
+  // // anchors the new constructor for future reference
+  // Object.defineProperty(original, ModelKeys.ANCHOR, {
+  //   writable: false,
+  //   enumerable: true,
+  //   configurable: false,
+  //   value: newConstructor,
+  // });
 
   Model.register(newConstructor, original.name);
 
