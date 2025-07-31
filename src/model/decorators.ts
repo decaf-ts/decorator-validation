@@ -38,6 +38,14 @@ export function modelBaseDecorator(original: any) {
     value: original.prototype.constructor.name,
   });
 
+  // Stores the original constructor for future reference
+  Object.defineProperty(newConstructor, "original", {
+    writable: false,
+    enumerable: true,
+    configurable: false,
+    value: original,
+  });
+
   Model.register(newConstructor, original.name);
 
   // return new constructor (will override original)
