@@ -344,10 +344,20 @@ export abstract class Model
 
     const props = Model.getAttributes(self);
 
+    const proto = Object.getPrototypeOf(self);
+    let descriptor: PropertyDescriptor | undefined;
     for (const prop of props) {
-      (self as Record<string, any>)[prop] =
-        (obj as Record<string, any>)[prop] ?? undefined;
+      try {
+        (self as Record<string, any>)[prop] =
+          (obj as Record<string, any>)[prop] ?? undefined;
+      } catch (e: unknown) {
+        descriptor = Object.getOwnPropertyDescriptor(proto, prop);
+        if (!descriptor || descriptor.writable)
+          throw new Error(`Unable to write property ${prop} to model: ${e}`);
+      }
+
       if (typeof (self as any)[prop] !== "object") continue;
+
       const propM = Model.isPropertyModel(self, prop);
       if (propM) {
         try {
