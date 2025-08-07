@@ -207,9 +207,11 @@ export function minlength(
     description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
     async: false,
   };
-  return Decoration.for(key)
-    .define(validationMetadata<MinLengthValidatorOptions>(minlength, key, meta))
-    .apply();
+  return validationMetadata(minlength, key, meta);
+  //
+  // Decoration.for(key)
+  //   .define(validationMetadata<MinLengthValidatorOptions>(minlength, key, meta))
+  //   .apply();
 }
 
 /**
