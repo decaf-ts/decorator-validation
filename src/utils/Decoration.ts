@@ -226,7 +226,7 @@ export class Decoration implements IDecorationBuilder {
                 args || i < (decorators ? decorators.size : 0)
                   ? decoratorArgs[i]
                   : extraArgs[i - (decorators ? decorators.size : 0)];
-              return (decorator(...argz) as any)(
+              return (decorator(...(argz || [])) as any)(
                 target,
                 propertyKey,
                 descriptor

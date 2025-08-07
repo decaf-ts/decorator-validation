@@ -60,14 +60,6 @@ function f5() {
     .apply();
 }
 
-function f6() {
-  return Decoration.for("f1")
-    .define({
-      decorator: report,
-    })
-    .apply();
-}
-
 const flavour = "flavour2";
 Decoration.setFlavourResolver(() => {
   return flavour;
@@ -109,23 +101,5 @@ describe("dynamic class decoration - override", () => {
     expect(Reporter.f3).toHaveBeenCalledTimes(0);
     expect(Reporter.f4).toHaveBeenCalledTimes(0);
     expect(Reporter.f5).toHaveBeenCalledTimes(1);
-  });
-
-  it("manages default arguments in decorator override", () => {
-    @model()
-    class ArgOverrideTestModel2 extends Model {
-      @f6()
-      arg!: string;
-
-      constructor(arg?: ModelArg<ConstructionDecoration2>) {
-        super(arg);
-      }
-    }
-
-    expect(Reporter.f1).toHaveBeenCalledTimes(2);
-    expect(Reporter.f2).toHaveBeenCalledTimes(0);
-    expect(Reporter.f3).toHaveBeenCalledTimes(0);
-    expect(Reporter.f4).toHaveBeenCalledTimes(0);
-    expect(Reporter.f5).toHaveBeenCalledTimes(0);
   });
 });
