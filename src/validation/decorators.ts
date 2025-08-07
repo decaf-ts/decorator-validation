@@ -77,7 +77,10 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
     description: `defines the attribute as required`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<ValidatorOptions>(required, key, meta))
+    .define({
+      decorator: validationMetadata<ValidatorOptions>,
+      args: [required, key, meta],
+    })
     .apply();
 }
 
@@ -117,7 +120,10 @@ export function min(
     description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MinValidatorOptions>(min, key, meta))
+    .define({
+      decorator: validationMetadata<MinValidatorOptions>,
+      args: [min, key, meta],
+    })
     .apply();
 }
 
@@ -143,7 +149,10 @@ export function max(
     description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MaxValidatorOptions>(max, key, meta))
+    .define({
+      decorator: validationMetadata<MaxValidatorOptions>,
+      args: [max, key, meta],
+    })
     .apply();
 }
 
@@ -169,7 +178,10 @@ export function step(
     description: `defines the step of the attribute as ${value}`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<StepValidatorOptions>(step, key, meta))
+    .define({
+      decorator: validationMetadata<StepValidatorOptions>,
+      args: [step, key, meta],
+    })
     .apply();
 }
 
@@ -195,7 +207,10 @@ export function minlength(
     description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MinLengthValidatorOptions>(minlength, key, meta))
+    .define({
+      decorator: validationMetadata<MinLengthValidatorOptions>,
+      args: [minlength, key, meta],
+    })
     .apply();
 }
 
@@ -221,7 +236,10 @@ export function maxlength(
     description: `defines the max length of the attribute as ${value} (applies to strings or lists)`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MaxLengthValidatorOptions>(maxlength, key, meta))
+    .define({
+      decorator: validationMetadata<MaxLengthValidatorOptions>,
+      args: [maxlength, key, meta],
+    })
     .apply();
 }
 
@@ -248,7 +266,10 @@ export function pattern(
     description: `assigns the ${value === "string" ? value : value.toString()} pattern to the attribute`,
   };
   return Decoration.for(key)
-    .define(validationMetadata<PatternValidatorOptions>(pattern, key, meta))
+    .define({
+      decorator: validationMetadata<PatternValidatorOptions>,
+      args: [pattern, key, meta],
+    })
     .apply();
 }
 
@@ -270,7 +291,10 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
     description: "marks the attribute as an email",
   };
   return Decoration.for(key)
-    .define(validationMetadata<PatternValidatorOptions>(email, key, meta))
+    .define({
+      decorator: validationMetadata<PatternValidatorOptions>,
+      args: [email, key, meta],
+    })
     .apply();
 }
 
@@ -292,7 +316,10 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
     description: "marks the attribute as an url",
   };
   return Decoration.for(key)
-    .define(validationMetadata<PatternValidatorOptions>(url, key, meta))
+    .define({
+      decorator: validationMetadata<PatternValidatorOptions>,
+      args: [url, key, meta],
+    })
     .apply();
 }
 
@@ -321,7 +348,10 @@ export function type(
     description: "defines the accepted types for the attribute",
   };
   return Decoration.for(key)
-    .define(validationMetadata<TypeMetadata>(type, key, meta))
+    .define({
+      decorator: validationMetadata<TypeMetadata>,
+      args: [type, key, meta],
+    })
     .apply();
 }
 
@@ -408,7 +438,10 @@ export function password(
     description: `attribute as a password`,
   };
   return Decoration.for(key)
-    .define(validationMetadata(password, key, meta))
+    .define({
+      decorator: validationMetadata,
+      args: [password, key, meta],
+    })
     .apply();
 }
 
@@ -441,7 +474,10 @@ export function list(
     description: `defines the attribute as a ${collection} of ${(clazz as ModelConstructor<any>).name}`,
   };
   return Decoration.for(key)
-    .define(validationMetadata(list, key, meta))
+    .define({
+      decorator: validationMetadata,
+      args: [list, key, meta],
+    })
     .apply();
 }
 

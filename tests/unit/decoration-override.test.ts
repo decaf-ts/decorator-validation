@@ -1,4 +1,10 @@
-import { Decoration, Model, type ModelArg, propMetadata } from "../../src";
+import {
+  Decoration,
+  model,
+  Model,
+  type ModelArg,
+  propMetadata,
+} from "../../src";
 import { apply } from "@decaf-ts/reflection";
 
 export const Reporter = {
@@ -11,7 +17,11 @@ export const Reporter = {
 
 function report(name: string, data: any) {
   function report(object: any, attr: any, descriptor: any) {
-    Reporter[name]();
+    try {
+      Reporter[name]();
+    } catch (e: unknown) {
+      console.log(e);
+    }
     return propMetadata(name, data)(object, attr, descriptor);
   }
   Object.defineProperty(report, "name", {
@@ -21,7 +31,12 @@ function report(name: string, data: any) {
 }
 
 function f1() {
-  return Decoration.for("f1").define(report("f1", {})).apply();
+  return Decoration.for("f1")
+    .define({
+      decorator: report,
+      args: ["f1", {}],
+    })
+    .apply();
 }
 
 function f2() {
@@ -33,11 +48,24 @@ function f3() {
 }
 
 function f4() {
-  return Decoration.for("f4").define(apply(f1(), f2())).apply();
+  return Decoration.for("f4").define(f1(), f2()).apply();
 }
 
 function f5() {
-  return Decoration.for("f5").define(apply(f3(), f4())).apply();
+  return Decoration.for("f1")
+    .define({
+      decorator: report,
+      args: ["f5", {}],
+    })
+    .apply();
+}
+
+function f6() {
+  return Decoration.for("f1")
+    .define({
+      decorator: report,
+    })
+    .apply();
 }
 
 const flavour = "flavour2";
@@ -63,5 +91,41 @@ describe("dynamic class decoration - override", () => {
     expect(Reporter.f2).toHaveBeenCalledTimes(0);
     expect(Reporter.f3).toHaveBeenCalledTimes(0);
     expect(Reporter.f4).toHaveBeenCalledTimes(0);
+  });
+
+  it("manages self arguments in decorator override", () => {
+    @model()
+    class ArgOverrideTestModel extends Model {
+      @f5()
+      arg!: string;
+
+      constructor(arg?: ModelArg<ConstructionDecoration2>) {
+        super(arg);
+      }
+    }
+
+    expect(Reporter.f1).toHaveBeenCalledTimes(1);
+    expect(Reporter.f2).toHaveBeenCalledTimes(0);
+    expect(Reporter.f3).toHaveBeenCalledTimes(0);
+    expect(Reporter.f4).toHaveBeenCalledTimes(0);
+    expect(Reporter.f5).toHaveBeenCalledTimes(1);
+  });
+
+  it("manages default arguments in decorator override", () => {
+    @model()
+    class ArgOverrideTestModel2 extends Model {
+      @f6()
+      arg!: string;
+
+      constructor(arg?: ModelArg<ConstructionDecoration2>) {
+        super(arg);
+      }
+    }
+
+    expect(Reporter.f1).toHaveBeenCalledTimes(2);
+    expect(Reporter.f2).toHaveBeenCalledTimes(0);
+    expect(Reporter.f3).toHaveBeenCalledTimes(0);
+    expect(Reporter.f4).toHaveBeenCalledTimes(0);
+    expect(Reporter.f5).toHaveBeenCalledTimes(0);
   });
 });
