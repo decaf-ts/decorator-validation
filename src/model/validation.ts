@@ -122,18 +122,29 @@ function getNestedValidationErrors<
 }
 
 export function validateChildValue<M extends Model>(
+  prop: string,
   childValue: any,
   parentModel: M,
   allowedTypes: string[],
   async: boolean
-): string | undefined | ModelErrorDefinition {
-  let err: ModelErrorDefinition | string | undefined = undefined;
+):
+  | string
+  | undefined
+  | ModelErrorDefinition
+  | Promise<string | undefined | ModelErrorDefinition> {
+  let err:
+    | ModelErrorDefinition
+    | string
+    | undefined
+    | Promise<string | undefined | ModelErrorDefinition> = undefined;
   let atLeastOneMatched = false;
   for (const allowedType of allowedTypes) {
     const Constr = Model.get(allowedType) as any;
     if (!Constr) {
       err = new ModelErrorDefinition({
-        [ValidationKeys.TYPE]: `Unable to verify type consistency, missing model registry for ${allowedType}`,
+        [prop]: {
+          [ValidationKeys.TYPE]: `Unable to verify type consistency, missing model registry for ${allowedType}`,
+        },
       });
     }
 
@@ -149,7 +160,9 @@ export function validateChildValue<M extends Model>(
   return (
     err ||
     new ModelErrorDefinition({
-      [ValidationKeys.TYPE]: `Value must be an instance of one of the expected types: ${allowedTypes.join(", ")}`,
+      [prop]: {
+        [ValidationKeys.TYPE]: `Value must be an instance of one of the expected types: ${allowedTypes.join(", ")}`,
+      },
     })
   );
 }
@@ -206,6 +219,7 @@ export function validateDecorator<
  * @template Async - A boolean indicating whether validation should be performed asynchronously.
  *
  * @param {M} model - The model instance that the validation is associated with.
+ * @param {string} prop - The model field name
  * @param {any} value - The value to be validated against the provided decorators.
  * @param {DecoratorMetadataAsync[]} decorators - An array of metadata objects representing validation decorators.
  * @param {Async} [async] - Optional flag indicating whether validation should be performed asynchronously.
@@ -221,6 +235,7 @@ export function validateDecorators<
   Async extends boolean = false,
 >(
   model: M,
+  prop: string,
   value: any,
   decorators: DecoratorMetadataAsync[],
   async?: Async
@@ -252,6 +267,7 @@ export function validateDecorators<
           // if (Model.isModel(v) && !reserved.includes(v) {
           if (Model.isModel(childValue)) {
             return validateChildValue(
+              prop,
               childValue,
               model,
               [types].flat(),
@@ -408,7 +424,7 @@ export function validate<
     }
 
     const propErrors: Record<string, any> =
-      validateDecorators(model, propValue, decorators, async) || {};
+      validateDecorators(model, propKey, propValue, decorators, async) || {};
 
     // Check for nested properties.
     // To prevent unnecessary processing, "propValue" must be defined and validatable
