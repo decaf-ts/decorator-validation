@@ -23,6 +23,7 @@ export type DecoratorFactory = (...args: any[]) => DecoratorTypes;
 export type DecoratorFactoryArgs = {
   decorator: DecoratorFactory;
   args?: any[];
+  transform?: (args: any[]) => any[];
 };
 
 export type DecoratorData = DecoratorTypes | DecoratorFactoryArgs;
@@ -193,6 +194,7 @@ export class Decoration implements IDecorationBuilder {
         if (e.args) accum[i] = e.args;
         return accum;
       }, {});
+
       if (
         cache &&
         cache[flavour] &&
@@ -220,13 +222,17 @@ export class Decoration implements IDecorationBuilder {
         (_, d, i) => {
           switch (typeof d) {
             case "object": {
-              const { decorator, args } = d as DecoratorFactoryArgs;
-
+              const { decorator, args, transform } = d as DecoratorFactoryArgs;
               const argz =
                 args || i < (decorators ? decorators.size : 0)
                   ? decoratorArgs[i]
-                  : extraArgs[i - (decorators ? decorators.size : 0)];
-              return (decorator(...(argz || [])) as any)(
+                  : extraArgs[i - (decorators ? decorators.size : 0)] ||
+                    (decorators ? decoratorArgs[i - decorators.size] : []);
+
+              const transformed = transform
+                ? transform(argz || [])
+                : argz || [];
+              return (decorator(...transformed) as any)(
                 target,
                 propertyKey,
                 descriptor

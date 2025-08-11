@@ -43,9 +43,7 @@ export interface DecorationBuilderEnd {
    * @param {...(ClassDecorator|PropertyDecorator|MethodDecorator)} decorators - Additional decorators to add
    * @returns {DecorationBuilderBuild} The build stage of the builder pattern
    */
-  extend(
-    ...decorators: (ClassDecorator | PropertyDecorator | MethodDecorator)[]
-  ): DecorationBuilderBuild;
+  extend(...decorators: DecoratorData[]): DecorationBuilderBuild;
 }
 
 /**
