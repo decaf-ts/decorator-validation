@@ -35,7 +35,13 @@ export function prop(key: string = ModelKeys.ATTRIBUTE) {
       if (Object.prototype.hasOwnProperty.call(model, key)) {
         props = (model as any)[key];
       } else {
-        props = (model as any)[key] = [];
+        Object.defineProperty(model, key, {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: [],
+        });
+        props = (model as any)[key];
       }
       if (!props.includes(propertyKey as string))
         props.push(propertyKey as string);

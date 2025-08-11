@@ -50,7 +50,7 @@ export function modelBaseDecorator(original: any) {
   // anchors the original constructor for future reference
   Object.defineProperty(newConstructor, ModelKeys.ANCHOR, {
     writable: false,
-    enumerable: true,
+    enumerable: false,
     configurable: false,
     value: original,
   });
