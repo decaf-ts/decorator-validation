@@ -158,7 +158,7 @@ export function validate<M extends Model>(
               value[VALIDATION_PARENT_KEY] = obj; // TODO: freeze?
 
             return Model.isModel(value)
-              ? value.hasErrors()
+              ? value.hasErrors(...propsToIgnore)
               : allowedTypes.includes(typeof value)
                 ? undefined
                 : "Value has no validatable type";
