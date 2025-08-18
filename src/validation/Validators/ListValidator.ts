@@ -94,7 +94,7 @@ export class ListValidator extends Validator<ListValidatorOptions> {
       switch (typeof val) {
         case "object":
         case "function":
-          isValid = clazz.includes((val as object).constructor?.name);
+          isValid = clazz.includes(((val ?? {}) as object).constructor?.name); // null is an object
           break;
         default:
           isValid = clazz.some((c: string) => typeof val === c.toLowerCase());

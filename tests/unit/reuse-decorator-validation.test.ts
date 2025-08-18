@@ -2,9 +2,11 @@ import "reflect-metadata";
 import {
   Model,
   ModelArg,
+  ModelErrorDefinition,
   propMetadata,
   required,
   Validation,
+  ValidationKeys,
   ValidationMetadata,
   Validator,
   validator,
@@ -107,36 +109,45 @@ describe("Validation with custom decorators test", function () {
 
     const errors = dm.hasErrors();
     expect(errors).toBeDefined();
-    if (errors) {
-      expect(Object.keys(errors)).toBeInstanceOf(Array);
-      expect(Object.keys(errors).length).toBe(1);
-      expect(errors.toString()).toBe(
-        "customProp - " + CUSTOM_VALIDATION_ERROR_MESSAGE
-      );
-    }
+    expect(Object.keys(errors!)).toBeInstanceOf(Array);
+    expect(errors).toEqual(
+      new ModelErrorDefinition({
+        customProp: {
+          gtin: CUSTOM_VALIDATION_ERROR_MESSAGE,
+        },
+      })
+    );
   });
 
   it("Invalid inner required test", function () {
     const dm = new TestModel();
-
-    const errors = dm.hasErrors();
+    let errors = dm.hasErrors();
     expect(errors).toBeDefined();
-    if (errors) {
-      expect(Object.keys(errors)).toBeInstanceOf(Array);
-      expect(Object.keys(errors).length).toBe(1);
-      expect(errors.toString()).toBe(
-        "customProp - " + CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE
-      );
-    }
+    expect(errors).toEqual(
+      new ModelErrorDefinition({
+        customProp: {
+          [ValidationKeys.REQUIRED]: CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE,
+        },
+      })
+    );
+
+    dm.customProp = "0000000000000";
+    errors = dm.hasErrors();
+    expect(errors).toBeDefined();
+    expect(errors).toEqual(
+      new ModelErrorDefinition({
+        customProp: {
+          [CUSTOM_VALIDATION_KEY]: CUSTOM_VALIDATION_ERROR_MESSAGE,
+        },
+      })
+    );
   });
 
   it("Valid test", function () {
+    Validation.register(new GtinValidator());
     const dm = new TestModel({
       customProp: validGtin,
     });
-
-    Validation.register(new GtinValidator() as Validator);
-
     const errors = dm.hasErrors();
     expect(errors).toBeUndefined();
   });

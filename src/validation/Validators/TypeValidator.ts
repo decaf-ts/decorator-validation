@@ -2,7 +2,11 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { Validation } from "../Validation";
-import { TypeValidatorOptions, ValidatorDefinition } from "../types";
+import {
+  TypeValidatorOptions,
+  ValidatorDefinition,
+  ValidatorOptions,
+} from "../types";
 import { ModelKeys } from "../../utils/constants";
 import { Reflection } from "@decaf-ts/reflection";
 
@@ -113,7 +117,7 @@ export class TypeValidator extends Validator<TypeValidatorOptions> {
  * @memberOf module:decorator-validation
  */
 Validation.register({
-  validator: TypeValidator,
+  validator: TypeValidator as ValidatorOptions,
   validationKey: ModelKeys.TYPE,
   save: false,
 } as ValidatorDefinition);

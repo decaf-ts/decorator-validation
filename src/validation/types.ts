@@ -11,6 +11,8 @@ import { IRegistry } from "../utils";
  * @property {any[]} [args] - Optional arguments for the validator
  * @property {string} message - Error message to display when validation fails
  * @property {string[]} [types] - Array of type names that the property can have
+ * @property {boolean} async - Indicates whether the validator associated with the decorator performs asynchronous validation logic.
+ * Use `true` when the validator returns a Promise, and `false` when the validation is synchronous.
  *
  * @typedef {Object} ValidationMetadata
  * @memberOf module:decorator-validation
@@ -21,6 +23,7 @@ export type ValidationMetadata = {
   args?: any[];
   message: string;
   types?: string[];
+  async: boolean;
 };
 
 /**
@@ -38,6 +41,7 @@ export type ValidationMetadata = {
 export type ValidationPropertyDecoratorDefinition = {
   prop: string | symbol;
   decorators: ValidationDecoratorDefinition[];
+  async?: boolean;
 };
 
 /**
@@ -53,6 +57,7 @@ export type ValidationPropertyDecoratorDefinition = {
  */
 export type ValidationDecoratorDefinition = DecoratorMetadata & {
   props: ValidationElementDefinition;
+  async?: boolean;
 };
 
 /**
@@ -145,11 +150,14 @@ export interface IValidatorRegistry<T extends Validator> extends IRegistry<T> {
  * @summary Defines the common properties available to all validators
  * @interface ValidatorOptions
  * @property {string} [message] - Custom error message to display when validation fails
+ * @property {boolean} async - Indicates whether the validator associated with the decorator performs asynchronous validation logic.
+ * Use `true` when the validator returns a Promise, and `false` when the validation is synchronous.
  * @category Validation
  */
 export interface ValidatorOptions {
   message?: string;
   description?: string;
+  async?: boolean;
 }
 
 /**
@@ -263,6 +271,18 @@ export interface MaxLengthValidatorOptions extends ValidatorOptions {
  */
 export interface ListValidatorOptions extends ValidatorOptions {
   clazz: (string | (() => Constructor<any>))[];
+}
+
+/**
+ * @description Unique validation options interface
+ * @summary Defines options for unique validation
+ * @interface UniqueValidatorOptions
+ * @property {string[]} unique - Array of allowed class names or types
+ * @memberOf module:decorator-validation
+ * @category Validation
+ */
+export interface UniqueValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.UNIQUE]: string[];
 }
 
 /**

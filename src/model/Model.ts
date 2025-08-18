@@ -17,7 +17,9 @@ import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
-import { getModelKey, getMetadata } from "./utils";
+import { getMetadata, getModelKey } from "./utils";
+import { ConditionalAsync } from "../types";
+import { ASYNC_META_KEY } from "../constants";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -83,7 +85,9 @@ export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
  *   M-->>R: Model instance
  *   R-->>C: Model instance
  */
-export class ModelRegistryManager<M extends Model> implements ModelRegistry<M> {
+export class ModelRegistryManager<M extends Model<true | false>>
+  implements ModelRegistry<M>
+{
   private cache: Record<string, ModelConstructor<M>> = {};
   private readonly testFunction: (obj: object) => boolean;
 
@@ -191,11 +195,20 @@ export function bulkModelRegister<M extends Model>(
  *          optionalPropertyName?: PropertyType;
  *      }
  */
-export abstract class Model
-  implements Validatable, Serializable, Hashable, Comparable<Model>
+export abstract class Model<Async extends boolean = false>
+  implements
+    Validatable<Async>,
+    Serializable,
+    Hashable,
+    Comparable<Model<Async>>
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected constructor(arg?: ModelArg<Model>) {}
+  protected constructor(arg: ModelArg<Model> | undefined = undefined) {}
+
+  public isAsync(): boolean {
+    const self = this as any;
+    return !!(self[ASYNC_META_KEY] ?? self?.constructor[ASYNC_META_KEY]);
+  }
 
   /**
    * @description Validates the model object against its defined validation rules
@@ -204,8 +217,14 @@ export abstract class Model
    * @param {any[]} [exceptions] - Properties in the object to be ignored for the validation. Marked as 'any' to allow for extension but expects strings
    * @return {ModelErrorDefinition | undefined} - Returns a ModelErrorDefinition object if validation errors exist, otherwise undefined
    */
-  public hasErrors(...exceptions: any[]): ModelErrorDefinition | undefined {
-    return validate(this, ...exceptions);
+  public hasErrors(
+    ...exceptions: any[]
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
+    return validate<any, Async>(
+      this,
+      this.isAsync() as any,
+      ...exceptions
+    ) as any;
   }
 
   /**
@@ -283,7 +302,7 @@ export abstract class Model
    * @param {T | Record<string, any>} [obj] - The source object containing properties to copy
    * @return {T} - The updated model instance
    */
-  static fromObject<T extends Model>(
+  static fromObject<T extends Model<any>>(
     self: T,
     obj?: T | Record<string, any>
   ): T {
@@ -604,11 +623,16 @@ export abstract class Model
    *
    * @template M
    * @param {M} model - The model instance to validate
+   * @param {boolean} async - A flag indicating whether validation should be asynchronous.
    * @param {string[]} [propsToIgnore] - Properties to exclude from validation
    * @return {ModelErrorDefinition | undefined} - Returns validation errors if any, otherwise undefined
    */
-  static hasErrors<M extends Model>(model: M, ...propsToIgnore: string[]) {
-    return validate(model, ...propsToIgnore);
+  static hasErrors<M extends Model, Async extends boolean = false>(
+    model: M,
+    async: Async,
+    ...propsToIgnore: string[]
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
+    return validate<any, Async>(model, async, ...propsToIgnore) as any;
   }
 
   /**
@@ -619,7 +643,7 @@ export abstract class Model
    * @param {M} model - The model instance to serialize
    * @return {string} - The serialized string representation of the model
    */
-  static serialize<M extends Model>(model: M) {
+  static serialize<M extends Model<boolean>>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.SERIALIZATION),
       model.constructor
@@ -642,7 +666,7 @@ export abstract class Model
    * @param {M} model - The model instance to hash
    * @return {string} - The hash string representing the model
    */
-  static hash<M extends Model>(model: M) {
+  static hash<M extends Model<boolean>>(model: M) {
     const metadata = Reflect.getMetadata(
       Model.key(ModelKeys.HASHING),
       model.constructor
@@ -652,6 +676,7 @@ export abstract class Model
       return Hashing.hash(model, metadata.algorithm, ...(metadata.args || []));
     return Hashing.hash(model);
   }
+
   /**
    * @description Creates a metadata key for use with the Reflection API
    * @summary Builds the key to store as Metadata under Reflections

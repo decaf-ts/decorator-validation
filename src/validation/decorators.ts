@@ -29,6 +29,7 @@ import { propMetadata } from "../utils/decorators";
 import { Validation } from "./Validation";
 import { Decoration } from "../utils/Decoration";
 import { apply } from "@decaf-ts/reflection";
+import { ASYNC_META_KEY } from "../constants";
 
 /**
  * @description Combined property decorator factory for metadata and attribute marking
@@ -45,6 +46,13 @@ import { apply } from "@decaf-ts/reflection";
 export function validationMetadata<V>(decorator: any, key: string, value: V) {
   Validation.registerDecorator(key, decorator);
   return apply(propMetadata<V>(key, value));
+}
+
+export function async() {
+  return (model: object): void => {
+    if (!Object.prototype.hasOwnProperty.call(model, ASYNC_META_KEY))
+      (model as any)[ASYNC_META_KEY] = true;
+  };
 }
 
 /**
@@ -75,6 +83,7 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
   const meta: ValidatorOptions = {
     message: message,
     description: `defines the attribute as required`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -118,6 +127,7 @@ export function min(
     message: message,
     types: [Number.name, Date.name],
     description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -147,6 +157,7 @@ export function max(
     message: message,
     types: [Number.name, Date.name],
     description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -176,6 +187,7 @@ export function step(
     message: message,
     types: [Number.name],
     description: `defines the step of the attribute as ${value}`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -205,6 +217,7 @@ export function minlength(
     message: message,
     types: [String.name, Array.name, Set.name],
     description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -234,6 +247,7 @@ export function maxlength(
     message: message,
     types: [String.name, Array.name, Set.name],
     description: `defines the max length of the attribute as ${value} (applies to strings or lists)`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -264,6 +278,7 @@ export function pattern(
     message: message,
     types: [String.name],
     description: `assigns the ${value === "string" ? value : value.toString()} pattern to the attribute`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -289,6 +304,7 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
     message: message,
     types: [String.name],
     description: "marks the attribute as an email",
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -314,6 +330,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
     message: message,
     types: [String.name],
     description: "marks the attribute as an url",
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -346,6 +363,7 @@ export function type(
     customTypes: types,
     message: message,
     description: "defines the accepted types for the attribute",
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -382,6 +400,7 @@ export function date(
     message: message,
     types: [Date.name],
     description: `defines the attribute as a date with the format ${format}`,
+    async: false,
   };
   function dateDec(target: Record<string, any>, propertyKey?: any): any {
     const values = new WeakMap();
@@ -436,6 +455,7 @@ export function password(
     message: message,
     types: [String.name],
     description: `attribute as a password`,
+    async: false,
   };
   return Decoration.for(key)
     .define({
@@ -453,7 +473,7 @@ export interface ListMetadata extends ListValidatorOptions {
  * @summary List Decorator
  * @description Also sets the {@link type} to the provided collection
  *
- * @param {Constructor} clazz
+ * @param {ModelConstructor} clazz
  * @param {string} [collection] The collection being used. defaults to Array
  * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#LIST}
  *
@@ -473,6 +493,7 @@ export function list(
       : [clazz.name ? clazz.name : clazz],
     type: collection,
     message: message,
+    async: false,
     description: `defines the attribute as a ${collection} of ${(clazz as ModelConstructor<any>).name}`,
   };
   return Decoration.for(key)
@@ -526,7 +547,7 @@ export function eq(
   return validationMetadata<ValidationMetadata>(
     eq,
     Validation.key(ValidationKeys.EQUALS),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -555,7 +576,10 @@ export function diff(
   return validationMetadata<ValidationMetadata>(
     diff,
     Validation.key(ValidationKeys.DIFF),
-    options as ValidationMetadata
+    {
+      ...options,
+      async: false,
+    } as ValidationMetadata
   );
 }
 
@@ -584,7 +608,7 @@ export function lt(
   return validationMetadata<ValidationMetadata>(
     lt,
     Validation.key(ValidationKeys.LESS_THAN),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -613,7 +637,7 @@ export function lte(
   return validationMetadata<ValidationMetadata>(
     lte,
     Validation.key(ValidationKeys.LESS_THAN_OR_EQUAL),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -642,7 +666,7 @@ export function gt(
   return validationMetadata<ValidationMetadata>(
     gt,
     Validation.key(ValidationKeys.GREATER_THAN),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }
 
@@ -671,6 +695,6 @@ export function gte(
   return validationMetadata<ValidationMetadata>(
     gte,
     Validation.key(ValidationKeys.GREATER_THAN_OR_EQUAL),
-    options as ValidationMetadata
+    { ...options, async: false } as ValidationMetadata
   );
 }

@@ -47,21 +47,22 @@ export const ComparisonValidationKeys = {
  */
 export const ValidationKeys = {
   REFLECT: `${ModelKeys.REFLECT}validation.`,
-  VALIDATOR: "validator",
-  REQUIRED: "required",
-  MIN: "min",
-  MAX: "max",
-  STEP: "step",
-  MIN_LENGTH: "minlength",
-  MAX_LENGTH: "maxlength",
-  PATTERN: "pattern",
-  EMAIL: "email",
-  URL: "url",
   DATE: "date",
-  TYPE: "type",
-  PASSWORD: "password",
-  LIST: "list",
+  EMAIL: "email",
   FORMAT: "format",
+  LIST: "list",
+  MAX: "max",
+  MAX_LENGTH: "maxlength",
+  MIN: "min",
+  MIN_LENGTH: "minlength",
+  PASSWORD: "password",
+  PATTERN: "pattern",
+  REQUIRED: "required",
+  STEP: "step",
+  TYPE: "type",
+  UNIQUE: "unique",
+  URL: "url",
+  VALIDATOR: "validator",
   ...ComparisonValidationKeys,
 } as const;
 
@@ -154,6 +155,7 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   GREATER_THAN: "This field must be greater than field {0}",
   GREATER_THAN_OR_EQUAL:
     "This field must be greater than or equal to field {0}",
+  UNIQUE: "Duplicate found, this field must be unique.",
 };
 
 /**

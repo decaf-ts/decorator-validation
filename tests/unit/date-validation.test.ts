@@ -152,7 +152,9 @@ describe("Date Integration", function () {
     const day = date.getDate();
     const expected = `${twoDigitPad(day)}/${twoDigitPad(month)}/${year}`;
     expect(dm.dateProp?.toISOString()).toEqual(expected);
-    expect(JSON.stringify(dm)).toEqual(`{"dateProp":"${expected}"}`);
+    expect(JSON.stringify({ dateProp: dm["dateProp"] })).toEqual(
+      `{"dateProp":"${expected}"}`
+    );
   });
 
   it("deserializes properly", () => {

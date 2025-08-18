@@ -1,3 +1,4 @@
+import type { ConditionalAsync } from "../types";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { Model } from "./Model";
 
@@ -54,21 +55,50 @@ export type ModelConstructor<T extends Model> = {
 };
 
 /**
- * @description Interface for objects that can be validated
- * @summary Defines the Validation API for validatable models
+ * @description Interface for objects that can be validated.
+ * @summary Defines the Validation API for validation behavior on models, supporting both synchronous and asynchronous validations.
+ * Implementers must provide a `hasErrors` method that performs the validation and returns either validation errors or undefined if validation passes.
+ *
+ * @template Async - A boolean flag indicating whether the validation is asynchronous (`true`) or synchronous (`false`).
+ *
+ * @param {any[]} [args] - Optional arguments to control validation behavior passed to the validation method.
+ *
  * @interface Validatable
- * @memberOf module:decorator-validation
  * @category Model
+ * @memberOf module:decorator-validation
+ *
+ * @example
+ * ```typescript
+ * // Synchronous validation example
+ * class SyncModel implements Validatable<false> {
+ *   hasErrors(...args: any[]): ModelErrorDefinition | undefined {
+ *     // perform synchronous validation logic
+ *     return undefined; // or return errors if invalid
+ *   }
+ * }
+ *
+ * // Asynchronous validation example
+ * class AsyncModel implements Validatable<true> {
+ *   async hasErrors(...args: any[]): Promise<ModelErrorDefinition | undefined> {
+ *     // perform asynchronous validation logic
+ *     return undefined; // or return errors if invalid
+ *   }
+ * }
+ * ```
  */
-export interface Validatable {
+export interface Validatable<Async extends boolean = false> {
   /**
-   * @description Validates the object against its validation rules
-   * @summary Validates the model and returns the {@link ModelErrorDefinition} if any errors exist
-   * @param {any[]} [args] - Optional arguments to control validation behavior
-   * @return {ModelErrorDefinition | undefined} - Validation errors if any, otherwise undefined
+   * @description Validates the object against its validation rules.
+   * @summary Validates the model and returns the {@link ModelErrorDefinition} if any errors exist, or `undefined` if no errors.
+   *
+   * @param {any[]} [args] - Optional arguments that may influence validation logic.
+   * @return {ConditionalAsync<Async, ModelErrorDefinition | undefined>} Validation errors or undefined, conditionally wrapped in a Promise if asynchronous.
+   *
    * @method
    */
-  hasErrors(...args: any[]): ModelErrorDefinition | undefined;
+  hasErrors(
+    ...args: any[]
+  ): ConditionalAsync<Async, ModelErrorDefinition | undefined>;
 }
 
 /**
