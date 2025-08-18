@@ -393,6 +393,15 @@ export function validate<
       return [ModelKeys.TYPE, ValidationKeys.TYPE].includes(d.key as any);
     });
 
+    // Ensures that only one type decorator remains.
+    if (designTypeDec?.key === ValidationKeys.TYPE) {
+      decorators.splice(
+        0,
+        decorators.length,
+        ...decorators.filter((d) => d.key !== ModelKeys.TYPE)
+      );
+    }
+
     if (!designTypeDec) continue;
 
     const designType = designTypeDec.props.name;
