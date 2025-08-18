@@ -324,7 +324,7 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
 }
 
 export interface TypeMetadata extends ValidatorOptions {
-  customTypes: string[] | string;
+  customTypes: (string | (() => string))[] | string | (() => string);
 }
 
 /**
@@ -338,7 +338,7 @@ export interface TypeMetadata extends ValidatorOptions {
  * @category Property Decorators
  */
 export function type(
-  types: string[] | string,
+  types: (string | (() => string))[] | string | (() => string),
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
   const key = Validation.key(ValidationKeys.TYPE);
@@ -462,13 +462,15 @@ export interface ListMetadata extends ListValidatorOptions {
  * @category Property Decorators
  */
 export function list(
-  clazz: Constructor<any> | Constructor<any>[],
+  clazz: Constructor<any> | (() => Constructor<any>),
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   const key = Validation.key(ValidationKeys.LIST);
   const meta: ListMetadata = {
-    clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
+    clazz: Array.isArray(clazz)
+      ? clazz.map((c) => (c.name ? c.name : c))
+      : [clazz.name ? clazz.name : clazz],
     type: collection,
     message: message,
     description: `defines the attribute as a ${collection} of ${(clazz as ModelConstructor<any>).name}`,

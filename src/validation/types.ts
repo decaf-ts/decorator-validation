@@ -262,7 +262,7 @@ export interface MaxLengthValidatorOptions extends ValidatorOptions {
  * @category Validation
  */
 export interface ListValidatorOptions extends ValidatorOptions {
-  clazz: string[];
+  clazz: (string | (() => Constructor<any>))[];
 }
 
 /**
