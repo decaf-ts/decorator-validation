@@ -196,7 +196,9 @@ export function validateDecorator<
 
   const maybeAsyncErrors = validator.hasErrors(
     value,
-    decoratorProps as ValidatorOptions,
+    decorator.key === ModelKeys.TYPE
+      ? ({ types: (decoratorProps as any)[0].name } as any)
+      : (decoratorProps as ValidatorOptions),
     context
   );
 
@@ -387,7 +389,7 @@ export function validate<
     if (!decorators?.length) continue;
 
     // Get the default type validator
-    const designTypeDec = decorators.find((d) => {
+    const designTypeDec = decorators.reverse().find((d) => {
       return [ModelKeys.TYPE, ValidationKeys.TYPE].includes(d.key as any);
     });
 

@@ -181,6 +181,7 @@ export interface URLValidatorOptions extends ValidatorOptions {
  */
 export interface TypeValidatorOptions extends ValidatorOptions {
   types: string | string[] | { name: string };
+  customTypes?: (string | (() => string))[];
 }
 
 /**

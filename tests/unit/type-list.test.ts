@@ -1,4 +1,4 @@
-import { model, Model, ModelArg, type } from "../../src";
+import { model, Model, ModelArg, required, type } from "../../src";
 
 describe("type via function", () => {
   it("enforces type via function", () => {
@@ -8,7 +8,8 @@ describe("type via function", () => {
 
     @model()
     class TypeFunction extends Model {
-      @type(Number.name)
+      @type(() => Number.name)
+      @required()
       prop!: Dummy;
 
       constructor(arg?: ModelArg<TypeFunction>) {
@@ -17,14 +18,13 @@ describe("type via function", () => {
     }
 
     const testModel = new TypeFunction({
-      prop: {},
+      prop: "testset",
     });
 
-    testModel.prop = "sfdfsdf";
     const errs = testModel.hasErrors();
     expect(errs).toBeDefined();
 
-    testModel.prop = new Dummy();
+    testModel.prop = 6;
 
     expect(testModel.hasErrors()).toBeUndefined();
   });
