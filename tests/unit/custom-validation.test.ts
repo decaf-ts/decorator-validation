@@ -9,6 +9,7 @@ import {
   validator,
   ValidatorOptions,
   ModelErrorDefinition,
+  model,
 } from "../../src";
 
 function generateGtin() {
@@ -84,6 +85,7 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
   );
 };
 
+@model()
 class TestModel extends Model {
   @gtin()
   customProp!: number | string;

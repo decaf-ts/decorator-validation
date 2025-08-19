@@ -392,9 +392,10 @@ export function validate<
     if (!decorators?.length) continue;
 
     // Get the default type validator
-    const designTypeDec = decorators.reverse().find((d) => {
-      return [ModelKeys.TYPE, ValidationKeys.TYPE].includes(d.key as any);
-    });
+    const priority = [ValidationKeys.TYPE, ModelKeys.TYPE];
+    const designTypeDec = priority
+      .map((key) => decorators.find((d) => d.key === key))
+      .find(Boolean);
 
     // Ensures that only one type decorator remains.
     if (designTypeDec?.key === ValidationKeys.TYPE) {
@@ -407,10 +408,22 @@ export function validate<
 
     if (!designTypeDec) continue;
 
-    const designType = designTypeDec.props.name;
+    const designType =
+      designTypeDec.props.class ||
+      designTypeDec.props.clazz ||
+      designTypeDec.props.customTypes ||
+      designTypeDec.props.name;
+
+    const designTypes = (
+      Array.isArray(designType) ? designType : [designType]
+    ).map((e: any) => {
+      e = typeof e === "function" && !e.name ? e() : e;
+      return (e as any).name ? (e as any).name : e;
+    }) as string[];
 
     // Handle array or Set types and enforce the presence of @list decorator
-    if ([Array.name, Set.name].includes(designType)) {
+    // if ([Array.name, Set.name].includes(designType)) {}
+    if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
       if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
         result[propKey] = {
           [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
@@ -460,7 +473,7 @@ export function validate<
         // Ensure instance is of the expected model class.
         if (!Constr || !(instance instanceof Constr)) {
           propErrors[ValidationKeys.TYPE] = !Constr
-            ? `Unable to verify type consistency, missing model registry for ${designType} on prop ${propKey}`
+            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
             : `Value must be an instance of ${Constr.name}`;
         } else {
           nestedErrors[propKey] = getNestedValidationErrors(
