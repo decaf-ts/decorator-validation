@@ -74,14 +74,15 @@ describe("Construction", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);
       const errors = model.hasErrors();
-      expect(errors).toBeUndefined();
-      // expect(errors).toEqual(
-      //   new ModelErrorDefinition({
-      //     child: {
-      //       [ValidationKeys.TYPE]: "Model should be validatable but it's not.",
-      //     },
-      //   })
-      // );
+      // expect(errors).toBeUndefined();
+      expect(errors).toEqual(
+        new ModelErrorDefinition({
+          child: {
+            [ValidationKeys.TYPE]:
+              "Invalid type. Expected ConstructionTestModel, received object",
+          },
+        })
+      );
       Model.setBuilder();
     });
 

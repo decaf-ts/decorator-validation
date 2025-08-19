@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import {
   Model,
+  model,
   ModelArg,
+  ModelErrorDefinition,
   propMetadata,
   Validation,
   ValidationMetadata,
   Validator,
   validator,
   ValidatorOptions,
-  ModelErrorDefinition,
-  model,
 } from "../../src";
 
 function generateGtin() {

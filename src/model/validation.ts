@@ -298,7 +298,9 @@ export function validateDecorators<
       }
     }
 
-    if (validationErrors) (result as any)[decorator.key] = validationErrors;
+    const name =
+      decorator.key === ModelKeys.TYPE ? ValidationKeys.TYPE : decorator.key;
+    if (validationErrors) (result as any)[name] = validationErrors;
   }
 
   if (!async)
@@ -414,6 +416,12 @@ export function validate<
       designTypeDec.props.customTypes ||
       designTypeDec.props.name;
 
+    // TS emits "Object" as design:type for unions (string | number) and intersections (A & B).
+    // Since this metadata is ambiguous for validation, skip design:type checks in these cases.
+    // To enforce design:type validation explicitly, the @type validator can be used.
+    if (designTypeDec.key === ModelKeys.TYPE && designType === "Object")
+      decorators.shift();
+
     const designTypes = (
       Array.isArray(designType) ? designType : [designType]
     ).map((e: any) => {
@@ -475,6 +483,7 @@ export function validate<
           propErrors[ValidationKeys.TYPE] = !Constr
             ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
             : `Value must be an instance of ${Constr.name}`;
+          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
         } else {
           nestedErrors[propKey] = getNestedValidationErrors(
             instance,

@@ -12,7 +12,6 @@ import {
   model,
   Model,
   ModelErrorDefinition,
-  ModelKeys,
   required,
   sf,
   type,
@@ -1746,7 +1745,7 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.LESS_THAN]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NAN_COMPARISON
@@ -1763,11 +1762,11 @@ describe("Comparison Validators", () => {
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
@@ -1783,11 +1782,11 @@ describe("Comparison Validators", () => {
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2019,7 +2018,7 @@ describe("Comparison Validators", () => {
               [ValidationKeys.REQUIRED]: "This field is required",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
@@ -2036,7 +2035,7 @@ describe("Comparison Validators", () => {
         expect(typeMismatchModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
@@ -2055,7 +2054,7 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2074,11 +2073,11 @@ describe("Comparison Validators", () => {
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN_OR_EQUAL]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
@@ -2094,11 +2093,11 @@ describe("Comparison Validators", () => {
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received boolean",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received boolean",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2117,11 +2116,11 @@ describe("Comparison Validators", () => {
         expect(unsupportedEqTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2381,7 +2380,7 @@ describe("Comparison Validators", () => {
               [ValidationKeys.REQUIRED]: "This field is required",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
@@ -2415,7 +2414,7 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN]:
                 COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
@@ -2430,11 +2429,11 @@ describe("Comparison Validators", () => {
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
@@ -2449,11 +2448,11 @@ describe("Comparison Validators", () => {
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2708,7 +2707,7 @@ describe("Comparison Validators", () => {
               [ValidationKeys.REQUIRED]: "This field is required",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
@@ -2725,7 +2724,7 @@ describe("Comparison Validators", () => {
         expect(typeMismatchModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
@@ -2744,7 +2743,7 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2763,11 +2762,11 @@ describe("Comparison Validators", () => {
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
@@ -2783,11 +2782,11 @@ describe("Comparison Validators", () => {
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received boolean",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received boolean",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
@@ -2806,11 +2805,11 @@ describe("Comparison Validators", () => {
         expect(unsupportedEqTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected Number, received object",
             },
             testValue: {
-              [ModelKeys.TYPE]:
+              [ValidationKeys.TYPE]:
                 "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
