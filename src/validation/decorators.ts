@@ -482,15 +482,21 @@ export interface ListMetadata extends ListValidatorOptions {
  * @category Property Decorators
  */
 export function list(
-  clazz: Constructor<any> | (() => Constructor<any>),
+  clazz:
+    | Constructor<any>
+    | (() => Constructor<any>)
+    | (Constructor<any> | (() => Constructor<any>))[],
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   const key = Validation.key(ValidationKeys.LIST);
   const meta: ListMetadata = {
-    clazz: Array.isArray(clazz)
+    clazz: (Array.isArray(clazz)
       ? clazz.map((c) => (c.name ? c.name : c))
-      : [clazz.name ? clazz.name : clazz],
+      : [clazz.name ? clazz.name : clazz]) as (
+      | string
+      | (() => Constructor<any>)
+    )[],
     type: collection,
     message: message,
     async: false,

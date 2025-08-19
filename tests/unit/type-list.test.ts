@@ -77,4 +77,39 @@ describe("type via function", () => {
 
     expect(testModel.hasErrors()).toBeUndefined();
   });
+  it("enforces type via function in a list with many types", () => {
+    @model()
+    class ChildClazz {
+      @type(() => Number.name)
+      @required()
+      nestedProp!: Dummy;
+
+      constructor() {}
+    }
+
+    @model()
+    class TypeListFunction extends Model {
+      @required()
+      child!: ChildClazz;
+
+      @required()
+      @list([() => ChildClazz, String])
+      @minlength(1)
+      list!: ChildClazz[];
+
+      constructor(arg?: ModelArg<TypeListFunction>) {
+        super(arg);
+      }
+    }
+
+    const testModel = new TypeListFunction({
+      child: {
+        nestedProp: 6,
+      },
+      list: ["test"],
+    });
+
+    const errs = testModel.hasErrors();
+    expect(errs).toBeUndefined();
+  });
 });
