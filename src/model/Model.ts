@@ -424,9 +424,21 @@ export abstract class Model<Async extends boolean = false>
                     (d) => d.key === ValidationKeys.LIST
                   );
                   if (listDec) {
-                    const clazzName = (listDec.props.clazz as string[]).find(
-                      (t: string) => !jsTypes.includes(t.toLowerCase())
+                    let clazzName = (listDec.props.clazz as string[]).find(
+                      (t: string) => {
+                        t = typeof t === "function" ? (t as any)() : t;
+                        t = (t as any).name ? (t as any).name : t;
+                        return !jsTypes.includes(t);
+                      }
                     );
+                    clazzName =
+                      typeof clazzName === "string"
+                        ? clazzName
+                        : (clazzName as any)();
+                    clazzName =
+                      typeof clazzName === "string"
+                        ? clazzName
+                        : (clazzName as any).name;
                     if (c === "Array")
                       (self as Record<string, any>)[prop] = (
                         self as Record<string, any>

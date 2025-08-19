@@ -9,11 +9,33 @@ import {
 } from "../../src";
 
 describe("type via function", () => {
+  class Dummy {
+    constructor() {}
+  }
   it("enforces type via function", () => {
-    class Dummy {
-      constructor() {}
+    @model()
+    class TypeFunction extends Model {
+      @type(() => Number.name)
+      @required()
+      prop!: Dummy;
+
+      constructor(arg?: ModelArg<TypeFunction>) {
+        super(arg);
+      }
     }
 
+    const testModel = new TypeFunction({
+      prop: "testset",
+    });
+
+    const errs = testModel.hasErrors();
+    expect(errs).toBeDefined();
+    testModel.prop = 6;
+
+    expect(testModel.hasErrors()).toBeUndefined();
+  });
+
+  it("enforces type via function in a list", () => {
     @model()
     class ChildClazz {
       @type(() => Number.name)
@@ -24,42 +46,35 @@ describe("type via function", () => {
     }
 
     @model()
-    class TypeFunction extends Model {
-      @type(() => Number.name)
-      @required()
-      prop!: Dummy;
-
+    class TypeListFunction extends Model {
       @required()
       child!: ChildClazz;
 
       @required()
-      @list(ChildClazz)
+      @list(() => ChildClazz)
       @minlength(1)
       list!: ChildClazz[];
 
-      constructor(arg?: ModelArg<TypeFunction>) {
+      constructor(arg?: ModelArg<TypeListFunction>) {
         super(arg);
       }
     }
 
-    const testModel = new TypeFunction({
-      prop: "testset",
+    const testModel = new TypeListFunction({
       child: {
         nestedProp: 6,
       },
       list: [
         {
-          nestedProp: 6,
+          nestedProp: "test",
         },
       ],
     });
 
     const errs = testModel.hasErrors();
     expect(errs).toBeDefined();
-    testModel.prop = 6;
+    testModel.list[0].nestedProp = 6;
 
     expect(testModel.hasErrors()).toBeUndefined();
   });
-
-  it("enforces list type via function", () => {});
 });

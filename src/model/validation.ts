@@ -258,10 +258,13 @@ export function validateDecorators<
     if (decorator.key === ValidationKeys.LIST && (!validationErrors || async)) {
       const values = value instanceof Set ? [...value] : value;
       if (values && values.length > 0) {
-        const types = (decorator.props.class ||
+        let types: string[] = (decorator.props.class ||
           decorator.props.clazz ||
-          decorator.props.customTypes) as string | string[];
-
+          decorator.props.customTypes) as string[];
+        types = (Array.isArray(types) ? types : [types]).map((e: any) => {
+          e = typeof e === "function" && !e.name ? e() : e;
+          return (e as any).name ? (e as any).name : e;
+        }) as string[];
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
         // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
 
@@ -272,7 +275,7 @@ export function validateDecorators<
               prop,
               childValue,
               model,
-              [types].flat(),
+              types.flat(),
               !!async
             );
             // return getNestedValidationErrors(childValue, model, async);
