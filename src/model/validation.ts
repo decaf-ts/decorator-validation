@@ -476,7 +476,9 @@ export function validate<
         // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
         console.warn("Model should be validatable but it's not.");
       } else {
-        const Constr = Model.get(designType) as any;
+        const Constr = (Array.isArray(designType) ? designType : [designType])
+          .map((d) => Model.get(d))
+          .find((d) => !!d) as any;
 
         // Ensure instance is of the expected model class.
         if (!Constr || !(instance instanceof Constr)) {
