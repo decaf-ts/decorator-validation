@@ -107,7 +107,8 @@ function getNestedValidationErrors<
 >(
   nestedModel: M,
   parentModel?: M,
-  isAsync?: Async
+  isAsync?: Async,
+  ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
   // Set temporary context for nested models
   if (parentModel) {
@@ -115,7 +116,7 @@ function getNestedValidationErrors<
   }
   setTemporaryContext(nestedModel, ASYNC_META_KEY, !!isAsync);
 
-  const errs = nestedModel.hasErrors();
+  const errs = nestedModel.hasErrors(...propsToIgnore) as any;
   cleanupTemporaryContext(nestedModel, VALIDATION_PARENT_KEY);
   cleanupTemporaryContext(nestedModel, ASYNC_META_KEY);
   return errs as any;
@@ -126,7 +127,8 @@ export function validateChildValue<M extends Model>(
   childValue: any,
   parentModel: M,
   allowedTypes: string[],
-  async: boolean
+  async: boolean,
+  ...propsToIgnore: string[]
 ):
   | string
   | undefined
@@ -150,7 +152,12 @@ export function validateChildValue<M extends Model>(
 
     if (childValue instanceof Constr) {
       atLeastOneMatched = true;
-      err = getNestedValidationErrors(childValue, parentModel, async);
+      err = getNestedValidationErrors(
+        childValue,
+        parentModel,
+        async,
+        ...propsToIgnore
+      );
       break;
     }
   }
@@ -240,7 +247,8 @@ export function validateDecorators<
   prop: string,
   value: any,
   decorators: DecoratorMetadataAsync[],
-  async?: Async
+  async?: Async,
+  ...propsToIgnore: string[]
 ): ConditionalAsync<Async, Record<string, string> | undefined> {
   const result: Record<string, string | Promise<string>> = {};
 
@@ -276,7 +284,8 @@ export function validateDecorators<
               childValue,
               model,
               types.flat(),
-              !!async
+              !!async,
+              ...propsToIgnore
             );
             // return getNestedValidationErrors(childValue, model, async);
           }
@@ -459,7 +468,14 @@ export function validate<
     }
 
     const propErrors: Record<string, any> =
-      validateDecorators(model, propKey, propValue, decorators, async) || {};
+      validateDecorators(
+        model,
+        propKey,
+        propValue,
+        decorators,
+        async,
+        ...propsToIgnore
+      ) || {};
 
     // Check for nested properties.
     // To prevent unnecessary processing, "propValue" must be defined and validatable
@@ -477,7 +493,10 @@ export function validate<
         console.warn("Model should be validatable but it's not.");
       } else {
         const Constr = (Array.isArray(designType) ? designType : [designType])
-          .map((d) => Model.get(d))
+          .map((d) => {
+            if (typeof d === "function" && !d.name) d = d();
+            return Model.get(d.name || d);
+          })
           .find((d) => !!d) as any;
 
         // Ensure instance is of the expected model class.
@@ -490,7 +509,8 @@ export function validate<
           nestedErrors[propKey] = getNestedValidationErrors(
             instance,
             model,
-            async
+            async,
+            ...propsToIgnore
           );
         }
       }

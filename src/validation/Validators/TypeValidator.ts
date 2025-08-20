@@ -100,7 +100,8 @@ export class TypeValidator extends Validator<TypeValidatorOptions> {
     let ts = customTypes || types;
     ts = (Array.isArray(ts) ? ts : [ts]).map((t) => {
       if (typeof t === "string") return t;
-      return (t as () => string)();
+      if (typeof t === "function" && !t.name) t = (t as () => string)();
+      return (t as any).name || t;
     });
 
     if (!Reflection.evaluateDesignTypes(value, ts as any))
