@@ -28,7 +28,7 @@ describe("Comparison Validators", () => {
     @model()
     class SimpleChildTestModel extends Model {
       @eq("../parentValue")
-      value: any;
+      value!: string;
 
       @eq("../parentArray.4")
       elementValue: number = 5;
@@ -42,7 +42,7 @@ describe("Comparison Validators", () => {
     @model()
     class SimpleParentTestModel extends Model {
       @required()
-      parentValue: any;
+      parentValue: string;
 
       @required()
       @list(Number)
@@ -1673,10 +1673,10 @@ describe("Comparison Validators", () => {
         @model()
         class TestModel extends Model {
           @required()
-          comparisonValue: any;
+          comparisonValue!: number;
 
           @lt("comparisonValue")
-          testValue: any;
+          testValue!: string;
 
           constructor(model?: ModelArg<TestModel>) {
             super();
@@ -1684,11 +1684,28 @@ describe("Comparison Validators", () => {
           }
         }
 
+        @model()
+        class TestModelNumber extends Model {
+          @required()
+          @type([Number.name, BigInt.name])
+          comparisonValue!: number;
+
+          @type([Number.name, BigInt.name])
+          @lt("comparisonValue")
+          testValue!: number;
+
+          constructor(model?: ModelArg<TestModelNumber>) {
+            super();
+            Model.fromObject(this, model);
+          }
+        }
+
         // null/undefined values
         const nullModel = new TestModel({
-          testValue: 10,
+          testValue: "10",
         });
-        expect(nullModel.hasErrors()).toEqual(
+        const errors = nullModel.hasErrors();
+        expect(errors).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
               [ValidationKeys.REQUIRED]: "This field is required",
@@ -1728,6 +1745,8 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.LESS_THAN]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NAN_COMPARISON
               ),
@@ -1742,7 +1761,13 @@ describe("Comparison Validators", () => {
         });
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
             },
@@ -1756,7 +1781,13 @@ describe("Comparison Validators", () => {
         });
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 typeof unsupportedTypeModel.testValue,
@@ -1767,14 +1798,14 @@ describe("Comparison Validators", () => {
         );
 
         // bigInt and Number comparison (should work)
-        const bigIntModel = new TestModel({
+        const bigIntModel = new TestModelNumber({
           testValue: BigInt(5),
           comparisonValue: 10,
         });
         expect(bigIntModel.hasErrors()).toBeUndefined();
 
         // number and BigInt comparison (should work)
-        const numberModel = new TestModel({
+        const numberModel = new TestModelNumber({
           testValue: 5,
           comparisonValue: BigInt(10),
         });
@@ -1950,12 +1981,28 @@ describe("Comparison Validators", () => {
         @model()
         class LteTestModel extends Model {
           @required()
-          comparisonValue: any;
+          comparisonValue!: number;
 
           @lte("comparisonValue")
-          testValue: any;
+          testValue!: string;
 
           constructor(model?: ModelArg<LteTestModel>) {
+            super();
+            Model.fromObject(this, model);
+          }
+        }
+
+        @model()
+        class LteTestModelNumber extends Model {
+          @required()
+          @type([Number.name, BigInt.name])
+          comparisonValue!: number;
+
+          @lte("comparisonValue")
+          @type([Number.name, BigInt.name])
+          testValue!: number;
+
+          constructor(model?: ModelArg<LteTestModelNumber>) {
             super();
             Model.fromObject(this, model);
           }
@@ -1971,6 +2018,8 @@ describe("Comparison Validators", () => {
               [ValidationKeys.REQUIRED]: "This field is required",
             },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
               ),
@@ -1986,6 +2035,8 @@ describe("Comparison Validators", () => {
         expect(typeMismatchModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
                 typeof typeMismatchModel.testValue,
@@ -2003,6 +2054,8 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 "NaN",
@@ -2019,7 +2072,13 @@ describe("Comparison Validators", () => {
         });
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN_OR_EQUAL]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
             },
@@ -2033,7 +2092,13 @@ describe("Comparison Validators", () => {
         });
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received boolean",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received boolean",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 typeof unsupportedTypeModel.testValue,
@@ -2050,7 +2115,13 @@ describe("Comparison Validators", () => {
         });
         expect(unsupportedEqTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.LESS_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 typeof unsupportedEqTypeModel.testValue,
@@ -2061,14 +2132,14 @@ describe("Comparison Validators", () => {
         );
 
         // bigInt and Number comparison (should work)
-        const bigIntModel = new LteTestModel({
+        const bigIntModel = new LteTestModelNumber({
           testValue: BigInt(5),
           comparisonValue: 10,
         });
         expect(bigIntModel.hasErrors()).toBeUndefined();
 
         // number and BigInt comparison (should work)
-        const numberModel = new LteTestModel({
+        const numberModel = new LteTestModelNumber({
           testValue: 5,
           comparisonValue: BigInt(10),
         });
@@ -2273,10 +2344,26 @@ describe("Comparison Validators", () => {
         @model()
         class TestModel extends Model {
           @required()
-          comparisonValue: any;
+          comparisonValue!: number;
 
           @gt("comparisonValue")
-          testValue: any;
+          testValue!: string;
+
+          constructor(model?: ModelArg<TestModel>) {
+            super();
+            Model.fromModel(this, model);
+          }
+        }
+
+        @model()
+        class GteTestModelNumber extends Model {
+          @required()
+          @type([Number.name, BigInt.name])
+          comparisonValue!: number;
+
+          @gt("comparisonValue")
+          @type([Number.name, BigInt.name])
+          testValue!: string;
 
           constructor(model?: ModelArg<TestModel>) {
             super();
@@ -2293,6 +2380,8 @@ describe("Comparison Validators", () => {
               [ValidationKeys.REQUIRED]: "This field is required",
             },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
               ),
@@ -2325,6 +2414,8 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN]:
                 COMPARISON_ERROR_MESSAGES.NAN_COMPARISON,
             },
@@ -2337,7 +2428,13 @@ describe("Comparison Validators", () => {
         });
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
             },
@@ -2350,7 +2447,13 @@ describe("Comparison Validators", () => {
         });
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 typeof unsupportedTypeModel.testValue,
@@ -2360,13 +2463,13 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const bigIntModel = new TestModel({
+        const bigIntModel = new GteTestModelNumber({
           testValue: BigInt(10),
           comparisonValue: 5,
         });
         expect(bigIntModel.hasErrors()).toBeUndefined();
 
-        const numberModel = new TestModel({
+        const numberModel = new GteTestModelNumber({
           testValue: 10,
           comparisonValue: BigInt(5),
         });
@@ -2567,12 +2670,28 @@ describe("Comparison Validators", () => {
         @model()
         class GteTestModel extends Model {
           @required()
-          comparisonValue: any;
+          comparisonValue: number;
 
           @gte("comparisonValue")
-          testValue: any;
+          testValue: string;
 
           constructor(model?: ModelArg<GteTestModel>) {
+            super();
+            Model.fromModel(this, model);
+          }
+        }
+
+        @model()
+        class GteTestModelNumber extends Model {
+          @required()
+          @type([Number.name, BigInt.name])
+          comparisonValue!: number;
+
+          @gte("comparisonValue")
+          @type([Number.name, BigInt.name])
+          testValue!: string;
+
+          constructor(model?: ModelArg<GteTestModelNumber>) {
             super();
             Model.fromModel(this, model);
           }
@@ -2588,6 +2707,8 @@ describe("Comparison Validators", () => {
               [ValidationKeys.REQUIRED]: "This field is required",
             },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: expect.stringContaining(
                 COMPARISON_ERROR_MESSAGES.NULL_OR_UNDEFINED_COMPARISON
               ),
@@ -2603,6 +2724,8 @@ describe("Comparison Validators", () => {
         expect(typeMismatchModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.TYPE_MISMATCH_COMPARISON,
                 typeof typeMismatchModel.testValue,
@@ -2620,6 +2743,8 @@ describe("Comparison Validators", () => {
         expect(nanModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received number",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 "NaN",
@@ -2636,7 +2761,13 @@ describe("Comparison Validators", () => {
         });
         expect(invalidDateModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]:
                 COMPARISON_ERROR_MESSAGES.INVALID_DATE_COMPARISON,
             },
@@ -2650,7 +2781,13 @@ describe("Comparison Validators", () => {
         });
         expect(unsupportedTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received boolean",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received boolean",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 typeof unsupportedTypeModel.testValue,
@@ -2667,7 +2804,13 @@ describe("Comparison Validators", () => {
         });
         expect(unsupportedEqTypeModel.hasErrors()).toEqual(
           new ModelErrorDefinition({
+            comparisonValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected Number, received object",
+            },
             testValue: {
+              [ValidationKeys.TYPE]:
+                "Invalid type. Expected String, received object",
               [ValidationKeys.GREATER_THAN_OR_EQUAL]: sf(
                 COMPARISON_ERROR_MESSAGES.UNSUPPORTED_TYPES_COMPARISON,
                 typeof unsupportedEqTypeModel.testValue,
@@ -2678,14 +2821,14 @@ describe("Comparison Validators", () => {
         );
 
         // bigInt and Number comparison (should work)
-        const bigIntModel = new GteTestModel({
+        const bigIntModel = new GteTestModelNumber({
           testValue: BigInt(10),
           comparisonValue: 5,
         });
         expect(bigIntModel.hasErrors()).toBeUndefined();
 
         // number and BigInt comparison (should work)
-        const numberModel = new GteTestModel({
+        const numberModel = new GteTestModelNumber({
           testValue: 10,
           comparisonValue: BigInt(5),
         });

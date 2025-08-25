@@ -307,6 +307,7 @@ export abstract class Model<Async extends boolean = false>
     obj?: T | Record<string, any>
   ): T {
     if (!obj) obj = {};
+    const attr = Model.getAttributes(self);
     for (const prop of Model.getAttributes(self)) {
       (self as any)[prop] = (obj as any)[prop] || undefined;
     }
@@ -362,10 +363,20 @@ export abstract class Model<Async extends boolean = false>
 
     const props = Model.getAttributes(self);
 
+    const proto = Object.getPrototypeOf(self);
+    let descriptor: PropertyDescriptor | undefined;
     for (const prop of props) {
-      (self as Record<string, any>)[prop] =
-        (obj as Record<string, any>)[prop] ?? undefined;
+      try {
+        (self as Record<string, any>)[prop] =
+          (obj as Record<string, any>)[prop] ?? undefined;
+      } catch (e: unknown) {
+        descriptor = Object.getOwnPropertyDescriptor(proto, prop);
+        if (!descriptor || descriptor.writable)
+          throw new Error(`Unable to write property ${prop} to model: ${e}`);
+      }
+
       if (typeof (self as any)[prop] !== "object") continue;
+
       const propM = Model.isPropertyModel(self, prop);
       if (propM) {
         try {
@@ -394,9 +405,10 @@ export abstract class Model<Async extends boolean = false>
       dec = decorators.pop() as DecoratorMetadata;
       const clazz = dec.props.name
         ? [dec.props.name]
-        : Array.isArray(dec.props.customTypes)
-          ? dec.props.customTypes
-          : [dec.props.customTypes];
+        : (Array.isArray(dec.props.customTypes)
+            ? dec.props.customTypes
+            : [dec.props.customTypes]
+          ).map((t) => (typeof t === "function" ? t() : t));
       const reserved = Object.values(ReservedModels).map((v) =>
         v.toLowerCase()
       ) as string[];
@@ -412,9 +424,21 @@ export abstract class Model<Async extends boolean = false>
                     (d) => d.key === ValidationKeys.LIST
                   );
                   if (listDec) {
-                    const clazzName = (listDec.props.clazz as string[]).find(
-                      (t: string) => !jsTypes.includes(t.toLowerCase())
+                    let clazzName = (listDec.props.clazz as string[]).find(
+                      (t: string) => {
+                        t = typeof t === "function" ? (t as any)() : t;
+                        t = (t as any).name ? (t as any).name : t;
+                        return !jsTypes.includes(t);
+                      }
                     );
+                    clazzName =
+                      typeof clazzName === "string"
+                        ? clazzName
+                        : (clazzName as any)();
+                    clazzName =
+                      typeof clazzName === "string"
+                        ? clazzName
+                        : (clazzName as any).name;
                     if (c === "Array")
                       (self as Record<string, any>)[prop] = (
                         self as Record<string, any>

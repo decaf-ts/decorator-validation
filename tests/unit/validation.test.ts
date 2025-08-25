@@ -60,6 +60,10 @@ class TestModel extends Model {
   @type(InnerTestModel.name)
   prop7?: InnerTestModel;
 
+  @type(Array.name)
+  @list(InnerTestModel)
+  prop8?: InnerTestModel[];
+
   constructor(model?: ModelArg<TestModel>) {
     super(model);
   }
@@ -103,6 +107,7 @@ describe("Validation", function () {
         "prop5",
         "prop6",
         "prop7",
+        "prop8",
       ]);
     });
 
@@ -113,7 +118,7 @@ describe("Validation", function () {
         prop2: "tests",
         prop3: "asdasfsdfsda",
         prop4: "test@pdm.com",
-        prop8: new Date(),
+        prop_999: new Date(),
       });
 
       const output = dm.toString();
@@ -159,6 +164,7 @@ describe("Validation", function () {
         prop5: "asdasdasd",
         prop6: "http://www.thisisatest.com",
         prop7: new InnerTestModel(),
+        prop8: [new InnerTestModel(), new InnerTestModel()],
       });
 
       dm.isAsync();
@@ -250,7 +256,7 @@ describe("Validation", function () {
     it("handles Dates", function () {
       const dm = new TestModel({
         prop1: 235,
-        prop8: "test",
+        prop999: "test",
       });
 
       const errors = dm.hasErrors();

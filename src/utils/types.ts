@@ -1,4 +1,5 @@
 import { Model } from "../model";
+import { DecoratorData } from "./Decoration";
 
 /**
  * @description Interface for the final stage of the decoration builder pattern
@@ -42,9 +43,7 @@ export interface DecorationBuilderEnd {
    * @param {...(ClassDecorator|PropertyDecorator|MethodDecorator)} decorators - Additional decorators to add
    * @returns {DecorationBuilderBuild} The build stage of the builder pattern
    */
-  extend(
-    ...decorators: (ClassDecorator | PropertyDecorator | MethodDecorator)[]
-  ): DecorationBuilderBuild;
+  extend(...decorators: DecoratorData[]): DecorationBuilderBuild;
 }
 
 /**
@@ -63,7 +62,7 @@ export interface DecorationBuilderMid extends DecorationBuilderEnd {
    * called after specifying the key with the 'for' method.
    */
   define(
-    ...decorators: (ClassDecorator | PropertyDecorator | MethodDecorator)[]
+    ...decorators: DecoratorData[]
   ): DecorationBuilderEnd & DecorationBuilderBuild;
 }
 

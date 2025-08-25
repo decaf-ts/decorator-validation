@@ -107,7 +107,8 @@ function getNestedValidationErrors<
 >(
   nestedModel: M,
   parentModel?: M,
-  isAsync?: Async
+  isAsync?: Async,
+  ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
   // Set temporary context for nested models
   if (parentModel) {
@@ -115,7 +116,7 @@ function getNestedValidationErrors<
   }
   setTemporaryContext(nestedModel, ASYNC_META_KEY, !!isAsync);
 
-  const errs = nestedModel.hasErrors();
+  const errs = nestedModel.hasErrors(...propsToIgnore) as any;
   cleanupTemporaryContext(nestedModel, VALIDATION_PARENT_KEY);
   cleanupTemporaryContext(nestedModel, ASYNC_META_KEY);
   return errs as any;
@@ -126,7 +127,8 @@ export function validateChildValue<M extends Model>(
   childValue: any,
   parentModel: M,
   allowedTypes: string[],
-  async: boolean
+  async: boolean,
+  ...propsToIgnore: string[]
 ):
   | string
   | undefined
@@ -150,7 +152,12 @@ export function validateChildValue<M extends Model>(
 
     if (childValue instanceof Constr) {
       atLeastOneMatched = true;
-      err = getNestedValidationErrors(childValue, parentModel, async);
+      err = getNestedValidationErrors(
+        childValue,
+        parentModel,
+        async,
+        ...propsToIgnore
+      );
       break;
     }
   }
@@ -196,7 +203,9 @@ export function validateDecorator<
 
   const maybeAsyncErrors = validator.hasErrors(
     value,
-    decoratorProps as ValidatorOptions,
+    decorator.key === ModelKeys.TYPE
+      ? ({ types: (decoratorProps as any)[0].name } as any)
+      : (decoratorProps as ValidatorOptions),
     context
   );
 
@@ -238,7 +247,8 @@ export function validateDecorators<
   prop: string,
   value: any,
   decorators: DecoratorMetadataAsync[],
-  async?: Async
+  async?: Async,
+  ...propsToIgnore: string[]
 ): ConditionalAsync<Async, Record<string, string> | undefined> {
   const result: Record<string, string | Promise<string>> = {};
 
@@ -256,10 +266,13 @@ export function validateDecorators<
     if (decorator.key === ValidationKeys.LIST && (!validationErrors || async)) {
       const values = value instanceof Set ? [...value] : value;
       if (values && values.length > 0) {
-        const types = (decorator.props.class ||
+        let types: string[] = (decorator.props.class ||
           decorator.props.clazz ||
-          decorator.props.customTypes) as string | string[];
-
+          decorator.props.customTypes) as string[];
+        types = (Array.isArray(types) ? types : [types]).map((e: any) => {
+          e = typeof e === "function" && !e.name ? e() : e;
+          return (e as any).name ? (e as any).name : e;
+        }) as string[];
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
         // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
 
@@ -270,8 +283,9 @@ export function validateDecorators<
               prop,
               childValue,
               model,
-              [types].flat(),
-              !!async
+              types.flat(),
+              !!async,
+              ...propsToIgnore
             );
             // return getNestedValidationErrors(childValue, model, async);
           }
@@ -293,7 +307,9 @@ export function validateDecorators<
       }
     }
 
-    if (validationErrors) (result as any)[decorator.key] = validationErrors;
+    const name =
+      decorator.key === ModelKeys.TYPE ? ValidationKeys.TYPE : decorator.key;
+    if (validationErrors) (result as any)[name] = validationErrors;
   }
 
   if (!async)
@@ -387,16 +403,44 @@ export function validate<
     if (!decorators?.length) continue;
 
     // Get the default type validator
-    const designTypeDec = decorators.find((d) => {
-      return [ModelKeys.TYPE, ValidationKeys.TYPE].includes(d.key as any);
-    });
+    const priority = [ValidationKeys.TYPE, ModelKeys.TYPE];
+    const designTypeDec = priority
+      .map((key) => decorators.find((d) => d.key === key))
+      .find(Boolean);
+
+    // Ensures that only one type decorator remains.
+    if (designTypeDec?.key === ValidationKeys.TYPE) {
+      decorators.splice(
+        0,
+        decorators.length,
+        ...decorators.filter((d) => d.key !== ModelKeys.TYPE)
+      );
+    }
 
     if (!designTypeDec) continue;
 
-    const designType = designTypeDec.props.name;
+    const designType =
+      designTypeDec.props.class ||
+      designTypeDec.props.clazz ||
+      designTypeDec.props.customTypes ||
+      designTypeDec.props.name;
+
+    // TS emits "Object" as design:type for unions (string | number) and intersections (A & B).
+    // Since this metadata is ambiguous for validation, skip design:type checks in these cases.
+    // To enforce design:type validation explicitly, the @type validator can be used.
+    if (designTypeDec.key === ModelKeys.TYPE && designType === "Object")
+      decorators.shift();
+
+    const designTypes = (
+      Array.isArray(designType) ? designType : [designType]
+    ).map((e: any) => {
+      e = typeof e === "function" && !e.name ? e() : e;
+      return (e as any).name ? (e as any).name : e;
+    }) as string[];
 
     // Handle array or Set types and enforce the presence of @list decorator
-    if ([Array.name, Set.name].includes(designType)) {
+    // if ([Array.name, Set.name].includes(designType)) {}
+    if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
       if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
         result[propKey] = {
           [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
@@ -424,7 +468,14 @@ export function validate<
     }
 
     const propErrors: Record<string, any> =
-      validateDecorators(model, propKey, propValue, decorators, async) || {};
+      validateDecorators(
+        model,
+        propKey,
+        propValue,
+        decorators,
+        async,
+        ...propsToIgnore
+      ) || {};
 
     // Check for nested properties.
     // To prevent unnecessary processing, "propValue" must be defined and validatable
@@ -441,18 +492,25 @@ export function validate<
         // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
         console.warn("Model should be validatable but it's not.");
       } else {
-        const Constr = Model.get(designType) as any;
+        const Constr = (Array.isArray(designType) ? designType : [designType])
+          .map((d) => {
+            if (typeof d === "function" && !d.name) d = d();
+            return Model.get(d.name || d);
+          })
+          .find((d) => !!d) as any;
 
         // Ensure instance is of the expected model class.
         if (!Constr || !(instance instanceof Constr)) {
           propErrors[ValidationKeys.TYPE] = !Constr
-            ? `Unable to verify type consistency, missing model registry for ${designType} on prop ${propKey}`
+            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
             : `Value must be an instance of ${Constr.name}`;
+          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
         } else {
           nestedErrors[propKey] = getNestedValidationErrors(
             instance,
             model,
-            async
+            async,
+            ...propsToIgnore
           );
         }
       }
