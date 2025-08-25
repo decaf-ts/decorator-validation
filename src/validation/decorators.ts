@@ -426,7 +426,7 @@ export function date(
         this[propertyKey] = newValue;
       },
       get() {
-        console.log("here");
+        return values.get(this);
       },
     });
     return validationMetadata(date, key, meta)(target, propertyKey);
