@@ -307,9 +307,9 @@ export abstract class Model<Async extends boolean = false>
     obj?: T | Record<string, any>
   ): T {
     if (!obj) obj = {};
-    const attr = Model.getAttributes(self);
     for (const prop of Model.getAttributes(self)) {
-      (self as any)[prop] = (obj as any)[prop] || undefined;
+      (self as any)[prop] =
+        (obj as any)[prop] ?? (self as any)[prop] ?? undefined;
     }
     return self;
   }
@@ -368,7 +368,9 @@ export abstract class Model<Async extends boolean = false>
     for (const prop of props) {
       try {
         (self as Record<string, any>)[prop] =
-          (obj as Record<string, any>)[prop] ?? undefined;
+          (obj as Record<string, any>)[prop] ??
+          (self as Record<string, any>)[prop] ??
+          undefined;
       } catch (e: unknown) {
         descriptor = Object.getOwnPropertyDescriptor(proto, prop);
         if (!descriptor || descriptor.writable)

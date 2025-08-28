@@ -8,6 +8,7 @@ import {
   ModelErrorDefinition,
   required,
   ValidationKeys,
+  prop,
 } from "../../src";
 
 @model()
@@ -49,6 +50,22 @@ class TestModelWithList extends Model {
   models!: ConstructionTestModel[];
 
   constructor(arg?: ModelArg<TestModelWithList>) {
+    super(arg);
+  }
+}
+
+@model()
+class ModelWithDefaultValues extends Model {
+  @required()
+  prop1!: string;
+
+  @required()
+  prop2: string = "default";
+
+  @prop()
+  prop3: string = "default2";
+
+  constructor(arg?: ModelArg<ModelWithDefaultValues>) {
     super(arg);
   }
 }
@@ -154,6 +171,16 @@ describe("Construction", () => {
         expect(mock).toHaveBeenCalledTimes(1);
         expect(mock).toHaveReturnedWith(undefined);
       });
+    });
+  });
+
+  describe("Construction with default values", () => {
+    it("Builds models respecting default values", () => {
+      const m = new ModelWithDefaultValues({
+        prop1: "test",
+      });
+
+      expect(m.hasErrors()).toBeUndefined();
     });
   });
 });
