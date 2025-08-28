@@ -952,7 +952,7 @@ describe("Comparison Validators", () => {
 
         @required()
         @eq("../grandparentNumber")
-        parentNumber: number = 100;
+        parentNumber!: number;
 
         @required()
         @list([String, Number])
@@ -976,7 +976,7 @@ describe("Comparison Validators", () => {
         grandparentName: string = "";
 
         @required()
-        grandparentNumber: number = 1000;
+        grandparentNumber!: number;
 
         @required()
         grandparentBoolean: boolean = true;
@@ -1038,7 +1038,10 @@ describe("Comparison Validators", () => {
 
       it("should pass when the compared fields are both undefined", () => {
         const model = new EqGrandparentModel({
-          parent: new EqParentModel({}),
+          grandparentNumber: undefined,
+          parent: new EqParentModel({
+            parentNumber: undefined,
+          }),
         });
 
         const errors = model.hasErrors() as Record<string, any>;
@@ -1249,7 +1252,7 @@ describe("Comparison Validators", () => {
 
         @required()
         @diff("../grandparentNumber")
-        parentNumber: number = 100;
+        parentNumber!: number;
 
         @required()
         @list([String, Number])
@@ -1273,7 +1276,7 @@ describe("Comparison Validators", () => {
         grandparentName: string = "";
 
         @required()
-        grandparentNumber: number = 1000;
+        grandparentNumber!: number;
 
         @required()
         grandparentBoolean: boolean = true;
@@ -1491,7 +1494,7 @@ describe("Comparison Validators", () => {
       class LtParentModel extends Model {
         @required()
         @lt("../grandparentNumber")
-        parentNumber: number = 100;
+        parentNumber!: number;
 
         @required()
         child: LtChildModel = new LtChildModel();
@@ -1505,7 +1508,7 @@ describe("Comparison Validators", () => {
       @model()
       class LtGrandparentModel extends Model {
         @required()
-        grandparentNumber: number = 1000;
+        grandparentNumber!: number;
 
         @required()
         @date()
@@ -1835,7 +1838,7 @@ describe("Comparison Validators", () => {
       class LteParentModel extends Model {
         @required()
         @lte("../grandparentNumber")
-        parentNumber: number = 100;
+        parentNumber!: number;
 
         @required()
         child: LteChildModel = new LteChildModel();
@@ -1849,7 +1852,7 @@ describe("Comparison Validators", () => {
       @model()
       class LteGrandparentModel extends Model {
         @required()
-        grandparentNumber: number = 1000;
+        grandparentNumber!: number;
 
         @required()
         @date()
@@ -2169,7 +2172,7 @@ describe("Comparison Validators", () => {
       class GtParentModel extends Model {
         @required()
         @gt("../grandparentNumber")
-        parentNumber: number = 100;
+        parentNumber!: number;
 
         @required()
         child: GtChildModel = new GtChildModel();
@@ -2183,7 +2186,7 @@ describe("Comparison Validators", () => {
       @model()
       class GtGrandparentModel extends Model {
         @required()
-        grandparentNumber: number = 1000;
+        grandparentNumber!: number;
 
         @required()
         @date()
@@ -2513,7 +2516,7 @@ describe("Comparison Validators", () => {
       @model()
       class GteGrandparentModel extends Model {
         @required()
-        grandparentNumber: number = 1000;
+        grandparentNumber!: number;
 
         @required()
         @date()
