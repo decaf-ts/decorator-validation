@@ -175,12 +175,12 @@ export interface URLValidatorOptions extends ValidatorOptions {
  * @description Type validation options interface
  * @summary Defines options for type validation, specifying allowed types
  * @interface TypeValidatorOptions
- * @property {(string|string[]|{ name: string })} types - Specifies the allowed data types
+ * @property {(string|string[]|{ name: string })} type - Specifies the allowed data types
  * @memberOf module:decorator-validation
  * @category Validation
  */
 export interface TypeValidatorOptions extends ValidatorOptions {
-  types: string | string[] | { name: string };
+  type: string | string[] | { name: string };
   customTypes?: (string | (() => string))[];
 }
 

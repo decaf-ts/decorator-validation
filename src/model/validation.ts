@@ -5,6 +5,7 @@ import { Validation } from "../validation/Validation";
 import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
+  TypeValidatorOptions,
   ValidationPropertyDecoratorDefinition,
   ValidatorOptions,
 } from "../validation";
@@ -201,11 +202,14 @@ export function validateDecorator<
     ignoreNull: true,
   });
 
+  const validatorOptions: ValidatorOptions | TypeValidatorOptions =
+    decorator.key === ModelKeys.TYPE
+      ? { type: (decoratorProps as any)[0].name }
+      : (decoratorProps as ValidatorOptions);
+
   const maybeAsyncErrors = validator.hasErrors(
     value,
-    decorator.key === ModelKeys.TYPE
-      ? ({ types: (decoratorProps as any)[0].name } as any)
-      : (decoratorProps as ValidatorOptions),
+    validatorOptions,
     context
   );
 

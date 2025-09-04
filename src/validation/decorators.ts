@@ -549,7 +549,7 @@ export function eq(
   // message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
   const equalsOptions: EqualsValidatorOptions = {
-    label: options?.label,
+    label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.EQUALS,
     [ValidationKeys.EQUALS]: propertyToCompare,
     description: `defines attribute as equal to ${propertyToCompare}`,
@@ -567,7 +567,9 @@ export function eq(
  * @description Applies the {@link ValidationKeys.DIFF} validator to ensure the decorated value is different from the value of the given property.
  *
  * @param {string} propertyToCompare - The name of the property to compare difference against.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.DIFF] - Custom error message to return if validation fails.
+ * @param {ComparisonValidatorOptions} options - Options for the validator.
+ * @param {string} [options.label] - The label text displayed in the error message.
+ * @param {string} [options.message=DEFAULT_ERROR_MESSAGES.DIFF] - Custom error message to be returned if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the difference validation metadata.
  *
@@ -576,10 +578,11 @@ export function eq(
  */
 export function diff(
   propertyToCompare: string,
-  message: string = DEFAULT_ERROR_MESSAGES.DIFF
+  options: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const options: DiffValidatorOptions = {
-    message: message,
+  const diffOptions: DiffValidatorOptions = {
+    label: options?.label || propertyToCompare,
+    message: options?.message || DEFAULT_ERROR_MESSAGES.DIFF,
     [ValidationKeys.DIFF]: propertyToCompare,
     description: `defines attribute as different to ${propertyToCompare}`,
   };
@@ -588,7 +591,7 @@ export function diff(
     diff,
     Validation.key(ValidationKeys.DIFF),
     {
-      ...options,
+      ...diffOptions,
       async: false,
     } as ValidationMetadata
   );
@@ -599,7 +602,9 @@ export function diff(
  * @description Applies the {@link ValidationKeys.LESS_THAN} validator to ensure the decorated value is less than the value of the given property.
  *
  * @param {string} propertyToCompare - The name of the property to compare against.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.LESS_THAN] - Custom error message to return if validation fails.
+ * @param {ComparisonValidatorOptions} options - Options for the validator.
+ * @param {string} [options.label] - The label text displayed in the error message.
+ * @param {string} [options.message=DEFAULT_ERROR_MESSAGES.LESS_THAN] - Custom error message to be returned if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the less than validation metadata.
  *
@@ -608,10 +613,11 @@ export function diff(
  */
 export function lt(
   propertyToCompare: string,
-  message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN
+  options: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const options: LessThanValidatorOptions = {
-    message: message,
+  const ltOptions: LessThanValidatorOptions = {
+    label: options?.label || propertyToCompare,
+    message: options?.message || DEFAULT_ERROR_MESSAGES.LESS_THAN,
     [ValidationKeys.LESS_THAN]: propertyToCompare,
     description: `defines attribute as less than to ${propertyToCompare}`,
   };
@@ -619,7 +625,7 @@ export function lt(
   return validationMetadata<ValidationMetadata>(
     lt,
     Validation.key(ValidationKeys.LESS_THAN),
-    { ...options, async: false } as ValidationMetadata
+    { ...ltOptions, async: false } as ValidationMetadata
   );
 }
 
@@ -628,7 +634,9 @@ export function lt(
  * @description Applies the {@link ValidationKeys.LESS_THAN_OR_EQUAL} validator to ensure the decorated value is equal or less than the value of the given property.
  *
  * @param {string} propertyToCompare - The name of the property to compare against.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL] - Custom error message to return if validation fails.
+ * @param {ComparisonValidatorOptions} options - Options for the validator.
+ * @param {string} [options.label] - The label text displayed in the error message.
+ * @param {string} [options.message=DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL] - Custom error message to be returned if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the less than or equal validation metadata.
  *
@@ -637,10 +645,11 @@ export function lt(
  */
 export function lte(
   propertyToCompare: string,
-  message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL
+  options: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const options: LessThanOrEqualValidatorOptions = {
-    message: message,
+  const lteOptions: LessThanOrEqualValidatorOptions = {
+    label: options?.label || propertyToCompare,
+    message: options?.message || DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL,
     [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
     description: `defines attribute as less or equal to ${propertyToCompare}`,
   };
@@ -648,7 +657,7 @@ export function lte(
   return validationMetadata<ValidationMetadata>(
     lte,
     Validation.key(ValidationKeys.LESS_THAN_OR_EQUAL),
-    { ...options, async: false } as ValidationMetadata
+    { ...lteOptions, async: false } as ValidationMetadata
   );
 }
 
@@ -657,7 +666,9 @@ export function lte(
  * @description Applies the {@link ValidationKeys.GREATER_THAN} validator to ensure the decorated value is greater than the value of the given property.
  *
  * @param {string} propertyToCompare - The name of the property to compare against.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.GREATER_THAN] - Custom error message to return if validation fails.
+ * @param {ComparisonValidatorOptions} options - Options for the validator.
+ * @param {string} [options.label] - The label text displayed in the error message.
+ * @param {string} [options.message=DEFAULT_ERROR_MESSAGES.GREATER_THAN] - Custom error message to be returned if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the greater than validation metadata.
  *
@@ -666,10 +677,11 @@ export function lte(
  */
 export function gt(
   propertyToCompare: string,
-  message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN
+  options: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const options: GreaterThanValidatorOptions = {
-    message: message,
+  const gtOptions: GreaterThanValidatorOptions = {
+    label: options?.label || propertyToCompare,
+    message: options?.message || DEFAULT_ERROR_MESSAGES.GREATER_THAN,
     [ValidationKeys.GREATER_THAN]: propertyToCompare,
     description: `defines attribute as greater than ${propertyToCompare}`,
   };
@@ -677,7 +689,7 @@ export function gt(
   return validationMetadata<ValidationMetadata>(
     gt,
     Validation.key(ValidationKeys.GREATER_THAN),
-    { ...options, async: false } as ValidationMetadata
+    { ...gtOptions, async: false } as ValidationMetadata
   );
 }
 
@@ -686,7 +698,9 @@ export function gt(
  * @description Applies the {@link ValidationKeys.GREATER_THAN_OR_EQUAL} validator to ensure the decorated value is equal or greater than the value of the given property.
  *
  * @param {string} propertyToCompare - The name of the property to compare against.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL] - Custom error message to return if validation fails.
+ * @param {ComparisonValidatorOptions} options - Options for the validator.
+ * @param {string} [options.label] - The label text displayed in the error message.
+ * @param {string} [options.message=DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL] - Custom error message to be returned if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the greater than or equal validation metadata.
  *
@@ -695,10 +709,11 @@ export function gt(
  */
 export function gte(
   propertyToCompare: string,
-  message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL
+  options: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const options: GreaterThanOrEqualValidatorOptions = {
-    message: message,
+  const gteOptions: GreaterThanOrEqualValidatorOptions = {
+    label: options?.label || propertyToCompare,
+    message: options?.message || DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL,
     [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
     description: `defines attribute as greater or equal to ${propertyToCompare}`,
   };
@@ -706,6 +721,6 @@ export function gte(
   return validationMetadata<ValidationMetadata>(
     gte,
     Validation.key(ValidationKeys.GREATER_THAN_OR_EQUAL),
-    { ...options, async: false } as ValidationMetadata
+    { ...gteOptions, async: false } as ValidationMetadata
   );
 }
