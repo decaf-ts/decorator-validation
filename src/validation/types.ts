@@ -175,12 +175,12 @@ export interface URLValidatorOptions extends ValidatorOptions {
  * @description Type validation options interface
  * @summary Defines options for type validation, specifying allowed types
  * @interface TypeValidatorOptions
- * @property {(string|string[]|{ name: string })} types - Specifies the allowed data types
+ * @property {(string|string[]|{ name: string })} type - Specifies the allowed data types
  * @memberOf module:decorator-validation
  * @category Validation
  */
 export interface TypeValidatorOptions extends ValidatorOptions {
-  types: string | string[] | { name: string };
+  type: string | string[] | { name: string };
   customTypes?: (string | (() => string))[];
 }
 
@@ -298,26 +298,33 @@ export interface DateValidatorOptions extends ValidatorOptions {
   [ValidationKeys.FORMAT]?: string;
 }
 
-export interface EqualsValidatorOptions extends ValidatorOptions {
+export interface ComparisonValidatorOptions extends ValidatorOptions {
+  label?: string;
+}
+
+export interface EqualsValidatorOptions extends ComparisonValidatorOptions {
   [ValidationKeys.EQUALS]: string;
 }
 
-export interface DiffValidatorOptions extends ValidatorOptions {
+export interface DiffValidatorOptions extends ComparisonValidatorOptions {
   [ValidationKeys.DIFF]: string;
 }
 
-export interface LessThanValidatorOptions extends ValidatorOptions {
+export interface LessThanValidatorOptions extends ComparisonValidatorOptions {
   [ValidationKeys.LESS_THAN]: string;
 }
 
-export interface LessThanOrEqualValidatorOptions extends ValidatorOptions {
+export interface LessThanOrEqualValidatorOptions
+  extends ComparisonValidatorOptions {
   [ValidationKeys.LESS_THAN_OR_EQUAL]: string;
 }
 
-export interface GreaterThanValidatorOptions extends ValidatorOptions {
+export interface GreaterThanValidatorOptions
+  extends ComparisonValidatorOptions {
   [ValidationKeys.GREATER_THAN]: string;
 }
 
-export interface GreaterThanOrEqualValidatorOptions extends ValidatorOptions {
+export interface GreaterThanOrEqualValidatorOptions
+  extends ComparisonValidatorOptions {
   [ValidationKeys.GREATER_THAN_OR_EQUAL]: string;
 }

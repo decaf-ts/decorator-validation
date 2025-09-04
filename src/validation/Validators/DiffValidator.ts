@@ -50,7 +50,7 @@ export class DiffValidator extends Validator<DiffValidatorOptions> {
     return isEqual(value, comparisonPropertyValue)
       ? this.getMessage(
           options.message || this.message,
-          options[ValidationKeys.DIFF]
+          options.label || options[ValidationKeys.DIFF]
         )
       : undefined;
   }

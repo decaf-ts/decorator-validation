@@ -51,7 +51,10 @@ export class LessThanValidator extends Validator<LessThanValidatorOptions> {
       if (!isLessThan(value, comparisonPropertyValue))
         throw new Error(options.message || this.message);
     } catch (e: any) {
-      return this.getMessage(e.message, options[ValidationKeys.LESS_THAN]);
+      return this.getMessage(
+        e.message,
+        options.label || options[ValidationKeys.LESS_THAN]
+      );
     }
 
     return undefined;

@@ -51,7 +51,10 @@ export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions>
       if (!isGreaterThan(value, comparisonPropertyValue))
         throw new Error(options.message || this.message);
     } catch (e: any) {
-      return this.getMessage(e.message, options[ValidationKeys.GREATER_THAN]);
+      return this.getMessage(
+        e.message,
+        options.label || options[ValidationKeys.GREATER_THAN]
+      );
     }
 
     return undefined;

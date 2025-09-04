@@ -95,9 +95,9 @@ export class TypeValidator extends Validator<TypeValidatorOptions> {
   ): string | undefined {
     if (value === undefined) return; // Don't try and enforce type if undefined
 
-    const { types, message, customTypes } = options;
+    const { type, message, customTypes } = options;
 
-    let ts = customTypes || types;
+    let ts = customTypes || type;
     ts = (Array.isArray(ts) ? ts : [ts]).map((t) => {
       if (typeof t === "string") return t;
       if (typeof t === "function" && !t.name) t = (t as () => string)();
