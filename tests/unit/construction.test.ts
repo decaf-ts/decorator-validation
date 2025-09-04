@@ -8,6 +8,7 @@ import {
   ModelErrorDefinition,
   required,
   ValidationKeys,
+  prop,
 } from "../../src";
 
 @model()
@@ -53,6 +54,22 @@ class TestModelWithList extends Model {
   }
 }
 
+@model()
+class ModelWithDefaultValues extends Model {
+  @required()
+  prop1!: string;
+
+  @required()
+  prop2: string = "default";
+
+  @prop()
+  prop3: string = "default2";
+
+  constructor(arg?: ModelArg<ModelWithDefaultValues>) {
+    super(arg);
+  }
+}
+
 describe("Construction", () => {
   it("auto constructs when configured", () => {
     Model.setBuilder(Model.fromObject);
@@ -74,14 +91,15 @@ describe("Construction", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);
       const errors = model.hasErrors();
-      expect(errors).toBeUndefined();
-      // expect(errors).toEqual(
-      //   new ModelErrorDefinition({
-      //     child: {
-      //       [ValidationKeys.TYPE]: "Model should be validatable but it's not.",
-      //     },
-      //   })
-      // );
+      // expect(errors).toBeUndefined();
+      expect(errors).toEqual(
+        new ModelErrorDefinition({
+          child: {
+            [ValidationKeys.TYPE]:
+              "Invalid type. Expected ConstructionTestModel, received object",
+          },
+        })
+      );
       Model.setBuilder();
     });
 
@@ -153,6 +171,16 @@ describe("Construction", () => {
         expect(mock).toHaveBeenCalledTimes(1);
         expect(mock).toHaveReturnedWith(undefined);
       });
+    });
+  });
+
+  describe("Construction with default values", () => {
+    it("Builds models respecting default values", () => {
+      const m = new ModelWithDefaultValues({
+        prop1: "test",
+      });
+
+      expect(m.hasErrors()).toBeUndefined();
     });
   });
 });

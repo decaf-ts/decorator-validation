@@ -87,7 +87,10 @@ export function required(message: string = DEFAULT_ERROR_MESSAGES.REQUIRED) {
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<ValidatorOptions>(required, key, meta))
+    .define({
+      decorator: validationMetadata<ValidatorOptions>,
+      args: [required, key, meta],
+    })
     .apply();
 }
 
@@ -128,7 +131,10 @@ export function min(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MinValidatorOptions>(min, key, meta))
+    .define({
+      decorator: validationMetadata<MinValidatorOptions>,
+      args: [min, key, meta],
+    })
     .apply();
 }
 
@@ -155,7 +161,10 @@ export function max(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MaxValidatorOptions>(max, key, meta))
+    .define({
+      decorator: validationMetadata<MaxValidatorOptions>,
+      args: [max, key, meta],
+    })
     .apply();
 }
 
@@ -182,7 +191,10 @@ export function step(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<StepValidatorOptions>(step, key, meta))
+    .define({
+      decorator: validationMetadata<StepValidatorOptions>,
+      args: [step, key, meta],
+    })
     .apply();
 }
 
@@ -208,11 +220,12 @@ export function minlength(
     description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
     async: false,
   };
-  return validationMetadata(minlength, key, meta);
-  //
-  // Decoration.for(key)
-  //   .define(validationMetadata<MinLengthValidatorOptions>(minlength, key, meta))
-  //   .apply();
+  return Decoration.for(key)
+    .define({
+      decorator: validationMetadata<MinLengthValidatorOptions>,
+      args: [minlength, key, meta],
+    })
+    .apply();
 }
 
 /**
@@ -238,7 +251,10 @@ export function maxlength(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<MaxLengthValidatorOptions>(maxlength, key, meta))
+    .define({
+      decorator: validationMetadata<MaxLengthValidatorOptions>,
+      args: [maxlength, key, meta],
+    })
     .apply();
 }
 
@@ -266,7 +282,10 @@ export function pattern(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<PatternValidatorOptions>(pattern, key, meta))
+    .define({
+      decorator: validationMetadata<PatternValidatorOptions>,
+      args: [pattern, key, meta],
+    })
     .apply();
 }
 
@@ -289,7 +308,10 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<PatternValidatorOptions>(email, key, meta))
+    .define({
+      decorator: validationMetadata<PatternValidatorOptions>,
+      args: [email, key, meta],
+    })
     .apply();
 }
 
@@ -312,12 +334,15 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<PatternValidatorOptions>(url, key, meta))
+    .define({
+      decorator: validationMetadata<PatternValidatorOptions>,
+      args: [url, key, meta],
+    })
     .apply();
 }
 
 export interface TypeMetadata extends ValidatorOptions {
-  customTypes: string[] | string;
+  customTypes: (string | (() => string))[] | string | (() => string);
 }
 
 /**
@@ -331,7 +356,7 @@ export interface TypeMetadata extends ValidatorOptions {
  * @category Property Decorators
  */
 export function type(
-  types: string[] | string,
+  types: (string | (() => string))[] | string | (() => string),
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
   const key = Validation.key(ValidationKeys.TYPE);
@@ -342,7 +367,10 @@ export function type(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata<TypeMetadata>(type, key, meta))
+    .define({
+      decorator: validationMetadata<TypeMetadata>,
+      args: [type, key, meta],
+    })
     .apply();
 }
 
@@ -375,11 +403,8 @@ export function date(
     description: `defines the attribute as a date with the format ${format}`,
     async: false,
   };
-  const dateDec = (target: Record<string, any>, propertyKey?: any): any => {
-    validationMetadata(date, key, meta)(target, propertyKey);
-
+  function dateDec(target: Record<string, any>, propertyKey?: any): any {
     const values = new WeakMap();
-
     Object.defineProperty(target, propertyKey, {
       configurable: false,
       set(this: any, newValue: string | Date) {
@@ -402,10 +427,11 @@ export function date(
         this[propertyKey] = newValue;
       },
       get() {
-        console.log("here");
+        return values.get(this);
       },
     });
-  };
+    return validationMetadata(date, key, meta)(target, propertyKey);
+  }
   return Decoration.for(key).define(dateDec).apply();
 }
 
@@ -433,7 +459,10 @@ export function password(
     async: false,
   };
   return Decoration.for(key)
-    .define(validationMetadata(password, key, meta))
+    .define({
+      decorator: validationMetadata,
+      args: [password, key, meta],
+    })
     .apply();
 }
 
@@ -454,20 +483,31 @@ export interface ListMetadata extends ListValidatorOptions {
  * @category Property Decorators
  */
 export function list(
-  clazz: Constructor<any> | Constructor<any>[],
+  clazz:
+    | Constructor<any>
+    | (() => Constructor<any>)
+    | (Constructor<any> | (() => Constructor<any>))[],
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
   const key = Validation.key(ValidationKeys.LIST);
   const meta: ListMetadata = {
-    clazz: Array.isArray(clazz) ? clazz.map((c) => c.name) : [clazz.name],
+    clazz: (Array.isArray(clazz)
+      ? clazz.map((c) => (c.name ? c.name : c))
+      : [clazz.name ? clazz.name : clazz]) as (
+      | string
+      | (() => Constructor<any>)
+    )[],
     type: collection,
     message: message,
     async: false,
     description: `defines the attribute as a ${collection} of ${(clazz as ModelConstructor<any>).name}`,
   };
   return Decoration.for(key)
-    .define(validationMetadata(list, key, meta))
+    .define({
+      decorator: validationMetadata,
+      args: [list, key, meta],
+    })
     .apply();
 }
 

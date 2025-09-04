@@ -181,6 +181,7 @@ export interface URLValidatorOptions extends ValidatorOptions {
  */
 export interface TypeValidatorOptions extends ValidatorOptions {
   types: string | string[] | { name: string };
+  customTypes?: (string | (() => string))[];
 }
 
 /**
@@ -270,7 +271,7 @@ export interface MaxLengthValidatorOptions extends ValidatorOptions {
  * @category Validation
  */
 export interface ListValidatorOptions extends ValidatorOptions {
-  clazz: string[];
+  clazz: (string | (() => Constructor<any>))[];
 }
 
 /**

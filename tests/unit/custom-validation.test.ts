@@ -1,14 +1,15 @@
 import "reflect-metadata";
 import {
   Model,
+  model,
   ModelArg,
+  ModelErrorDefinition,
   propMetadata,
   Validation,
   ValidationMetadata,
   Validator,
   validator,
   ValidatorOptions,
-  ModelErrorDefinition,
 } from "../../src";
 
 function generateGtin() {
@@ -53,7 +54,7 @@ const CUSTOM_VALIDATION_ERROR_MESSAGE = "Not a valid Gtin";
 @validator(CUSTOM_VALIDATION_KEY)
 class GtinValidator extends Validator {
   constructor(message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) {
-    super(message);
+    super(message, "string", "number");
   }
 
   hasErrors(
@@ -80,10 +81,12 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
     {
       message: message,
       types: ["string", "number"],
+      async: false,
     }
   );
 };
 
+@model()
 class TestModel extends Model {
   @gtin()
   customProp!: number | string;

@@ -2,6 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { ListValidatorOptions } from "../types";
+import { Constructor } from "../../model";
 
 /**
  * @description Validator for checking if elements in a list or set match expected types
@@ -75,9 +76,13 @@ export class ListValidator extends Validator<ListValidatorOptions> {
   ): string | undefined {
     if (!value || (Array.isArray(value) ? !value.length : !value.size)) return;
 
-    const clazz = Array.isArray(options.clazz)
-      ? options.clazz
-      : [options.clazz];
+    const clazz = (
+      Array.isArray(options.clazz) ? options.clazz : [options.clazz]
+    ).map((c) => {
+      if (typeof c === "string") return c;
+      if (!c.name) return (c as () => Constructor<any>)().name;
+      return c.name;
+    });
     let val: any,
       isValid = true;
     for (

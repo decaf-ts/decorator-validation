@@ -94,15 +94,20 @@ export class TypeValidator extends Validator<TypeValidatorOptions> {
     options: TypeValidatorOptions
   ): string | undefined {
     if (value === undefined) return; // Don't try and enforce type if undefined
-    const { types, message } = options;
-    if (!Reflection.evaluateDesignTypes(value, types))
+
+    const { types, message, customTypes } = options;
+
+    let ts = customTypes || types;
+    ts = (Array.isArray(ts) ? ts : [ts]).map((t) => {
+      if (typeof t === "string") return t;
+      if (typeof t === "function" && !t.name) t = (t as () => string)();
+      return (t as any).name || t;
+    });
+
+    if (!Reflection.evaluateDesignTypes(value, ts as any))
       return this.getMessage(
         message || this.message,
-        typeof types === "string"
-          ? types
-          : Array.isArray(types)
-            ? types.join(", ")
-            : types.name,
+        typeof ts === "string" ? ts : Array.isArray(ts) ? ts.join(", ") : ts,
         typeof value
       );
   }

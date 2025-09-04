@@ -84,6 +84,7 @@ const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
     propMetadata<ValidationMetadata>(Validation.key(CUSTOM_VALIDATION_KEY), {
       message: message,
       types: [String.name, Number.name],
+      async: false,
     })
   );
 };
