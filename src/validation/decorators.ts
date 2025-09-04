@@ -545,7 +545,7 @@ export function set(
  */
 export function eq(
   propertyToCompare: string,
-  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  options?: Omit<ComparisonValidatorOptions, "async" | "description">
   // message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
   const equalsOptions: EqualsValidatorOptions = {
@@ -578,7 +578,7 @@ export function eq(
  */
 export function diff(
   propertyToCompare: string,
-  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
   const diffOptions: DiffValidatorOptions = {
     label: options?.label || propertyToCompare,
@@ -613,7 +613,7 @@ export function diff(
  */
 export function lt(
   propertyToCompare: string,
-  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
   const ltOptions: LessThanValidatorOptions = {
     label: options?.label || propertyToCompare,
@@ -645,7 +645,7 @@ export function lt(
  */
 export function lte(
   propertyToCompare: string,
-  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
   const lteOptions: LessThanOrEqualValidatorOptions = {
     label: options?.label || propertyToCompare,
@@ -677,7 +677,7 @@ export function lte(
  */
 export function gt(
   propertyToCompare: string,
-  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
   const gtOptions: GreaterThanValidatorOptions = {
     label: options?.label || propertyToCompare,
@@ -709,7 +709,7 @@ export function gt(
  */
 export function gte(
   propertyToCompare: string,
-  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
   const gteOptions: GreaterThanOrEqualValidatorOptions = {
     label: options?.label || propertyToCompare,
