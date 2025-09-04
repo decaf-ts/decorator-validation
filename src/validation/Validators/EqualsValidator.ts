@@ -51,7 +51,7 @@ export class EqualsValidator extends Validator<EqualsValidatorOptions> {
       ? undefined
       : this.getMessage(
           options.message || this.message,
-          options[ValidationKeys.EQUALS]
+          options.label || options[ValidationKeys.EQUALS]
         );
   }
 }

@@ -60,7 +60,7 @@ export class LessThanOrEqualValidator extends Validator<LessThanOrEqualValidator
     } catch (e: any) {
       return this.getMessage(
         e.message,
-        options[ValidationKeys.LESS_THAN_OR_EQUAL]
+        options.label || options[ValidationKeys.LESS_THAN_OR_EQUAL]
       );
     }
   }

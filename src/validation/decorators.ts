@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import {
+  ComparisonValidatorOptions,
   DateValidatorOptions,
   DiffValidatorOptions,
   EqualsValidatorOptions,
@@ -493,7 +494,9 @@ export function set(
  * @description Applies the {@link ValidationKeys.EQUALS} validator to ensure the decorated value matches the value of the given property.
  *
  * @param {string} propertyToCompare - The name of the property to compare equality against.
- * @param {string} [message=DEFAULT_ERROR_MESSAGES.EQUALS] - Custom error message to return if validation fails.
+ * @param {ComparisonValidatorOptions} options - Options for the validator.
+ * @param {string} [options.label] - The label text displayed in the error message.
+ * @param {string} [options.message=DEFAULT_ERROR_MESSAGES.EQUALS] - Custom error message to be returned if validation fails.
  *
  * @returns {PropertyDecorator} A property decorator used to register the equality validation metadata.
  *
@@ -502,10 +505,12 @@ export function set(
  */
 export function eq(
   propertyToCompare: string,
-  message: string = DEFAULT_ERROR_MESSAGES.EQUALS
+  options: Omit<ComparisonValidatorOptions, "async" | "description">
+  // message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
-  const options: EqualsValidatorOptions = {
-    message: message,
+  const equalsOptions: EqualsValidatorOptions = {
+    label: options?.label,
+    message: options?.message || DEFAULT_ERROR_MESSAGES.EQUALS,
     [ValidationKeys.EQUALS]: propertyToCompare,
     description: `defines attribute as equal to ${propertyToCompare}`,
   };
@@ -513,7 +518,7 @@ export function eq(
   return validationMetadata<ValidationMetadata>(
     eq,
     Validation.key(ValidationKeys.EQUALS),
-    { ...options, async: false } as ValidationMetadata
+    { ...equalsOptions, async: false } as ValidationMetadata
   );
 }
 

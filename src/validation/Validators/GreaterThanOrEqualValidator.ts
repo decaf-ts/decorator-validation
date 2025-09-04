@@ -60,7 +60,7 @@ export class GreaterThanOrEqualValidator extends Validator<GreaterThanOrEqualVal
     } catch (e: any) {
       return this.getMessage(
         e.message,
-        options[ValidationKeys.GREATER_THAN_OR_EQUAL]
+        options.label || options[ValidationKeys.GREATER_THAN_OR_EQUAL]
       );
     }
   }
