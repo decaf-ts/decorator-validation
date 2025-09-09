@@ -416,6 +416,10 @@ export abstract class Model<Async extends boolean = false>
       ) as string[];
 
       clazz.forEach((c) => {
+        if (typeof c === "function") {
+          if (c.name) c = c.name;
+          else c = c();
+        }
         if (reserved.indexOf(c.toLowerCase()) === -1)
           try {
             switch (c) {
