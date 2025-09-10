@@ -492,10 +492,10 @@ export function validate<
         typeof instance !== "object" ||
         typeof instance.hasErrors !== "function";
 
-      if (isInvalidModel) {
+      if (!isInvalidModel) {
         // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
-        console.warn("Model should be validatable but it's not.");
-      } else {
+        // console.warn("Model should be validatable but it's not.");
+        // } else {
         const Constr = (Array.isArray(designType) ? designType : [designType])
           .map((d) => {
             if (typeof d === "function" && !d.name) d = d();
