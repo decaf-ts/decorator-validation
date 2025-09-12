@@ -1,37 +1,42 @@
-### Description
+# Decorator Validation – Detailed Description
 
-The decorator-validation library is a comprehensive TypeScript implementation of a decorator-based validation system. It provides a robust framework for defining, validating, and managing model objects in TypeScript applications.
+Decorator Validation is a TypeScript library that centers on two complementary pillars:
 
-Meant to be easily extended, customized, and integrated with browser input validation mechanisms, this library offers a declarative approach to validation through TypeScript decorators.
+1) Declarative validation via decorators
+- A rich set of property decorators such as @required, @min, @max, @minLength, @maxLength, @pattern, @email, @url, @type, @equals, @greaterThan, @greaterThanOrEqual, @lessThan, @lessThanOrEqual, @step, @list, @diff, @date, @password, as well as an async() flag helper.
+- Each decorator writes strongly-typed metadata using reflect-metadata and a common Validation metadata keying convention, so validators can later interpret the rules consistently.
+- Decorators are defined in src/validation/decorators.ts and are backed by concrete Validator classes in src/validation/Validators/* that implement the actual validation logic.
 
-#### Core Components
+2) A model system tailored for validation, building, hashing, and serialization
+- Models are ordinary classes marked with @model() (src/model/decorators.ts). The decorator replaces the constructor, binds the model prototype utilities, runs a global builder (if registered), and tags reflection metadata for identification.
+- Additional class-level decorators configure algorithms:
+  - @hashedBy(algorithm, ...args) to define model hashing implementation.
+  - @serializedBy(serializer, ...args) to define serialization strategy.
+  - @description(text) to attach human-readable documentation to a class, property, or method.
+- The Model class (src/model/Model.ts) provides:
+  - A ModelRegistryManager for registering and retrieving model constructors by name, enabling rebuild/deserialize flows.
+  - Validation integration (model/validation.ts) that runs the registered validators against metadata collected by decorators.
+  - Utility methods and metadata helpers to identify models, fetch metadata, compare instances, and orchestrate hashing/serialization strategies.
 
-##### Model System
-The library is built around the abstract `Model` class, which serves as the foundation for all model objects. The Model system provides:
+Core runtime architecture
+- Validation namespace (src/validation/Validation.ts):
+  - Manages a pluggable IValidatorRegistry so custom Validator implementations can be registered, migrated, and queried.
+  - Exposes helper utilities: Validation.key(key) for reflect-metadata keying, Validation.keys() to list available validator keys, register(...) and get(...) to manage validators, decorator registration to link a metadata key to its decorator for dynamic use.
+- Validator classes (src/validation/Validators/*):
+  - BaseValidator.ts defines common behaviors; concrete validators (RequiredValidator, MinValidator, PatternValidator, etc.) implement validate and message/typing logic.
+  - ValidatorRegistry.ts stores Validator instances keyed by ValidationKeys constants.
+  - constants.ts defines DEFAULT_ERROR_MESSAGES, DEFAULT_PATTERNS, and ValidationKeys (e.g., REQUIRED, MIN, MAX...).
+  - decorators.ts contains decorator sugar for directly registering standard validators and building metadata using Decoration/Reflection utilities.
+- Utilities (src/utils/*):
+  - strings, dates, types, serialization, hashing, registry, decorators, Decoration helper, and a PathProxy to traverse nested properties and apply metadata.
 
-- A registry mechanism for storing and retrieving model constructors
-- Serialization and deserialization capabilities
-- Hashing functionality for model objects
-- Equality comparison between model objects
-- Support for nested model instantiation and validation
+Intent of the library
+- Provide a cohesive, decorator-first developer experience for enforcing validation constraints on model classes.
+- Ensure that validation, model lifecycle (build/serialize/hash), and metadata are consistent and extensible through registries.
+- Allow advanced composition (custom validators, alternative registries), and integration into automation flows (MCP tools).
 
-##### Validation Framework
-The validation framework offers a rich set of decorators for validating model properties:
-
-- **Basic Validation**: `required()`, `min()`, `max()`, `step()`, `minlength()`, `maxlength()`, `pattern()`
-- **Type-Specific Validation**: `email()`, `url()`, `type()`, `date()`, `password()`, `list()`, `set()`
-- **Comparison Validation**: `eq()`, `diff()`, `lt()`, `lte()`, `gt()`, `gte()` for comparing properties
-
-##### Key Features
-- **Decorator-based validation API** with recursive validation for nested models
-- **Customizable Model building factories** enabling nested instantiation
-- **Model serialization/deserialization** with configurable serializers
-- **Model Hashing** with configurable algorithms
-- **Model Equality** comparison with support for excluding properties
-- **Easily extended custom validation** through the decorator system
-- **Java-like date handling** (format and serialization)
-- **Configurable error messages** for all validation rules
-- **Comparative validation** between attributes, supporting various comparison operators
-- **Type safety** through TypeScript's static typing system
-
-The library is designed with extensibility in mind, allowing developers to create custom validators and decorators to meet specific application requirements. It integrates seamlessly with TypeScript's type system to provide compile-time type checking alongside runtime validation.
+Design principles
+- Declarative over imperative: Constraints live next to the properties they validate.
+- Extensibility: Registries and helper factories allow swapping implementations without changing consumer code.
+- Type safety: Metadata and decorators are typed; validators advertise supported types; utility functions use narrow types where practical.
+- Separation of concerns: Decorators express intent; Validator classes implement behavior; Model provides lifecycle utilities.

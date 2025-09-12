@@ -1,4 +1,8 @@
-![Banner](./workdocs/assets/Banner.png)
-## Simple Decorator based Model Validation Engine
+# Decorator Validation
 
-A comprehensive TypeScript library that provides a powerful model validation framework using decorators. It enables type-safe, declarative validation for your TypeScript models with features for serialization, comparison, and hashing. The library offers a rich set of validation decorators for various data types and constraints, making it easy to define and enforce validation rules on your model properties.
+A TypeScript decorator-driven validation and model framework. It lets you:
+- Define validation rules with declarative decorators on model properties (e.g., @required, @min, @pattern).
+- Build, validate, serialize, and hash models with pluggable registries and algorithms.
+- Extend validation via a registry of Validator classes and utilities.
+- Optionally expose validation as MCP tools for automation workflows.
+
