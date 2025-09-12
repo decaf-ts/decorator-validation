@@ -1,18 +1,25 @@
 import { ModelKeys } from "../../utils/constants";
 
 /**
- * @summary Keys used for comparison-based validations.
- *
- * @property {string} EQUALS - Validates if two values are equal.
- * @property {string} DIFF - Validates if two values are different.
- * @property {string} LESS_THAN - Validates if a value is less than another.
- * @property {string} LESS_THAN_OR_EQUAL - Validates if a value is less than or equal to another.
- * @property {string} GREATER_THAN - Validates if a value is greater than another.
- * @property {string} GREATER_THAN_OR_EQUAL - Validates if a value is greater than or equal to another.
- *
- * @constant ComparisonValidationKeys
- * @memberof module:decorator-validation.Validation
+ * @description Object-like set of keys used for comparison-based validations.
+ * @summary Provides canonical names for validators that compare two values (equality and ordering checks).
+ * @typedef {Object} ComparisonValidationKeysDef
+ * @property {"equals"} EQUALS Validates if two values are equal.
+ * @property {"different"} DIFF Validates if two values are different.
+ * @property {"lessThan"} LESS_THAN Validates if a value is less than another.
+ * @property {"lessThanOrEqual"} LESS_THAN_OR_EQUAL Validates if a value is less than or equal to another.
+ * @property {"greaterThan"} GREATER_THAN Validates if a value is greater than another.
+ * @property {"greaterThanOrEqual"} GREATER_THAN_OR_EQUAL Validates if a value is greater than or equal to another.
+ * @memberOf module:decorator-validation.Validation
+ */
+
+/**
+ * @description Keys used for comparison-based validations.
+ * @summary Canonical key names for comparison validators.
+ * @const ComparisonValidationKeys
+ * @memberOf module:decorator-validation.Validation
  * @category Validation
+ * @type {ComparisonValidationKeysDef}
  */
 export const ComparisonValidationKeys = {
   EQUALS: "equals",
@@ -24,26 +31,35 @@ export const ComparisonValidationKeys = {
 } as const;
 
 /**
- * @summary The keys used for validation
- *
- * @property {string} REFLECT prefixes others
- * @property {string} REQUIRED sets as required
- * @property {string} MIN defines min value
- * @property {string} MAX defines max value
- * @property {string} STEP defines step
- * @property {string} MIN_LENGTH defines min length
- * @property {string} MAX_LENGTH defines max length
- * @property {string} PATTERN defines pattern
- * @property {string} EMAIL defines email
- * @property {string} URL defines url
- * @property {string} DATE defines date
- * @property {string} TYPE defines type
- * @property {string} PASSWORD defines password
- * @property {string} LIST defines list
- *
- * @constant ValidationKeys
+ * @description Object-like set of keys used across all validators in the system.
+ * @summary Defines the canonical namespaced key prefix and the individual validation flags for rules such as required, min/max, length, patterns, types, lists and more.
+ * @typedef {Object} ValidationKeysDef
+ * @property {string} REFLECT prefixes others (namespace prefix)
+ * @property {"required"} REQUIRED sets as required
+ * @property {"min"} MIN defines min value
+ * @property {"max"} MAX defines max value
+ * @property {"step"} STEP defines step
+ * @property {"minlength"} MIN_LENGTH defines min length
+ * @property {"maxlength"} MAX_LENGTH defines max length
+ * @property {"pattern"} PATTERN defines pattern
+ * @property {"email"} EMAIL defines email
+ * @property {"url"} URL defines url
+ * @property {"date"} DATE defines date
+ * @property {"type"} TYPE defines type
+ * @property {"password"} PASSWORD defines password
+ * @property {"list"} LIST defines list
+ * @property {"unique"} UNIQUE flags uniqueness
+ * @property {"validator"} VALIDATOR custom validator id
+ * @memberOf module:decorator-validation.Validation
+ */
+
+/**
+ * @description The keys used for validation.
+ * @summary A namespaced collection of validation key strings used throughout the library.
+ * @const ValidationKeys
  * @memberOf module:decorator-validation.Validation
  * @category Validation
+ * @type {ValidationKeysDef}
  */
 export const ValidationKeys = {
   REFLECT: `${ModelKeys.REFLECT}validation.`,
@@ -67,10 +83,9 @@ export const ValidationKeys = {
 } as const;
 
 /**
- * @summary list of month names
- * @description Stores month names. Can be changed for localization purposes
- *
- * @constant MONTH_NAMES
+ * @description list of month names
+ * @summary Stores month names. Can be changed for localization purposes
+ * @const MONTH_NAMES
  * @memberOf module:decorator-validation.Validation
  * @category Validation
  */
@@ -90,10 +105,9 @@ export const MONTH_NAMES = [
 ];
 
 /**
- * @summary list of names of days of the week
- * @description Stores names for days of the week. Can be changed for localization purposes
- *
- * @constant DAYS_OF_WEEK_NAMES
+ * @description list of names of days of the week
+ * @summary Stores names for days of the week. Can be changed for localization purposes
+ * @const DAYS_OF_WEEK_NAMES
  * @memberOf module:decorator-validation.Validation
  * @category Validation
  */
@@ -108,8 +122,9 @@ export const DAYS_OF_WEEK_NAMES = [
 ];
 
 /**
- * @summary Defines the default error messages
- *
+ * @description Type definition for default error message strings keyed by validation type.
+ * @summary Enumerates the supported error message keys with their intended meaning; used to localize or override default messages.
+ * @typedef {Object} DefaultErrorMessages
  * @property {string} REQUIRED default error message
  * @property {string} MIN default error message
  * @property {string} MAX default error message
@@ -126,10 +141,16 @@ export const DAYS_OF_WEEK_NAMES = [
  * @property {string} LIST default error message
  * @property {string} LIST_INSIDE default error message
  * @property {string} MODEL_NOT_FOUND default error message
- *
- * @constant DEFAULT_ERROR_MESSAGES
+ * @memberOf module:decorator-validation.Validation
+ */
+
+/**
+ * @description Defines the default error messages
+ * @summary Mapping between validation keys and their default human-readable error messages.
+ * @const DEFAULT_ERROR_MESSAGES
  * @memberOf module:decorator-validation.Validation
  * @category Validation
+ * @type {DefaultErrorMessages}
  */
 export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   REQUIRED: "This field is required",
@@ -159,11 +180,23 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
 };
 
 /**
- * @summary Defines the various default regexp patterns used
- *
- * @enum DEFAULT_PATTERNS
+ * @description Type definition for default regular expression patterns used in validation.
+ * @summary Captures common regex patterns for email, URL, and password policies, including nested grouping for password-related rules.
+ * @typedef {Object} DefaultPatterns
+ * @property {RegExp} EMAIL Email address validation pattern
+ * @property {RegExp} URL URL validation pattern
+ * @property {Object} PASSWORD Password-related regex patterns
+ * @property {RegExp} PASSWORD.CHAR8_ONE_OF_EACH At least 8 chars with lower, upper, number, and special char
+ * @memberOf module:decorator-validation.Validation
+ */
+
+/**
+ * @description Defines the various default regexp patterns used
+ * @summary Collection of frequently used validation patterns grouped under semantic keys.
+ * @const DEFAULT_PATTERNS
  * @memberOf module:decorator-validation.Validation
  * @category Validation
+ * @type {DefaultPatterns}
  */
 export const DEFAULT_PATTERNS = {
   EMAIL:

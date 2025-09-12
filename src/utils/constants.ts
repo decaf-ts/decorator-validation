@@ -15,8 +15,8 @@
  * @property {string} HASHING - Key for storing hashing configuration
  * @property {string} SERIALIZATION - Key for storing serialization configuration
  *
- * @readonly
  * @enum {string}
+ * @readonly
  * @memberOf module:decorator-validation
  * @category Model
  */
