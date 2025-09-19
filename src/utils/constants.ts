@@ -1,13 +1,11 @@
+import { DecorationKeys } from "@decaf-ts/decoration";
 /**
  * @description Enum containing metadata keys used for reflection in the model system
  * @summary Defines the various Model keys used for reflection and metadata storage.
  * These keys are used throughout the library to store and retrieve metadata about models,
  * their properties, and their behavior.
  *
- * @property {string} REFLECT - Prefix to all other keys, used as a namespace
  * @property {string} TYPE - Key for storing design type information
- * @property {string} PARAMS - Key for storing method parameter types
- * @property {string} RETURN - Key for storing method return type
  * @property {string} MODEL - Key for identifying model metadata
  * @property {string} ANCHOR - Anchor key that serves as a ghost property in the model
  * @property {string} CONSTRUCTION - Key for storing construction information
@@ -21,11 +19,7 @@
  * @category Model
  */
 export enum ModelKeys {
-  REFLECT = "decaf.model.",
-  DESCRIPTION = "decaf.description.",
-  TYPE = "design:type",
-  PARAMS = "design:paramtypes",
-  RETURN = "design:returntype",
+  TYPE = DecorationKeys.DESIGN_TYPE, //"design:type",
   MODEL = "model",
   ANCHOR = "__model",
   CONSTRUCTION = "constructed-by",
