@@ -33,14 +33,3 @@ export enum ModelKeys {
   HASHING = "hashing",
   SERIALIZATION = "serialization",
 }
-
-/**
- * @description Default flavour identifier for the decorator system
- * @summary Defines the default flavour used by the Decoration class when no specific flavour is provided.
- * This constant is used throughout the library as the fallback flavour for decorators.
- *
- * @const {string}
- * @memberOf module:decorator-validation
- * @category Model
- */
-export const DefaultFlavour = "decaf";

@@ -28,7 +28,7 @@ import { Constructor, ModelConstructor } from "../model/types";
 import { parseDate } from "../utils/dates";
 import { propMetadata } from "../utils/decorators";
 import { Validation } from "./Validation";
-import { Decoration } from "../utils/Decoration";
+import { Decoration } from "@decaf-ts/decoration";
 import { apply } from "@decaf-ts/reflection";
 import { ASYNC_META_KEY } from "../constants";
 

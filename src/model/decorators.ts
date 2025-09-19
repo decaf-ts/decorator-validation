@@ -2,7 +2,7 @@ import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { metadata } from "@decaf-ts/reflection";
-import { Decoration } from "../utils";
+import { Decoration } from "@decaf-ts/decoration";
 
 export function modelBaseDecorator(original: any) {
   // the new constructor behaviour
