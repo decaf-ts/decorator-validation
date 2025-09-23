@@ -1,9 +1,9 @@
 import { DEFAULT_ERROR_MESSAGES } from "./constants";
 import { sf } from "../../utils/strings";
-import { Reflection } from "@decaf-ts/reflection";
 import { ValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
 import type { ConditionalAsync } from "../../types";
+import { checkTypes } from "./utils";
 
 /**
  * @description Abstract base class for all validators in the validation framework.
@@ -133,7 +133,7 @@ export abstract class BaseValidator<
     ) {
       if (value === undefined || !this.acceptedTypes)
         return unbound(value, options, proxy, ...args);
-      if (!Reflection.checkTypes(value, this.acceptedTypes))
+      if (!checkTypes(value, this.acceptedTypes))
         return this.getMessage(
           DEFAULT_ERROR_MESSAGES.TYPE,
           this.acceptedTypes.join(", "),
