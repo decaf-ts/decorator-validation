@@ -1,5 +1,4 @@
-import { DecoratorMetadata } from "@decaf-ts/reflection";
-import { Constructor } from "../model";
+import { Constructor } from "@decaf-ts/decoration";
 import { ValidationKeys, Validator } from "./Validators";
 import { IRegistry } from "../utils";
 
@@ -55,7 +54,7 @@ export type ValidationPropertyDecoratorDefinition = {
  * @memberOf module:decorator-validation
  * @category Validation
  */
-export type ValidationDecoratorDefinition = DecoratorMetadata & {
+export type ValidationDecoratorDefinition = {
   props: ValidationElementDefinition;
   async?: boolean;
 };
@@ -71,7 +70,6 @@ export type ValidationElementDefinition = {
   value?: string | number;
   message: string;
   description: string;
-  types?: string[];
 };
 
 /**

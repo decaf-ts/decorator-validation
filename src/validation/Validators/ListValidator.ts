@@ -2,7 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { ListValidatorOptions } from "../types";
-import { Constructor } from "../../model";
+import { Constructor } from "@decaf-ts/decoration";
 
 /**
  * @description Validator for checking if elements in a list or set match expected types

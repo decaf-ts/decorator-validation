@@ -1,5 +1,3 @@
-import { ModelKeys } from "../../utils/constants";
-
 /**
  * @description Object-like set of keys used for comparison-based validations.
  * @summary Provides canonical names for validators that compare two values (equality and ordering checks).
@@ -62,7 +60,7 @@ export const ComparisonValidationKeys = {
  * @type {ValidationKeysDef}
  */
 export const ValidationKeys = {
-  REFLECT: `${ModelKeys.REFLECT}validation.`,
+  REFLECT: `validation`,
   DATE: "date",
   EMAIL: "email",
   FORMAT: "format",

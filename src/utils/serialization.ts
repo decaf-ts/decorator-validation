@@ -1,4 +1,4 @@
-import { Constructor } from "../model/types";
+import { Constructor } from "@decaf-ts/decoration";
 import { Serializer } from "./types";
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
