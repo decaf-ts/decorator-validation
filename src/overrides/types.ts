@@ -1,5 +1,5 @@
 import { BasicMetadata } from "@decaf-ts/decoration";
 
-export type ValidationMetadata<M> = BasicMetadata<M> & {
-  validations: any;
+export type ExtendedMetadata<M> = BasicMetadata<M> & {
+  validations: Record<keyof M, Record<string, any>>;
 };

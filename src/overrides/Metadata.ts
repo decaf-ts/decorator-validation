@@ -1,13 +1,13 @@
-import { Model } from "../model/index";
-import { BasicMetadata, Constructor } from "@decaf-ts/decoration";
-import { ValidationMetadata } from "./types";
+import { Model } from "../model/Model";
+import { Constructor } from "@decaf-ts/decoration";
+import { ExtendedMetadata } from "./types";
 
 declare module "@decaf-ts/decoration" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Metadata {
     function validations<M extends Model>(
       model: Constructor<M>,
-      property: string
+      property: keyof M
     ): any;
 
     /**
@@ -19,7 +19,7 @@ declare module "@decaf-ts/decoration" {
      * @return {META|undefined} The metadata object, the value at the key path, or undefined if nothing exists
      */
     // @ts-expect-error override magic
-    function get<M, META extends ValidationMetadata<M> = ValidationMetadata<M>>(
+    function get<M, META extends ExtendedMetadata<M> = ExtendedMetadata<M>>(
       model: Constructor<M>
     ): META | undefined;
   }

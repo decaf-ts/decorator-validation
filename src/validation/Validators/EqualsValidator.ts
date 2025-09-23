@@ -2,7 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { EqualsValidatorOptions } from "../types";
-import { isEqual } from "@decaf-ts/reflection";
+import { isEqual } from "../../utils/equality";
 import type { PathProxy } from "../../utils";
 
 /**

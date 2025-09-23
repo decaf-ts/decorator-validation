@@ -1,6 +1,6 @@
 export * from "./constants";
 export * from "./dates";
-export * from "./decorators";
+export * from "./equality";
 export * from "./hashing";
 export * from "./PathProxy";
 export * from "./registry";

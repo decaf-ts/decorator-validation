@@ -19,6 +19,7 @@ import { DecorationKeys } from "@decaf-ts/decoration";
  * @category Model
  */
 export enum ModelKeys {
+  DESCRIPTION = DecorationKeys.DESCRIPTION,
   TYPE = DecorationKeys.DESIGN_TYPE,
   MODEL = "model",
   ANCHOR = "__model",
@@ -26,4 +27,5 @@ export enum ModelKeys {
   ATTRIBUTE = "__attributes",
   HASHING = "hashing",
   SERIALIZATION = "serialization",
+  ORIGINAL_CLASS = "constructorName",
 }
