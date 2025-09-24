@@ -1,8 +1,7 @@
 import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
-import { metadata } from "@decaf-ts/reflection";
-import { Decoration } from "@decaf-ts/decoration";
+import { Decoration, metadata } from "@decaf-ts/decoration";
 
 export function modelBaseDecorator(original: any) {
   // the new constructor behaviour
@@ -22,7 +21,7 @@ export function modelBaseDecorator(original: any) {
     const builder = Model.getBuilder();
     if (builder) builder(instance, args.length ? args[0] : undefined);
 
-    metadata(Model.key(ModelKeys.MODEL), original.name)(instance.constructor);
+    metadata(ModelKeys.ORIGINAL_CLASS, original.name)(instance.constructor);
 
     return instance;
   };
@@ -30,7 +29,7 @@ export function modelBaseDecorator(original: any) {
   // copy prototype so instanceof operator still works
   newConstructor.prototype = original.prototype;
 
-  metadata(Model.key(ModelKeys.MODEL), original.name)(original);
+  metadata(ModelKeys.ORIGINAL_CLASS, original.name)(original);
 
   Reflect.getMetadataKeys(original).forEach((key) => {
     Reflect.defineMetadata(
@@ -82,7 +81,7 @@ export function modelBaseDecorator(original: any) {
  * @category Class Decorators
  */
 export function model() {
-  const key = Model.key(ModelKeys.MODEL);
+  const key = ModelKeys.MODEL;
   return Decoration.for(key).define(modelBaseDecorator).apply();
 }
 
@@ -101,7 +100,7 @@ export function model() {
  * @category Class Decorators
  */
 export function hashedBy(algorithm: string, ...args: any[]) {
-  return metadata(Model.key(ModelKeys.HASHING), {
+  return metadata(ModelKeys.HASHING, {
     algorithm: algorithm,
     args: args,
   });
@@ -117,7 +116,7 @@ export function hashedBy(algorithm: string, ...args: any[]) {
  * @category Class Decorators
  */
 export function serializedBy(serializer: string, ...args: any[]) {
-  return metadata(Model.key(ModelKeys.SERIALIZATION), {
+  return metadata(ModelKeys.SERIALIZATION, {
     serializer: serializer,
     args: args,
   });
@@ -133,5 +132,5 @@ export function serializedBy(serializer: string, ...args: any[]) {
  * @category Decorators
  */
 export function description(description: string) {
-  return metadata(Model.key(ModelKeys.DESCRIPTION), description);
+  return metadata(ModelKeys.DESCRIPTION, description);
 }

@@ -11,13 +11,13 @@ import {
   ModelErrorDefinition,
   password,
   pattern,
-  prop,
   required,
   step,
   type,
   url,
   ValidationKeys,
 } from "../../src";
+import { prop } from "@decaf-ts/decoration";
 
 @model()
 class InnerTestModel extends Model {

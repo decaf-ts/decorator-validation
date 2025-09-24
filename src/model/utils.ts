@@ -2,15 +2,9 @@ import { ModelKeys } from "../utils/constants";
 import { ConditionalAsync } from "../types";
 import { Model } from "./Model";
 
-export function getModelKey(str: string) {
-  return ModelKeys.REFLECT + str;
-}
-
 export function getMetadata<M extends Model>(model: M) {
-  const metadata = Reflect.getMetadata(
-    getModelKey(ModelKeys.MODEL),
-    model.constructor
-  );
+  //TODO
+  const metadata = Reflect.getMetadata(ModelKeys.MODEL, model.constructor);
   if (!metadata)
     throw new Error(
       "could not find metadata for provided " + model.constructor.name
