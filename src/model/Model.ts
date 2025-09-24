@@ -3,7 +3,6 @@ import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import {
   Comparable,
-  Constructor,
   Hashable,
   ModelArg,
   ModelBuilderFunction,
@@ -11,15 +10,17 @@ import {
   Serializable,
   Validatable,
 } from "./types";
-import { DecoratorMetadata, isEqual, Reflection } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
-import { getMetadata, getModelKey } from "./utils";
+import { getMetadata } from "./utils";
+
 import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
+import { Metadata, Constructor, DecorationKeys } from "@decaf-ts/decoration";
+import { isEqual } from "../utils/equality";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -139,7 +140,7 @@ export class ModelRegistryManager<M extends Model<true | false>>
   build(obj: Record<string, any> = {}, clazz?: string): M {
     if (!clazz && !this.testFunction(obj))
       throw new Error("Provided obj is not a Model object");
-    const name = clazz || Model.getMetadata(obj as any);
+    const name = clazz || getMetadata(obj as any);
     if (!(name in this.cache))
       throw new Error(
         `Provided class ${name} is not a registered Model object`
@@ -586,18 +587,6 @@ export abstract class Model<Async extends boolean = false>
   }
 
   /**
-   * @description Retrieves the model metadata from a model instance
-   * @summary Gets the metadata associated with a model instance, typically the model class name
-   *
-   * @template M
-   * @param {M} model - The model instance to get metadata from
-   * @return {string} - The model metadata (typically the class name)
-   */
-  static getMetadata<M extends Model>(model: M) {
-    return getMetadata<M>(model);
-  }
-
-  /**
    * @description Retrieves all attribute names from a model class or instance
    * @summary Gets all attributes defined in a model, traversing the prototype chain to include inherited attributes
    *
@@ -696,17 +685,6 @@ export abstract class Model<Async extends boolean = false>
   }
 
   /**
-   * @description Creates a metadata key for use with the Reflection API
-   * @summary Builds the key to store as Metadata under Reflections
-   *
-   * @param {string} str - The base key to concatenate with the model reflection prefix
-   * @return {string} - The complete metadata key
-   */
-  static key(str: string) {
-    return getModelKey(str);
-  }
-
-  /**
    * @description Determines if an object is a model instance or has model metadata
    * @summary Checks whether a given object is either an instance of the Model class or
    * has model metadata attached to it. This function is essential for serialization and
@@ -729,7 +707,7 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      return target instanceof Model || !!Model.getMetadata(target as any);
+      return target instanceof Model || !!getMetadata(target as any);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
       return false;
@@ -756,22 +734,10 @@ export abstract class Model<Async extends boolean = false>
     return Model.get(metadata.name) ? metadata.name : undefined;
   }
 
-  static describe<M extends Model>(model: M | Constructor<M>, key?: keyof M) {
-    const descKey = Model.key(ModelKeys.DESCRIPTION);
-    if (key) {
-      model = model instanceof Model ? model : new model();
-      return (
-        Reflect.getMetadataKeys(model.constructor, key.toString())
-          .find((k) => k === descKey)
-          ?.toString() || model.toString()
-      );
-    }
-
+  static describe<M extends Model>(model: Constructor<M>, key?: keyof M) {
     return (
-      Reflect.getMetadata(
-        Model.key(ModelKeys.DESCRIPTION),
-        model instanceof Model ? model.constructor : model
-      ) || model.toString()
+      (Metadata.get(model)?.description as any)[key || DecorationKeys.CLASS] ||
+      model.name
     );
   }
 }

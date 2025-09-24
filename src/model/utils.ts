@@ -1,10 +1,11 @@
 import { ModelKeys } from "../utils/constants";
 import { ConditionalAsync } from "../types";
 import { Model } from "./Model";
+import { Metadata, Constructor } from "@decaf-ts/decoration";
 
-export function getMetadata<M extends Model>(model: M) {
-  //TODO
-  const metadata = Reflect.getMetadata(ModelKeys.MODEL, model.constructor);
+// To be removed and utils/overrides/metadata to be used
+export function getMetadata<M extends Model>(model: Constructor<M>) {
+  const metadata = Metadata.get(model, ModelKeys.MODEL);
   if (!metadata)
     throw new Error(
       "could not find metadata for provided " + model.constructor.name
