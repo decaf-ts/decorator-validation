@@ -42,11 +42,14 @@ export class OptionValidator extends Validator<EnumValidatorOptions> {
       return !options.enum.includes(value)
         ? this.getMessage(options.message || this.message, options.enum)
         : undefined;
-    if (typeof options === "object") {
-      const keys = Object.keys(options);
+    if (typeof options.enum === "object") {
+      const keys = Object.keys(options.enum);
       for (const key of keys)
-        if ((options as any)[key] === value) return undefined;
-      return this.getMessage(options.message || this.message, options.enum);
+        if ((options.enum as any)[key] === value) return undefined;
+      return this.getMessage(
+        options.message || this.message,
+        Object.values(options.enum)
+      );
     }
   }
 }

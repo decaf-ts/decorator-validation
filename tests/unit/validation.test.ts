@@ -95,16 +95,16 @@ class ListModelTest extends Model {
 }
 
 enum OptionsEnum {
-  name = "john",
-  lastname = "Tsochos",
+  name = "John",
+  age = 15,
 }
 @model()
 class OptionModel extends Model {
   @option(["one", "two", "three"])
-  forArrayProp: string = "4";
+  againstArray: string = "4";
 
   @option(OptionsEnum)
-  forObjectProp!: OptionsEnum;
+  againstObject: any = 20;
 
   constructor(model?: ModelArg<OptionModel>) {
     super(model);
@@ -329,10 +329,7 @@ describe("Validation", function () {
     });
 
     it("validates enum", () => {
-      const myModel = new OptionModel({
-        forArrayProp: "4",
-        forObjectProp: "johnss",
-      });
+      const myModel = new OptionModel();
       console.log("myModel:", myModel);
 
       const errors = myModel.hasErrors();
@@ -342,9 +339,15 @@ describe("Validation", function () {
 
     it("enum validator", () => {
       const validator = new OptionValidator();
-      const errors = validator.hasErrors(4, { enum: ["4", "5"] });
-      console.log("errors:", errors);
-      expect(errors).toBeDefined();
+      const errorsEnumArray = validator.hasErrors(4, { enum: ["4", "5"] });
+      console.log("errors:", errorsEnumArray);
+
+      const errorsEnumObject = validator.hasErrors(4, {
+        enum: { name: "john", age: 15 },
+      });
+      console.log("errors:", errorsEnumObject);
+      expect(errorsEnumArray).toBeDefined();
+      expect(errorsEnumObject).toBeDefined();
     });
   });
 });
