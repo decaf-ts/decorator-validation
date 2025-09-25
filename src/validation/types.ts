@@ -326,3 +326,16 @@ export interface GreaterThanOrEqualValidatorOptions
   extends ComparisonValidatorOptions {
   [ValidationKeys.GREATER_THAN_OR_EQUAL]: string;
 }
+
+/**
+ * @description Enum validation options interface
+ * @summary Defines options for enum validation
+ * @interface EnumValidatorOptions
+ * @property {any[] | Record<any, any>} [ValidationKeys.ENUM] - List of values or a record
+ * @memberOf module:decorator-validation
+ * @category Validation
+ */
+export interface EnumValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.ENUM]: any[] | Record<any, any>;
+  types?: string[];
+}

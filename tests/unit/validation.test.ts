@@ -16,6 +16,8 @@ import {
   type,
   url,
   ValidationKeys,
+  option,
+  OptionValidator,
 } from "../../src";
 import { prop } from "@decaf-ts/decoration";
 
@@ -92,6 +94,23 @@ class ListModelTest extends Model {
   }
 }
 
+enum OptionsEnum {
+  name = "john",
+  lastname = "Tsochos",
+}
+@model()
+class OptionModel extends Model {
+  @option(["one", "two", "three"])
+  forArrayProp: string = "4";
+
+  @option(OptionsEnum)
+  forObjectProp!: OptionsEnum;
+
+  constructor(model?: ModelArg<OptionModel>) {
+    super(model);
+  }
+}
+
 describe("Validation", function () {
   describe("Model Validation", () => {
     it("Create with required properties as undefined", function () {
@@ -124,12 +143,12 @@ describe("Validation", function () {
       const output = dm.toString();
       expect(output).toBe(
         `TestModel: {
-  "id": "id",
-  "prop1": 23,
-  "prop2": "tests",
-  "prop3": "asdasfsdfsda",
-  "prop4": "test@pdm.com"
-}`
+        "id": "id",
+        "prop1": 23,
+        "prop2": "tests",
+        "prop3": "asdasfsdfsda",
+        "prop4": "test@pdm.com"
+        }`
       );
     });
 
@@ -307,6 +326,25 @@ describe("Validation", function () {
 
       errors = p.hasErrors();
       expect(errors).toBeUndefined();
+    });
+
+    it("validates enum", () => {
+      const myModel = new OptionModel({
+        forArrayProp: "4",
+        forObjectProp: "johnss",
+      });
+      console.log("myModel:", myModel);
+
+      const errors = myModel.hasErrors();
+      console.log("errors:", errors);
+      expect(errors).toBeDefined();
+    });
+
+    it("enum validator", () => {
+      const validator = new OptionValidator();
+      const errors = validator.hasErrors(4, { enum: ["4", "5"] });
+      console.log("errors:", errors);
+      expect(errors).toBeDefined();
     });
   });
 });

@@ -14,6 +14,7 @@ export * from "./MaxLengthValidator";
 export * from "./MaxValidator";
 export * from "./MinLengthValidator";
 export * from "./MinValidator";
+export * from "./OptionValidator";
 export * from "./PasswordValidator";
 export * from "./PatternValidator";
 export * from "./RequiredValidator";

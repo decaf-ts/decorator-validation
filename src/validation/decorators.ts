@@ -2,6 +2,7 @@ import {
   ComparisonValidatorOptions,
   DateValidatorOptions,
   DiffValidatorOptions,
+  EnumValidatorOptions,
   EqualsValidatorOptions,
   GreaterThanOrEqualValidatorOptions,
   GreaterThanValidatorOptions,
@@ -727,4 +728,33 @@ export function gte(
     ...gteOptions,
     async: false,
   } as ValidationMetadata);
+}
+
+/**
+ * @summary Defines a list or an object of accepted values for the property
+ * @description Validators to validate a decorated property must use key {@link ValidationKeys#ENUM}
+ *
+ * @param {any[] | Record<any, any>} value
+ * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#ENUM}
+ *
+ * @function option
+ * @category Property Decorators
+ */
+export function option(
+  value: any[] | Record<any, any>,
+  message: string = DEFAULT_ERROR_MESSAGES.ENUM
+) {
+  const key = Validation.key(ValidationKeys.ENUM);
+  const meta: EnumValidatorOptions = {
+    [ValidationKeys.ENUM]: value,
+    message: message,
+    description: `defines a list or an object of accepted values for the attribute`,
+    async: false,
+  };
+  return Decoration.for(key)
+    .define({
+      decorator: validationMetadata<EnumValidatorOptions>,
+      args: [option, key, meta],
+    })
+    .apply();
 }

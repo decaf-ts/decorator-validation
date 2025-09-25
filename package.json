@@ -108,7 +108,8 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0"
+    "typescript-eslint": "^8.31.0",
+    "@decaf-ts/reflection": "latest"
   },
   "peerDependencies": {
     "@decaf-ts/decoration": "latest",
