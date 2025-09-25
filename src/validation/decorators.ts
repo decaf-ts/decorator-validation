@@ -355,22 +355,28 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
 }
 
 export interface TypeMetadata extends ValidatorOptions {
-  customTypes: (string | (() => string))[] | string | (() => string);
+  customTypes:
+    | (Constructor | (() => Constructor))[]
+    | Constructor
+    | (() => Constructor);
 }
 
 /**
  * @summary Enforces type verification
  * @description Validators to validate a decorated property must use key {@link ValidationKeys#TYPE}
  *
- * @param {string[] | string} types accepted types
- * @param {string} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#TYPE}
+ * @param {Constructor[] | Constructor} types accepted types
+ * @param {Constructor} [message] the error message. Defaults to {@link DEFAULT_ERROR_MESSAGES#TYPE}
  *
  * @function type
  * @category Property Decorators
  */
 //TODO
 export function type(
-  types: (string | (() => string))[] | string | (() => string),
+  types:
+    | (Constructor | (() => Constructor))[]
+    | Constructor
+    | (() => Constructor),
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
   const key = ValidationKeys.TYPE;

@@ -21,6 +21,7 @@ import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
 import { Metadata, Constructor, DecorationKeys } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
+import { Reflection } from "@decaf-ts/reflection";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -280,9 +281,9 @@ export abstract class Model<Async extends boolean = false>
    * @throws {Error} If it fails to parse the string, or if it fails to build the model
    */
   static deserialize(str: string) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.SERIALIZATION),
-      this.constructor
+    const metadata = Metadata.get(
+      this.constructor as unknown as Constructor,
+      ModelKeys.SERIALIZATION
     );
 
     if (metadata && metadata.serializer)
@@ -393,6 +394,7 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
+      const x = Metadata.get(self.constructor as Constructor);
       const allDecorators: DecoratorMetadata[] =
         Reflection.getPropertyDecorators(
           ValidationKeys.REFLECT,
@@ -401,22 +403,24 @@ export abstract class Model<Async extends boolean = false>
         ).decorators;
       decorators = allDecorators.filter(
         (d: DecoratorMetadata) =>
-          [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(d.key) !== -1
+          [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(
+            d?.key as string
+          ) !== -1
       );
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
       dec = decorators.pop() as DecoratorMetadata;
-      const clazz = dec.props.name
+      const clazz = (dec?.props as any).name
         ? [dec.props.name]
         : (Array.isArray(dec.props.customTypes)
             ? dec.props.customTypes
             : [dec.props.customTypes]
-          ).map((t) => (typeof t === "function" ? t() : t));
+          ).map((t) => (typeof t === "function" && !t.name ? t() : t));
       const reserved = Object.values(ReservedModels).map((v) =>
         v.toLowerCase()
       ) as string[];
 
-      clazz.forEach((c) => {
+      clazz.forEach((c: any) => {
         if (typeof c === "function") {
           if (c.name) c = c.name;
           else c = c();
@@ -428,16 +432,16 @@ export abstract class Model<Async extends boolean = false>
               case "Set":
                 if (allDecorators.length) {
                   const listDec = allDecorators.find(
-                    (d) => d.key === ValidationKeys.LIST
+                    (d) => d?.key === ValidationKeys.LIST
                   );
                   if (listDec) {
-                    let clazzName = (listDec.props.clazz as string[]).find(
-                      (t: string) => {
-                        t = typeof t === "function" ? (t as any)() : t;
-                        t = (t as any).name ? (t as any).name : t;
-                        return !jsTypes.includes(t);
-                      }
-                    );
+                    let clazzName = (
+                      (listDec.props as unknown as any).clazz as string[]
+                    ).find((t: string) => {
+                      t = typeof t === "function" ? (t as any)() : t;
+                      t = (t as any).name ? (t as any).name : t;
+                      return !jsTypes.includes(t);
+                    });
                     clazzName =
                       typeof clazzName === "string"
                         ? clazzName
@@ -651,9 +655,9 @@ export abstract class Model<Async extends boolean = false>
    * @return {string} - The serialized string representation of the model
    */
   static serialize<M extends Model<boolean>>(model: M) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.SERIALIZATION),
-      model.constructor
+    const metadata = Metadata.get(
+      model.constructor as Constructor,
+      ModelKeys.SERIALIZATION
     );
 
     if (metadata && metadata.serializer)
@@ -674,9 +678,9 @@ export abstract class Model<Async extends boolean = false>
    * @return {string} - The hash string representing the model
    */
   static hash<M extends Model<boolean>>(model: M) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.HASHING),
-      model.constructor
+    const metadata = Metadata.get(
+      model.constructor as Constructor,
+      ModelKeys.HASHING
     );
 
     if (metadata && metadata.algorithm)
