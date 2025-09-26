@@ -362,7 +362,6 @@ export abstract class Model<Async extends boolean = false>
     if (!obj) obj = {};
 
     let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
-
     const props = Model.getAttributes(self);
 
     const proto = Object.getPrototypeOf(self);
@@ -410,12 +409,13 @@ export abstract class Model<Async extends boolean = false>
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
       dec = decorators.pop() as DecoratorMetadata;
-      const clazz = (dec?.props as any).name
-        ? [dec.props.name]
-        : (Array.isArray(dec.props.customTypes)
-            ? dec.props.customTypes
-            : [dec.props.customTypes]
-          ).map((t) => (typeof t === "function" && !t.name ? t() : t));
+      // const clazz = (dec?.props as any).name
+      //   ? [dec.props.name]
+      //   : (Array.isArray(dec.props.customTypes)
+      //       ? dec.props.customTypes
+      //       : [dec.props.customTypes]
+      //     ).map((t) => (typeof t === "function" && !t.name ? t() : t));
+      const clazz: string[] = [];
       const reserved = Object.values(ReservedModels).map((v) =>
         v.toLowerCase()
       ) as string[];
@@ -598,20 +598,10 @@ export abstract class Model<Async extends boolean = false>
    * @param {Constructor<V> | V} model - The model class or instance to get attributes from
    * @return {string[]} - Array of attribute names defined in the model
    */
-  static getAttributes<V extends Model>(model: Constructor<V> | V) {
-    const result: string[] = [];
-    let prototype =
-      model instanceof Model
-        ? Object.getPrototypeOf(model)
-        : (model as any).prototype;
-    while (prototype != null) {
-      const props: string[] = prototype[ModelKeys.ATTRIBUTE];
-      if (props) {
-        result.push(...props);
-      }
-      prototype = Object.getPrototypeOf(prototype);
-    }
-    return result;
+  static getAttributes<V extends Model>(model: Constructor<V> | V): string[] {
+    return Metadata.properties(
+      model instanceof Model ? (model.constructor as Constructor) : model
+    ) as string[] | [];
   }
 
   /**

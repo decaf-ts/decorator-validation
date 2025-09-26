@@ -111,6 +111,16 @@ class OptionModel extends Model {
   }
 }
 
+@model()
+class NewModel extends Model {
+  @required()
+  name: string = "Alex";
+
+  constructor(model?: ModelArg<OptionModel>) {
+    super(model);
+  }
+}
+
 describe("Validation", function () {
   describe("Model Validation", () => {
     it("Create with required properties as undefined", function () {
@@ -348,6 +358,20 @@ describe("Validation", function () {
       console.log("errors:", errorsEnumObject);
       expect(errorsEnumArray).toBeDefined();
       expect(errorsEnumObject).toBeDefined();
+    });
+
+    it("tests fromModel", () => {
+      // const myModel = new OptionModel();
+      // console.log("myModel:", myModel);
+
+      const result = new NewModel({ name: "john" });
+
+      //   Model.fromModel(new NewModel(), {
+      //   name: "John",
+      // });
+      console.log("result:", result);
+
+      expect(result).toBeDefined();
     });
   });
 });
