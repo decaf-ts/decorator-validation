@@ -116,7 +116,14 @@ class NewModel extends Model {
   @required()
   name: string = "Alex";
 
-  constructor(model?: ModelArg<OptionModel>) {
+  @required()
+  propModel!: OptionModel;
+
+  @list(String)
+  @required()
+  strings!: string[];
+
+  constructor(model?: ModelArg<NewModel>) {
     super(model);
   }
 }
@@ -361,14 +368,7 @@ describe("Validation", function () {
     });
 
     it("tests fromModel", () => {
-      // const myModel = new OptionModel();
-      // console.log("myModel:", myModel);
-
-      const result = new NewModel({ name: "john" });
-
-      //   Model.fromModel(new NewModel(), {
-      //   name: "John",
-      // });
+      const result = new NewModel({ strings: ["name", "age"] });
       console.log("result:", result);
 
       expect(result).toBeDefined();

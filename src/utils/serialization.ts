@@ -19,7 +19,7 @@ export const DefaultSerializationMethod = "json";
  *
  * @category Model
  */
-export class JSONSerializer<T extends Model> implements Serializer<T> {
+export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
   constructor() {}
   /**
    * @summary prepares the model for serialization
@@ -32,7 +32,7 @@ export class JSONSerializer<T extends Model> implements Serializer<T> {
   protected preSerialize(model: T) {
     // TODO: nested preserialization (so increase performance when deserializing)
     const toSerialize: Record<string, any> = Object.assign({}, model);
-    const metadata = getMetadata(model);
+    const metadata = getMetadata(model.constructor as Constructor);
     toSerialize[ModelKeys.ANCHOR] = metadata || model.constructor.name;
     return toSerialize;
   }

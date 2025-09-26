@@ -393,33 +393,29 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      const x = Metadata.get(self.constructor as Constructor);
-      const allDecorators: DecoratorMetadata[] =
-        Reflection.getPropertyDecorators(
-          ValidationKeys.REFLECT,
-          self,
-          prop
-        ).decorators;
-      decorators = allDecorators.filter(
-        (d: DecoratorMetadata) =>
-          [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(
-            d?.key as string
-          ) !== -1
-      );
+      const metadata: any = Metadata.get(self.constructor as Constructor);
+      const allDecorators = metadata.validation[prop];
+
+      if (!metadata.properties[prop])
+        throw new Error(`No metadata found for property ${prop}`);
+      decorators = [metadata.properties[prop]];
+      if (allDecorators) decorators.unshift(allDecorators[ValidationKeys.TYPE]);
+
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
-      dec = decorators.pop() as DecoratorMetadata;
-      // const clazz = (dec?.props as any).name
-      //   ? [dec.props.name]
-      //   : (Array.isArray(dec.props.customTypes)
-      //       ? dec.props.customTypes
-      //       : [dec.props.customTypes]
-      //     ).map((t) => (typeof t === "function" && !t.name ? t() : t));
-      const clazz: string[] = [];
+      dec = decorators[0] as DecoratorMetadata;
+      const clazz = dec?.name
+        ? [dec?.name]
+        : (Array.isArray(dec?.customTypes)
+            ? dec.customTypes
+            : [dec?.customTypes]
+          ).map((t) => (typeof t === "function" && !t.name ? t() : t));
+
       const reserved = Object.values(ReservedModels).map((v) =>
         v.toLowerCase()
       ) as string[];
 
+      //TODO: check and refactor after this point
       clazz.forEach((c: any) => {
         if (typeof c === "function") {
           if (c.name) c = c.name;
@@ -432,7 +428,7 @@ export abstract class Model<Async extends boolean = false>
               case "Set":
                 if (allDecorators.length) {
                   const listDec = allDecorators.find(
-                    (d) => d?.key === ValidationKeys.LIST
+                    (d: any) => d?.key === ValidationKeys.LIST
                   );
                   if (listDec) {
                     let clazzName = (
