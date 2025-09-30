@@ -119,9 +119,9 @@ class NewModel extends Model {
   @required()
   propModel!: OptionModel;
 
-  @list(String)
+  @list(String, "Set")
   @required()
-  strings!: string[];
+  stringCollection!: Set<string>;
 
   constructor(model?: ModelArg<NewModel>) {
     super(model);
@@ -368,7 +368,11 @@ describe("Validation", function () {
     });
 
     it("tests fromModel", () => {
-      const result = new NewModel({ strings: ["name", "age"] });
+      // const result1 = new NewModel({ name: "john" });
+      // const result2 = new NewModel({ propModel: new OptionModel() });
+      const result = new NewModel({
+        stringCollection: new Set(["name", "age"]),
+      });
       console.log("result:", result);
 
       expect(result).toBeDefined();

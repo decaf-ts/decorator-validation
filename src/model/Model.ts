@@ -399,7 +399,8 @@ export abstract class Model<Async extends boolean = false>
       if (!metadata.properties[prop])
         throw new Error(`No metadata found for property ${prop}`);
       decorators = [metadata.properties[prop]];
-      if (allDecorators) decorators.unshift(allDecorators[ValidationKeys.TYPE]);
+      if (allDecorators && allDecorators[ValidationKeys.TYPE])
+        decorators.unshift(allDecorators[ValidationKeys.TYPE]);
 
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
@@ -421,57 +422,54 @@ export abstract class Model<Async extends boolean = false>
           if (c.name) c = c.name;
           else c = c();
         }
-        if (reserved.indexOf(c.toLowerCase()) === -1)
+        if (reserved.indexOf(c?.toLowerCase()) === -1)
           try {
             switch (c) {
               case "Array":
-              case "Set":
-                if (allDecorators.length) {
-                  const listDec = allDecorators.find(
-                    (d: any) => d?.key === ValidationKeys.LIST
-                  );
-                  if (listDec) {
-                    let clazzName = (
-                      (listDec.props as unknown as any).clazz as string[]
-                    ).find((t: string) => {
-                      t = typeof t === "function" ? (t as any)() : t;
-                      t = (t as any).name ? (t as any).name : t;
-                      return !jsTypes.includes(t);
-                    });
-                    clazzName =
-                      typeof clazzName === "string"
-                        ? clazzName
-                        : (clazzName as any)();
-                    clazzName =
-                      typeof clazzName === "string"
-                        ? clazzName
-                        : (clazzName as any).name;
-                    if (c === "Array")
-                      (self as Record<string, any>)[prop] = (
-                        self as Record<string, any>
-                      )[prop].map((el: any) => {
-                        return ["object", "function"].includes(typeof el) &&
-                          clazzName
-                          ? Model.build(el, clazzName)
-                          : el;
-                      });
-                    if (c === "Set") {
-                      const s = new Set();
-                      for (const v of (self as Record<string, any>)[prop]) {
-                        if (
-                          ["object", "function"].includes(typeof v) &&
-                          clazzName
-                        ) {
-                          s.add(Model.build(v, clazzName));
-                        } else {
-                          s.add(v);
-                        }
-                      }
-                      (self as Record<string, any>)[prop] = s;
+              case "Set": {
+                if (!Object.keys(allDecorators).length) break;
+                const listDec = allDecorators[ValidationKeys.LIST];
+                if (!listDec) break;
+                let clazzName = (
+                  (listDec.props as unknown as any).clazz as string[]
+                ).find((t: string) => {
+                  t = typeof t === "function" ? (t as any)() : t;
+                  t = (t as any).name ? (t as any).name : t;
+                  return !jsTypes.includes(t);
+                });
+                clazzName =
+                  typeof clazzName === "string"
+                    ? clazzName
+                    : (clazzName as any)();
+                clazzName =
+                  typeof clazzName === "string"
+                    ? clazzName
+                    : (clazzName as any).name;
+                if (c === "Array")
+                  (self as Record<string, any>)[prop] = (
+                    self as Record<string, any>
+                  )[prop].map((el: any) => {
+                    return ["object", "function"].includes(typeof el) &&
+                      clazzName
+                      ? Model.build(el, clazzName)
+                      : el;
+                  });
+                if (c === "Set") {
+                  const s = new Set();
+                  for (const v of (self as Record<string, any>)[prop]) {
+                    if (
+                      ["object", "function"].includes(typeof v) &&
+                      clazzName
+                    ) {
+                      s.add(Model.build(v, clazzName));
+                    } else {
+                      s.add(v);
                     }
                   }
+                  (self as Record<string, any>)[prop] = s;
                 }
                 break;
+              }
               default:
                 if (
                   typeof self[prop as keyof typeof self] !== "undefined" &&
