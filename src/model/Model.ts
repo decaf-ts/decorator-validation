@@ -22,6 +22,7 @@ import { ASYNC_META_KEY } from "../constants";
 import { Metadata, Constructor, DecorationKeys } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
 import { Reflection } from "@decaf-ts/reflection";
+import { model } from "./decorators";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -718,14 +719,15 @@ export abstract class Model<Async extends boolean = false>
     attribute: string
   ): boolean | string | undefined {
     if (Model.isModel((target as Record<string, any>)[attribute])) return true;
-    const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
+    const metadata = Metadata.validations(
+      target.constructor as Constructor,
+      attribute
+    )[ModelKeys.TYPE];
+    if (!metadata) return undefined;
     return Model.get(metadata.name) ? metadata.name : undefined;
   }
 
   static describe<M extends Model>(model: Constructor<M>, key?: keyof M) {
-    return (
-      (Metadata.get(model)?.description as any)[key || DecorationKeys.CLASS] ||
-      model.name
-    );
+    return Metadata.description(model, key);
   }
 }
