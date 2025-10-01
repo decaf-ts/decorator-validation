@@ -5,24 +5,108 @@ import { ExtendedMetadata } from "./types";
 declare module "@decaf-ts/decoration" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   export namespace Metadata {
+    /**
+     * @description Retrieves validation metadata for a specific property of a model
+     * @summary Fetches validation rules and constraints that were applied to a property
+     * via decorators. The optional key parameter allows drilling down to specific
+     * validation types (e.g., 'required', 'min', 'max').
+     *
+     * @template M - The model type extending from Model
+     * @param {Constructor<M>} model - The constructor of the target model class
+     * @param {keyof M} property - The property name to retrieve validation for
+     * @param {string} [key] - Optional specific validation key to retrieve (e.g., 'required', 'pattern')
+     * @return {any} The validation metadata object or value at the specified key
+     *
+     * @example
+     * class User extends Model {
+     *   @required()
+     *   @maxLength(100)
+     *   name!: string;
+     * }
+     *
+     * // Get all validation metadata for 'name'
+     * const validations = Metadata.validationFor(User, 'name');
+     *
+     * // Get specific validation metadata
+     * const required = Metadata.validationFor(User, 'name', 'required');
+     */
     function validationFor<M extends Model>(
       model: Constructor<M>,
       property: keyof M,
       key?: string
     ): any;
 
+    /**
+     * @description Retrieves the design-time type information for a model property
+     * @summary Uses TypeScript's reflection metadata to return the Constructor type that
+     * was inferred or explicitly set for a given property. This is particularly useful
+     * for understanding property types at runtime when working with decorators.
+     *
+     * @template M - The model type extending from Model
+     * @param {Constructor<M>} model - The constructor of the target model class
+     * @param {keyof M} prop - The property name to retrieve the type for
+     * @return {Constructor|undefined} The constructor function representing the property's type, or undefined if not found
+     *
+     * @example
+     * class Product extends Model {
+     *   @type(String)
+     *   name!: string;
+     *
+     *   @type(Number)
+     *   price!: number;
+     *
+     *   @type(() => Date)
+     *   createdAt!: Date;
+     * }
+     *
+     * const nameType = Metadata.designTypeOf(Product, 'name'); // returns String
+     * const priceType = Metadata.designTypeOf(Product, 'price'); // returns Number
+     * const dateType = Metadata.designTypeOf(Product, 'createdAt'); // returns Date
+     */
     function designTypeOf<M extends Model>(
       model: Constructor<M>,
       prop: keyof M
     ): Constructor | undefined;
 
     /**
-     * @description Retrieves metadata for a model or a specific key within it
-     * @summary When called with a constructor only, returns the entire metadata object associated with the model. When a key path is provided, returns the value stored at that nested key.
-     * @template M
-     * @template META
-     * @param {Constructor<M>} model The target constructor used to locate the metadata record
-     * @return {META|undefined} The metadata object, the value at the key path, or undefined if nothing exists
+     * @description Retrieves extended metadata for a model or a specific key within it
+     * @summary When called with a constructor only, returns the entire metadata object
+     * associated with the model, including validation rules, property types, relationships,
+     * and other decorator-applied metadata. This override extends the base Metadata.get
+     * method with type-safe support for ExtendedMetadata.
+     *
+     * @template M - The model type
+     * @template META - The extended metadata type, defaults to ExtendedMetadata<M>
+     * @param {Constructor<M>} model - The target constructor used to locate the metadata record
+     * @return {META|undefined} The complete metadata object for the model, or undefined if no metadata exists
+     *
+     * @example
+     * class Article extends Model {
+     *   @pk()
+     *   @type(Number)
+     *   id!: number;
+     *
+     *   @required()
+     *   @maxLength(200)
+     *   title!: string;
+     *
+     *   @oneToMany(() => Comment, { update: true, delete: true }, true)
+     *   comments!: Comment[];
+     * }
+     *
+     * // Get all metadata for the Article model
+     * const metadata = Metadata.get<Article>(Article);
+     * // metadata contains:
+     * // - property definitions
+     * // - validation rules
+     * // - relationship mappings
+     * // - primary key information
+     * // - column mappings
+     *
+     * @remarks
+     * The @ts-expect-error directive is used because this declaration intentionally
+     * overrides the signature from the base module to provide enhanced type information
+     * specific to the decorator-validation system.
      */
     // @ts-expect-error override magic
     function get<M, META extends ExtendedMetadata<M> = ExtendedMetadata<M>>(
