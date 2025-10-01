@@ -19,10 +19,8 @@ import { getMetadata } from "./utils";
 
 import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
-import { Metadata, Constructor, DecorationKeys } from "@decaf-ts/decoration";
+import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
-import { Reflection } from "@decaf-ts/reflection";
-import { model } from "./decorators";
 import { ListValidatorOptions } from "../validation/index";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
@@ -424,7 +422,6 @@ export abstract class Model<Async extends boolean = false>
         v.toLowerCase()
       ) as string[];
 
-      //TODO: check and refactor after this point
       clazz.forEach((c: any) => {
         if (typeof c === "function") {
           if (c.name) c = c.name;
