@@ -2,6 +2,7 @@ import "./Metadata";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { Model } from "../model/Model";
 import { ExtendedMetadata } from "./types";
+import { ModelKeys } from "../utils/index";
 
 (Metadata as any).validationFor = function <M extends Model>(
   this: Metadata,
@@ -19,7 +20,7 @@ import { ExtendedMetadata } from "./types";
 (Metadata as any).metadata = function <M extends Model>(
   model: Constructor<M>
 ): ExtendedMetadata<M> {
-  const metadata = Metadata.get(model) as any;
+  const metadata = Metadata.get(model, ModelKeys.MODEL) as any;
   if (!metadata)
     throw new Error(
       "could not find metadata for provided " + model.constructor.name

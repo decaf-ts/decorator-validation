@@ -395,12 +395,6 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      // const metadata: any = Metadata.get(self.constructor as Constructor);
-      const validationMetadata = Metadata.validationFor(
-        self.constructor as Constructor,
-        prop
-      );
-
       const designType = Metadata.designTypeOf(
         self.constructor as any,
         prop as any
