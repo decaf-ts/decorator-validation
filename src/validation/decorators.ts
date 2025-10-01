@@ -504,9 +504,9 @@ export interface ListMetadata extends ListValidatorOptions {
  */
 export function list(
   clazz:
-    | Constructor<any>
-    | (() => Constructor<any>)
-    | (Constructor<any> | (() => Constructor<any>))[],
+    | Constructor
+    | (() => Constructor)
+    | (Constructor | (() => Constructor))[],
   collection: "Array" | "Set" = "Array",
   message: string = DEFAULT_ERROR_MESSAGES.LIST
 ) {
@@ -514,10 +514,7 @@ export function list(
   const meta: ListMetadata = {
     clazz: (Array.isArray(clazz)
       ? clazz.map((c) => (c.name ? c.name : c))
-      : [clazz.name ? clazz.name : clazz]) as (
-      | string
-      | (() => Constructor<any>)
-    )[],
+      : [clazz.name ? clazz.name : clazz]) as (string | (() => Constructor))[],
     type: collection,
     message: message,
     async: false,
