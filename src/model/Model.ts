@@ -15,7 +15,6 @@ import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
-import { getMetadata } from "./utils";
 
 import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
@@ -141,7 +140,7 @@ export class ModelRegistryManager<M extends Model<true | false>>
   build(obj: Record<string, any> = {}, clazz?: string): M {
     if (!clazz && !this.testFunction(obj))
       throw new Error("Provided obj is not a Model object");
-    const name = clazz || getMetadata(obj as any);
+    const name = clazz || Metadata.metadata(obj as any);
     if (!(name in this.cache))
       throw new Error(
         `Provided class ${name} is not a registered Model object`
@@ -700,7 +699,8 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      return target instanceof Model || !!getMetadata(target as any);
+      return target instanceof Model || !!Metadata.metadata(target as any);
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
       return false;

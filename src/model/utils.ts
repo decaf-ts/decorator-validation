@@ -1,17 +1,4 @@
-import { ModelKeys } from "../utils/constants";
 import { ConditionalAsync } from "../types";
-import { Model } from "./Model";
-import { Metadata, Constructor } from "@decaf-ts/decoration";
-
-// To be removed and utils/overrides/metadata to be used
-export function getMetadata<M extends Model<boolean>>(model: Constructor<M>) {
-  const metadata = Metadata.get(model, ModelKeys.MODEL);
-  if (!metadata)
-    throw new Error(
-      "could not find metadata for provided " + model.constructor.name
-    );
-  return metadata;
-}
 
 /**
  * Wraps a value in a Promise if the `async` flag is true.
