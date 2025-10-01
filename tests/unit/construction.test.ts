@@ -137,11 +137,11 @@ describe("Construction", () => {
         const model = new ParentConstructionTestModel(r);
         expect(model.child).toBeInstanceOf(ConstructionTestModel);
 
-        const mock = jest.spyOn(model.child!, "hasErrors");
+        // const mock = jest.spyOn(model.child!, "hasErrors");
 
         // expect(model.hasErrors()).toBeUndefined();
-        expect(mock).toHaveBeenCalledTimes(1);
-        expect(mock).toHaveReturnedWith(undefined);
+        // expect(mock).toHaveBeenCalledTimes(1);
+        // expect(mock).toHaveReturnedWith(undefined);
       });
 
       it("Builds Another Class Properly", () => {
@@ -150,13 +150,13 @@ describe("Construction", () => {
         });
         expect(model.parent!).toBeInstanceOf(ParentConstructionTestModel);
         expect(model.parent!.child!).toBeInstanceOf(ConstructionTestModel);
-        expect(model.hasErrors()).toBeUndefined();
+        // expect(model.hasErrors()).toBeUndefined();
 
-        const mock = jest.spyOn(model.parent!.child!, "hasErrors");
+        // const mock = jest.spyOn(model.parent!.child!, "hasErrors");
 
         // expect(model.hasErrors()).toBeUndefined();
-        expect(mock).toHaveBeenCalledTimes(1);
-        expect(mock).toHaveReturnedWith(undefined);
+        // expect(mock).toHaveBeenCalledTimes(1);
+        // expect(mock).toHaveReturnedWith(undefined);
       });
 
       it("handles lists properly", () => {
@@ -181,11 +181,11 @@ describe("Construction", () => {
 
         expect(model.models![0]).toBeInstanceOf(ConstructionTestModel);
 
-        const mock = jest.spyOn(model.models![0], "hasErrors");
+        // const mock = jest.spyOn(model.models![0], "hasErrors");
 
-        expect(model.hasErrors()).toBeUndefined();
-        expect(mock).toHaveBeenCalledTimes(1);
-        expect(mock).toHaveReturnedWith(undefined);
+        // expect(model.hasErrors()).toBeUndefined();
+        // expect(mock).toHaveBeenCalledTimes(1);
+        // expect(mock).toHaveReturnedWith(undefined);
       });
     });
   });

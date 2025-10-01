@@ -4,11 +4,17 @@ import { ExtendedMetadata } from "./types";
 
 declare module "@decaf-ts/decoration" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Metadata {
-    function validations<M extends Model>(
+  export namespace Metadata {
+    function validationFor<M extends Model>(
       model: Constructor<M>,
-      property: keyof M
+      property: keyof M,
+      key?: string
     ): any;
+
+    function designTypeOf<M extends Model>(
+      model: Constructor<M>,
+      prop: keyof M
+    ): Constructor | undefined;
 
     /**
      * @description Retrieves metadata for a model or a specific key within it

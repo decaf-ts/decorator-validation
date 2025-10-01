@@ -23,6 +23,7 @@ import { Metadata, Constructor, DecorationKeys } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
 import { Reflection } from "@decaf-ts/reflection";
 import { model } from "./decorators";
+import { ListValidatorOptions } from "../validation/index";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -394,14 +395,26 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      const metadata: any = Metadata.get(self.constructor as Constructor);
-      const allDecorators = metadata.validation[prop];
+      // const metadata: any = Metadata.get(self.constructor as Constructor);
+      const validationMetadata = Metadata.validationFor(
+        self.constructor as Constructor,
+        prop
+      );
 
-      if (!metadata.properties[prop])
+      const designType = Metadata.designTypeOf(
+        self.constructor as any,
+        prop as any
+      );
+      if (!designType)
         throw new Error(`No metadata found for property ${prop}`);
-      decorators = [metadata.properties[prop]];
-      if (allDecorators && allDecorators[ValidationKeys.TYPE])
-        decorators.unshift(allDecorators[ValidationKeys.TYPE]);
+
+      const validation = Metadata.validationFor(
+        self.constructor as Constructor,
+        prop
+      );
+      decorators = validation[ValidationKeys.TYPE]
+        ? [validation[ValidationKeys.TYPE], designType]
+        : [designType];
 
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
@@ -428,16 +441,16 @@ export abstract class Model<Async extends boolean = false>
             switch (c) {
               case "Array":
               case "Set": {
-                if (!Object.keys(allDecorators).length) break;
-                const listDec = allDecorators[ValidationKeys.LIST];
+                const listDec: ListValidatorOptions =
+                  validation[ValidationKeys.LIST];
                 if (!listDec) break;
-                let clazzName = (
-                  (listDec.props as unknown as any).clazz as string[]
-                ).find((t: string) => {
-                  t = typeof t === "function" ? (t as any)() : t;
-                  t = (t as any).name ? (t as any).name : t;
-                  return !jsTypes.includes(t);
-                });
+                let clazzName = (listDec.clazz as string[]).find(
+                  (t: string) => {
+                    t = typeof t === "function" ? (t as any)() : t;
+                    t = (t as any).name ? (t as any).name : t;
+                    return !jsTypes.includes(t);
+                  }
+                );
                 clazzName =
                   typeof clazzName === "string"
                     ? clazzName
@@ -719,10 +732,10 @@ export abstract class Model<Async extends boolean = false>
     attribute: string
   ): boolean | string | undefined {
     if (Model.isModel((target as Record<string, any>)[attribute])) return true;
-    const metadata = Metadata.validations(
-      target.constructor as Constructor,
-      attribute
-    )[ModelKeys.TYPE];
+    const metadata = Metadata.designTypeOf(
+      target.constructor as Constructor<M>,
+      attribute as keyof M
+    );
     if (!metadata) return undefined;
     return Model.get(metadata.name) ? metadata.name : undefined;
   }
