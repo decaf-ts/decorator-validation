@@ -139,7 +139,6 @@ export function min(
   const meta: MinValidatorOptions = {
     [ValidationKeys.MIN]: value,
     message: message,
-    types: [Number.name, Date.name],
     description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
     async: false,
   };
@@ -169,7 +168,6 @@ export function max(
   const meta: MaxValidatorOptions = {
     [ValidationKeys.MAX]: value,
     message: message,
-    types: [Number.name, Date.name],
     description: `defines the max value of the attribute as ${value} (applies to numbers or Dates)`,
     async: false,
   };
@@ -199,7 +197,6 @@ export function step(
   const meta: StepValidatorOptions = {
     [ValidationKeys.STEP]: value,
     message: message,
-    types: [Number.name],
     description: `defines the step of the attribute as ${value}`,
     async: false,
   };
@@ -229,7 +226,6 @@ export function minlength(
   const meta: MinLengthValidatorOptions = {
     [ValidationKeys.MIN_LENGTH]: value,
     message: message,
-    types: [String.name, Array.name, Set.name],
     description: `defines the min length of the attribute as ${value} (applies to strings or lists)`,
     async: false,
   };
@@ -259,7 +255,6 @@ export function maxlength(
   const meta: MaxLengthValidatorOptions = {
     [ValidationKeys.MAX_LENGTH]: value,
     message: message,
-    types: [String.name, Array.name, Set.name],
     description: `defines the max length of the attribute as ${value} (applies to strings or lists)`,
     async: false,
   };
@@ -290,7 +285,6 @@ export function pattern(
     [ValidationKeys.PATTERN]:
       typeof value === "string" ? value : value.toString(),
     message: message,
-    types: [String.name],
     description: `assigns the ${value === "string" ? value : value.toString()} pattern to the attribute`,
     async: false,
   };
@@ -316,7 +310,6 @@ export function email(message: string = DEFAULT_ERROR_MESSAGES.EMAIL) {
   const meta: PatternValidatorOptions = {
     [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.EMAIL.toString(),
     message: message,
-    types: [String.name],
     description: "marks the attribute as an email",
     async: false,
   };
@@ -342,7 +335,6 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
   const meta: PatternValidatorOptions = {
     [ValidationKeys.PATTERN]: DEFAULT_PATTERNS.URL.toString(),
     message: message,
-    types: [String.name],
     description: "marks the attribute as an url",
     async: false,
   };
@@ -394,9 +386,7 @@ export function type(
     .apply();
 }
 
-export interface DateMetadata extends DateValidatorOptions {
-  types: string[];
-}
+export type DateMetadata = DateValidatorOptions;
 
 /**
  * @summary Date Handler Decorator
@@ -419,7 +409,6 @@ export function date(
   const meta: DateMetadata = {
     [ValidationKeys.FORMAT]: format,
     message: message,
-    types: [Date.name],
     description: `defines the attribute as a date with the format ${format}`,
     async: false,
   };
@@ -474,7 +463,6 @@ export function password(
   const meta: PatternValidatorOptions = {
     [ValidationKeys.PATTERN]: pattern.toString(),
     message: message,
-    types: [String.name],
     description: `attribute as a password`,
     async: false,
   };
