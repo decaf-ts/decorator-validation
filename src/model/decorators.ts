@@ -2,7 +2,7 @@ import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { metadata } from "@decaf-ts/reflection";
-import { Decoration } from "../utils";
+import { Decoration, DecorationKeys, Metadata } from "@decaf-ts/decoration";
 
 export function modelBaseDecorator(original: any) {
   // the new constructor behaviour
@@ -54,6 +54,8 @@ export function modelBaseDecorator(original: any) {
     configurable: false,
     value: original,
   });
+
+  Metadata.set(newConstructor, DecorationKeys.CONSTRUCTOR, original);
   //
   // // anchors the new constructor for future reference
   // Object.defineProperty(original, ModelKeys.ANCHOR, {
