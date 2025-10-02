@@ -392,17 +392,12 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      const designType = Metadata.type(self.constructor as any, prop as any);
-      if (!designType)
-        throw new Error(`No metadata found for property ${prop}`);
-
-      const validation = Metadata.validationFor(
+      const validation: any = Metadata.validationFor(
         self.constructor as Constructor,
         prop
       );
-      decorators = validation[ValidationKeys.TYPE]
-        ? [validation[ValidationKeys.TYPE], designType]
-        : [designType];
+
+      decorators = Metadata.allowedTypes(self.constructor as any, prop);
 
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);

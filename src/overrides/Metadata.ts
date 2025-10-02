@@ -53,7 +53,8 @@ declare module "@decaf-ts/decoration" {
      * @param model
      */
     function validatableProperties<M extends Model>(
-      model: Constructor<M>
+      model: Constructor<M>,
+      ...propsToIgnore: any[]
     ): string[];
 
     /**
@@ -116,5 +117,22 @@ declare module "@decaf-ts/decoration" {
      * const validations = Metadata.metadata(User);
      */
     function metadata<M>(model: Constructor<M>): any;
+
+    /**
+     * @description Retrieves all allowed types for a model or a property
+     * @summary Retrieves all allowed types for a model or a property from it's metadata.
+     *
+     * @template M - The model type extending from Model
+     * @param {Constructor<M>} model - The constructor of the target model class
+     * @param {keyof M} property - The property name to retrieve validation for
+     * @return {any[]} An array of the allowed types
+     *
+     * @example
+     * class User extends Model {
+     *
+     * // Get all validation metadata for 'User'
+     * const allowedTypes = Metadata.meallowedTypestadata(User);
+     */
+    function allowedTypes<M>(model: Constructor<M>, property?: keyof M): any[];
   }
 }

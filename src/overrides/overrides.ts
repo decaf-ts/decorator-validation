@@ -4,6 +4,7 @@ import { Model } from "../model/Model";
 import { ExtendedMetadata } from "./types";
 import { ModelKeys } from "../utils/index";
 import { ValidationMetadata } from "../validation/index";
+import { ValidationKeys } from "../validation/Validators/constants";
 
 (Metadata as any).validationFor = function <
   M extends Model,
@@ -57,4 +58,23 @@ import { ValidationMetadata } from "../validation/index";
   const meta = Metadata.validationFor(model);
   if (!meta) return [];
   return Object.keys(meta).filter((k) => !propsToIgnore.includes(k));
+}.bind(Metadata);
+
+(Metadata as any).allowedTypes = function <M extends Model>(
+  model: Constructor<M>,
+  property?: keyof M
+) {
+  const designType = Metadata.type(model, property as any);
+  if (!designType)
+    throw new Error(`No metadata found for property ${String(property)}`);
+
+  const validation: any = Metadata.validationFor(
+    model as Constructor,
+    property
+  );
+
+  if (!validation) return;
+  return validation[ValidationKeys.TYPE]
+    ? [validation[ValidationKeys.TYPE], designType]
+    : [designType];
 }.bind(Metadata);

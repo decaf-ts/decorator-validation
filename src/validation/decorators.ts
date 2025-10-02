@@ -747,7 +747,7 @@ export function option(
   value: any[] | Record<any, any>,
   message: string = DEFAULT_ERROR_MESSAGES.ENUM
 ) {
-  const key = Validation.key(ValidationKeys.ENUM);
+  const key = ValidationKeys.ENUM;
   const meta: EnumValidatorOptions = {
     [ValidationKeys.ENUM]: value,
     message: message,
@@ -756,7 +756,7 @@ export function option(
   };
   return Decoration.for(key)
     .define({
-      decorator: validationMetadata<EnumValidatorOptions>,
+      decorator: innerValidationDecorator,
       args: [option, key, meta],
     })
     .apply();

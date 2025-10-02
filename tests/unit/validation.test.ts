@@ -18,6 +18,7 @@ import {
   ValidationKeys,
   option,
   OptionValidator,
+  validate,
 } from "../../src";
 import { prop } from "@decaf-ts/decoration";
 
@@ -113,6 +114,7 @@ class OptionModel extends Model {
 
 @model()
 class NewModel extends Model {
+  @type([String])
   @required()
   name: string = "Alex";
 
@@ -121,10 +123,10 @@ class NewModel extends Model {
 
   @list(String)
   @required()
-  entityArray!: any[];
+  entityArray: any[] = ["name", "age"];
 
   @list(String, "Set")
-  entitySet!: Set<any>;
+  entitySet: Set<any> = new Set(["name", "age"]);
 
   constructor(model?: ModelArg<NewModel>) {
     super(model);
@@ -380,6 +382,11 @@ describe("Validation", function () {
       console.log("result:", result);
 
       expect(result).toBeDefined();
+    });
+
+    it("tests validate method", () => {
+      const validateResult = validate(new NewModel(), false);
+      expect(validateResult).toBeUndefined();
     });
   });
 });
