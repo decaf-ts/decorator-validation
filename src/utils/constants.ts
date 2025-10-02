@@ -27,5 +27,5 @@ export enum ModelKeys {
   ATTRIBUTE = "__attributes",
   HASHING = "hashing",
   SERIALIZATION = "serialization",
-  CONSTRUCTOR = "constructor",
+  CONSTRUCTOR = DecorationKeys.CONSTRUCTOR,
 }

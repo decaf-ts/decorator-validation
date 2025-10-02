@@ -118,8 +118,6 @@ declare module "@decaf-ts/decoration" {
      */
     function metadata<M>(model: Constructor<M>): any;
 
-    function constructor<M>(model: Constructor<M>): Constructor<M>;
-
     /**
      * @description Retrieves all allowed types for a model or a property
      * @summary Retrieves all allowed types for a model or a property from it's metadata.

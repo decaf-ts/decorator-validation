@@ -1,11 +1,10 @@
 import "./Metadata";
-import { Metadata, Constructor, DecorationKeys } from "@decaf-ts/decoration";
+import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { Model } from "../model/Model";
 import { ExtendedMetadata } from "./types";
-import { ModelKeys } from "../utils/index";
-import { set, ValidationMetadata } from "../validation/index";
+import { ModelKeys } from "../utils/constants";
+import { ValidationMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
-import { model } from "../model/index";
 
 (Metadata as any).validationFor = function <
   M extends Model,
@@ -60,30 +59,6 @@ import { model } from "../model/index";
   if (!meta) return [];
   return Object.keys(meta).filter((k) => !propsToIgnore.includes(k));
 }.bind(Metadata);
-
-(Metadata as any).constructor = function <M>(model: Constructor<M>) {
-  return Metadata.get(model, ModelKeys.CONSTRUCTOR) as Constructor<M>;
-}.bind(Metadata);
-
-const originalGet = Metadata.get;
-(Metadata as any).get = function <
-  M,
-  META extends ExtendedMetadata<M> = ExtendedMetadata<M>,
->(model: Constructor, key?: string): META | undefined {
-  if (key !== ModelKeys.CONSTRUCTOR)
-    model = Metadata.constructor(model) || model;
-  return originalGet.call(Metadata, model, key as string) as any;
-};
-
-const originalSet = Metadata.set;
-(Metadata as any).set = function (
-  model: Constructor | string,
-  key: string,
-  value: any
-) {
-  if (typeof model !== "string") model = Metadata.constructor(model) || model;
-  originalSet.call(Metadata, model, key as string, value);
-};
 
 (Metadata as any).allowedTypes = function <M extends Model>(
   model: Constructor<M>,

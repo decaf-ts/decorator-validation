@@ -399,193 +399,193 @@ export function validate<
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
   throw new Error("validate is not implemented");
-
-  const decoratedProperties = Metadata.validatableProperties(
-    model.constructor as any,
-    propsToIgnore
-  );
-
-  const result: Record<string, any> = {};
-  const nestedErrors: Record<string, any> = {};
-
-  for (const prop of decoratedProperties) {
-    const propKey = String(prop);
-    let propValue = (model as any)[prop];
-
-    const decorators: any[] | undefined = Metadata.allowedTypes(
-      model.constructor as any,
-      prop
-    );
-
-    if (!decorators || !decorators?.length) continue;
-
-    // TODO: Refactor from this point forward
-    const designTypeDec = decorators[0];
-
-    const designType: any =
-      designTypeDec.class ||
-      designTypeDec.clazz ||
-      designTypeDec.customTypes ||
-      designTypeDec.name;
-
-    if (!decorators?.length) continue;
-
-    // TS emits "Object" as design:type for unions (string | number) and intersections (A & B).
-    // Since this metadata is ambiguous for validation, skip design:type checks in these cases.
-    // To enforce design:type validation explicitly, the @type validator can be used.
-    if (designTypeDec.key === ModelKeys.TYPE && designType === "Object")
-      decorators.shift();
-
-    const designTypes = (
-      Array.isArray(designType) ? designType : [designType]
-    ).map((e: any) => {
-      e = typeof e === "function" && !e.name ? e() : e;
-      return (e as any).name ? (e as any).name : e;
-    }) as string[];
-
-    // Handle array or Set types and enforce the presence of @list decorator
-    // if ([Array.name, Set.name].includes(designType)) {}
-    if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
-      if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
-        result[propKey] = {
-          [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
-        };
-        continue;
-      }
-
-      if (
-        propValue &&
-        !(Array.isArray(propValue) || propValue instanceof Set)
-      ) {
-        result[propKey] = {
-          [ValidationKeys.TYPE]: `Property '${String(prop)}' must be either an Array or a Set`,
-        };
-        continue;
-      }
-
-      // Remove design:type decorator, since @list decorator already ensures type
-      for (let i = decorators.length - 1; i >= 0; i--) {
-        if (decorators[i].key === ModelKeys.TYPE) {
-          decorators.splice(i, 1);
-        }
-      }
-      propValue = propValue instanceof Set ? [...propValue] : propValue;
-    }
-
-    const propErrors: Record<string, any> =
-      validateDecorators(
-        model,
-        propKey,
-        propValue,
-        decorators,
-        async,
-        ...propsToIgnore
-      ) || {};
-    // const propErrors = {} as Record<string, any>;
-
-    // Check for nested properties.
-    // To prevent unnecessary processing, "propValue" must be defined and validatable
-    // let nestedErrors: Record<string, any> = {};
-    const isConstr = Model.isPropertyModel(model, propKey);
-    const hasPropValue = propValue !== null && propValue !== undefined;
-    if (isConstr && hasPropValue) {
-      const instance = propValue as Model;
-      const isInvalidModel =
-        typeof instance !== "object" ||
-        typeof instance.hasErrors !== "function";
-
-      if (isInvalidModel) {
-        // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
-        console.warn("Model should be validatable but it's not.");
-      } else {
-        const Constr = (Array.isArray(designType) ? designType : [designType])
-          .map((d) => {
-            if (typeof d === "function" && !d.name) d = d();
-            return Model.get(d.name || d);
-          })
-          .find((d) => !!d) as any;
-
-        // Ensure instance is of the expected model class.
-        if (!Constr || !(instance instanceof Constr)) {
-          propErrors[ValidationKeys.TYPE] = !Constr
-            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
-            : `Value must be an instance of ${Constr.name}`;
-          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
-        } else {
-          nestedErrors[propKey] = getNestedValidationErrors(
-            instance,
-            model,
-            async,
-            ...propsToIgnore
-          );
-        }
-      }
-    }
-
-    // Add to the result if we have any errors
-    // Async mode returns a Promise that resolves to undefined when no errors exist
-    if (Object.keys(propErrors).length > 0 || async)
-      result[propKey] = propErrors;
-
-    // Then merge any nested errors
-    if (!async) {
-      Object.entries(nestedErrors[propKey] || {}).forEach(([key, error]) => {
-        if (error !== undefined) {
-          result[`${propKey}.${key}`] = error;
-        }
-      });
-    }
-  }
-
-  // Synchronous return
-  if (!async) {
-    return (
-      Object.keys(result).length > 0
-        ? new ModelErrorDefinition(result)
-        : undefined
-    ) as any;
-  }
-
-  const merged: any = result; // TODO: apply filtering
-
-  const keys = Object.keys(merged);
-  const promises = Object.values(merged);
-  return Promise.allSettled(promises).then(async (results) => {
-    const result: ModelErrors = {};
-
-    for (const [parentProp, nestedErrPromise] of Object.entries(nestedErrors)) {
-      const nestedPropDecErrors = (await nestedErrPromise) as Record<
-        string,
-        any
-      >;
-
-      if (nestedPropDecErrors)
-        Object.entries(nestedPropDecErrors).forEach(
-          ([nestedProp, nestedPropDecError]) => {
-            if (nestedPropDecError !== undefined) {
-              const nestedKey = [parentProp, nestedProp].join(".");
-              result[nestedKey] = nestedPropDecError;
-            }
-          }
-        );
-    }
-
-    for (let i = 0; i < results.length; i++) {
-      const key = keys[i];
-      const res = results[i];
-
-      if (res.status === "fulfilled" && res.value !== undefined) {
-        (result as any)[key] = res.value;
-      } else if (res.status === "rejected") {
-        (result as any)[key] =
-          res.reason instanceof Error
-            ? res.reason.message
-            : String(res.reason || "Validation failed");
-      }
-    }
-
-    return Object.keys(result).length > 0
-      ? new ModelErrorDefinition(result)
-      : undefined;
-  }) as any;
+  //
+  // const decoratedProperties = Metadata.validatableProperties(
+  //   model.constructor as any,
+  //   propsToIgnore
+  // );
+  //
+  // const result: Record<string, any> = {};
+  // const nestedErrors: Record<string, any> = {};
+  //
+  // for (const prop of decoratedProperties) {
+  //   const propKey = String(prop);
+  //   let propValue = (model as any)[prop];
+  //
+  //   const decorators: any[] = Metadata.allowedTypes(
+  //     model.constructor as any,
+  //     prop
+  //   );
+  //
+  //   if (!decorators || !decorators.length) continue;
+  //
+  //   // TODO: Refactor from this point forward
+  //   const designTypeDec = decorators[0];
+  //
+  //   const designType: any =
+  //     designTypeDec.class ||
+  //     designTypeDec.clazz ||
+  //     designTypeDec.customTypes ||
+  //     designTypeDec.name;
+  //
+  //   if (!decorators?.length) continue;
+  //
+  //   // TS emits "Object" as design:type for unions (string | number) and intersections (A & B).
+  //   // Since this metadata is ambiguous for validation, skip design:type checks in these cases.
+  //   // To enforce design:type validation explicitly, the @type validator can be used.
+  //   if (designTypeDec.key === ModelKeys.TYPE && designType === "Object")
+  //     decorators.shift();
+  //
+  //   const designTypes = (
+  //     Array.isArray(designType) ? designType : [designType]
+  //   ).map((e: any) => {
+  //     e = typeof e === "function" && !e.name ? e() : e;
+  //     return (e as any).name ? (e as any).name : e;
+  //   }) as string[];
+  //
+  //   // Handle array or Set types and enforce the presence of @list decorator
+  //   // if ([Array.name, Set.name].includes(designType)) {}
+  //   if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
+  //     if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
+  //       result[propKey] = {
+  //         [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
+  //       };
+  //       continue;
+  //     }
+  //
+  //     if (
+  //       propValue &&
+  //       !(Array.isArray(propValue) || propValue instanceof Set)
+  //     ) {
+  //       result[propKey] = {
+  //         [ValidationKeys.TYPE]: `Property '${String(prop)}' must be either an Array or a Set`,
+  //       };
+  //       continue;
+  //     }
+  //
+  //     // Remove design:type decorator, since @list decorator already ensures type
+  //     for (let i = decorators.length - 1; i >= 0; i--) {
+  //       if (decorators[i].key === ModelKeys.TYPE) {
+  //         decorators.splice(i, 1);
+  //       }
+  //     }
+  //     propValue = propValue instanceof Set ? [...propValue] : propValue;
+  //   }
+  //
+  //   const propErrors: Record<string, any> =
+  //     validateDecorators(
+  //       model,
+  //       propKey,
+  //       propValue,
+  //       decorators,
+  //       async,
+  //       ...propsToIgnore
+  //     ) || {};
+  //   // const propErrors = {} as Record<string, any>;
+  //
+  //   // Check for nested properties.
+  //   // To prevent unnecessary processing, "propValue" must be defined and validatable
+  //   // let nestedErrors: Record<string, any> = {};
+  //   const isConstr = Model.isPropertyModel(model, propKey);
+  //   const hasPropValue = propValue !== null && propValue !== undefined;
+  //   if (isConstr && hasPropValue) {
+  //     const instance = propValue as Model;
+  //     const isInvalidModel =
+  //       typeof instance !== "object" ||
+  //       typeof instance.hasErrors !== "function";
+  //
+  //     if (isInvalidModel) {
+  //       // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
+  //       console.warn("Model should be validatable but it's not.");
+  //     } else {
+  //       const Constr = (Array.isArray(designType) ? designType : [designType])
+  //         .map((d: any) => {
+  //           if (typeof d === "function" && !d.name) d = d();
+  //           return Model.get(d.name || d);
+  //         })
+  //         .find((d: any) => !!d) as any;
+  //
+  //       // Ensure instance is of the expected model class.
+  //       if (!Constr || !(instance instanceof Constr)) {
+  //         propErrors[ValidationKeys.TYPE] = !Constr
+  //           ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
+  //           : `Value must be an instance of ${Constr.name}`;
+  //         delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
+  //       } else {
+  //         nestedErrors[propKey] = getNestedValidationErrors(
+  //           instance,
+  //           model,
+  //           async,
+  //           ...propsToIgnore
+  //         );
+  //       }
+  //     }
+  //   }
+  //
+  //   // Add to the result if we have any errors
+  //   // Async mode returns a Promise that resolves to undefined when no errors exist
+  //   if (Object.keys(propErrors).length > 0 || async)
+  //     result[propKey] = propErrors;
+  //
+  //   // Then merge any nested errors
+  //   if (!async) {
+  //     Object.entries(nestedErrors[propKey] || {}).forEach(([key, error]) => {
+  //       if (error !== undefined) {
+  //         result[`${propKey}.${key}`] = error;
+  //       }
+  //     });
+  //   }
+  // }
+  //
+  // // Synchronous return
+  // if (!async) {
+  //   return (
+  //     Object.keys(result).length > 0
+  //       ? new ModelErrorDefinition(result)
+  //       : undefined
+  //   ) as any;
+  // }
+  //
+  // const merged: any = result; // TODO: apply filtering
+  //
+  // const keys = Object.keys(merged);
+  // const promises = Object.values(merged);
+  // return Promise.allSettled(promises).then(async (results) => {
+  //   const result: ModelErrors = {};
+  //
+  //   for (const [parentProp, nestedErrPromise] of Object.entries(nestedErrors)) {
+  //     const nestedPropDecErrors = (await nestedErrPromise) as Record<
+  //       string,
+  //       any
+  //     >;
+  //
+  //     if (nestedPropDecErrors)
+  //       Object.entries(nestedPropDecErrors).forEach(
+  //         ([nestedProp, nestedPropDecError]) => {
+  //           if (nestedPropDecError !== undefined) {
+  //             const nestedKey = [parentProp, nestedProp].join(".");
+  //             result[nestedKey] = nestedPropDecError;
+  //           }
+  //         }
+  //       );
+  //   }
+  //
+  //   for (let i = 0; i < results.length; i++) {
+  //     const key = keys[i];
+  //     const res = results[i];
+  //
+  //     if (res.status === "fulfilled" && res.value !== undefined) {
+  //       (result as any)[key] = res.value;
+  //     } else if (res.status === "rejected") {
+  //       (result as any)[key] =
+  //         res.reason instanceof Error
+  //           ? res.reason.message
+  //           : String(res.reason || "Validation failed");
+  //     }
+  //   }
+  //
+  //   return Object.keys(result).length > 0
+  //     ? new ModelErrorDefinition(result)
+  //     : undefined;
+  // }) as any;
 }
