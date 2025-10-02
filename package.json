@@ -1,6 +1,6 @@
 {
   "name": "@decaf-ts/decorator-validation",
-  "version": "1.7.17",
+  "version": "1.7.18",
   "description": "simple decorator based validation engine",
   "type": "module",
   "exports": {
@@ -108,10 +108,10 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0",
-    "@decaf-ts/reflection": "latest"
+    "typescript-eslint": "^8.31.0"
   },
   "peerDependencies": {
+    "@decaf-ts/reflection": "latest",
     "@decaf-ts/decoration": "latest",
     "reflect-metadata": "^0.2.1",
     "typed-object-accumulator": "^0.1.5"
