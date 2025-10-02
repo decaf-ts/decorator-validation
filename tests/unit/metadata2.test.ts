@@ -6,7 +6,7 @@ import {
   required,
   step,
   ValidationKeys,
-} from "../../src/index";
+} from "../../src";
 import { description, Metadata } from "@decaf-ts/decoration";
 
 describe("metadata and decoration order", () => {
