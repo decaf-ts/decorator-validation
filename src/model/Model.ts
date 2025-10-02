@@ -392,10 +392,7 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      const designType = Metadata.designTypeOf(
-        self.constructor as any,
-        prop as any
-      );
+      const designType = Metadata.type(self.constructor as any, prop as any);
       if (!designType)
         throw new Error(`No metadata found for property ${prop}`);
 
@@ -723,9 +720,9 @@ export abstract class Model<Async extends boolean = false>
     attribute: string
   ): boolean | string | undefined {
     if (Model.isModel((target as Record<string, any>)[attribute])) return true;
-    const metadata = Metadata.designTypeOf(
+    const metadata = Metadata.type(
       target.constructor as Constructor<M>,
-      attribute as keyof M
+      attribute as string
     );
     if (!metadata) return undefined;
     return Model.get(metadata.name) ? metadata.name : undefined;

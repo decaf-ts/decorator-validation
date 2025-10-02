@@ -1,6 +1,7 @@
 import { Model } from "../model/Model";
 import { Constructor } from "@decaf-ts/decoration";
 import { ExtendedMetadata } from "./types";
+import { ValidationMetadata } from "../validation/index";
 
 declare module "@decaf-ts/decoration" {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -30,43 +31,30 @@ declare module "@decaf-ts/decoration" {
      * // Get specific validation metadata
      * const required = Metadata.validationFor(User, 'name', 'required');
      */
-    function validationFor<M extends Model>(
+    function validationFor<
+      M extends Model,
+      P extends keyof M = keyof M,
+      K extends string = string,
+    >(
+      this: Metadata,
       model: Constructor<M>,
-      property: keyof M,
+      property?: keyof M,
       key?: string
-    ): any;
+    ):
+      | (K extends string
+          ? ValidationMetadata
+          : P extends keyof M
+            ? Record<string, ValidationMetadata>
+            : Record<keyof M, Record<string, ValidationMetadata>>)
+      | undefined;
 
     /**
-     * @description Retrieves the design-time type information for a model property
-     * @summary Uses TypeScript's reflection metadata to return the Constructor type that
-     * was inferred or explicitly set for a given property. This is particularly useful
-     * for understanding property types at runtime when working with decorators.
-     *
-     * @template M - The model type extending from Model
-     * @param {Constructor<M>} model - The constructor of the target model class
-     * @param {keyof M} prop - The property name to retrieve the type for
-     * @return {Constructor|undefined} The constructor function representing the property's type, or undefined if not found
-     *
-     * @example
-     * class Product extends Model {
-     *   @type(String)
-     *   name!: string;
-     *
-     *   @type(Number)
-     *   price!: number;
-     *
-     *   @type(() => Date)
-     *   createdAt!: Date;
-     * }
-     *
-     * const nameType = Metadata.designTypeOf(Product, 'name'); // returns String
-     * const priceType = Metadata.designTypeOf(Product, 'price'); // returns Number
-     * const dateType = Metadata.designTypeOf(Product, 'createdAt'); // returns Date
+     * @description Retrieves all validatable for a model
+     * @param model
      */
-    function designTypeOf<M extends Model>(
-      model: Constructor<M>,
-      prop: keyof M
-    ): Constructor | undefined;
+    function validatableProperties<M extends Model>(
+      model: Constructor<M>
+    ): string[];
 
     /**
      * @description Retrieves extended metadata for a model or a specific key within it
