@@ -28,5 +28,4 @@ export enum ModelKeys {
   HASHING = "hashing",
   SERIALIZATION = "serialization",
   CONSTRUCTOR = "constructor",
-  ORIGINAL_CLASS = "constructorName",
 }

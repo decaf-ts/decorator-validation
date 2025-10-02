@@ -21,15 +21,13 @@ export function modelBaseDecorator(original: any) {
     const builder = Model.getBuilder();
     if (builder) builder(instance, args.length ? args[0] : undefined);
 
-    metadata(ModelKeys.ORIGINAL_CLASS, original.name)(instance.constructor);
+    // metadata(ModelKeys.ORIGINAL_CLASS, original.name)(instance.constructor);
 
     return instance;
   };
 
   // copy prototype so instanceof operator still works
   newConstructor.prototype = original.prototype;
-
-  metadata(ModelKeys.ORIGINAL_CLASS, original.name)(original);
 
   Reflect.getMetadataKeys(original).forEach((key) => {
     Reflect.defineMetadata(
@@ -46,13 +44,16 @@ export function modelBaseDecorator(original: any) {
     value: original.prototype.constructor.name,
   });
 
-  // anchors the original constructor for future reference
-  Object.defineProperty(newConstructor, ModelKeys.ANCHOR, {
-    writable: false,
-    enumerable: false,
-    configurable: false,
-    value: original,
-  });
+  metadata(ModelKeys.CONSTRUCTOR, original)(newConstructor);
+
+  //
+  // // anchors the original constructor for future reference
+  // Object.defineProperty(newConstructor, ModelKeys.ANCHOR, {
+  //   writable: false,
+  //   enumerable: false,
+  //   configurable: false,
+  //   value: original,
+  // });
   //
   // // anchors the new constructor for future reference
   // Object.defineProperty(original, ModelKeys.ANCHOR, {

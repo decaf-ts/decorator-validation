@@ -70,7 +70,8 @@ const originalGet = Metadata.get;
   M,
   META extends ExtendedMetadata<M> = ExtendedMetadata<M>,
 >(model: Constructor, key?: string): META | undefined {
-  model = model[ModelKeys.ANCHOR as keyof typeof model] || model;
+  if (key !== ModelKeys.CONSTRUCTOR)
+    model = Metadata.constructor(model) || model;
   return originalGet.call(Metadata, model, key as string) as any;
 };
 
@@ -80,7 +81,7 @@ const originalSet = Metadata.set;
   key: string,
   value: any
 ) {
-  model = model[ModelKeys.ANCHOR as keyof typeof model] || model;
+  if (typeof model !== "string") model = Metadata.constructor(model) || model;
   originalSet.call(Metadata, model, key as string, value);
 };
 
