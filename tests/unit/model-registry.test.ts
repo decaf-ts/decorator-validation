@@ -1,6 +1,5 @@
 import { model, Model } from "../../src";
 import type { ModelArg } from "../../src";
-import "reflect-metadata";
 
 @model()
 class TestModel extends Model {

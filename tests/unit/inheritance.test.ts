@@ -1,7 +1,6 @@
 import { required, Model, model } from "../../src";
 import type { ModelArg } from "../../src";
 import { hashObj } from "../../src";
-import { Reflection } from "@decaf-ts/reflection";
 
 type Callback = (...args: any) => void;
 

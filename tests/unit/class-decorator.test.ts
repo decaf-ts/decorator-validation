@@ -1,4 +1,5 @@
-import { model, Model, ModelArg, ModelConstructor, prop } from "../../src";
+import { model, Model, ModelArg, ModelConstructor } from "../../src";
+import { prop } from "@decaf-ts/decoration";
 
 @model()
 class TestModel extends Model {

@@ -9,9 +9,9 @@ import {
   parseDate,
   formatDate,
   twoDigitPad,
-  prop,
 } from "../../src";
 import type { ModelArg } from "../../src";
+import { prop } from "@decaf-ts/decoration";
 
 @model()
 class TestModel extends Model {

@@ -164,15 +164,13 @@ describe("Validation", function () {
       });
 
       const output = dm.toString();
-      expect(output).toBe(
-        `TestModel: {
-        "id": "id",
-        "prop1": 23,
-        "prop2": "tests",
-        "prop3": "asdasfsdfsda",
-        "prop4": "test@pdm.com"
-        }`
-      );
+      expect(output).toBe(`TestModel: {
+  "id": "id",
+  "prop1": 23,
+  "prop2": "tests",
+  "prop3": "asdasfsdfsda",
+  "prop4": "test@pdm.com"
+}`);
     });
 
     it("Create & Equality & Hash", function () {
