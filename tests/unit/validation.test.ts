@@ -385,7 +385,7 @@ describe("Validation", function () {
     });
 
     it("tests validate method", () => {
-      const validateResult = validate(new NewModel(), false);
+      const validateResult = validate(new NewModel({ name: "John" }), false);
       expect(validateResult).toBeUndefined();
     });
   });

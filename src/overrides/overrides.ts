@@ -75,6 +75,6 @@ import { ValidationKeys } from "../validation/Validators/constants";
 
   if (!validation) return;
   return validation[ValidationKeys.TYPE]
-    ? [validation[ValidationKeys.TYPE], designType]
+    ? [validation[ValidationKeys.TYPE]]
     : [designType];
 }.bind(Metadata);

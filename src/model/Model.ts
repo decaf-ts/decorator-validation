@@ -392,11 +392,6 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      const validation: any = Metadata.validationFor(
-        self.constructor as Constructor,
-        prop
-      );
-
       decorators = Metadata.allowedTypes(self.constructor as any, prop);
 
       if (!decorators || !decorators.length)
@@ -423,6 +418,10 @@ export abstract class Model<Async extends boolean = false>
             switch (c) {
               case "Array":
               case "Set": {
+                const validation: any = Metadata.validationFor(
+                  self.constructor as Constructor,
+                  prop
+                );
                 const listDec: ListValidatorOptions =
                   validation[ValidationKeys.LIST];
                 if (!listDec) break;
