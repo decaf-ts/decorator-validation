@@ -8,7 +8,6 @@ import {
   Model,
   ModelArg,
   ModelErrorDefinition,
-  prop,
   required,
   validate,
   Validation,
@@ -24,6 +23,7 @@ import {
   timeout,
   TimeoutValidator,
 } from "./validation.utils";
+import { prop } from "@decaf-ts/decoration";
 
 describe("Async Validation", () => {
   beforeAll(() => {

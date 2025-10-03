@@ -9,13 +9,11 @@ import {
   model,
   Model,
   ModelArg,
-  propMetadata,
   required,
-  Validation,
-  ValidationMetadata,
   validator,
   ValidatorOptions,
 } from "../../src";
+import { propMetadata } from "@decaf-ts/decoration";
 
 export function isPromise(obj: any): boolean {
   return (
@@ -57,14 +55,11 @@ export class TimeoutValidator extends AsyncValidator<{
 }
 
 export const timeout = (message: string = TIMEOUT_ERROR_MESSAGE) => {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(TIMEOUT_VALIDATION_KEY),
-    {
-      message: message,
-      types: ["number"],
-      async: true,
-    }
-  );
+  return propMetadata(TIMEOUT_VALIDATION_KEY, {
+    message: message,
+    types: ["number"],
+    async: true,
+  });
 };
 
 @model()
