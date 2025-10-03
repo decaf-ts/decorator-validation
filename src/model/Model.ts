@@ -422,9 +422,9 @@ export abstract class Model<Async extends boolean = false>
                   self.constructor as Constructor,
                   prop
                 );
+                if (!validation || validation[ValidationKeys.LIST]) break;
                 const listDec: ListValidatorOptions =
                   validation[ValidationKeys.LIST];
-                if (!listDec) break;
                 let clazzName = (listDec.clazz as string[]).find(
                   (t: string) => {
                     t = typeof t === "function" ? (t as any)() : t;

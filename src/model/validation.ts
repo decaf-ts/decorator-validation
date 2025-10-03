@@ -417,11 +417,15 @@ export function validate<
   //     prop
   //   );
 
+  //   const validationMeta = Metadata.validationFor(
+  //     model.constructor as Constructor,
+  //     prop
+  //   );
+
   //   if (!decorators || !decorators?.length) continue;
 
   //   // TODO: Refactor from this point forward
   //   const designTypeDec = decorators[0];
-
   //   const designType: any =
   //     designTypeDec.class ||
   //     designTypeDec.clazz ||
@@ -436,9 +440,11 @@ export function validate<
   //   }) as string[];
 
   //   // Handle array or Set types and enforce the presence of @list decorator
-  //   // if ([Array.name, Set.name].includes(designType)) {}
   //   if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
-  //     if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
+  //     if (
+  //       !validationMeta ||
+  //       !Object.keys(validationMeta).includes(ValidationKeys.LIST)
+  //     ) {
   //       result[propKey] = {
   //         [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
   //       };
@@ -455,12 +461,6 @@ export function validate<
   //       continue;
   //     }
 
-  //     // Remove design:type decorator, since @list decorator already ensures type
-  //     for (let i = decorators.length - 1; i >= 0; i--) {
-  //       if (decorators[i].key === ModelKeys.TYPE) {
-  //         decorators.splice(i, 1);
-  //       }
-  //     }
   //     propValue = propValue instanceof Set ? [...propValue] : propValue;
   //   }
 
@@ -473,7 +473,7 @@ export function validate<
   //   //     async,
   //   //     ...propsToIgnore
   //   //   ) || {};
-  //   const propErrors = {} as Record<string, any>;
+  //   const propErrors = {} as Record<string, any>; // Temporary line until validateDecorators is fixed
 
   //   // Check for nested properties.
   //   // To prevent unnecessary processing, "propValue" must be defined and validatable

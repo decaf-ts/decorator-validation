@@ -62,16 +62,13 @@ import { ValidationKeys } from "../validation/Validators/constants";
 
 (Metadata as any).allowedTypes = function <M extends Model>(
   model: Constructor<M>,
-  property?: keyof M
+  prop?: keyof M
 ) {
-  const designType = Metadata.type(model, property as any);
+  const designType = Metadata.type(model, prop as any);
   if (!designType)
-    throw new Error(`No metadata found for property ${String(property)}`);
+    throw new Error(`No metadata found for property ${String(prop)}`);
 
-  const validation: any = Metadata.validationFor(
-    model as Constructor,
-    property
-  );
+  const validation: any = Metadata.validationFor(model as Constructor, prop);
 
   if (!validation) return;
   return validation[ValidationKeys.TYPE]
