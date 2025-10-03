@@ -191,31 +191,31 @@ export function validateDecorator<
   // if (!validator) {
   //   throw new Error(`Missing validator for ${decorator.key}`);
   // }
-  //
+
   // // skip async decorators if validateDecorators is called synchronously (async = false)
   // if (!async && decorator.props.async) return undefined as any;
-  //
+
   // const decoratorProps =
   //   decorator.key === ModelKeys.TYPE
   //     ? [decorator.props]
   //     : decorator.props || {};
-  //
+
   // const context = PathProxyEngine.create(model, {
   //   ignoreUndefined: true,
   //   ignoreNull: true,
   // });
-  //
+
   // const validatorOptions: ValidatorOptions | TypeValidatorOptions =
   //   decorator.key === ModelKeys.TYPE
   //     ? { type: (decoratorProps as any)[0].name }
   //     : (decoratorProps as ValidatorOptions);
-  //
+
   // const maybeAsyncErrors = validator.hasErrors(
   //   value,
   //   validatorOptions,
   //   context
   // );
-  //
+
   // return toConditionalPromise(maybeAsyncErrors, async);
 }
 
@@ -259,13 +259,13 @@ export function validateDecorators<
 ): ConditionalAsync<Async, Record<string, string> | undefined> {
   throw new Error("validateDecorators is not implemented");
   // const result: Record<string, string | Promise<string>> = {};
-  //
+
   // for (const decorator of decorators) {
   //   // skip async decorators if validateDecorators is called synchronously (async = false)
-  //   if (!async && decorator.props.async) continue;
-  //
+  //   if (!async && decorator.async) continue;
+
   //   let validationErrors = validateDecorator(model, value, decorator, async);
-  //
+
   //   /*
   //   If the decorator is a list, each element must be checked.
   //   When 'async' is true, the 'err' will always be a pending promise initially,
@@ -274,16 +274,16 @@ export function validateDecorators<
   //   if (decorator.key === ValidationKeys.LIST && (!validationErrors || async)) {
   //     const values = value instanceof Set ? [...value] : value;
   //     if (values && values.length > 0) {
-  //       let types: string[] = (decorator.props.class ||
-  //         decorator.props.clazz ||
-  //         decorator.props.customTypes) as string[];
+  //       let types: string[] = (decorator.class ||
+  //         decorator.clazz ||
+  //         decorator.customTypes) as string[];
   //       types = (Array.isArray(types) ? types : [types]).map((e: any) => {
   //         e = typeof e === "function" && !e.name ? e() : e;
   //         return (e as any).name ? (e as any).name : e;
   //       }) as string[];
   //       const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
   //       // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
-  //
+
   //       const errs = values.map((childValue: any) => {
   //         // if (Model.isModel(v) && !reserved.includes(v) {
   //         if (Model.isModel(childValue)) {
@@ -297,12 +297,12 @@ export function validateDecorators<
   //           );
   //           // return getNestedValidationErrors(childValue, model, async);
   //         }
-  //
+
   //         return allowedTypes.includes(typeof childValue)
   //           ? undefined
   //           : "Value has no validatable type";
   //       });
-  //
+
   //       if (async) {
   //         validationErrors = Promise.all(errs).then((result) => {
   //           const allEmpty = result.every((r) => !r);
@@ -314,17 +314,17 @@ export function validateDecorators<
   //       }
   //     }
   //   }
-  //
+
   //   const name =
   //     decorator.key === ModelKeys.TYPE ? ValidationKeys.TYPE : decorator.key;
   //   if (validationErrors) (result as any)[name] = validationErrors;
   // }
-  //
+
   // if (!async)
   //   return Object.keys(result).length > 0
   //     ? (result as any)
   //     : (undefined as any);
-  //
+
   // const keys = Object.keys(result);
   // const promises = Object.values(result) as Promise<string | undefined>[];
   // return Promise.all(promises).then((resolvedValues) => {
@@ -464,16 +464,17 @@ export function validate<
   //     propValue = propValue instanceof Set ? [...propValue] : propValue;
   //   }
 
-  //   // const propErrors: Record<string, any> =
-  //   //   validateDecorators(
-  //   //     model,
-  //   //     propKey,
-  //   //     propValue,
-  //   //     decorators,
-  //   //     async,
-  //   //     ...propsToIgnore
-  //   //   ) || {};
-  //   const propErrors = {} as Record<string, any>; // Temporary line until validateDecorators is fixed
+  //   // TODO: Fix below this point.
+  //   const propErrors: Record<string, any> =
+  //     validateDecorators(
+  //       model,
+  //       propKey,
+  //       propValue,
+  //       decorators,
+  //       async,
+  //       ...propsToIgnore
+  //     ) || {};
+  //   // const propErrors = {} as Record<string, any>; // Temporary line until validateDecorators is fixed
 
   //   // Check for nested properties.
   //   // To prevent unnecessary processing, "propValue" must be defined and validatable

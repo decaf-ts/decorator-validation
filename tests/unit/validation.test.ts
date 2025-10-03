@@ -114,12 +114,12 @@ class OptionModel extends Model {
 
 @model()
 class NewModel extends Model {
-  // @type([String])
-  // @required()
-  // name: string = "Alex";
+  @type([String])
+  @required()
+  name: string = "Alex";
 
-  // @required()
-  // propModel!: OptionModel;
+  @required()
+  propModel!: OptionModel;
 
   // @type([String])
   @list(String)
