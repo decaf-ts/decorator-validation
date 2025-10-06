@@ -80,8 +80,9 @@ export class ListValidator extends Validator<ListValidatorOptions> {
       Array.isArray(options.clazz) ? options.clazz : [options.clazz]
     ).map((c) => {
       if (typeof c === "string") return c;
-      if (!c.name) return (c as () => Constructor<any>)().name;
-      return c.name;
+      if (!c?.name && typeof c === "function")
+        return (c as () => Constructor<any>)().name;
+      return c?.name;
     });
     let val: any,
       isValid = true;
@@ -97,7 +98,7 @@ export class ListValidator extends Validator<ListValidatorOptions> {
           isValid = clazz.includes(((val ?? {}) as object).constructor?.name); // null is an object
           break;
         default:
-          isValid = clazz.some((c: string) => typeof val === c.toLowerCase());
+          isValid = clazz.some((c: string) => typeof val === c?.toLowerCase());
           break;
       }
     }

@@ -6,7 +6,7 @@ import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
   TypeValidatorOptions,
-  ValidationMetadata,
+  validationMetadatadata,
   ValidationPropertyDecoratorDefinition,
   ValidatorOptions,
 } from "../validation";
@@ -191,31 +191,23 @@ export function validateDecorator<
   // if (!validator) {
   //   throw new Error(`Missing validator for ${decorator.key}`);
   // }
-
   // // skip async decorators if validateDecorators is called synchronously (async = false)
-  // if (!async && decorator.props.async) return undefined as any;
-
+  // if (!async && decorator.async) return undefined as any;
   // const decoratorProps =
-  //   decorator.key === ModelKeys.TYPE
-  //     ? [decorator.props]
-  //     : decorator.props || {};
-
+  //   decorator.key === ModelKeys.TYPE ? [decorator] : decorator || {};
   // const context = PathProxyEngine.create(model, {
   //   ignoreUndefined: true,
   //   ignoreNull: true,
   // });
-
   // const validatorOptions: ValidatorOptions | TypeValidatorOptions =
   //   decorator.key === ModelKeys.TYPE
   //     ? { type: (decoratorProps as any)[0].name }
   //     : (decoratorProps as ValidatorOptions);
-
   // const maybeAsyncErrors = validator.hasErrors(
   //   value,
   //   validatorOptions,
   //   context
   // );
-
   // return toConditionalPromise(maybeAsyncErrors, async);
 }
 
@@ -259,13 +251,10 @@ export function validateDecorators<
 ): ConditionalAsync<Async, Record<string, string> | undefined> {
   throw new Error("validateDecorators is not implemented");
   // const result: Record<string, string | Promise<string>> = {};
-
   // for (const decorator of decorators) {
   //   // skip async decorators if validateDecorators is called synchronously (async = false)
   //   if (!async && decorator.async) continue;
-
   //   let validationErrors = validateDecorator(model, value, decorator, async);
-
   //   /*
   //   If the decorator is a list, each element must be checked.
   //   When 'async' is true, the 'err' will always be a pending promise initially,
@@ -283,7 +272,6 @@ export function validateDecorators<
   //       }) as string[];
   //       const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
   //       // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
-
   //       const errs = values.map((childValue: any) => {
   //         // if (Model.isModel(v) && !reserved.includes(v) {
   //         if (Model.isModel(childValue)) {
@@ -297,12 +285,10 @@ export function validateDecorators<
   //           );
   //           // return getNestedValidationErrors(childValue, model, async);
   //         }
-
   //         return allowedTypes.includes(typeof childValue)
   //           ? undefined
   //           : "Value has no validatable type";
   //       });
-
   //       if (async) {
   //         validationErrors = Promise.all(errs).then((result) => {
   //           const allEmpty = result.every((r) => !r);
@@ -314,17 +300,14 @@ export function validateDecorators<
   //       }
   //     }
   //   }
-
   //   const name =
   //     decorator.key === ModelKeys.TYPE ? ValidationKeys.TYPE : decorator.key;
   //   if (validationErrors) (result as any)[name] = validationErrors;
   // }
-
   // if (!async)
   //   return Object.keys(result).length > 0
   //     ? (result as any)
   //     : (undefined as any);
-
   // const keys = Object.keys(result);
   // const promises = Object.values(result) as Promise<string | undefined>[];
   // return Promise.all(promises).then((resolvedValues) => {
@@ -417,14 +400,17 @@ export function validate<
   //     prop
   //   );
 
-  //   const validationMeta = Metadata.validationFor(
+  //   const validationMetadata = Metadata.validationFor(
   //     model.constructor as Constructor,
   //     prop
   //   );
 
-  //   if (!decorators || !decorators?.length) continue;
+  //   if (!decorators || !decorators?.length || !validationMetadata) continue;
 
-  //   // TODO: Refactor from this point forward
+  //   // for (const key of Object.keys(validationMetadata)) {
+  //   //   validationMetadata[key].key = key;
+  //   // }
+
   //   const designTypeDec = decorators[0];
   //   const designType: any =
   //     designTypeDec.class ||
@@ -442,8 +428,8 @@ export function validate<
   //   // Handle array or Set types and enforce the presence of @list decorator
   //   if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
   //     if (
-  //       !validationMeta ||
-  //       !Object.keys(validationMeta).includes(ValidationKeys.LIST)
+  //       !validationMetadata ||
+  //       !Object.keys(validationMetadata).includes(ValidationKeys.LIST)
   //     ) {
   //       result[propKey] = {
   //         [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
@@ -464,7 +450,7 @@ export function validate<
   //     propValue = propValue instanceof Set ? [...propValue] : propValue;
   //   }
 
-  //   // TODO: Fix below this point.
+  //   // TODO: Refactor from this point forward
   //   const propErrors: Record<string, any> =
   //     validateDecorators(
   //       model,
