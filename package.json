@@ -5,12 +5,14 @@
   "type": "module",
   "exports": {
     ".": {
+      "types": "./lib/index.d.ts",
       "require": "./lib/index.cjs",
       "import": "./lib/esm/index.js"
     },
     "./mcp": {
       "require": "./lib/mcp/index.cjs",
-      "import": "./lib/esm/mcp/index.js"
+      "import": "./lib/esm/mcp/index.js",
+      "types": "./lib/index.d.ts"
     }
   },
   "types": "lib/index.d.ts",
