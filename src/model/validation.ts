@@ -189,7 +189,6 @@ export function validateDecorators<
   const result: Record<string, string | Promise<string>> = {};
   for (const decoratorKey in decorators) {
     const decorator = { ...decorators[decoratorKey], key: decoratorKey };
-    // decorator.key = decoratorKey;
     // skip async decorators if validateDecorators is called synchronously (async = false)
     if (!async && decorator.async) continue;
     let validationErrors = validateDecorator(model, value, decorator, async);

@@ -31,7 +31,7 @@ class InnerTestModel extends Model {
 
 @model()
 class TestModel extends Model {
-  @type(["string", "number"])
+  @type([String, Number])
   @required()
   id!: string | number;
 
@@ -60,10 +60,10 @@ class TestModel extends Model {
   @url()
   prop6?: string;
 
-  @type(InnerTestModel.name)
+  @type(InnerTestModel)
   prop7?: InnerTestModel;
 
-  @type(Array.name)
+  @type(Array)
   @list(InnerTestModel)
   prop8?: InnerTestModel[];
 
@@ -119,14 +119,13 @@ class NewModel extends Model {
   @required()
   name: string = "Alex";
 
-  // @type([String])
+  @type([String])
   @required()
   age: number = 4;
 
   @required()
   propModel!: OptionModel;
 
-  // @type([String])
   @list(String)
   @required()
   entityArray: any[] = ["name", "age"];
