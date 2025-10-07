@@ -136,9 +136,13 @@ describe("metadata and decoration order", () => {
     class DecoratedModel2 extends Model {
       @description("Decorated Model id description")
       @required()
-      @min(0)
-      @step(0.01)
+      @min(10)
+      @step(1)
       id!: number;
+
+      @description("Decorated Model name description")
+      @required()
+      name!: string;
 
       constructor(arg?: ModelArg<DecoratedModel2>) {
         super(arg);
@@ -147,8 +151,10 @@ describe("metadata and decoration order", () => {
 
     const classDescription = Model.describe(DecoratedModel2);
     const propDescription = Model.describe(DecoratedModel2, "id");
+    const propNameDescription = Model.describe(DecoratedModel2, "name");
     const validations = Metadata.validationFor(DecoratedModel2);
     const validationId = Metadata.validationFor(DecoratedModel2, "id");
+    const validationName = Metadata.validationFor(DecoratedModel2, "name");
     const validationsIdRequired = Metadata.validationFor(
       DecoratedModel2,
       "id",
@@ -157,6 +163,7 @@ describe("metadata and decoration order", () => {
 
     expect(classDescription).toEqual("Decorated over Model description");
     expect(propDescription).toEqual("Decorated Model id description");
+    expect(propNameDescription).toEqual("Decorated Model name description");
 
     const requiredValids = expect.objectContaining({
       description: "defines the attribute as required",
@@ -167,23 +174,28 @@ describe("metadata and decoration order", () => {
     const innerValids = expect.objectContaining({
       [ValidationKeys.REQUIRED]: requiredValids,
       [ValidationKeys.MIN]: {
-        [ValidationKeys.MIN]: 0,
+        [ValidationKeys.MIN]: 10,
         description:
-          "defines the max value of the attribute as 0 (applies to numbers or Dates)",
+          "defines the max value of the attribute as 10 (applies to numbers or Dates)",
         message: "The minimum value is {0}",
         async: false,
       },
       [ValidationKeys.STEP]: {
-        [ValidationKeys.STEP]: 0.01,
-        description: "defines the step of the attribute as 0.01",
+        [ValidationKeys.STEP]: 1,
+        description: "defines the step of the attribute as 1",
         message: "Invalid value. Not a step of {0}",
         async: false,
       },
     });
 
+    const innerNmeValids = expect.objectContaining({
+      [ValidationKeys.REQUIRED]: requiredValids,
+    });
+
     expect(validations).toEqual(
       expect.objectContaining({
         id: innerValids,
+        name: innerNmeValids,
       })
     );
     expect(validationId).toEqual(innerValids);
