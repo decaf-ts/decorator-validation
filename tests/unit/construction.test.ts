@@ -76,7 +76,7 @@ describe("Construction", () => {
     const model = new ConstructionTestModel({
       prop1: "test",
     });
-    // expect(model.hasErrors()).toBeUndefined();
+    expect(model.hasErrors()).toBeUndefined();
     Model.setBuilder();
   });
 
@@ -90,32 +90,32 @@ describe("Construction", () => {
     it("Only builds the parent class with the object Builder function", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);
-      // const errors = model.hasErrors();
-      // expect(errors).toBeUndefined();
-      // expect(errors).toEqual(
-      //   new ModelErrorDefinition({
-      //     child: {
-      //       [ValidationKeys.TYPE]:
-      //         "Invalid type. Expected ConstructionTestModel, received object",
-      //     },
-      //   })
-      // );
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+      expect(errors).toEqual(
+        new ModelErrorDefinition({
+          child: {
+            [ValidationKeys.TYPE]:
+              "Invalid type. Expected ConstructionTestModel, received object",
+          },
+        })
+      );
       expect(model.child).not.toBeInstanceOf(ConstructionTestModel);
       Model.setBuilder();
     });
 
     it("builds the parent and child classes with the normal Builder function", () => {
       const model = new ParentConstructionTestModel(r);
-      // const errors = model.hasErrors();
-      // expect(errors).toBeUndefined();
-      // expect(errors).toEqual(
-      //   new ModelErrorDefinition({
-      //     child: {
-      //       [ValidationKeys.TYPE]:
-      //         "Invalid type. Expected ConstructionTestModel, received object",
-      //     },
-      //   })
-      // );
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+      expect(errors).toEqual(
+        new ModelErrorDefinition({
+          child: {
+            [ValidationKeys.TYPE]:
+              "Invalid type. Expected ConstructionTestModel, received object",
+          },
+        })
+      );
       expect(model.child).toBeInstanceOf(ConstructionTestModel);
     });
 
@@ -137,11 +137,11 @@ describe("Construction", () => {
         const model = new ParentConstructionTestModel(r);
         expect(model.child).toBeInstanceOf(ConstructionTestModel);
 
-        // const mock = jest.spyOn(model.child!, "hasErrors");
+        const mock = jest.spyOn(model.child!, "hasErrors");
 
-        // expect(model.hasErrors()).toBeUndefined();
-        // expect(mock).toHaveBeenCalledTimes(1);
-        // expect(mock).toHaveReturnedWith(undefined);
+        expect(model.hasErrors()).toBeUndefined();
+        expect(mock).toHaveBeenCalledTimes(1);
+        expect(mock).toHaveReturnedWith(undefined);
       });
 
       it("Builds Another Class Properly", () => {
@@ -150,26 +150,26 @@ describe("Construction", () => {
         });
         expect(model.parent!).toBeInstanceOf(ParentConstructionTestModel);
         expect(model.parent!.child!).toBeInstanceOf(ConstructionTestModel);
-        // expect(model.hasErrors()).toBeUndefined();
+        expect(model.hasErrors()).toBeUndefined();
 
-        // const mock = jest.spyOn(model.parent!.child!, "hasErrors");
+        const mock = jest.spyOn(model.parent!.child!, "hasErrors");
 
-        // expect(model.hasErrors()).toBeUndefined();
-        // expect(mock).toHaveBeenCalledTimes(1);
-        // expect(mock).toHaveReturnedWith(undefined);
+        expect(model.hasErrors()).toBeUndefined();
+        expect(mock).toHaveBeenCalledTimes(1);
+        expect(mock).toHaveReturnedWith(undefined);
       });
 
       it("handles lists properly", () => {
         let model = new TestModelWithList();
-        // const errs = model.hasErrors();
-        // expect(errs).toBeDefined();
-        // expect(errs).toEqual(
-        //   new ModelErrorDefinition({
-        //     models: {
-        //       [ValidationKeys.REQUIRED]: "This field is required",
-        //     },
-        //   })
-        // );
+        const errs = model.hasErrors();
+        expect(errs).toBeDefined();
+        expect(errs).toEqual(
+          new ModelErrorDefinition({
+            models: {
+              [ValidationKeys.REQUIRED]: "This field is required",
+            },
+          })
+        );
 
         model = new TestModelWithList({
           models: [
@@ -181,11 +181,11 @@ describe("Construction", () => {
 
         expect(model.models![0]).toBeInstanceOf(ConstructionTestModel);
 
-        // const mock = jest.spyOn(model.models![0], "hasErrors");
+        const mock = jest.spyOn(model.models![0], "hasErrors");
 
-        // expect(model.hasErrors()).toBeUndefined();
-        // expect(mock).toHaveBeenCalledTimes(1);
-        // expect(mock).toHaveReturnedWith(undefined);
+        expect(model.hasErrors()).toBeUndefined();
+        expect(mock).toHaveBeenCalledTimes(1);
+        expect(mock).toHaveReturnedWith(undefined);
       });
     });
   });
@@ -196,7 +196,7 @@ describe("Construction", () => {
         prop1: "test",
       });
       //
-      // expect(m.hasErrors()).toBeUndefined();
+      expect(m.hasErrors()).toBeUndefined();
     });
   });
 });

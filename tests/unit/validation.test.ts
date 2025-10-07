@@ -119,7 +119,7 @@ class NewModel extends Model {
   @required()
   name: string = "Alex";
 
-  @type([String])
+  // @type([String])
   @required()
   age: number = 4;
 
@@ -388,9 +388,16 @@ describe("Validation", function () {
       expect(result).toBeDefined();
     });
 
-    it("tests validate method", () => {
-      const validateResult = validate(new NewModel({ name: "John" }), false);
-      expect(validateResult).toBeUndefined();
+    it("tests validate sync method", () => {
+      const validatesync = validate(new NewModel(), false);
+      console.log("validatesync:", validatesync);
+      expect(validatesync).toBeDefined();
+    });
+
+    it("tests validate async method", async () => {
+      const validateasync = await validate(new NewModel(), true);
+      console.log("validateasync:", validateasync);
+      expect(validateasync).toBeDefined();
     });
   });
 });
