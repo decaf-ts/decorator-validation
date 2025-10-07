@@ -588,9 +588,28 @@ export abstract class Model<Async extends boolean = false>
    * @return {string[]} - Array of attribute names defined in the model
    */
   static getAttributes<V extends Model>(model: Constructor<V> | V): string[] {
-    return Metadata.properties(
-      model instanceof Model ? (model.constructor as Constructor) : model
-    ) as string[] | [];
+    const constructor =
+      model instanceof Model ? (model.constructor as Constructor) : model;
+    const seen = new Set<string>();
+
+    const collect = (current?: Constructor): string[] => {
+      if (!current) return [];
+
+      const parent = Object.getPrototypeOf(current) as Constructor | undefined;
+      const attributes = collect(parent);
+      const props = Metadata.properties(current) ?? [];
+
+      for (const prop of props) {
+        if (!seen.has(prop)) {
+          seen.add(prop);
+          attributes.push(prop);
+        }
+      }
+
+      return attributes;
+    };
+
+    return collect(constructor);
   }
 
   /**
