@@ -6,77 +6,13 @@ import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
   TypeValidatorOptions,
-  validationMetadatadata,
-  ValidationPropertyDecoratorDefinition,
   ValidatorOptions,
 } from "../validation";
 import { PathProxyEngine } from "../utils/PathProxy";
 import { ASYNC_META_KEY, VALIDATION_PARENT_KEY } from "../constants";
-import { ConditionalAsync, DecoratorMetadataAsync } from "../types";
-import { Reflection } from "@decaf-ts/reflection";
+import { ConditionalAsync } from "../types";
 import { toConditionalPromise } from "./utils";
-import { Constructor, metadata, Metadata } from "@decaf-ts/decoration";
-
-/**
- * Retrieves the validation metadata decorators associated with a specific property of a model,
- * using the reflective metadata key.
- *
- * @param model - The model instance or class containing the decorated property.
- * @param {string} prop - The name of the property whose decorators should be retrieved.
- * @param {string} reflectKey - The metadata key used to retrieve the decorators.
- *                     Defaults to `ValidationKeys.REFLECT`.
- *
- * @returns The validation decorators applied to the property
- */
-export function getValidationDecorators(
-  model: Record<string, any>,
-  prop: string,
-  reflectKey: string = ValidationKeys.REFLECT
-): ValidationPropertyDecoratorDefinition {
-  return Reflection.getPropertyDecorators(
-    reflectKey,
-    model,
-    prop
-  ) as unknown as ValidationPropertyDecoratorDefinition;
-}
-
-/**
- * @description
- * Retrieves all validatable property decorators from a given model, excluding specified properties.
- *
- * @summary
- * Iterates through the own enumerable properties of a model instance, filtering out any properties
- * listed in the `propsToIgnore` array. For each remaining property, it checks whether validation
- * decorators are present using `getValidationDecorators`, and if so, collects them in the result array.
- *
- * @template M - A generic parameter extending the `Model` class, representing the model type being inspected.
- *
- * @param {M} model - An instance of a class extending `Model` from which validatable properties will be extracted.
- * @param {string[]} propsToIgnore - An array of property names that should be excluded from validation inspection.
- *
- * @return {ValidationPropertyDecoratorDefinition[]} An array of validation decorator definitions
- * associated with the model's properties, excluding those listed in `propsToIgnore`.
- *
- * @function getValidatableProperties
- */
-export function getValidatableProperties<M extends Model>(
-  model: M,
-  propsToIgnore: string[]
-): ValidationPropertyDecoratorDefinition[] {
-  const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
-
-  for (const prop in model) {
-    if (
-      Object.prototype.hasOwnProperty.call(model, prop) &&
-      !propsToIgnore.includes(prop)
-    ) {
-      const dec = getValidationDecorators(model, prop);
-      if (dec) decoratedProperties.push(dec);
-    }
-  }
-
-  return decoratedProperties;
-}
+import { Constructor, Metadata } from "@decaf-ts/decoration";
 
 /**
  * Safely sets temporary metadata on an object
