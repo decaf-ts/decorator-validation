@@ -323,7 +323,7 @@ export function validate<
 
   const decoratedProperties = Metadata.validatableProperties(
     model.constructor as any,
-    propsToIgnore
+    ...propsToIgnore
   );
 
   const result: Record<string, any> = {};

@@ -54,7 +54,7 @@ declare module "@decaf-ts/decoration" {
      */
     function validatableProperties<M extends Model>(
       model: Constructor<M>,
-      ...propsToIgnore: any[]
+      ...propsToIgnore: string[]
     ): string[];
 
     /**

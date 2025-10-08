@@ -52,7 +52,9 @@ import { ValidationKeys } from "../validation/Validators/constants";
 ) {
   const meta = Metadata.validationFor(model);
   if (!meta) return [];
-  return Object.keys(meta).filter((k) => !propsToIgnore.includes(k));
+  return Object.keys(meta).filter(
+    (k) => !propsToIgnore || !propsToIgnore?.includes(k)
+  );
 }.bind(Metadata);
 
 (Metadata as any).allowedTypes = function <M extends Model>(
