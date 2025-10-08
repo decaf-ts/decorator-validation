@@ -42,14 +42,14 @@ describe("Comparison Validators", () => {
     @model()
     class SimpleParentTestModel extends Model {
       @required()
-      parentValue: string;
+      parentValue!: string;
 
       @required()
       @list(Number)
       parentArray: number[] = [1, 2, 3, 4, 5];
 
       @required()
-      @type(SimpleChildTestModel.name)
+      @type(SimpleChildTestModel)
       child: SimpleChildTestModel = new SimpleChildTestModel();
 
       constructor(model?: ModelArg<SimpleParentTestModel>) {
@@ -185,7 +185,7 @@ describe("Comparison Validators", () => {
         @eq("mirror.objectValue")
         objectValue: Record<string, any> = {};
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeEqualsModel>) {
@@ -198,7 +198,7 @@ describe("Comparison Validators", () => {
         @eq("mirror.stringValue")
         stringValue: string = "";
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeEqualsModel>) {
@@ -299,7 +299,7 @@ describe("Comparison Validators", () => {
         @diff("mirror.objectValue")
         objectValue: Record<string, any> = {};
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
@@ -312,7 +312,7 @@ describe("Comparison Validators", () => {
         @diff("mirror.stringValue")
         stringValue: string = "";
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
@@ -398,7 +398,7 @@ describe("Comparison Validators", () => {
         @lt("mirror.mirrorDateValue")
         dateValue: Date = new Date(0);
 
-        @type(LessThanTestModel.name)
+        @type(LessThanTestModel)
         mirror?: LessThanTestModel;
 
         constructor(model?: ModelArg<MultiTypeLessThanModel>) {
@@ -412,7 +412,7 @@ describe("Comparison Validators", () => {
         @lt("mirror.invalidField")
         numberValue: number = 0;
 
-        @type(LessThanTestModel.name)
+        @type(LessThanTestModel)
         mirror?: LessThanTestModel;
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
@@ -778,7 +778,7 @@ describe("Comparison Validators", () => {
         @lte("mirror.invalidField")
         numberValue: number = 0;
 
-        @type(MirrorTestModel.name)
+        @type(MirrorTestModel)
         mirror?: MirrorTestModel;
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {

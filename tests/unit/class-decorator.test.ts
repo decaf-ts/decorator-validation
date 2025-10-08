@@ -24,7 +24,9 @@ describe("Class Decorators", () => {
 
   it("should serialize and deserialize", () => {
     const tm = new TestModel();
-    const tmFromRegistry = Model.build(Model.deserialize(tm.serialize()));
+    const serialized = tm.serialize();
+    const deserialized = Model.deserialize(serialized);
+    const tmFromRegistry = Model.build(deserialized);
     expect(tmFromRegistry).toBeDefined();
   });
 
