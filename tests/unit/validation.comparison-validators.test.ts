@@ -523,7 +523,7 @@ describe("Comparison Validators", () => {
         @gt("mirror.mirrorDateValue")
         dateValue: Date = new Date();
 
-        @type(MirrorTestModel.name)
+        @type(MirrorTestModel)
         mirror?: MirrorTestModel;
 
         constructor(model?: ModelArg<MultiTypeGreaterThanModel>) {
@@ -537,7 +537,7 @@ describe("Comparison Validators", () => {
         @gt("mirror.inexistentField")
         numberValue: number = 0;
 
-        @type(MirrorTestModel.name)
+        @type(MirrorTestModel)
         mirror?: MirrorTestModel;
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {

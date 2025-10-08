@@ -2,7 +2,6 @@ import "./Metadata";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { Model } from "../model/Model";
 import { ExtendedMetadata } from "./types";
-import { ModelKeys } from "../utils/constants";
 import { ValidationMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
 
@@ -40,15 +39,11 @@ import { ValidationKeys } from "../validation/Validators/constants";
   return meta.validation[property][key];
 }.bind(Metadata);
 
-(Metadata as any).metadata = function <M extends Model>(
+(Metadata as any).modelName = function <M extends Model>(
   model: Constructor<M>
-): ExtendedMetadata<M> {
-  const metadata = Metadata.get(model, ModelKeys.MODEL) as any;
-  if (!metadata)
-    throw new Error(
-      "could not find metadata for provided " + model.constructor.name
-    );
-  return metadata;
+): Constructor<M> | undefined {
+  const constr = Metadata.constr(model);
+  return constr ? (constr as any).name : undefined;
 }.bind(Metadata);
 
 (Metadata as any).validatableProperties = function <M extends Model>(

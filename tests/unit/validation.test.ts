@@ -117,11 +117,11 @@ class NewModel extends Model {
   @type([String])
   @minlength(5)
   @required()
-  name: string = "Alex";
+  name: string = "Alex"; // fail minlength
 
   @type([String])
   @required()
-  age: number = 4;
+  age: number = 4; // fail type
 
   @required()
   propModel!: OptionModel;

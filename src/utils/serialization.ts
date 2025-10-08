@@ -30,8 +30,14 @@ export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
    */
   protected preSerialize(model: T) {
     // TODO: nested preserialization (so increase performance when deserializing)
+    // TODO: Verify why there is no metadata
     const toSerialize: Record<string, any> = Object.assign({}, model);
-    const metadata = Metadata.metadata(model.constructor as Constructor);
+    let metadata;
+    try {
+      metadata = Metadata.modelName(model.constructor as Constructor);
+    } catch (error) {
+      metadata = undefined;
+    }
     toSerialize[ModelKeys.ANCHOR] = metadata || model.constructor.name;
     return toSerialize;
   }

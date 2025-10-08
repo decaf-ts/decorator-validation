@@ -103,20 +103,20 @@ declare module "@decaf-ts/decoration" {
     ): META | undefined;
 
     /**
-     * @description Retrieves all metadata for a model
-     * @summary Fetches the metadata for a model.
+     * @description Retrieves the original constructor name for a model
+     * @summary Fetches the original constructor name for a model from the metadata of a model.
      *
      * @template M - The model type extending from Model
      * @param {Constructor<M>} model - The constructor of the target model class
-     * @return {any} The metadata object or value
+     * @return {string} The metadata object or value
      *
      * @example
      * class User extends Model {
      *
-     * // Get all validation metadata for 'User'
-     * const validations = Metadata.metadata(User);
+     * // Get the constructor name for 'User'
+     * const constName = Metadata.modelName(User);
      */
-    function metadata<M>(model: Constructor<M>): any;
+    function modelName<M>(model: Constructor<M>): string;
 
     /**
      * @description Retrieves all allowed types for a model or a property

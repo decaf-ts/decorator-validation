@@ -140,7 +140,7 @@ export class ModelRegistryManager<M extends Model<true | false>>
   build(obj: Record<string, any> = {}, clazz?: string): M {
     if (!clazz && !this.testFunction(obj))
       throw new Error("Provided obj is not a Model object");
-    const name = clazz || Metadata.metadata(obj as any);
+    const name = clazz || Metadata.modelName(obj as any);
     if (!(name in this.cache))
       throw new Error(
         `Provided class ${name} is not a registered Model object`
@@ -280,10 +280,15 @@ export abstract class Model<Async extends boolean = false>
    * @throws {Error} If it fails to parse the string, or if it fails to build the model
    */
   static deserialize(str: string) {
-    const metadata = Metadata.get(
-      this.constructor as unknown as Constructor,
-      ModelKeys.SERIALIZATION
-    );
+    let metadata;
+    try {
+      metadata = Metadata.get(
+        this.constructor as unknown as Constructor,
+        ModelKeys.SERIALIZATION
+      );
+    } catch (error) {
+      metadata = undefined;
+    }
 
     if (metadata && metadata.serializer)
       return Serialization.deserialize(
@@ -653,10 +658,15 @@ export abstract class Model<Async extends boolean = false>
    * @return {string} - The serialized string representation of the model
    */
   static serialize<M extends Model<boolean>>(model: M) {
-    const metadata = Metadata.get(
-      model.constructor as Constructor,
-      ModelKeys.SERIALIZATION
-    );
+    let metadata;
+    try {
+      metadata = Metadata.get(
+        model.constructor as Constructor,
+        ModelKeys.SERIALIZATION
+      );
+    } catch (error) {
+      metadata = undefined;
+    }
 
     if (metadata && metadata.serializer)
       return Serialization.serialize(
@@ -709,7 +719,7 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      return target instanceof Model || !!Metadata.metadata(target as any);
+      return target instanceof Model || !!Metadata.modelName(target as any);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
