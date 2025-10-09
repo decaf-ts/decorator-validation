@@ -5,7 +5,6 @@ import {
   type ModelArg,
   propMetadata,
 } from "../../src";
-import { apply } from "@decaf-ts/reflection";
 
 export const Reporter = {
   f1: jest.fn(),
@@ -41,10 +40,6 @@ function f1() {
 
 function f2() {
   return Decoration.for("f2").define(report("f2", {})).apply();
-}
-
-function f3() {
-  return Decoration.for("f3").define(report("f3", {})).apply();
 }
 
 function f4() {
@@ -84,6 +79,7 @@ describe("dynamic class decoration - override", () => {
     expect(Reporter.f3).toHaveBeenCalledTimes(0);
     expect(Reporter.f4).toHaveBeenCalledTimes(0);
   });
+  /* eslint-disable @typescript-eslint/no-unused-vars */
 
   it("manages self arguments in decorator override", () => {
     @model()

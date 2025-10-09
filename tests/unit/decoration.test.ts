@@ -31,6 +31,7 @@ function f2() {
 function f3() {
   return Decoration.for("f3").define(report("f3", {})).apply();
 }
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 function f4() {
   return Decoration.for("f4").define(apply(f1(), f2())).apply();

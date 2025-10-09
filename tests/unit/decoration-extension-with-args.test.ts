@@ -1,5 +1,5 @@
 import { Decoration, Model, type ModelArg, propMetadata } from "../../src";
-import { apply } from "@decaf-ts/reflection";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export const Reporter = {
   f1: jest.fn(),

@@ -38,6 +38,7 @@ function f4() {
   return Decoration.for("f4").define(apply(f1(), f2())).apply();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function f5() {
   return Decoration.for("f5").define(apply(f3(), f4())).apply();
 }
@@ -49,6 +50,7 @@ Decoration.setFlavourResolver(() => {
 Decoration.flavouredAs(flavour).for("f4").extend(f3()).apply();
 
 @f4()
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class ConstructionDecoration3 extends Model {
   constructor(arg?: ModelArg<ConstructionDecoration3>) {
     super(arg);

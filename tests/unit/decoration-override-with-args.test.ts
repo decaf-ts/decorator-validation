@@ -75,6 +75,7 @@ describe("dynamic class decoration - override with args", () => {
 
   it("manages self arguments in decorator override", () => {
     @model()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     class ArgOverrideTestModel extends Model {
       @f1()
       arg!: string;
