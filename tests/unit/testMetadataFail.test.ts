@@ -45,18 +45,13 @@ describe("Comparison Validators", () => {
         mirror?: LessThanTestModel;
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
-          super();
-          Model.fromObject(this, model);
+          super(model);
         }
       }
 
       it("should fail if target property does not exist", () => {
         const model = new InvalidPropertyModel({
           numberValue: 10,
-          mirror: new LessThanTestModel({
-            mirrorNumberValue: 20,
-            mirrorDateValue: new Date("2025-01-01"),
-          }),
         });
 
         const errors = model.hasErrors();
@@ -81,33 +76,31 @@ describe("Comparison Validators", () => {
         mirrorDateValue: Date = new Date();
 
         constructor(model?: ModelArg<MirrorTestModel>) {
-          super();
-          Model.fromObject(this, model);
+          super(model);
         }
       }
 
       @model()
       class InvalidPropertyModel extends Model {
-        @gt("mirror.inexistentField")
+        @gt("inexistentField")
         numberValue: number = 0;
+        compareValue = 3;
 
         @type(MirrorTestModel)
         mirror?: MirrorTestModel;
 
         constructor(model?: ModelArg<InvalidPropertyModel>) {
-          super();
-          Model.fromObject(this, model);
+          super(model);
         }
       }
 
       it("should return validation error if compared property does not exist", () => {
         const model = new InvalidPropertyModel({
           numberValue: 10,
-          mirror: new MirrorTestModel({
-            mirrorNumberValue: 5,
-            mirrorDateValue: new Date("2024-01-01"),
-          }),
         });
+
+        const meta = Metadata.get(model.constructor as any);
+
         const errors = model.hasErrors();
         expect(errors).toBeDefined();
         expect(errors?.numberValue).toEqual({

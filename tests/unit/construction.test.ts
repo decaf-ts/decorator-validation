@@ -91,12 +91,11 @@ describe("Construction", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);
       const errors = model.hasErrors();
-      expect(errors).toBeUndefined();
       expect(errors).toEqual(
         new ModelErrorDefinition({
           child: {
             [ValidationKeys.TYPE]:
-              "Invalid type. Expected ConstructionTestModel, received object",
+              "Value must be an instance of ConstructionTestModel",
           },
         })
       );
@@ -108,14 +107,6 @@ describe("Construction", () => {
       const model = new ParentConstructionTestModel(r);
       const errors = model.hasErrors();
       expect(errors).toBeUndefined();
-      expect(errors).toEqual(
-        new ModelErrorDefinition({
-          child: {
-            [ValidationKeys.TYPE]:
-              "Invalid type. Expected ConstructionTestModel, received object",
-          },
-        })
-      );
       expect(model.child).toBeInstanceOf(ConstructionTestModel);
     });
 

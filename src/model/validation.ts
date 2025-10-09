@@ -401,35 +401,27 @@ export function validate<
     const hasPropValue = propValue !== null && propValue !== undefined;
     if (isConstr && hasPropValue) {
       const instance = propValue as Model;
-      const isInvalidModel =
-        typeof instance !== "object" ||
-        typeof instance.hasErrors !== "function";
 
-      if (isInvalidModel) {
-        // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
-        console.warn("Model should be validatable but it's not.");
+      const Constr = (Array.isArray(designType) ? designType : [designType])
+        .map((d) => {
+          if (typeof d === "function" && !d.name) d = d();
+          return Model.get(d.name || d);
+        })
+        .find((d) => !!d) as any;
+
+      // Ensure instance is of the expected model class.
+      if (!Constr || !(instance instanceof Constr)) {
+        propErrors[ValidationKeys.TYPE] = !Constr
+          ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
+          : `Value must be an instance of ${Constr.name}`;
+        delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
       } else {
-        const Constr = (Array.isArray(designType) ? designType : [designType])
-          .map((d) => {
-            if (typeof d === "function" && !d.name) d = d();
-            return Model.get(d.name || d);
-          })
-          .find((d) => !!d) as any;
-
-        // Ensure instance is of the expected model class.
-        if (!Constr || !(instance instanceof Constr)) {
-          propErrors[ValidationKeys.TYPE] = !Constr
-            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
-            : `Value must be an instance of ${Constr.name}`;
-          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
-        } else {
-          nestedErrors[propKey] = getNestedValidationErrors(
-            instance,
-            model,
-            async,
-            ...propsToIgnore
-          );
-        }
+        nestedErrors[propKey] = getNestedValidationErrors(
+          instance,
+          model,
+          async,
+          ...propsToIgnore
+        );
       }
     }
 
