@@ -1670,14 +1670,14 @@ describe("Comparison Validators", () => {
 
       it("should validate all LessThanError cases", () => {
         @model()
-        class TestModel extends Model {
+        class TestModelLT extends Model {
           @required()
           comparisonValue!: number;
 
           @lt("comparisonValue")
           testValue!: string;
 
-          constructor(model?: ModelArg<TestModel>) {
+          constructor(model?: ModelArg<TestModelLT>) {
             super();
             Model.fromObject(this, model);
           }
@@ -1686,10 +1686,10 @@ describe("Comparison Validators", () => {
         @model()
         class TestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number])
           comparisonValue!: number;
 
-          @type([Number.name, BigInt.name])
+          @type([Number])
           @lt("comparisonValue")
           testValue!: number;
 
@@ -1700,11 +1700,11 @@ describe("Comparison Validators", () => {
         }
 
         // null/undefined values
-        const nullModel = new TestModel({
+        const nullModel = new TestModelLT({
           testValue: "10",
         });
-        const errors = nullModel.hasErrors();
-        expect(errors).toEqual(
+        const modelErrors = nullModel.hasErrors();
+        expect(modelErrors).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
               [ValidationKeys.REQUIRED]: "This field is required",
@@ -1718,7 +1718,7 @@ describe("Comparison Validators", () => {
         );
 
         // diff type
-        const typeMismatchModel = new TestModel({
+        const typeMismatchModel = new TestModelLT({
           testValue: "string",
           comparisonValue: 10,
         });
@@ -1737,7 +1737,7 @@ describe("Comparison Validators", () => {
         );
 
         // NaN values
-        const nanModel = new TestModel({
+        const nanModel = new TestModelLT({
           testValue: NaN,
           comparisonValue: 10,
         });
@@ -1754,7 +1754,7 @@ describe("Comparison Validators", () => {
         );
 
         // invalid Dates
-        const invalidDateModel = new TestModel({
+        const invalidDateModel = new TestModelLT({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
@@ -1774,7 +1774,7 @@ describe("Comparison Validators", () => {
         );
 
         // unsupported types
-        const unsupportedTypeModel = new TestModel({
+        const unsupportedTypeModel = new TestModelLT({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
@@ -2341,14 +2341,14 @@ describe("Comparison Validators", () => {
 
       it("should validate all GreaterThanError cases", () => {
         @model()
-        class TestModel extends Model {
+        class TestModelGT extends Model {
           @required()
           comparisonValue!: number;
 
           @gt("comparisonValue")
           testValue!: string;
 
-          constructor(model?: ModelArg<TestModel>) {
+          constructor(model?: ModelArg<TestModelGT>) {
             super();
             Model.fromModel(this, model);
           }
@@ -2357,20 +2357,19 @@ describe("Comparison Validators", () => {
         @model()
         class GteTestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, Number])
           comparisonValue!: number;
 
           @gt("comparisonValue")
-          @type([Number.name, BigInt.name])
+          @type([Number, Number])
           testValue!: string;
 
-          constructor(model?: ModelArg<TestModel>) {
-            super();
-            Model.fromModel(this, model);
+          constructor(model?: ModelArg<TestModelGT>) {
+            super(model);
           }
         }
 
-        const nullModel = new TestModel({
+        const nullModel = new TestModelGT({
           testValue: 10,
         });
         expect(nullModel.hasErrors()).toEqual(
@@ -2388,7 +2387,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const typeMismatchModel = new TestModel({
+        const typeMismatchModel = new TestModelGT({
           testValue: "string",
           comparisonValue: 10,
         });
@@ -2406,7 +2405,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const nanModel = new TestModel({
+        const nanModel = new TestModelGT({
           testValue: NaN,
           comparisonValue: 10,
         });
@@ -2421,7 +2420,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const invalidDateModel = new TestModel({
+        const invalidDateModel = new TestModelGT({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
@@ -2440,7 +2439,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const unsupportedTypeModel = new TestModel({
+        const unsupportedTypeModel = new TestModelGT({
           testValue: { object: true },
           comparisonValue: { object: true },
         });

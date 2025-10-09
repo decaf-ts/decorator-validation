@@ -18,7 +18,7 @@ import type { PathProxy } from "../../utils/PathProxy";
 @validator(ValidationKeys.LESS_THAN)
 export class LessThanValidator extends Validator<LessThanValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN) {
-    super(message);
+    super(message, Number.name);
   }
 
   /**
