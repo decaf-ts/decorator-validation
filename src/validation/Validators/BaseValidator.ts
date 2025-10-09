@@ -137,7 +137,11 @@ export abstract class BaseValidator<
         return this.getMessage(
           DEFAULT_ERROR_MESSAGES.TYPE,
           this.acceptedTypes.join(", "),
-          typeof value
+          typeof value !== "number"
+            ? typeof value
+            : isNaN(value)
+              ? "NaN"
+              : typeof value
         );
       return unbound(value, options, proxy, ...args);
     }.bind(this);

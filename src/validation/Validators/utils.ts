@@ -235,12 +235,6 @@ export function isGreaterThan(a: any, b: any): boolean {
  * @return {boolean} Returns true if the value matches the accepted type, false otherwise
  */
 export function checkType(value: unknown, acceptedType: string) {
-  // if (
-  //   typeof value === "number" &&
-  //   acceptedType.toLowerCase() === "number" &&
-  //   isNaN(value)
-  // )
-  //   return false;
   if (typeof value === acceptedType.toLowerCase()) return true;
   if (typeof value === "undefined") return false;
   if (typeof value !== "object") return false;

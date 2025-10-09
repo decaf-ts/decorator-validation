@@ -2,7 +2,10 @@ import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { Validation } from "../validation/Validation";
-import { ValidationKeys } from "../validation/Validators/constants";
+import {
+  DEFAULT_ERROR_MESSAGES,
+  ValidationKeys,
+} from "../validation/Validators/constants";
 import {
   ModelErrors,
   TypeValidatorOptions,
@@ -358,6 +361,15 @@ export function validate<
       e = typeof e === "function" && !e.name ? e() : e;
       return (e as any).name ? (e as any).name : e;
     }) as string[];
+
+    // Adds by default the type validation
+    if (!decorators[ValidationKeys.TYPE])
+      decorators[ValidationKeys.TYPE] = {
+        customTypes: designTypes,
+        message: DEFAULT_ERROR_MESSAGES.TYPE,
+        description: "defines the accepted types for the attribute",
+        async: false,
+      };
 
     // Handle array or Set types and enforce the presence of @list decorator
     if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
