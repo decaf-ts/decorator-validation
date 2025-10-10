@@ -43,7 +43,7 @@ import { ValidationKeys } from "../validation/Validators/constants";
   model: Constructor<M>
 ): Constructor<M> | undefined {
   const constr = Metadata.constr(model);
-  return constr ? (constr as any).name : undefined;
+  return constr ? (constr as any).name : (model as any).name;
 }.bind(Metadata);
 
 (Metadata as any).validatableProperties = function <M extends Model>(

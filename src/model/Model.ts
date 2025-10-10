@@ -140,7 +140,7 @@ export class ModelRegistryManager<M extends Model<true | false>>
   build(obj: Record<string, any> = {}, clazz?: string): M {
     if (!clazz && !this.testFunction(obj))
       throw new Error("Provided obj is not a Model object");
-    const name = clazz || Metadata.modelName(obj as any);
+    const name = clazz || Metadata.modelName(obj.constructor as any);
     if (!(name in this.cache))
       throw new Error(
         `Provided class ${name} is not a registered Model object`
