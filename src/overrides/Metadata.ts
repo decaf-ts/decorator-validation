@@ -67,6 +67,7 @@ declare module "@decaf-ts/decoration" {
      * @template M - The model type
      * @template META - The extended metadata type, defaults to ExtendedMetadata<M>
      * @param {Constructor<M>} model - The target constructor used to locate the metadata record
+     * @param {keyof M} prop - Optional property of the model.
      * @return {META|undefined} The complete metadata object for the model, or undefined if no metadata exists
      *
      * @example
@@ -99,7 +100,8 @@ declare module "@decaf-ts/decoration" {
      */
     // @ts-expect-error override magic
     function get<M, META extends ExtendedMetadata<M> = ExtendedMetadata<M>>(
-      model: Constructor<M>
+      model: Constructor<M>,
+      prop?: keyof M
     ): META | undefined;
 
     /**
