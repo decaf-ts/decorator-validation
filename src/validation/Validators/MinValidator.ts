@@ -8,35 +8,35 @@ import { MinValidatorOptions } from "../types";
  * @summary The MinValidator checks if a numeric value, date, or string is greater than or equal to
  * a specified minimum value. It supports comparing numbers directly, dates chronologically,
  * and strings lexicographically. This validator is typically used with the @min decorator.
- * 
+ *
  * @param {string} [message] - Custom error message to display when validation fails, defaults to {@link DEFAULT_ERROR_MESSAGES#MIN}
- * 
+ *
  * @class MinValidator
  * @extends Validator
- * 
+ *
  * @example
  * ```typescript
  * // Create a min validator with default error message
  * const minValidator = new MinValidator();
- * 
+ *
  * // Create a min validator with custom error message
  * const customMinValidator = new MinValidator("Value must be at least {0}");
- * 
+ *
  * // Validate a number
  * const numOptions = { min: 10, message: "Number too small" };
  * const numResult = minValidator.hasErrors(50, numOptions); // undefined (valid)
  * const invalidNumResult = minValidator.hasErrors(5, numOptions); // Returns error message (invalid)
- * 
+ *
  * // Validate a date
  * const dateOptions = { min: new Date(2023, 0, 1) };
  * const dateResult = minValidator.hasErrors(new Date(2023, 5, 15), dateOptions); // undefined (valid)
  * ```
- * 
+ *
  * @mermaid
  * sequenceDiagram
  *   participant C as Client
  *   participant V as MinValidator
- *   
+ *
  *   C->>V: new MinValidator(message)
  *   C->>V: hasErrors(value, options)
  *   alt value is undefined
@@ -52,13 +52,13 @@ import { MinValidatorOptions } from "../types";
  *   else value >= min
  *     V-->>C: undefined (valid)
  *   end
- * 
+ *
  * @category Validators
  */
 @validator(ValidationKeys.MIN)
 export class MinValidator extends Validator<MinValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN) {
-    super(message, "number", "Date", "string");
+    super(message, Number.name, Date.name, String.name);
   }
 
   /**

@@ -18,7 +18,7 @@ import type { PathProxy } from "../../utils/PathProxy";
 @validator(ValidationKeys.GREATER_THAN)
 export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN) {
-    super(message);
+    super(message, Number.name, Date.name);
   }
 
   /**
