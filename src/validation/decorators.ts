@@ -346,11 +346,13 @@ export function url(message: string = DEFAULT_ERROR_MESSAGES.URL) {
     .apply();
 }
 
+export type TypeConstructor = Constructor | typeof BigInt;
+
 export interface TypeMetadata extends ValidatorOptions {
   customTypes:
-    | (Constructor | (() => Constructor))[]
-    | Constructor
-    | (() => Constructor);
+    | (TypeConstructor | (() => TypeConstructor))[]
+    | TypeConstructor
+    | (() => TypeConstructor);
 }
 
 /**
@@ -366,9 +368,9 @@ export interface TypeMetadata extends ValidatorOptions {
 //TODO
 export function type(
   types:
-    | (Constructor | (() => Constructor))[]
-    | Constructor
-    | (() => Constructor),
+    | (TypeConstructor | (() => TypeConstructor))[]
+    | TypeConstructor
+    | (() => TypeConstructor),
   message: string = DEFAULT_ERROR_MESSAGES.TYPE
 ) {
   const key = ValidationKeys.TYPE;

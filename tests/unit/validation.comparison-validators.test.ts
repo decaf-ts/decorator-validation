@@ -1686,10 +1686,10 @@ describe("Comparison Validators", () => {
         @model()
         class TestModelNumber extends Model {
           @required()
-          @type([Number])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
-          @type([Number])
+          @type([Number, BigInt])
           @lt("comparisonValue")
           testValue!: number;
 
@@ -1994,11 +1994,11 @@ describe("Comparison Validators", () => {
         @model()
         class LteTestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
           @lte("comparisonValue")
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           testValue!: number;
 
           constructor(model?: ModelArg<LteTestModelNumber>) {
@@ -2357,11 +2357,11 @@ describe("Comparison Validators", () => {
         @model()
         class GteTestModelNumber extends Model {
           @required()
-          @type([Number, Number])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
           @gt("comparisonValue")
-          @type([Number, Number])
+          @type([Number, BigInt])
           testValue!: string;
 
           constructor(model?: ModelArg<TestModelGT>) {
@@ -2682,11 +2682,11 @@ describe("Comparison Validators", () => {
         @model()
         class GteTestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
           @gte("comparisonValue")
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           testValue!: string;
 
           constructor(model?: ModelArg<GteTestModelNumber>) {
@@ -2873,7 +2873,7 @@ describe("Comparison Validators", () => {
       parentDate: Date = new Date();
 
       @required()
-      @type(BidirectionalChildModel.name)
+      @type(BidirectionalChildModel)
       child: BidirectionalChildModel = new BidirectionalChildModel();
 
       constructor(model?: ModelArg<BidirectionalParentModel>) {
@@ -2961,7 +2961,7 @@ describe("Comparison Validators", () => {
       parentValue: string = "";
 
       @required()
-      @type(ConflictingChildModel.name)
+      @type(ConflictingChildModel)
       child: ConflictingChildModel = new ConflictingChildModel();
 
       constructor(model?: ModelArg<ConflictingParentModel>) {
