@@ -2,6 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { MinLengthValidatorOptions } from "../types";
+import { valueLength } from "./utils";
 
 /**
  * @summary Minimum Length Validator
@@ -17,7 +18,7 @@ import { MinLengthValidatorOptions } from "../types";
 @validator(ValidationKeys.MIN_LENGTH)
 export class MinLengthValidator extends Validator<MinLengthValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MIN_LENGTH) {
-    super(message, String.name, Array.name);
+    super(message, String.name, Array.name, Set.name, Map.name);
   }
 
   /**
@@ -37,7 +38,7 @@ export class MinLengthValidator extends Validator<MinLengthValidatorOptions> {
     options: MinLengthValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return value.length < options.minlength
+    return valueLength(value) < options.minlength
       ? this.getMessage(options.message || this.message, options.minlength)
       : undefined;
   }

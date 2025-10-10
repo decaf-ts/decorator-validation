@@ -334,7 +334,7 @@ export function validate<
 
   for (const prop of decoratedProperties) {
     const propKey = String(prop);
-    let propValue = (model as any)[prop];
+    const propValue = (model as any)[prop];
 
     const propTypes: any[] | undefined = Metadata.allowedTypes(
       model.constructor as any,
@@ -392,8 +392,6 @@ export function validate<
         };
         continue;
       }
-
-      propValue = propValue instanceof Set ? [...propValue] : propValue;
     }
 
     const propErrors: Record<string, any> =

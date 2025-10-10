@@ -91,7 +91,7 @@ export class ListValidator extends Validator<ListValidatorOptions> {
       i < (Array.isArray(value) ? value.length : value.size);
       i++
     ) {
-      val = (value as any)[i];
+      val = ([...value] as any)[i];
       switch (typeof val) {
         case "object":
         case "function":
