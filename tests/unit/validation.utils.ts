@@ -14,7 +14,7 @@ import {
   validator,
   ValidatorOptions,
 } from "../../src";
-import { Decoration, propMetadata } from "@decaf-ts/decoration";
+import { Decoration } from "@decaf-ts/decoration";
 
 export function isPromise(obj: any): boolean {
   return (

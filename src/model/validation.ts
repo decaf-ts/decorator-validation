@@ -188,7 +188,6 @@ export function validateDecorators<
   async?: Async,
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, Record<string, string> | undefined> {
-  // throw new Error("validateDecorators is not implemented");
   const result: Record<string, string | Promise<string>> = {};
   for (const decoratorKey in decorators) {
     const decorator = { ...decorators[decoratorKey], key: decoratorKey };

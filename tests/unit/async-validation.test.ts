@@ -519,6 +519,7 @@ describe("Async Validation", () => {
       publicValue!: string;
 
       @prop()
+      @required()
       inner!: ModelInner;
 
       constructor(model?: ModelArg<SyncTestModel>) {
@@ -533,6 +534,7 @@ describe("Async Validation", () => {
       asyncValue!: number;
 
       @prop()
+      @required()
       inner!: ModelInner;
 
       constructor(model?: ModelArg<AsyncTestModel>) {
