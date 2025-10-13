@@ -108,7 +108,7 @@ describe("Async Validation", () => {
                 },
               }),
             ],
-          },
+          } as any,
         })
       );
     });
@@ -300,7 +300,7 @@ describe("Async Validation", () => {
               processingTime: { timeout: "Timeout reached" },
             }),
           ],
-        },
+        } as any,
       })
     );
   });

@@ -285,7 +285,7 @@ export function evaluateDesignTypes(
 /**
  * @description Returns the length of a value
  * @summary Returns the length of a value
- * @param {string | typeof Set | typeof Array | typeof Map} value - The value to evaluate
+ * @param {string | Set<any> | any[] | Map<any, any>} value - The value to evaluate
  * @return {number} Returns the length of a value
  */
 export function valueLength(value: string | Set<any> | any[] | Map<any, any>) {

@@ -1,6 +1,8 @@
+import { Metadata } from "@decaf-ts/decoration";
 import { required, Model, model } from "../../src";
 import type { ModelArg } from "../../src";
 import { hashObj } from "../../src";
+import { Reflection } from "@decaf-ts/reflection";
 
 type Callback = (...args: any) => void;
 
@@ -131,6 +133,7 @@ describe("inheritance Test", () => {
     }
 
     const registry = new OperationsRegistry();
+
     class Decorators {
       static on =
         (
@@ -143,7 +146,12 @@ describe("inheritance Test", () => {
           const name = target.constructor.name;
           operation.forEach((op) => {
             op = "on." + op;
-            let metadata = Reflect.getMetadata(op, target, propertyKey);
+            let metadata;
+            // metadata = Reflect.getMetadata(op, target, propertyKey);
+            metadata = Metadata.get(
+              target,
+              ["operation", propertyKey, op].join(Metadata.splitter)
+            );
             if (!metadata)
               metadata = {
                 operation: op,
@@ -167,7 +175,12 @@ describe("inheritance Test", () => {
                 props: props,
               };
 
-              Reflect.defineMetadata(op, metadata, target, propertyKey);
+              // Reflect.defineMetadata(op, metadata, target, propertyKey);
+              Metadata.set(
+                target,
+                ["operation", propertyKey, op].join(Metadata.splitter),
+                metadata
+              );
             }
 
             registry.register(handler, op, target, propertyKey);
@@ -200,8 +213,8 @@ describe("inheritance Test", () => {
       updatedOn?: string;
 
       constructor(baseModel?: ModelArg<BaseModel>) {
-        super();
-        Model.fromObject<BaseModel>(this, baseModel);
+        super(baseModel);
+        // Model.fromObject<BaseModel>(this, baseModel);
       }
     }
 

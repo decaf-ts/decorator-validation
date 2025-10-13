@@ -2,6 +2,7 @@ import "reflect-metadata";
 import {
   async,
   AsyncValidator,
+  innerValidationDecorator,
   list,
   maxlength,
   min,
@@ -13,7 +14,7 @@ import {
   validator,
   ValidatorOptions,
 } from "../../src";
-import { propMetadata } from "@decaf-ts/decoration";
+import { Decoration, propMetadata } from "@decaf-ts/decoration";
 
 export function isPromise(obj: any): boolean {
   return (
@@ -30,18 +31,14 @@ export interface TimeoutValidatorOptions extends ValidatorOptions {
 }
 
 @validator(TIMEOUT_VALIDATION_KEY)
-export class TimeoutValidator extends AsyncValidator<{
-  message: string;
-  timeout?: number;
-  async?: boolean;
-}> {
-  constructor(message: string = TIMEOUT_ERROR_MESSAGE) {
+export class TimeoutValidator extends AsyncValidator<any> {
+  constructor(message: string = "Custom validation error") {
     super(message);
   }
 
-  async hasErrors(
-    value: number,
-    options?: TimeoutValidatorOptions
+  public async hasErrors(
+    value?: any,
+    options?: any
   ): Promise<string | undefined> {
     const delay = options?.timeout ?? 100;
 
@@ -54,13 +51,24 @@ export class TimeoutValidator extends AsyncValidator<{
   }
 }
 
-export const timeout = (message: string = TIMEOUT_ERROR_MESSAGE) => {
-  return propMetadata(TIMEOUT_VALIDATION_KEY, {
+export function timeout(
+  message: string = TIMEOUT_ERROR_MESSAGE,
+  value?: number
+) {
+  const key = TIMEOUT_VALIDATION_KEY;
+  const meta: any = {
+    [TIMEOUT_VALIDATION_KEY]: value,
     message: message,
-    types: ["number"],
+    description: `defines a timeout value for the property`,
     async: true,
-  });
-};
+  };
+  return Decoration.for(key)
+    .define({
+      decorator: innerValidationDecorator,
+      args: [timeout, key, meta],
+    })
+    .apply();
+}
 
 @model()
 export class ShippingModel extends Model {
