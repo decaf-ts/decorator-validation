@@ -147,10 +147,10 @@ describe("inheritance Test", () => {
           operation.forEach((op) => {
             op = "on." + op;
             let metadata;
-            // metadata = Reflect.getMetadata(op, target, propertyKey);
-            metadata = Metadata.get(
-              target,
-              ["operation", propertyKey, op].join(Metadata.splitter)
+            metadata = Metadata.readOperation(
+              target.constructor,
+              propertyKey as string,
+              op
             );
             if (!metadata)
               metadata = {
@@ -175,10 +175,10 @@ describe("inheritance Test", () => {
                 props: props,
               };
 
-              // Reflect.defineMetadata(op, metadata, target, propertyKey);
-              Metadata.set(
-                target,
-                ["operation", propertyKey, op].join(Metadata.splitter),
+              Metadata.saveOperation(
+                target.constructor,
+                propertyKey as string,
+                op,
                 metadata
               );
             }
@@ -224,7 +224,7 @@ describe("inheritance Test", () => {
 
       constructor(overriddenBaseModel?: ModelArg<OverriddenBaseModel>) {
         super(overriddenBaseModel);
-        Model.fromObject<OverriddenBaseModel>(this, overriddenBaseModel);
+        // Model.fromObject<OverriddenBaseModel>(this, overriddenBaseModel);
       }
     }
 

@@ -50,11 +50,11 @@ import { ValidationKeys } from "../validation/Validators/constants";
   model: Constructor<M>,
   ...propsToIgnore: string[]
 ) {
-  const meta = Metadata.validationFor(model);
-  if (!meta) return [];
-  return Object.keys(meta).filter(
-    (k) => !propsToIgnore || !propsToIgnore?.includes(k)
-  );
+  const metavalidation = Metadata.validationFor(model);
+  const keys: string[] = metavalidation ? Object.keys(metavalidation) : [];
+
+  const props = [...new Set([...Model.getAttributes(model), ...keys])];
+  return props.filter((k) => !propsToIgnore || !propsToIgnore?.includes(k));
 }.bind(Metadata);
 
 (Metadata as any).allowedTypes = function <M extends Model>(
@@ -71,4 +71,27 @@ import { ValidationKeys } from "../validation/Validators/constants";
   return validation[ValidationKeys.TYPE]
     ? [validation[ValidationKeys.TYPE]]
     : [designType];
+}.bind(Metadata);
+
+(Metadata as any).saveOperation = function <M extends Model>(
+  model: Constructor<M>,
+  propertyKey: string,
+  operation: string,
+  metadata: any
+) {
+  if (!propertyKey) return;
+  Metadata.set(
+    model,
+    Metadata.key("operation", propertyKey, operation),
+    metadata
+  );
+}.bind(Metadata);
+
+(Metadata as any).readOperation = function <M extends Model>(
+  model: Constructor<M>,
+  propertyKey: string,
+  operation: string
+) {
+  if (!propertyKey) return;
+  return Metadata.get(model, Metadata.key("operation", propertyKey, operation));
 }.bind(Metadata);
