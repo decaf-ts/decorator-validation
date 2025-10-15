@@ -4,6 +4,7 @@ import { Model } from "../model/Model";
 import { ExtendedMetadata } from "./types";
 import { ValidationMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
+import { ModelOperations } from "../model";
 
 (Metadata as any).validationFor = function <
   M extends Model,
@@ -29,6 +30,7 @@ import { ValidationKeys } from "../validation/Validators/constants";
       : P extends keyof M
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>;
+  if (!meta.validation) return undefined;
   if (!key)
     return meta.validation[property] as K extends string
       ? ValidationMetadata
@@ -73,25 +75,33 @@ import { ValidationKeys } from "../validation/Validators/constants";
     : [designType];
 }.bind(Metadata);
 
-(Metadata as any).saveOperation = function <M extends Model>(
-  model: Constructor<M>,
-  propertyKey: string,
-  operation: string,
-  metadata: any
-) {
-  if (!propertyKey) return;
-  Metadata.set(
-    model,
-    Metadata.key("operation", propertyKey, operation),
-    metadata
-  );
-}.bind(Metadata);
+// export enum ModelOperations {
+//   OPERATIONS = "operations",
+//   RELATIONS = "relations",
+// }
 
-(Metadata as any).readOperation = function <M extends Model>(
-  model: Constructor<M>,
-  propertyKey: string,
-  operation: string
-) {
-  if (!propertyKey) return;
-  return Metadata.get(model, Metadata.key("operation", propertyKey, operation));
-}.bind(Metadata);
+// (Metadata as any).saveOperation = function <M extends Model>(
+//   model: Constructor<M>,
+//   propertyKey: string,
+//   operation: string,
+//   metadata: any
+// ) {
+//   if (!propertyKey) return;
+//   Metadata.set(
+//     model,
+//     Metadata.key(ModelOperations.OPERATIONS, propertyKey, operation),
+//     metadata
+//   );
+// }.bind(Metadata);
+
+// (Metadata as any).readOperation = function <M extends Model>(
+//   model: Constructor<M>,
+//   propertyKey: string,
+//   operation: string
+// ) {
+//   if (!propertyKey) return;
+//   return Metadata.get(
+//     model,
+//     Metadata.key(ModelOperations.OPERATIONS, propertyKey, operation)
+//   );
+// }.bind(Metadata);
