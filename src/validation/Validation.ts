@@ -90,6 +90,10 @@ export class Validation {
     this.loadedDecorators[key] = decorator;
   }
 
+  static decorators() {
+    return Object.keys(this.loadedDecorators);
+  }
+
   static decoratorFromKey(key: string) {
     if (!(key in this.loadedDecorators))
       throw new Error(`No decorator registered under ${key}`);
