@@ -62,6 +62,7 @@ export const ComparisonValidationKeys = {
  * @type {ValidationKeysDef}
  */
 export const ValidationKeys = {
+  DECORATION: "decorators",
   REFLECT: `${ModelKeys.REFLECT}validation.`,
   DATE: "date",
   EMAIL: "email",

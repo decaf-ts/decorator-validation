@@ -62,8 +62,7 @@ function createAttributeDefinition(
 }
 
 export class AttributeBuilder<M extends Model, N extends keyof M, T>
-  implements
-    DecorateOption<M, AttributeBuilder<M, N, T> & ModelBuilder<M>>
+  implements DecorateOption<M, AttributeBuilder<M, N, T> & ModelBuilder<M>>
 {
   private readonly proxy: AttributeBuilder<M, N, T> & ModelBuilder<M>;
 
@@ -98,7 +97,7 @@ export class AttributeBuilder<M extends Model, N extends keyof M, T>
 
         return undefined;
       },
-    }) as AttributeBuilder<M, N, T> & ModelBuilder<M>;
+    }) as unknown as AttributeBuilder<M, N, T> & ModelBuilder<M>;
 
     return this.proxy;
   }
@@ -111,13 +110,17 @@ export class AttributeBuilder<M extends Model, N extends keyof M, T>
     if (key) {
       const resolved = resolveDecoratorKey(key) || key;
       if (this.definition.keyedDecorators.has(resolved))
-        throw new Error(`Decorator "${resolved}" has already been used on ${this.definition.name}`);
+        throw new Error(
+          `Decorator "${resolved}" has already been used on ${this.definition.name}`
+        );
       this.definition.keyedDecorators.set(resolved, entry);
     }
 
     if (original) {
       if (this.definition.manualDecorators.has(original))
-        throw new Error(`Provided decorator has already been applied to ${this.definition.name}`);
+        throw new Error(
+          `Provided decorator has already been applied to ${this.definition.name}`
+        );
       this.definition.manualDecorators.set(original, entry);
     }
 
@@ -129,8 +132,7 @@ export class AttributeBuilder<M extends Model, N extends keyof M, T>
     args: any[]
   ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     const resolvedKey = resolveDecoratorKey(key);
-    if (!resolvedKey)
-      throw new Error(`No decorator registered under ${key}`);
+    if (!resolvedKey) throw new Error(`No decorator registered under ${key}`);
 
     const decoratorFactory = Validation.decoratorFromKey(resolvedKey) as any;
     let decorator: PropertyDecorator;
@@ -144,14 +146,17 @@ export class AttributeBuilder<M extends Model, N extends keyof M, T>
         ? (maybeDecorator as PropertyDecorator)
         : (decoratorFactory as PropertyDecorator);
 
-    this.addDecorator({
-      key: resolvedKey,
-      factory: () => {
-        const produced = decoratorFactory(...args);
-        if (typeof produced === "function") return produced;
-        return decorator;
+    this.addDecorator(
+      {
+        key: resolvedKey,
+        factory: () => {
+          const produced = decoratorFactory(...args);
+          if (typeof produced === "function") return produced;
+          return decorator;
+        },
       },
-    }, resolvedKey);
+      resolvedKey
+    );
 
     return this.proxy;
   }
@@ -210,130 +215,96 @@ export class AttributeBuilder<M extends Model, N extends keyof M, T>
     return this.parent;
   }
 
-  required(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  required(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.REQUIRED, args);
   }
 
-  minlength(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  minlength(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.MIN_LENGTH, args);
   }
 
-  maxlength(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  maxlength(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.MAX_LENGTH, args);
   }
 
-  min(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  min(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.MIN, args);
   }
 
-  max(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  max(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.MAX, args);
   }
 
-  step(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  step(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.STEP, args);
   }
 
-  pattern(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  pattern(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.PATTERN, args);
   }
 
-  email(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  email(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.EMAIL, args);
   }
 
-  url(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  url(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.URL, args);
   }
 
-  date(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  date(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.DATE, args);
   }
 
-  type(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  type(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.TYPE, args);
   }
 
-  list(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  list(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.LIST, args);
   }
 
-  password(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  password(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.PASSWORD, args);
   }
 
-  unique(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  unique(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.UNIQUE, args);
   }
 
-  validator(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  validator(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.VALIDATOR, args);
   }
 
-  equals(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  equals(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.EQUALS, args);
   }
 
-  different(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  different(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.DIFF, args);
   }
 
-  lessThan(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  lessThan(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.LESS_THAN, args);
   }
 
-  lessThanOrEqual(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
-    return this.applyValidationDecorator(ValidationKeys.LESS_THAN_OR_EQUAL, args);
+  lessThanOrEqual(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+    return this.applyValidationDecorator(
+      ValidationKeys.LESS_THAN_OR_EQUAL,
+      args
+    );
   }
 
-  greaterThan(
-    ...args: any[]
-  ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
+  greaterThan(...args: any[]): AttributeBuilder<M, N, T> & ModelBuilder<M> {
     return this.applyValidationDecorator(ValidationKeys.GREATER_THAN, args);
   }
 
   greaterThanOrEqual(
     ...args: any[]
   ): AttributeBuilder<M, N, T> & ModelBuilder<M> {
-    return this.applyValidationDecorator(ValidationKeys.GREATER_THAN_OR_EQUAL, args);
+    return this.applyValidationDecorator(
+      ValidationKeys.GREATER_THAN_OR_EQUAL,
+      args
+    );
   }
 }
 
@@ -376,11 +347,8 @@ export class ModelBuilder<
       definition
     );
 
-    return attributeBuilder as AttributeBuilder<
-      M & Record<N, T>,
-      N,
-      T
-    > & ModelBuilder<M & Record<N, T>>;
+    return attributeBuilder as AttributeBuilder<M & Record<N, T>, N, T> &
+      ModelBuilder<M & Record<N, T>>;
   }
 
   string<N extends string>(attr: N) {
@@ -397,14 +365,13 @@ export class ModelBuilder<
 
   bigint<N extends string>(attr: N) {
     // BigInt does not have a constructable type, metadata still receives the BigInt function reference
-    return this.attribute<N, bigint>(attr, { designType: BigInt as unknown as AttributeDesignType });
+    return this.attribute<N, bigint>(attr, {
+      designType: BigInt as unknown as AttributeDesignType,
+    });
   }
 
   instance<N extends string, C extends Constructor<any>>(clazz: C, attr: N) {
-    return this.attribute<
-      N,
-      InstanceType<C>
-    >(attr, { designType: clazz });
+    return this.attribute<N, InstanceType<C>>(attr, { designType: clazz });
   }
 
   private getParentClass(): Constructor<Model> {
@@ -463,12 +430,16 @@ export class ModelBuilder<
     });
 
     for (const definition of this.attributes.values()) {
-      this.applyAttribute(DynamicBuiltClass as unknown as Constructor<Model>, definition);
+      this.applyAttribute(
+        DynamicBuiltClass as unknown as Constructor<Model>,
+        definition
+      );
     }
 
-    metadata(Model.key(ModelKeys.MODEL), uniqueName)(
-      DynamicBuiltClass as unknown as Constructor<Model>
-    );
+    metadata(
+      Model.key(ModelKeys.MODEL),
+      uniqueName
+    )(DynamicBuiltClass as unknown as Constructor<Model>);
     Model.register(DynamicBuiltClass as Constructor<Model>, uniqueName);
 
     return DynamicBuiltClass;

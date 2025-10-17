@@ -31,6 +31,7 @@ import { Validation } from "./Validation";
 import { Decoration } from "../utils/Decoration";
 import { apply } from "@decaf-ts/reflection";
 import { ASYNC_META_KEY } from "../constants";
+import { Metadata } from "@decaf-ts/decoration";
 
 /**
  * @description Combined property decorator factory for metadata and attribute marking
@@ -45,6 +46,7 @@ import { ASYNC_META_KEY } from "../constants";
  * @category Property Decorators
  */
 export function validationMetadata<V>(decorator: any, key: string, value: V) {
+  Metadata.decorate(key, decorator);
   Validation.registerDecorator(key, decorator);
   return apply(propMetadata<V>(key, value));
 }
