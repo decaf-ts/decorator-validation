@@ -4,7 +4,6 @@ import { Model } from "../model/Model";
 import { ExtendedMetadata } from "./types";
 import { ValidationMetadata } from "../validation/types";
 import { ValidationKeys } from "../validation/Validators/constants";
-import { ModelOperations } from "../model";
 
 (Metadata as any).validationFor = function <
   M extends Model,

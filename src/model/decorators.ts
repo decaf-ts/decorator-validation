@@ -9,14 +9,6 @@ export function modelBaseDecorator(original: any) {
     const instance: ReturnType<typeof original> = construct(original, ...args);
     bindModelPrototype(instance);
 
-    // re-apply original constructor
-    Object.defineProperty(instance, "constructor", {
-      writable: false,
-      enumerable: false,
-      configurable: false,
-      value: original,
-    });
-
     // run a builder function if defined with the first argument (The ModelArg)
     const builder = Model.getBuilder();
     if (builder) builder(instance, args.length ? args[0] : undefined);

@@ -128,31 +128,38 @@ export function dateFromFormat(date: string, format: string) {
 }
 
 /**
- * @description Binds a specific date format to a Date object's toString and toISOString methods
- * @summary Modifies a Date object to return a formatted string when toString or toISOString is called.
- * This function overrides the default toString and toISOString methods of the Date object to return
- * the date formatted according to the specified format string.
+ * @description Binds a specific date format to a Date object's toString and toISOString methods using a Proxy
+ * @summary Wraps a Date object in a Proxy to return a formatted string when toString or toISOString is called.
+ * This function uses the Proxy API to intercept method calls and return the date formatted according
+ * to the specified format string, while maintaining all other Date functionality.
+ * The proxied Date maintains instanceof Date checks and behaves identically to a Date object.
  * @param {Date} [date] The Date object to modify
  * @param {string} [format] The format string to use for formatting the date
- * @return {Date|undefined} The modified Date object or undefined if no date was provided
+ * @return {Date|undefined} A proxied Date object or undefined if no date was provided
  * @function bindDateToString
  * @memberOf module:decorator-validation
  * @category Model
  */
 export function bindDateToString(date: Date | undefined, format: string) {
   if (!date) return;
-  const func = () => formatDate(date, format);
   Object.defineProperty(date, "toISOString", {
     enumerable: false,
     configurable: false,
-    value: func,
+    value: new Proxy(date.toISOString, {
+      apply(target: any, thisArg: any) {
+        return formatDate(thisArg, format);
+      },
+    }),
   });
   Object.defineProperty(date, "toString", {
     enumerable: false,
     configurable: false,
-    value: func,
+    value: new Proxy(date.toISOString, {
+      apply(target: any, thisArg: any) {
+        return formatDate(thisArg, format);
+      },
+    }),
   });
-  // Object.setPrototypeOf(date, Date.prototype);
   return date;
 }
 

@@ -408,42 +408,56 @@ export function date(
   message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
   const key = ValidationKeys.DATE;
-  const meta: DateMetadata = {
-    [ValidationKeys.FORMAT]: format,
-    message: message,
-    description: `defines the attribute as a date with the format ${format}`,
-    async: false,
-  };
-  function dateDec(target: Record<string, any>, propertyKey?: any): any {
-    const values = new WeakMap();
-    Object.defineProperty(target, propertyKey, {
-      configurable: false,
-      set(this: any, newValue: string | Date) {
-        const descriptor = Object.getOwnPropertyDescriptor(this, propertyKey);
-        if (!descriptor || descriptor.configurable)
-          Object.defineProperty(this, propertyKey, {
-            enumerable: true,
-            configurable: false,
-            get: () => values.get(this),
-            set: (newValue: string | Date | number) => {
-              let val: Date | undefined;
-              try {
-                val = parseDate(format, newValue);
-                values.set(this, val);
-              } catch (e: any) {
-                console.error(sf("Failed to parse date: {0}", e.message || e));
-              }
-            },
-          });
-        this[propertyKey] = newValue;
-      },
-      get() {
-        return values.get(this);
-      },
-    });
-    return innerValidationDecorator(date, key, meta)(target, propertyKey);
+
+  function innerDateDec(format: string, message: string) {
+    const meta: DateMetadata = {
+      [ValidationKeys.FORMAT]: format,
+      message: message,
+      description: `defines the attribute as a date with the format ${format}`,
+      async: false,
+    };
+    return function dateDec(
+      target: Record<string, any>,
+      propertyKey?: any
+    ): any {
+      const values = new WeakMap();
+      Object.defineProperty(target, propertyKey, {
+        configurable: false,
+        set(this: any, newValue: string | Date) {
+          const descriptor = Object.getOwnPropertyDescriptor(this, propertyKey);
+          if (!descriptor || descriptor.configurable)
+            Object.defineProperty(this, propertyKey, {
+              enumerable: true,
+              configurable: false,
+              get: () => values.get(this),
+              set: (newValue: string | Date | number) => {
+                let val: Date | undefined;
+                try {
+                  val = parseDate(format, newValue);
+                  values.set(this, val);
+                } catch (e: any) {
+                  console.error(
+                    sf("Failed to parse date: {0}", e.message || e)
+                  );
+                }
+              },
+            });
+          this[propertyKey] = newValue;
+        },
+        get() {
+          return values.get(this);
+        },
+      });
+      return innerValidationDecorator(date, key, meta)(target, propertyKey);
+    };
   }
-  return Decoration.for(key).define(dateDec).apply();
+
+  return Decoration.for(key)
+    .define({
+      decorator: innerDateDec,
+      args: [format, message],
+    })
+    .apply();
 }
 
 /**

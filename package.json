@@ -1,21 +1,23 @@
 {
   "name": "@decaf-ts/decorator-validation",
-  "version": "1.7.18",
+  "version": "1.7.22",
   "description": "simple decorator based validation engine",
   "type": "module",
   "exports": {
     ".": {
+      "types": "./lib/index.d.ts",
       "require": "./lib/index.cjs",
       "import": "./lib/esm/index.js"
     },
     "./mcp": {
-      "require": "./lib/mcp/index.cjs",
-      "import": "./lib/esm/mcp/index.js"
+      "require": "./lib/esm/mcp/index.cjs",
+      "import": "./lib/esm/mcp/index.js",
+      "types": "./lib/esm/index.d.ts"
     }
   },
   "types": "lib/index.d.ts",
   "scripts": {
-    "do-install": "TOKEN=$(cat .token) npm install",
+    "do-install": "NPM_TOKEN=$(cat .npmtoken) npm install",
     "update-dependencies": "PREFIX=\"decaf-ts\"; npm ls | grep \"$PREFIX\" | awk -F/ '{print $NF}' | sed 's/@.*//' | xargs -I package npm update @\"$PREFIX\"/package",
     "update-scripts": "npx update-scripts",
     "on-first-run": "npx update-scripts --boot",
@@ -41,7 +43,14 @@
     "drawings": "for FILE in workdocs/drawings/*.drawio; do echo \"converting $FILE to image...\" && docker run --rm -v $(pwd):/data rlespinasse/drawio-export --format png $FILE; done && cp -rf workdocs/drawings/export/* workdocs/resources/",
     "uml": "cd workdocs/uml && for FILE in ./*.puml; do docker run --rm -v $(pwd):/work -w /work miy4/plantuml -DPLANTUML_LIMIT_SIZE=8192 -tpng $FILE; done && cd ../.. && cp -fr workdocs/uml/*.png workdocs/resources/",
     "docs": "npx rimraf ./docs && mkdir docs && npx build-scripts --docs",
-    "publish-docs": "docker run -it --rm --user $(id -u):$(id -g) -v \"$(pwd)/workdocs/confluence:/content\" -e ATLASSIAN_API_TOKEN=$(cat .confluence-token) ghcr.io/markdown-confluence/publish:latest"
+    "publish-docs": "docker run -it --rm --user $(id -u):$(id -g) -v \"$(pwd)/workdocs/confluence:/content\" -e ATLASSIAN_API_TOKEN=$(cat .confluence-token) ghcr.io/markdown-confluence/publish:latest",
+    "repo:init": "codex exec \"$(cat ./.codex/prompts/repo-setup.md)\nbase_path is `./`, initialize the repository\"",
+    "repo:setup": "codex exec \"$(cat ./.codex/prompts/repo-setup.md)\nbase_path is ./\"",
+    "repo:doc": "codex exec \"$(cat ./.codex/prompts/doc.md) $(cat ./.codex/prompts/bulk-docs.md)\nbase_path is ./\"",
+    "repo:tests": "codex exec \"$(cat ./.codex/prompts/bulk-tests.md)\nbase_path is ./ and coverage is 95%\" -s workspace-write",
+    "repo:readme": "codex exec \"$(cat ./.codex/prompts/update-readme.md)\nbase_path is ./\"",
+    "repo:pr": "npm run repo:doc && npm run repo:tests && npm run repo:readme",
+    "sync-codex": "./bin/sync-codex.sh"
   },
   "repository": {
     "type": "git",
@@ -68,7 +77,7 @@
     "typescript",
     "ts"
   ],
-  "author": "Tiago Venceslau",
+  "author": "Tiago Venceslau and Contributors",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/decaf-ts/decorator-validation/issues"
@@ -112,7 +121,8 @@
   },
   "peerDependencies": {
     "@decaf-ts/decoration": "latest",
+    "@decaf-ts/reflection": "latest",
     "reflect-metadata": "^0.2.1",
-    "typed-object-accumulator": "^0.1.5"
+    "typed-object-accumulator": "latest"
   }
 }
