@@ -1,6 +1,6 @@
 import { Model } from "../model/Model";
 import { Constructor } from "@decaf-ts/decoration";
-import { ExtendedMetadata } from "./types";
+import { designTypeReturn, ExtendedMetadata } from "./types";
 import { ValidationMetadata } from "../validation/index";
 
 declare module "@decaf-ts/decoration" {
@@ -136,6 +136,28 @@ declare module "@decaf-ts/decoration" {
      * const allowedTypes = Metadata.meallowedTypestadata(User);
      */
     function allowedTypes<M>(model: Constructor<M>, property?: keyof M): any[];
+
+    /**
+     * @description Retrieves all allowed types for a model or a property
+     * @summary Retrieves all allowed types for a model or a property from it's metadata.
+     *
+     * @template model - The model type extending from Model
+     * @param {Constructor<M>} model - The constructor of the target model class
+     * @param {keyof M} property - The property name to retrieve validation for
+     * @return {designTypeReturn} An object of the designtypes
+     *
+     * @example
+     * class User extends Model {
+     *
+     * // Get the designtypes for property name
+     * const validationMetaData = Metadata.get(User.constructor, 'name')
+     * const allowedTypes = Metadata.getPropDesignTypes(User.constructor, 'name', validationMetaData?.validation);
+     */
+    function getPropDesignTypes<M>(
+      model: Constructor<M>,
+      property: keyof M,
+      validation?: ValidationMetadata
+    ): designTypeReturn;
 
     // /**
     //  * @description Saves metadata under a key for a specific operation

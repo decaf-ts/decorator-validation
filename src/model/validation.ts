@@ -335,43 +335,18 @@ export function validate<
     const propKey = String(prop);
     const propValue = (model as any)[prop];
 
-    const propTypes: any[] | undefined = Metadata.allowedTypes(
+    const decorators: any =
+      Metadata.validationFor(model.constructor as Constructor, prop) || {};
+
+    const { designTypes, designType } = Metadata.getPropDesignTypes(
       model.constructor as any,
-      prop
+      prop,
+      Metadata.get(model.constructor as any, prop)?.validation
     );
-
-    const decorators = Metadata.validationFor(
-      model.constructor as Constructor,
-      prop
-    );
-
-    if (!propTypes || !propTypes?.length || !decorators) continue;
-
-    const designTypeDec = propTypes[0];
-    const designType: any =
-      designTypeDec.class ||
-      designTypeDec.clazz ||
-      designTypeDec.customTypes ||
-      designTypeDec.name;
-
-    const designTypes = (
-      Array.isArray(designType) ? designType : [designType]
-    ).map((e: any) => {
-      e = typeof e === "function" && !e.name ? e() : e;
-      return (e as any).name ? (e as any).name : e;
-    }) as string[];
-
-    // Adds by default the type validation
-    if (!decorators[ValidationKeys.TYPE])
-      decorators[ValidationKeys.TYPE] = {
-        customTypes: designTypes,
-        message: DEFAULT_ERROR_MESSAGES.TYPE,
-        description: "defines the accepted types for the attribute",
-        async: false,
-      };
+    if (!designTypes) continue;
 
     // Handle array or Set types and enforce the presence of @list decorator
-    if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
+    if (designTypes.some((t: any) => [Array.name, Set.name].includes(t))) {
       if (
         !decorators ||
         !Object.keys(decorators).includes(ValidationKeys.LIST)
@@ -411,7 +386,7 @@ export function validate<
     if (isConstr && hasPropValue) {
       const instance = propValue as Model;
 
-      const Constr = (Array.isArray(designType) ? designType : [designType])
+      const Constr = (Array.isArray(designType) ? designTypes : [designType])
         .map((d) => {
           if (typeof d === "function" && !d.name) d = d();
           return Model.get(d.name || d);

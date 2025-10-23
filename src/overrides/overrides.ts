@@ -1,9 +1,13 @@
 import "./Metadata";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { Model } from "../model/Model";
-import { ExtendedMetadata } from "./types";
+import { designTypeReturn, ExtendedMetadata } from "./types";
 import { ValidationMetadata } from "../validation/types";
-import { ValidationKeys } from "../validation/Validators/constants";
+import {
+  DEFAULT_ERROR_MESSAGES,
+  ValidationKeys,
+} from "../validation/Validators/constants";
+// import { ModelOperations } from "../model";
 
 (Metadata as any).validationFor = function <
   M extends Model,
@@ -30,6 +34,24 @@ import { ValidationKeys } from "../validation/Validators/constants";
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>;
   if (!meta.validation) return undefined;
+
+  if (!(meta.validation as ValidationMetadata)[ValidationKeys.TYPE]) {
+    const { designTypes } = Metadata.getPropDesignTypes(
+      model,
+      property,
+      meta.validation[property] as ValidationMetadata
+    );
+
+    // Adds by default the type validation
+    if ((meta.validation as any)[property])
+      (meta.validation as any)[property][ValidationKeys.TYPE] = {
+        customTypes: designTypes,
+        message: DEFAULT_ERROR_MESSAGES.TYPE,
+        description: "defines the accepted types for the attribute",
+        async: false,
+      };
+  }
+
   if (!key)
     return meta.validation[property] as K extends string
       ? ValidationMetadata
@@ -68,10 +90,42 @@ import { ValidationKeys } from "../validation/Validators/constants";
 
   const validation: any = Metadata.validationFor(model as Constructor, prop);
 
-  if (!validation) return;
-  return validation[ValidationKeys.TYPE]
+  return validation && validation[ValidationKeys.TYPE]
     ? [validation[ValidationKeys.TYPE]]
     : [designType];
+}.bind(Metadata);
+
+(Metadata as any).getPropDesignTypes = function <M extends Model>(
+  model: Constructor<M>,
+  prop: keyof M,
+  validation?: ValidationMetadata
+) {
+  const designTypeMeta = Metadata.type(model, prop as any);
+  if (!designTypeMeta)
+    throw new Error(`No metadata found for property ${String(prop)}`);
+
+  const propTypes: any[] | undefined =
+    validation && validation[ValidationKeys.TYPE]
+      ? [validation[ValidationKeys.TYPE]]
+      : [designTypeMeta];
+
+  if (!propTypes?.length) return {};
+
+  const designTypeDec = propTypes[0];
+  const designType: any =
+    designTypeDec.class ||
+    designTypeDec.clazz ||
+    designTypeDec.customTypes ||
+    designTypeDec.name;
+
+  const designTypes = (
+    Array.isArray(designType) ? designType : [designType]
+  ).map((e: any) => {
+    e = typeof e === "function" && !e.name ? e() : e;
+    return (e as any).name ? (e as any).name : e;
+  }) as string[];
+
+  return { designTypes, designType };
 }.bind(Metadata);
 
 // export enum ModelOperations {
