@@ -151,7 +151,7 @@ declare module "@decaf-ts/decoration" {
      *
      * // Get the designtypes for property name
      * const validationMetaData = Metadata.get(User.constructor, 'name')
-     * const allowedTypes = Metadata.getPropDesignTypes(User.constructor, 'name', validationMetaData?.validation);
+     * const { designTypes, designType } = Metadata.getPropDesignTypes(User.constructor, 'name', validationMetaData?.validation);
      */
     function getPropDesignTypes<M>(
       model: Constructor<M>,

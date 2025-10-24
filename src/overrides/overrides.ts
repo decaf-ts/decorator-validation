@@ -1,12 +1,13 @@
 import "./Metadata";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { Model } from "../model/Model";
-import { designTypeReturn, ExtendedMetadata } from "./types";
+import { ExtendedMetadata } from "./types";
 import { ValidationMetadata } from "../validation/types";
 import {
   DEFAULT_ERROR_MESSAGES,
   ValidationKeys,
 } from "../validation/Validators/constants";
+import { ReservedModels } from "../model/constants";
 // import { ModelOperations } from "../model";
 
 (Metadata as any).validationFor = function <
@@ -43,7 +44,12 @@ import {
     );
 
     // Adds by default the type validation
-    if ((meta.validation as any)[property])
+    // If the designtypes is object, we exclude it. It causes problems with pks.
+    if (
+      (meta.validation as any)[property] &&
+      designTypes?.length &&
+      designTypes[0].toLowerCase() !== ReservedModels.OBJECT
+    )
       (meta.validation as any)[property][ValidationKeys.TYPE] = {
         customTypes: designTypes,
         message: DEFAULT_ERROR_MESSAGES.TYPE,
@@ -101,8 +107,8 @@ import {
   validation?: ValidationMetadata
 ) {
   const designTypeMeta = Metadata.type(model, prop as any);
-  if (!designTypeMeta)
-    throw new Error(`No metadata found for property ${String(prop)}`);
+  if (!designTypeMeta && (!validation || validation[ValidationKeys.TYPE]))
+    return {};
 
   const propTypes: any[] | undefined =
     validation && validation[ValidationKeys.TYPE]
