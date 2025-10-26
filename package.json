@@ -65,17 +65,16 @@
     "dist"
   ],
   "keywords": [
-    "decorator",
     "validation",
-    "model",
-    "orm",
-    "custom",
-    "extensible",
-    "lightweight",
-    "decaf-ts",
-    "javascript",
+    "decorators",
+    "model-validation",
     "typescript",
-    "ts"
+    "decaf",
+    "rules",
+    "schema-validation",
+    "runtime-validation",
+    "annotations",
+    "testables"
   ],
   "author": "Tiago Venceslau and Contributors",
   "license": "MIT",
