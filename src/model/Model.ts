@@ -753,6 +753,7 @@ export abstract class Model<Async extends boolean = false>
   ): boolean | string | undefined {
     if (Model.isModel((target as Record<string, any>)[attribute])) return true;
     const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
+    if (!metadata) return undefined;
     return Model.get(metadata.name) ? metadata.name : undefined;
   }
 

@@ -79,7 +79,9 @@ GIT_USER=$(git config user.name)
 REMOTE_URL=$(git remote get-url origin)
 
 if [[ "$(cat .token)" ]]; then
-  git push -u "https://${GIT_USER}:$(cat .token)@${REMOTE_URL#https://}" --follow-tags
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  git push "https://${GIT_USER}:$(cat .token)@${REMOTE_URL#https://}" --follow-tags
+  git branch --set-upstream-to="origin/${BRANCH}" "${BRANCH}" >/dev/null 2>&1 || true
 else
   git push --follow-tags
 fi
