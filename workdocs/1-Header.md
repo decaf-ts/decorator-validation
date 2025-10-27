@@ -1,3 +1,5 @@
+![Banner](./workdocs/assets/decaf-logo.svg)
+
 # Decorator Validation
 
 A TypeScript decorator-driven validation and model framework. It lets you:
