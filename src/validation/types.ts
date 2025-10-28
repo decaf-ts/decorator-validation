@@ -300,6 +300,7 @@ export interface DateValidatorOptions extends ValidatorOptions {
 
 export interface ComparisonValidatorOptions extends ValidatorOptions {
   label?: string;
+  comparisonKey: string;
 }
 
 export type ComparatorHandler = (value: any, comparisonValue: any) => boolean;
@@ -310,6 +311,7 @@ export type ComparatorHandler = (value: any, comparisonValue: any) => boolean;
 export interface InternalComparisonValidatorOptions
   extends ComparisonValidatorOptions {
   handler: ComparatorHandler;
+  comparisonKey: string;
   [indexer: string]: any;
 }
 

@@ -33,6 +33,12 @@ import { Validation } from "./Validation";
 import { Decoration } from "../utils/Decoration";
 import { apply } from "@decaf-ts/reflection";
 import { ASYNC_META_KEY } from "../constants";
+import { isEqual } from "@decaf-ts/reflection";
+import {
+  isLessThan,
+  isGreaterThan,
+  isValidForGteOrLteComparison,
+} from "./Validators/utils";
 
 /**
  * @description Combined property decorator factory for metadata and attribute marking
@@ -546,11 +552,18 @@ export function set(
 export function compare(
   decorator: any,
   validationKey: string,
-  metadata: Omit<InternalComparisonValidatorOptions, "handler">,
-  comparator?: ComparatorHandler
+  metadata: Omit<
+    InternalComparisonValidatorOptions,
+    "handler" | "comparisonKey"
+  >,
+  comparator: ComparatorHandler
 ) {
   return function (target: object, propertyKey: string | symbol): void {
-    const meta: any = { ...metadata, async: false };
+    const meta: any = {
+      ...metadata,
+      async: false,
+      comparisonKey: validationKey,
+    };
     if (typeof comparator === "function") meta.handler = comparator;
     return validationMetadata<ValidationMetadata>(
       decorator,
@@ -579,14 +592,22 @@ export function eq(
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
   // message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
-  const equalsOptions: Omit<EqualsValidatorOptions, "handler"> = {
+  const equalsOptions: Omit<
+    EqualsValidatorOptions,
+    "handler" | "comparisonKey"
+  > = {
     label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.EQUALS,
     [ValidationKeys.EQUALS]: propertyToCompare,
     description: `defines attribute as equal to ${propertyToCompare}`,
   };
 
-  return compare(eq, ValidationKeys.EQUALS, equalsOptions);
+  return compare(
+    eq,
+    ValidationKeys.EQUALS,
+    equalsOptions,
+    (value: any, otherValue: any) => isEqual(value, otherValue)
+  );
 }
 
 /**
@@ -607,14 +628,19 @@ export function diff(
   propertyToCompare: string,
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const diffOptions: Omit<DiffValidatorOptions, "handler"> = {
+  const diffOptions: Omit<DiffValidatorOptions, "handler" | "comparisonKey"> = {
     label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.DIFF,
     [ValidationKeys.DIFF]: propertyToCompare,
     description: `defines attribute as different to ${propertyToCompare}`,
   };
 
-  return compare(diff, ValidationKeys.DIFF, diffOptions);
+  return compare(
+    diff,
+    ValidationKeys.DIFF,
+    diffOptions,
+    (value: any, otherValue: any) => !isEqual(value, otherValue)
+  );
 }
 
 /**
@@ -635,14 +661,27 @@ export function lt(
   propertyToCompare: string,
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const ltOptions: Omit<LessThanValidatorOptions, "handler"> = {
-    label: options?.label || propertyToCompare,
-    message: options?.message || DEFAULT_ERROR_MESSAGES.LESS_THAN,
-    [ValidationKeys.LESS_THAN]: propertyToCompare,
-    description: `defines attribute as less than to ${propertyToCompare}`,
-  };
+  const ltOptions: Omit<LessThanValidatorOptions, "handler" | "comparisonKey"> =
+    {
+      label: options?.label || propertyToCompare,
+      message: options?.message || DEFAULT_ERROR_MESSAGES.LESS_THAN,
+      [ValidationKeys.LESS_THAN]: propertyToCompare,
+      description: `defines attribute as less than to ${propertyToCompare}`,
+    };
 
-  return compare(lt, ValidationKeys.LESS_THAN, ltOptions);
+  return compare(
+    lt,
+    ValidationKeys.LESS_THAN,
+    ltOptions,
+    (value: any, other: any) => {
+      try {
+        return isLessThan(value, other);
+      } catch (e) {
+        // let validator handle thrown errors
+        throw e;
+      }
+    }
+  );
 }
 
 /**
@@ -663,14 +702,32 @@ export function lte(
   propertyToCompare: string,
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const lteOptions: Omit<LessThanOrEqualValidatorOptions, "handler"> = {
+  const lteOptions: Omit<
+    LessThanOrEqualValidatorOptions,
+    "handler" | "comparisonKey"
+  > = {
     label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL,
     [ValidationKeys.LESS_THAN_OR_EQUAL]: propertyToCompare,
     description: `defines attribute as less or equal to ${propertyToCompare}`,
   };
 
-  return compare(lte, ValidationKeys.LESS_THAN_OR_EQUAL, lteOptions);
+  return compare(
+    lte,
+    ValidationKeys.LESS_THAN_OR_EQUAL,
+    lteOptions,
+    (value: any, other: any) => {
+      try {
+        return (
+          (isValidForGteOrLteComparison(value, other) &&
+            isEqual(value, other)) ||
+          isLessThan(value, other)
+        );
+      } catch (e) {
+        throw e;
+      }
+    }
+  );
 }
 
 /**
@@ -691,14 +748,28 @@ export function gt(
   propertyToCompare: string,
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const gtOptions: Omit<GreaterThanValidatorOptions, "handler"> = {
+  const gtOptions: Omit<
+    GreaterThanValidatorOptions,
+    "handler" | "comparisonKey"
+  > = {
     label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.GREATER_THAN,
     [ValidationKeys.GREATER_THAN]: propertyToCompare,
     description: `defines attribute as greater than ${propertyToCompare}`,
   };
 
-  return compare(gt, ValidationKeys.GREATER_THAN, gtOptions);
+  return compare(
+    gt,
+    ValidationKeys.GREATER_THAN,
+    gtOptions,
+    (value: any, other: any) => {
+      try {
+        return isGreaterThan(value, other);
+      } catch (e) {
+        throw e;
+      }
+    }
+  );
 }
 
 /**
@@ -719,12 +790,30 @@ export function gte(
   propertyToCompare: string,
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
 ) {
-  const gteOptions: Omit<GreaterThanOrEqualValidatorOptions, "handler"> = {
+  const gteOptions: Omit<
+    GreaterThanOrEqualValidatorOptions,
+    "handler" | "comparisonKey"
+  > = {
     label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.GREATER_THAN_OR_EQUAL,
     [ValidationKeys.GREATER_THAN_OR_EQUAL]: propertyToCompare,
     description: `defines attribute as greater or equal to ${propertyToCompare}`,
   };
 
-  return compare(gte, ValidationKeys.GREATER_THAN_OR_EQUAL, gteOptions);
+  return compare(
+    gte,
+    ValidationKeys.GREATER_THAN_OR_EQUAL,
+    gteOptions,
+    (value: any, other: any) => {
+      try {
+        return (
+          (isValidForGteOrLteComparison(value, other) &&
+            isEqual(value, other)) ||
+          isGreaterThan(value, other)
+        );
+      } catch (e) {
+        throw e;
+      }
+    }
+  );
 }
