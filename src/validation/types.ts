@@ -300,10 +300,18 @@ export interface DateValidatorOptions extends ValidatorOptions {
 
 export interface ComparisonValidatorOptions extends ValidatorOptions {
   label?: string;
-  handler: ComparatorHandler;
 }
 
 export type ComparatorHandler = (value: any, comparisonValue: any) => boolean;
+
+/**
+ * Internal options used by the ComparisonValidator which includes the handler
+ */
+export interface InternalComparisonValidatorOptions
+  extends ComparisonValidatorOptions {
+  handler: ComparatorHandler;
+  [indexer: string]: any;
+}
 
 export interface EqualsValidatorOptions extends ComparisonValidatorOptions {
   [ValidationKeys.EQUALS]: string;

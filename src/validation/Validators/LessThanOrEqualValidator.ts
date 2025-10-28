@@ -1,10 +1,7 @@
-import { Validator } from "./Validator";
-import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
-import { validator } from "./decorators";
-import type { LessThanOrEqualValidatorOptions } from "../types";
-import { isLessThan, isValidForGteOrLteComparison } from "./utils";
-import { isEqual } from "@decaf-ts/reflection";
+import { DEFAULT_ERROR_MESSAGES } from "./constants";
+import type { InternalComparisonValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils/PathProxy";
+import { ComparisonValidator } from "./ComparisonValidator";
 
 /**
  * @summary Less Than or Equal Validator
@@ -16,8 +13,7 @@ import type { PathProxy } from "../../utils/PathProxy";
  *
  * @category Validators
  */
-@validator(ValidationKeys.LESS_THAN_OR_EQUAL)
-export class LessThanOrEqualValidator extends Validator<LessThanOrEqualValidatorOptions> {
+export class LessThanOrEqualValidator extends ComparisonValidator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN_OR_EQUAL) {
     super(message);
   }
@@ -26,7 +22,7 @@ export class LessThanOrEqualValidator extends Validator<LessThanOrEqualValidator
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {LessThanOrEqualValidatorOptions} options
+   * @param {InternalComparisonValidatorOptions} options
    * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
@@ -34,34 +30,11 @@ export class LessThanOrEqualValidator extends Validator<LessThanOrEqualValidator
    * @override
    * @see Validator#hasErrors
    */
-  public hasErrors(
+  public override hasErrors(
     value: any,
-    options: LessThanOrEqualValidatorOptions,
+    options: InternalComparisonValidatorOptions,
     accessor: PathProxy<any>
   ): string | undefined {
-    let comparisonPropertyValue: any;
-    try {
-      comparisonPropertyValue = accessor.getValueFromPath(
-        options[ValidationKeys.LESS_THAN_OR_EQUAL]
-      );
-    } catch (e: any) {
-      return this.getMessage(e.message || this.message);
-    }
-
-    try {
-      if (
-        (isValidForGteOrLteComparison(value, comparisonPropertyValue) &&
-          isEqual(value, comparisonPropertyValue)) ||
-        isLessThan(value, comparisonPropertyValue)
-      )
-        return undefined;
-
-      throw new Error(options.message || this.message);
-    } catch (e: any) {
-      return this.getMessage(
-        e.message,
-        options.label || options[ValidationKeys.LESS_THAN_OR_EQUAL]
-      );
-    }
+    return super.hasErrors(value, options, accessor);
   }
 }

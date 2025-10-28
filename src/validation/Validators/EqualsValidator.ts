@@ -1,59 +1,23 @@
-import { Validator } from "./Validator";
-import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
-import { validator } from "./decorators";
-import { EqualsValidatorOptions } from "../types";
-import { isEqual } from "@decaf-ts/reflection";
+import { DEFAULT_ERROR_MESSAGES } from "./constants";
+import type { InternalComparisonValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils";
+import { ComparisonValidator } from "./ComparisonValidator";
 
 /**
- * @summary Equals Validator
- *
- * @param {string} [message] defaults to {@link DEFAULT_ERROR_MESSAGES#EQUALS}
- *
- * @class EqualsValidator
- * @extends Validator
- *
- * @category Validators
+ * Backwards-compatible EqualsValidator wrapper that delegates to ComparisonValidator
  */
-@validator(ValidationKeys.EQUALS)
-export class EqualsValidator extends Validator<EqualsValidatorOptions> {
+export class EqualsValidator extends ComparisonValidator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.EQUALS) {
     super(message);
   }
 
-  /**
-   * @summary Validates a model
-   *
-   * @param {string} value
-   * @param {EqualsValidatorOptions} options
-   * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
-   *
-   * @return {string | undefined}
-   *
-   * @override
-   * @see Validator#hasErrors
-   */
-  public hasErrors(
+  // keep signature compatible
+  public override hasErrors(
     value: any,
-    options: EqualsValidatorOptions,
+    options: InternalComparisonValidatorOptions,
     accessor: PathProxy<any>
   ): string | undefined {
-    let comparisonPropertyValue: any;
-    try {
-      comparisonPropertyValue = accessor.getValueFromPath(
-        options[ValidationKeys.EQUALS]
-      );
-    } catch (e: any) {
-      return this.getMessage(e.message || this.message);
-    }
-
-    // handler (value, comparisonPropertyValue)
-    return isEqual(value, comparisonPropertyValue)
-      ? undefined
-      : this.getMessage(
-          options.message || this.message,
-          options.label || options[ValidationKeys.EQUALS]
-        );
+    return super.hasErrors(value, options, accessor);
   }
 }
 

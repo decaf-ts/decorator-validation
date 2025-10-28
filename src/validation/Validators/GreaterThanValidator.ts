@@ -1,9 +1,7 @@
-import { Validator } from "./Validator";
-import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
-import { validator } from "./decorators";
-import { GreaterThanValidatorOptions } from "../types";
-import { isGreaterThan } from "./utils";
+import { DEFAULT_ERROR_MESSAGES } from "./constants";
+import type { InternalComparisonValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils/PathProxy";
+import { ComparisonValidator } from "./ComparisonValidator";
 
 /**
  * @summary Greater Than Validator
@@ -15,8 +13,7 @@ import type { PathProxy } from "../../utils/PathProxy";
  *
  * @category Validators
  */
-@validator(ValidationKeys.GREATER_THAN)
-export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions> {
+export class GreaterThanValidator extends ComparisonValidator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.GREATER_THAN) {
     super(message);
   }
@@ -25,7 +22,7 @@ export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions>
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {GreaterThanValidatorOptions} options
+   * @param {InternalComparisonValidatorOptions} options
    * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
@@ -33,30 +30,11 @@ export class GreaterThanValidator extends Validator<GreaterThanValidatorOptions>
    * @override
    * @see Validator#hasErrors
    */
-  public hasErrors(
+  public override hasErrors(
     value: any,
-    options: GreaterThanValidatorOptions,
+    options: InternalComparisonValidatorOptions,
     accessor: PathProxy<any>
   ): string | undefined {
-    let comparisonPropertyValue: any;
-    try {
-      comparisonPropertyValue = accessor.getValueFromPath(
-        options[ValidationKeys.GREATER_THAN]
-      );
-    } catch (e: any) {
-      return this.getMessage(e.message || this.message);
-    }
-
-    try {
-      if (!isGreaterThan(value, comparisonPropertyValue))
-        throw new Error(options.message || this.message);
-    } catch (e: any) {
-      return this.getMessage(
-        e.message,
-        options.label || options[ValidationKeys.GREATER_THAN]
-      );
-    }
-
-    return undefined;
+    return super.hasErrors(value, options, accessor);
   }
 }

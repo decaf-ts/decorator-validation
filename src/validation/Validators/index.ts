@@ -2,6 +2,7 @@ export * from "./constants";
 export * from "./AsyncValidator";
 export * from "./DateValidator";
 export * from "./decorators";
+export * from "./ComparisonValidator";
 export * from "./DiffValidator";
 export * from "./EmailValidator";
 export * from "./EqualsValidator";

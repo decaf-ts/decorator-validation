@@ -1,9 +1,7 @@
-import { Validator } from "./Validator";
-import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
-import { validator } from "./decorators";
-import { LessThanValidatorOptions } from "../types";
-import { isLessThan } from "./utils";
+import { DEFAULT_ERROR_MESSAGES } from "./constants";
+import type { InternalComparisonValidatorOptions } from "../types";
 import type { PathProxy } from "../../utils/PathProxy";
+import { ComparisonValidator } from "./ComparisonValidator";
 
 /**
  * @summary Less Than Validator
@@ -15,8 +13,7 @@ import type { PathProxy } from "../../utils/PathProxy";
  *
  * @category Validators
  */
-@validator(ValidationKeys.LESS_THAN)
-export class LessThanValidator extends Validator<LessThanValidatorOptions> {
+export class LessThanValidator extends ComparisonValidator {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.LESS_THAN) {
     super(message);
   }
@@ -25,7 +22,7 @@ export class LessThanValidator extends Validator<LessThanValidatorOptions> {
    * @summary Validates a model
    *
    * @param {string} value
-   * @param {LessThanValidatorOptions} options
+   * @param {InternalComparisonValidatorOptions} options
    * @param {PathProxy<any>} accessor - Proxy-like object used to resolve values from nested structures via path strings.
    *
    * @return {string | undefined}
@@ -33,30 +30,11 @@ export class LessThanValidator extends Validator<LessThanValidatorOptions> {
    * @override
    * @see Validator#hasErrors
    */
-  public hasErrors(
+  public override hasErrors(
     value: any,
-    options: LessThanValidatorOptions,
+    options: InternalComparisonValidatorOptions,
     accessor: PathProxy<any>
   ): string | undefined {
-    let comparisonPropertyValue: any;
-    try {
-      comparisonPropertyValue = accessor.getValueFromPath(
-        options[ValidationKeys.LESS_THAN]
-      );
-    } catch (e: any) {
-      return this.getMessage(e.message || this.message);
-    }
-
-    try {
-      if (!isLessThan(value, comparisonPropertyValue))
-        throw new Error(options.message || this.message);
-    } catch (e: any) {
-      return this.getMessage(
-        e.message,
-        options.label || options[ValidationKeys.LESS_THAN]
-      );
-    }
-
-    return undefined;
+    return super.hasErrors(value, options, accessor);
   }
 }
