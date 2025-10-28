@@ -674,12 +674,7 @@ export function lt(
     ValidationKeys.LESS_THAN,
     ltOptions,
     (value: any, other: any) => {
-      try {
-        return isLessThan(value, other);
-      } catch (e) {
-        // let validator handle thrown errors
-        throw e;
-      }
+      return isLessThan(value, other);
     }
   );
 }
@@ -717,15 +712,10 @@ export function lte(
     ValidationKeys.LESS_THAN_OR_EQUAL,
     lteOptions,
     (value: any, other: any) => {
-      try {
-        return (
-          (isValidForGteOrLteComparison(value, other) &&
-            isEqual(value, other)) ||
-          isLessThan(value, other)
-        );
-      } catch (e) {
-        throw e;
-      }
+      return (
+        (isValidForGteOrLteComparison(value, other) && isEqual(value, other)) ||
+        isLessThan(value, other)
+      );
     }
   );
 }
@@ -763,11 +753,7 @@ export function gt(
     ValidationKeys.GREATER_THAN,
     gtOptions,
     (value: any, other: any) => {
-      try {
-        return isGreaterThan(value, other);
-      } catch (e) {
-        throw e;
-      }
+      return isGreaterThan(value, other);
     }
   );
 }
@@ -805,15 +791,10 @@ export function gte(
     ValidationKeys.GREATER_THAN_OR_EQUAL,
     gteOptions,
     (value: any, other: any) => {
-      try {
-        return (
-          (isValidForGteOrLteComparison(value, other) &&
-            isEqual(value, other)) ||
-          isGreaterThan(value, other)
-        );
-      } catch (e) {
-        throw e;
-      }
+      return (
+        (isValidForGteOrLteComparison(value, other) && isEqual(value, other)) ||
+        isGreaterThan(value, other)
+      );
     }
   );
 }

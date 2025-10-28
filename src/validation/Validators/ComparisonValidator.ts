@@ -2,14 +2,7 @@ import { Validator } from "./Validator";
 import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import type { PathProxy } from "../../utils/PathProxy";
-import { isEqual } from "@decaf-ts/reflection";
-import {
-  isLessThan,
-  isGreaterThan,
-  isValidForGteOrLteComparison,
-} from "./utils";
 import type { InternalComparisonValidatorOptions } from "../types";
-import { Validation } from "../Validation";
 
 /**
  * ComparisonValidator: single validator that handles comparisons using a handler
@@ -35,7 +28,7 @@ export class ComparisonValidator extends Validator<InternalComparisonValidatorOp
     const comparisonKey = options.comparisonKey as string | undefined;
     if (!comparisonKey) {
       throw new Error(
-        `Could not determine comparison key for validator. should be impossible. does your comparison decorator export it's validation key?`
+        `Could not determine comparison key for validator. This should be impossible - decorators must include the comparisonKey.`
       );
     }
 
@@ -50,7 +43,9 @@ export class ComparisonValidator extends Validator<InternalComparisonValidatorOp
 
     // handler is required
     if (typeof (options as any).handler !== "function") {
-      return this.getMessage(options.message || this.message);
+      throw new Error(
+        `Comparison handler missing for comparisonKey=${comparisonKey}. Decorator must provide a handler.`
+      );
     }
 
     try {
