@@ -34,7 +34,9 @@ export class ComparisonValidator extends Validator<InternalComparisonValidatorOp
   ): string | undefined {
     const comparisonKey = options.comparisonKey as string | undefined;
     if (!comparisonKey) {
-      return this.getMessage(options.message || this.message);
+      throw new Error(
+        `Could not determine comparison key for validator. should be impossible. does your comparison decorator export it's validation key?`
+      );
     }
 
     let comparisonPropertyValue: any;
