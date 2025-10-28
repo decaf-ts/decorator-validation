@@ -47,6 +47,7 @@ export class EqualsValidator extends Validator<EqualsValidatorOptions> {
       return this.getMessage(e.message || this.message);
     }
 
+    // handler (value, comparisonPropertyValue)
     return isEqual(value, comparisonPropertyValue)
       ? undefined
       : this.getMessage(

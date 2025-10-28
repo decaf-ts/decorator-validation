@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import {
+  ComparatorHandler,
   ComparisonValidatorOptions,
   DateValidatorOptions,
   DiffValidatorOptions,
@@ -541,6 +542,20 @@ export function set(
   return list(clazz, "Set", message);
 }
 
+export function compare(
+  decorator: any,
+  metadata: Omit<ComparisonValidatorOptions, "handler">,
+  comparator: ComparatorHandler
+) {
+  return function (target: object, propertyKey: string | symbol): void {
+    return validationMetadata<ValidationMetadata>(
+      decorator,
+      Validation.key(ValidationKeys.EQUALS),
+      { ...metadata, handler: comparator, async: false } as ValidationMetadata
+    )(target, propertyKey);
+  };
+}
+
 /**
  * @summary Declares that the decorated property must be equal to another specified property.
  * @description Applies the {@link ValidationKeys.EQUALS} validator to ensure the decorated value matches the value of the given property.
@@ -560,17 +575,17 @@ export function eq(
   options?: Omit<ComparisonValidatorOptions, "async" | "description">
   // message: string = DEFAULT_ERROR_MESSAGES.EQUALS
 ) {
-  const equalsOptions: EqualsValidatorOptions = {
+  const equalsOptions: Omit<EqualsValidatorOptions, "handler"> = {
     label: options?.label || propertyToCompare,
     message: options?.message || DEFAULT_ERROR_MESSAGES.EQUALS,
     [ValidationKeys.EQUALS]: propertyToCompare,
     description: `defines attribute as equal to ${propertyToCompare}`,
   };
 
-  return validationMetadata<ValidationMetadata>(
+  return compare(
     eq,
-    Validation.key(ValidationKeys.EQUALS),
-    { ...equalsOptions, async: false } as ValidationMetadata
+    equalsOptions,
+    (value: any, otherValue: any) => value === otherValue
   );
 }
 
