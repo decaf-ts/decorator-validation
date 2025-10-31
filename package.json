@@ -4,16 +4,8 @@
   "description": "simple decorator based validation engine",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "require": "./lib/index.cjs",
-      "import": "./lib/esm/index.js"
-    },
-    "./mcp": {
-      "require": "./lib/esm/mcp/index.cjs",
-      "import": "./lib/esm/mcp/index.js",
-      "types": "./lib/esm/index.d.ts"
-    }
+    "require": "./lib/index.cjs",
+    "import": "./lib/esm/index.js"
   },
   "types": "lib/index.d.ts",
   "scripts": {
