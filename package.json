@@ -1,19 +1,11 @@
 {
   "name": "@decaf-ts/decorator-validation",
-  "version": "1.10.2",
+  "version": "1.10.4",
   "description": "simple decorator based validation engine",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "require": "./lib/index.cjs",
-      "import": "./lib/esm/index.js"
-    },
-    "./mcp": {
-      "require": "./lib/esm/mcp/index.cjs",
-      "import": "./lib/esm/mcp/index.js",
-      "types": "./lib/esm/index.d.ts"
-    }
+    "require": "./lib/index.cjs",
+    "import": "./lib/esm/index.js"
   },
   "types": "lib/index.d.ts",
   "scripts": {
@@ -83,17 +75,10 @@
   },
   "homepage": "https://github.com/decaf-ts/decorator-validation#readme",
   "devDependencies": {
-    "@decaf-ts/utils": "latest",
-    "@rollup/plugin-typescript": "^12.1.2",
-    "fast-check": "^4.2.0",
-    "fastmcp": "^3.8.4",
-    "rollup": "^4.40.0",
-    "typescript-eslint": "8.34.1"
+    "@decaf-ts/utils": "latest"
   },
-  "peerDependencies": {
+  "dependencies": {
     "@decaf-ts/decoration": "latest",
-    "@decaf-ts/reflection": "latest",
-    "reflect-metadata": "^0.2.1",
-    "typed-object-accumulator": "latest"
+    "@decaf-ts/reflection": "latest"
   }
 }
