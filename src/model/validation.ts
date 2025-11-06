@@ -337,8 +337,7 @@ export function validate<
 
     const { designTypes, designType } = Metadata.getPropDesignTypes(
       model.constructor as any,
-      prop,
-      Metadata.get(model.constructor as any, prop)?.validation
+      prop
     );
     if (!designTypes) continue;
 

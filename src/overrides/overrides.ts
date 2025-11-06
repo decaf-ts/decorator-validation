@@ -8,7 +8,6 @@ import {
   ValidationKeys,
 } from "../validation/Validators/constants";
 import { ReservedModels } from "../model/constants";
-// import { ModelOperations } from "../model";
 
 (Metadata as any).validationFor = function <
   M extends Model,
@@ -107,6 +106,8 @@ import { ReservedModels } from "../model/constants";
   validation?: ValidationMetadata
 ) {
   const designTypeMeta = Metadata.type(model, prop as any);
+  if (!validation)
+    validation = Metadata.get(model as any, prop as any)?.validation;
   if (!designTypeMeta && (!validation || validation[ValidationKeys.TYPE]))
     return {};
 
@@ -133,34 +134,3 @@ import { ReservedModels } from "../model/constants";
 
   return { designTypes, designType };
 }.bind(Metadata);
-
-// export enum ModelOperations {
-//   OPERATIONS = "operations",
-//   RELATIONS = "relations",
-// }
-
-// (Metadata as any).saveOperation = function <M extends Model>(
-//   model: Constructor<M>,
-//   propertyKey: string,
-//   operation: string,
-//   metadata: any
-// ) {
-//   if (!propertyKey) return;
-//   Metadata.set(
-//     model,
-//     Metadata.key(ModelOperations.OPERATIONS, propertyKey, operation),
-//     metadata
-//   );
-// }.bind(Metadata);
-
-// (Metadata as any).readOperation = function <M extends Model>(
-//   model: Constructor<M>,
-//   propertyKey: string,
-//   operation: string
-// ) {
-//   if (!propertyKey) return;
-//   return Metadata.get(
-//     model,
-//     Metadata.key(ModelOperations.OPERATIONS, propertyKey, operation)
-//   );
-// }.bind(Metadata);
