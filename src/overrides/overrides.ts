@@ -108,7 +108,7 @@ import { ReservedModels } from "../model/constants";
   const designTypeMeta = Metadata.type(model, prop as any);
   if (!validation)
     validation = Metadata.get(model as any, prop as any)?.validation;
-  if (!designTypeMeta && (!validation || validation[ValidationKeys.TYPE]))
+  if (!designTypeMeta && (!validation || !validation[ValidationKeys.TYPE]))
     return {};
 
   const propTypes: any[] | undefined =
