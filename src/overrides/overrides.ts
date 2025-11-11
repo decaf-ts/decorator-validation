@@ -134,3 +134,22 @@ import { ReservedModels } from "../model/constants";
 
   return { designTypes, designType };
 }.bind(Metadata);
+
+// TODO: Pending refine
+(Metadata as any).propIsNonPopulatedRelation = function <M extends Model>(
+  model: Constructor<M>,
+  property: keyof M,
+  relationClassName: string
+): boolean | undefined {
+  const { __relations, relation }: any = Metadata.get(
+    model instanceof Model ? model.constructor : (model as any)
+  );
+  if (Array.isArray(__relations) && __relations?.includes(property)) {
+    const relationName = Object.keys(relation)[0];
+
+    return (
+      relation[relationName]?.class === relationClassName &&
+      relation[relationName]?.populate === false
+    );
+  }
+}.bind(Metadata);

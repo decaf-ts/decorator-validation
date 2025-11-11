@@ -159,5 +159,29 @@ declare module "@decaf-ts/decoration" {
       property: keyof M,
       validation?: ValidationMetadata
     ): designTypeReturn;
+
+    // TODO: Pending refine
+    /**
+     * @description Returns if a Model property is a nonpopulatable relation
+     * @summary Retrieves all allowed types for a model or a property from it's metadata.
+     *
+     * @template model - The model type extending from Model
+     * @param {Constructor<M>} model - The constructor of the target model class
+     * @param {keyof M} property - The property name to retrieve validation for
+     * @param {ValidationMetadata} validation - Optional validation metadata.
+     * @return {designTypeReturn} An object of the designtypes
+     *
+     * @example
+     * class User extends Model {
+     *
+     * // Get the designtypes for property name
+     * const validationMetaData = Metadata.get(User.constructor, 'name')
+     * const { designTypes, designType } = Metadata.getPropDesignTypes(User.constructor, 'name', validationMetaData?.validation);
+     */
+    function propIsNonPopulatedRelation<M extends Model>(
+      model: Constructor<M>,
+      property: keyof M,
+      relationClassName: string
+    ): boolean | undefined;
   }
 }
