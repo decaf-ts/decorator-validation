@@ -719,7 +719,8 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      return target instanceof Model || !!Metadata.modelName(target as any);
+      const modelName = Metadata.modelName(target as any);
+      return target instanceof Model || !!Model.get(modelName);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
@@ -742,7 +743,8 @@ export abstract class Model<Async extends boolean = false>
     target: M,
     attribute: string
   ): boolean | string | undefined {
-    if (Model.isModel((target as Record<string, any>)[attribute])) return true;
+    const isModel = Model.isModel((target as Record<string, any>)[attribute]);
+    if (isModel) return true;
     const metadata = Metadata.type(
       target.constructor as Constructor<M>,
       attribute as string
