@@ -135,16 +135,34 @@ import { ReservedModels } from "../model/constants";
   return { designTypes, designType };
 }.bind(Metadata);
 
+/**
+ * @description Persistence-related constant keys
+ * @summary Enum containing string constants used throughout the persistence layer for metadata, relations, and other persistence-related operations
+ * @enum {string}
+ * @readonly
+ * @memberOf module:core
+ */
+export enum PersistenceKeys {
+  /** @description Key for relations metadata storage */
+  RELATIONS = "__relations",
+
+  /** @description Key for relations metadata storage */
+  RELATION = "relation",
+}
+
 // TODO: Pending refine
 (Metadata as any).propIsNonPopulatedRelation = function <M extends Model>(
   model: Constructor<M>,
   property: keyof M,
   relationClassName: string
 ): boolean | undefined {
-  const { __relations, relation }: any = Metadata.get(
+  const metadata: any = Metadata.get(
     model instanceof Model ? model.constructor : (model as any)
   );
-  if (Array.isArray(__relations) && __relations?.includes(property)) {
+  if (!metadata) return;
+  const relations = metadata[PersistenceKeys.RELATIONS];
+  const relation = metadata[PersistenceKeys.RELATION];
+  if (Array.isArray(relations) && relations?.includes(property)) {
     const relationName = Object.keys(relation)[0];
 
     return (

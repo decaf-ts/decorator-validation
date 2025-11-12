@@ -381,10 +381,7 @@ export function validate<
     const hasPropValue = propValue !== null && propValue !== undefined;
     if (isConstr && hasPropValue) {
       const instance = propValue as Model;
-      const isInvalidModel =
-        typeof instance !== "object" ||
-        typeof instance.hasErrors !== "function";
-      // If property comes from a relation and has no populate flag set to false, this will have the value of the id of that relation, instead of a model.
+      // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
       // We need to capture that and excempt it from throwing an error
       // TODO: Pending refine
       const propIsNonPopulatedRel = Metadata.propIsNonPopulatedRelation(
@@ -393,7 +390,7 @@ export function validate<
         isConstr as string
       );
 
-      if (!isInvalidModel && !propIsNonPopulatedRel) {
+      if (!propIsNonPopulatedRel) {
         const Constr = (Array.isArray(designType) ? designTypes : [designType])
           .map((d: any) => {
             if (typeof d === "function" && !d.name) d = d();
