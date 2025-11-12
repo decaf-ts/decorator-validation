@@ -144,20 +144,17 @@ declare module "@decaf-ts/decoration" {
      * @template model - The model type extending from Model
      * @param {Constructor<M>} model - The constructor of the target model class
      * @param {keyof M} property - The property name to retrieve validation for
-     * @param {ValidationMetadata} validation - Optional validation metadata.
      * @return {designTypeReturn} An object of the designtypes
      *
      * @example
      * class User extends Model {
      *
      * // Get the designtypes for property name
-     * const validationMetaData = Metadata.get(User.constructor, 'name')
-     * const { designTypes, designType } = Metadata.getPropDesignTypes(User.constructor, 'name', validationMetaData?.validation);
+     * const { designTypes, designType } = Metadata.getPropDesignTypes(User.constructor, 'name');
      */
     function getPropDesignTypes<M>(
       model: Constructor<M>,
-      property: keyof M,
-      validation?: ValidationMetadata
+      property: keyof M
     ): designTypeReturn;
 
     // TODO: Pending refine
