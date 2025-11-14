@@ -36,11 +36,7 @@ import { ReservedModels } from "../model/constants";
   if (!meta.validation) return undefined;
 
   if (!(meta.validation as ValidationMetadata)[ValidationKeys.TYPE]) {
-    const { designTypes } = Metadata.getPropDesignTypes(
-      model,
-      property,
-      meta.validation[property] as ValidationMetadata
-    );
+    const { designTypes } = Metadata.getPropDesignTypes(model, property);
 
     // Adds by default the type validation
     // If the designtypes is object, we exclude it. It causes problems with pks.
@@ -102,11 +98,13 @@ import { ReservedModels } from "../model/constants";
 
 (Metadata as any).getPropDesignTypes = function <M extends Model>(
   model: Constructor<M>,
-  prop: keyof M,
-  validation?: ValidationMetadata
+  prop: keyof M
 ) {
+  const metadata = Metadata.get(model) as ExtendedMetadata<M> | undefined;
   const designTypeMeta = Metadata.type(model, prop as any);
-  if (!designTypeMeta && (!validation || validation[ValidationKeys.TYPE]))
+  const validation = metadata?.[ValidationKeys.REFLECT]?.[prop];
+
+  if (!designTypeMeta && (!validation || !validation[ValidationKeys.TYPE]))
     return {};
 
   const propTypes: any[] | undefined =
@@ -117,7 +115,7 @@ import { ReservedModels } from "../model/constants";
   if (!propTypes?.length) return {};
 
   const designTypeDec = propTypes[0];
-  const designType: any =
+  const designType =
     designTypeDec.class ||
     designTypeDec.clazz ||
     designTypeDec.customTypes ||
@@ -132,34 +130,3 @@ import { ReservedModels } from "../model/constants";
 
   return { designTypes, designType };
 }.bind(Metadata);
-
-// export enum ModelOperations {
-//   OPERATIONS = "operations",
-//   RELATIONS = "relations",
-// }
-
-// (Metadata as any).saveOperation = function <M extends Model>(
-//   model: Constructor<M>,
-//   propertyKey: string,
-//   operation: string,
-//   metadata: any
-// ) {
-//   if (!propertyKey) return;
-//   Metadata.set(
-//     model,
-//     Metadata.key(ModelOperations.OPERATIONS, propertyKey, operation),
-//     metadata
-//   );
-// }.bind(Metadata);
-
-// (Metadata as any).readOperation = function <M extends Model>(
-//   model: Constructor<M>,
-//   propertyKey: string,
-//   operation: string
-// ) {
-//   if (!propertyKey) return;
-//   return Metadata.get(
-//     model,
-//     Metadata.key(ModelOperations.OPERATIONS, propertyKey, operation)
-//   );
-// }.bind(Metadata);

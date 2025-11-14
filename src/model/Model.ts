@@ -721,12 +721,14 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      if (target instanceof Model) return true;
-      const constr = Metadata.constr(target as any);
-      if (!constr || constr === target) return false;
-      return !!Metadata.modelName(constr as any);
+      // if (target instanceof Model) return true;
+      // const constr = Metadata.constr(target as any);
+      // if (!constr || constr === target) return false;
+      // return !!Metadata.modelName(constr as any);
 
       // return target instanceof Model || !!Metadata.modelName(target as any);
+      const modelName = Metadata.modelName(target as any);
+      return target instanceof Model || !!Model.get(modelName);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
@@ -749,7 +751,8 @@ export abstract class Model<Async extends boolean = false>
     target: M,
     attribute: string
   ): boolean | string | undefined {
-    if (Model.isModel((target as Record<string, any>)[attribute])) return true;
+    const isModel = Model.isModel((target as Record<string, any>)[attribute]);
+    if (isModel) return true;
     const metadata = Metadata.type(
       target.constructor as Constructor<M>,
       attribute as string
@@ -761,4 +764,34 @@ export abstract class Model<Async extends boolean = false>
   static describe<M extends Model>(model: Constructor<M>, key?: keyof M) {
     return Metadata.description(model, key);
   }
+
+  /**
+   * @description Returns if a Model property should be validated
+   * @summary Returns if a Model property should be validated. Use for models that are relations.
+   *
+   * @template model - The model type extending from Model
+   * @param {M} model - The constructor of the target model class
+   * @param {keyof M} property - The property name to retrieve validation for
+   * @return {boolean} An object of the designtypes
+   *
+   * @example
+   * Class Contacts extends Model{}
+   * class User extends Model {
+   *  contacts: Contacts
+   * }
+   *
+   *   const shouldValidate = shouldValidateNestedHandler(User,'contacts')
+   */
+  private static shouldValidateNestedHandler = function <M extends Model>(
+    model: M,
+    property: keyof M
+  ): boolean {
+    const instance = (model as any)[property as keyof M];
+    if (!instance) return false;
+    const isValidModel =
+      typeof instance === "object" && typeof instance.hasErrors === "function";
+    if (!isValidModel)
+      console.log(`The instance should be validatable but it is not`);
+    return isValidModel;
+  };
 }
