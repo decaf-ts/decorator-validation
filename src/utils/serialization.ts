@@ -35,7 +35,8 @@ export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
     let metadata;
     try {
       metadata = Metadata.modelName(model.constructor as Constructor);
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
       metadata = undefined;
     }
     toSerialize[ModelKeys.ANCHOR] = metadata || model.constructor.name;

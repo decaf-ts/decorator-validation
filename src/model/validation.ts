@@ -318,6 +318,8 @@ export function validate<
   async: Async,
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
+  // throw new Error("validate is not implemented");
+
   const decoratedProperties = Metadata.validatableProperties(
     model.constructor as any,
     ...propsToIgnore
@@ -407,18 +409,6 @@ export function validate<
             ...propsToIgnore
           );
         }
-      }
-    } else if (isConstr && hasPropValue && isObjectLike) {
-      const Constr = (Array.isArray(designType) ? designTypes : [designType])
-        .map((d) => {
-          if (typeof d === "function" && !d.name) d = d();
-          return Model.get(d.name || d);
-        })
-        .find((d) => !!d) as any;
-      if (Constr) {
-        propErrors[ValidationKeys.TYPE] =
-          `Value must be an instance of ${Constr.name}`;
-        delete propErrors[ModelKeys.TYPE];
       }
     }
 

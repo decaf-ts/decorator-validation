@@ -721,14 +721,14 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      // if (target instanceof Model) return true;
-      // const constr = Metadata.constr(target as any);
-      // if (!constr || constr === target) return false;
-      // return !!Metadata.modelName(constr as any);
-
-      // return target instanceof Model || !!Metadata.modelName(target as any);
-      const modelName = Metadata.modelName(target as any);
-      return target instanceof Model || !!Model.get(modelName);
+      if (target instanceof Model) return true;
+      const constr = Metadata.constr(target as any);
+      if (!constr || constr === target) return false;
+      return !!Metadata.modelName(constr as any);
+      //
+      // // return target instanceof Model || !!Metadata.modelName(target as any);
+      // const modelName = Metadata.modelName(target as any);
+      // return target instanceof Model || !!Model.get(modelName);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
