@@ -286,7 +286,8 @@ export abstract class Model<Async extends boolean = false>
         this.constructor as unknown as Constructor,
         ModelKeys.SERIALIZATION
       );
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: unknown) {
       metadata = undefined;
     }
 
@@ -664,7 +665,8 @@ export abstract class Model<Async extends boolean = false>
         model.constructor as Constructor,
         ModelKeys.SERIALIZATION
       );
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: unknown) {
       metadata = undefined;
     }
 
@@ -719,7 +721,12 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      return target instanceof Model || !!Metadata.modelName(target as any);
+      if (target instanceof Model) return true;
+      const constr = Metadata.constr(target as any);
+      if (!constr || constr === target) return false;
+      return !!Metadata.modelName(constr as any);
+
+      // return target instanceof Model || !!Metadata.modelName(target as any);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {

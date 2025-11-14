@@ -137,7 +137,7 @@ export function validateDecorator<
   });
   const validatorOptions: ValidatorOptions | TypeValidatorOptions =
     decorator.key === ModelKeys.TYPE
-      ? { type: (decoratorProps as any)[0].name }
+      ? ((decoratorProps as any)[0] as TypeValidatorOptions)
       : (decoratorProps as ValidatorOptions);
   const maybeAsyncErrors = validator.hasErrors(
     value,
@@ -318,8 +318,6 @@ export function validate<
   async: Async,
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
-  // throw new Error("validate is not implemented");
-
   const decoratedProperties = Metadata.validatableProperties(
     model.constructor as any,
     ...propsToIgnore
@@ -380,7 +378,10 @@ export function validate<
     // let nestedErrors: Record<string, any> = {};
     const isConstr = Model.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
-    if (isConstr && hasPropValue) {
+    const isModelInstance =
+      hasPropValue && Model.isModel(propValue as Record<string, any>);
+    const isObjectLike = typeof propValue === "object" && propValue !== null;
+    if (isConstr && hasPropValue && isModelInstance) {
       const instance = propValue as Model;
 
       const Constr = (Array.isArray(designType) ? designTypes : [designType])
@@ -403,6 +404,18 @@ export function validate<
           async,
           ...propsToIgnore
         );
+      }
+    } else if (isConstr && hasPropValue && isObjectLike) {
+      const Constr = (Array.isArray(designType) ? designTypes : [designType])
+        .map((d) => {
+          if (typeof d === "function" && !d.name) d = d();
+          return Model.get(d.name || d);
+        })
+        .find((d) => !!d) as any;
+      if (Constr) {
+        propErrors[ValidationKeys.TYPE] =
+          `Value must be an instance of ${Constr.name}`;
+        delete propErrors[ModelKeys.TYPE];
       }
     }
 
