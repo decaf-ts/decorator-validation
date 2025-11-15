@@ -231,5 +231,17 @@ describe("Multiple Flavours", () => {
       "prop",
       undefined
     );
+
+    expect(Metadata.flavourOf(Obj1)).toEqual(DefaultFlavour);
+    expect(Metadata.flavourOf(Obj2)).toEqual("2");
+    expect(Metadata.flavourOf(Obj3)).toEqual("3");
+    expect(Metadata.flavourOf(Obj4)).toEqual("4");
+    expect(Metadata.flavourOf(Obj5)).toEqual("5");
+
+    expect(Metadata.flavouredAs("2")).toEqual([Obj2]);
+    expect(Metadata.flavouredAs("3")).toEqual([Obj3]);
+
+    expect(Metadata.flavouredAs("4")).toEqual([Obj4]);
+    expect(Metadata.flavouredAs("5")).toEqual([Obj5]);
   });
 });
