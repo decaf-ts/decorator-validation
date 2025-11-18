@@ -516,9 +516,10 @@ export function list(
 ) {
   const key = ValidationKeys.LIST;
   const meta: ListMetadata = {
-    clazz: (Array.isArray(clazz)
-      ? clazz.map((c) => (c.name ? c.name : c))
-      : [clazz.name ? clazz.name : clazz]) as (string | (() => Constructor))[],
+    clazz: (Array.isArray(clazz) ? clazz : [clazz]) as (
+      | Constructor
+      | (() => Constructor)
+    )[],
     type: collection,
     message: message,
     async: false,

@@ -332,7 +332,7 @@ export function validate<
     const propKey = String(prop);
     const propValue = (model as any)[prop];
 
-    const decorators: any =
+    const decorators =
       Metadata.validationFor(model.constructor as Constructor, prop) || {};
 
     const { designTypes, designType } = Metadata.getPropDesignTypes(
@@ -342,7 +342,11 @@ export function validate<
     if (!designTypes) continue;
 
     // Handle array or Set types and enforce the presence of @list decorator
-    if (designTypes.some((t: any) => [Array.name, Set.name].includes(t))) {
+    if (
+      designTypes.some((t: Constructor<any>) =>
+        [Array.name, Set.name].includes(t.name)
+      )
+    ) {
       if (
         !decorators ||
         !Object.keys(decorators).includes(ValidationKeys.LIST)

@@ -366,7 +366,7 @@ export abstract class Model<Async extends boolean = false>
   static fromModel<T extends Model>(self: T, obj?: T | Record<string, any>): T {
     if (!obj) obj = {};
 
-    let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
+    let decorators: DecoratorMetadata[];
     const props = Model.getAttributes(self);
 
     const proto = Object.getPrototypeOf(self);
@@ -402,26 +402,16 @@ export abstract class Model<Async extends boolean = false>
 
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
-      dec = decorators[0] as DecoratorMetadata;
-      const clazz = dec?.name
-        ? [dec?.name]
-        : (Array.isArray(dec?.customTypes)
-            ? dec.customTypes
-            : [dec?.customTypes]
-          ).map((t) => (typeof t === "function" && !t.name ? t() : t));
+      const clazz = decorators.map((t: any) =>
+        typeof t === "function" && !t.name ? t() : t
+      );
 
-      const reserved = Object.values(ReservedModels).map((v) =>
-        v.toLowerCase()
-      ) as string[];
+      const reserved: any = Object.values(ReservedModels);
 
-      clazz.forEach((c: any) => {
-        if (typeof c === "function") {
-          if (c.name) c = c.name;
-          else c = c();
-        }
-        if (reserved.indexOf(c?.toLowerCase()) === -1)
+      clazz.forEach((c: Constructor<any>) => {
+        if (reserved?.indexOf(c) === -1)
           try {
-            switch (c) {
+            switch (c.name) {
               case "Array":
               case "Set": {
                 const validation: any = Metadata.validationFor(
@@ -431,38 +421,33 @@ export abstract class Model<Async extends boolean = false>
                 if (!validation || !validation[ValidationKeys.LIST]) break;
                 const listDec: ListValidatorOptions =
                   validation[ValidationKeys.LIST];
-                let clazzName = (listDec.clazz as string[]).find(
-                  (t: string) => {
-                    t = typeof t === "function" ? (t as any)() : t;
-                    t = (t as any).name ? (t as any).name : t;
-                    return !jsTypes.includes(t);
-                  }
-                );
-                clazzName =
-                  typeof clazzName === "string"
-                    ? clazzName
-                    : (clazzName as any)();
-                clazzName =
-                  typeof clazzName === "string"
-                    ? clazzName
-                    : (clazzName as any).name;
-                if (c === "Array")
+                const clazzName = (
+                  listDec.clazz as (
+                    | Constructor<any>
+                    | (() => Constructor<any>)
+                  )[]
+                ).find((t) => {
+                  t = typeof t === "function" ? (t as any)() : t;
+                  return !jsTypes.includes(t.name);
+                });
+
+                if (c.name === "Array")
                   (self as Record<string, any>)[prop] = (
                     self as Record<string, any>
                   )[prop].map((el: any) => {
                     return ["object", "function"].includes(typeof el) &&
                       clazzName
-                      ? Model.build(el, clazzName)
+                      ? Model.build(el, clazzName.name)
                       : el;
                   });
-                if (c === "Set") {
+                if (c.name === "Set") {
                   const s = new Set();
                   for (const v of (self as Record<string, any>)[prop]) {
                     if (
                       ["object", "function"].includes(typeof v) &&
                       clazzName
                     ) {
-                      s.add(Model.build(v, clazzName));
+                      s.add(Model.build(v, clazzName.name));
                     } else {
                       s.add(v);
                     }
@@ -474,11 +459,11 @@ export abstract class Model<Async extends boolean = false>
               default:
                 if (
                   typeof self[prop as keyof typeof self] !== "undefined" &&
-                  Model.get(c)
+                  Model.get(c.name)
                 )
                   (self as Record<string, any>)[prop] = Model.build(
                     (self as any)[prop],
-                    c
+                    c.name
                   );
             }
           } catch (e: any) {

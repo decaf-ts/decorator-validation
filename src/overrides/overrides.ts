@@ -43,7 +43,7 @@ import { ReservedModels } from "../model/constants";
     if (
       (meta.validation as any)[property] &&
       designTypes?.length &&
-      designTypes[0].toLowerCase() !== ReservedModels.OBJECT
+      designTypes[0] !== ReservedModels.OBJECT
     )
       (meta.validation as any)[property][ValidationKeys.TYPE] = {
         customTypes: designTypes,
@@ -90,9 +90,12 @@ import { ReservedModels } from "../model/constants";
     throw new Error(`No metadata found for property ${String(prop)}`);
 
   const validation: any = Metadata.validationFor(model as Constructor, prop);
-
-  return validation && validation[ValidationKeys.TYPE]
-    ? [validation[ValidationKeys.TYPE]]
+  // TODO: CHeck why some are not iterable
+  return validation &&
+    validation[ValidationKeys.TYPE] &&
+    typeof validation[ValidationKeys.TYPE]?.customTypes[Symbol.iterator] ===
+      "function"
+    ? [...validation[ValidationKeys.TYPE].customTypes]
     : [designType];
 }.bind(Metadata);
 
@@ -109,7 +112,7 @@ import { ReservedModels } from "../model/constants";
 
   const propTypes: any[] | undefined =
     validation && validation[ValidationKeys.TYPE]
-      ? [validation[ValidationKeys.TYPE]]
+      ? [validation[ValidationKeys.TYPE].customTypes]
       : [designTypeMeta];
 
   if (!propTypes?.length) return {};
@@ -119,14 +122,13 @@ import { ReservedModels } from "../model/constants";
     designTypeDec.class ||
     designTypeDec.clazz ||
     designTypeDec.customTypes ||
-    designTypeDec.name;
+    designTypeDec;
 
   const designTypes = (
     Array.isArray(designType) ? designType : [designType]
-  ).map((e: any) => {
-    e = typeof e === "function" && !e.name ? e() : e;
-    return (e as any).name ? (e as any).name : e;
-  }) as string[];
+  ).map(
+    (e: any) => (e = typeof e === "function" && !e.name ? e() : e)
+  ) as Constructor[];
 
   return { designTypes, designType };
 }.bind(Metadata);

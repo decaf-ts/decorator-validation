@@ -33,20 +33,20 @@ export enum Primitives {
  * @readonly
  * @memberOf module:decorator-validation
  */
-export enum ReservedModels {
+export const ReservedModels = {
   /** reserved name for string */
-  STRING = "string",
+  STRING: String,
   /** reserved name for object */
-  OBJECT = "object",
+  OBJECT: Object,
   /** reserved name for number */
-  NUMBER = "number",
+  NUMBER: Number,
   /** reserved name for boolean */
-  BOOLEAN = "boolean",
+  BOOLEAN: Boolean,
   /** reserved name for bigint */
-  BIGINT = "bigint",
+  BIGINT: BigInt,
   /** reserved name for Date */
-  DATE = "date",
-}
+  DATE: Date,
+};
 
 /**
  * @description Basic supported JavaScript types used by the validation system.
