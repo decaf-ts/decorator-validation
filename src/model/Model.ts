@@ -409,7 +409,7 @@ export abstract class Model<Async extends boolean = false>
       const reserved: any = Object.values(ReservedModels);
 
       clazz.forEach((c: Constructor<any>) => {
-        if (reserved?.indexOf(c) === -1)
+        if (!reserved.includes(c))
           try {
             switch (c.name) {
               case "Array":
@@ -426,10 +426,13 @@ export abstract class Model<Async extends boolean = false>
                     | Constructor<any>
                     | (() => Constructor<any>)
                   )[]
-                ).find((t) => {
-                  t = typeof t === "function" ? (t as any)() : t;
-                  return !jsTypes.includes(t.name);
-                });
+                )
+                  .map((t) =>
+                    typeof t === "function" && !(t as any).name
+                      ? (t as any)()
+                      : t
+                  )
+                  .find((t) => !jsTypes.includes(t.name));
 
                 if (c.name === "Array")
                   (self as Record<string, any>)[prop] = (
