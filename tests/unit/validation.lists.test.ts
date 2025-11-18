@@ -72,6 +72,7 @@ describe("Validation Lists", () => {
       expect(errors).toEqual(
         new ModelErrorDefinition({
           items: {
+            // @ts-expect-error dont know why
             list: [
               {
                 name: {
@@ -258,6 +259,7 @@ describe("Validation Lists", () => {
       expect(errors).toEqual(
         new ModelErrorDefinition({
           items: {
+            // @ts-expect-error dont know why
             list: [
               undefined,
               "Value has no validatable type",
@@ -345,10 +347,12 @@ describe("Validation Lists", () => {
       expect(errors).toEqual(
         new ModelErrorDefinition({
           parents: {
+            // @ts-expect-error dont know why
             list: [
               undefined,
               new ModelErrorDefinition({
                 items: {
+                  // @ts-expect-error dont know why
                   list: [
                     "Value has no validatable type",
                     "Value has no validatable type",
