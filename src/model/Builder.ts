@@ -3,6 +3,7 @@ import { ModelArg } from "./types";
 import { ObjectAccumulator } from "typed-object-accumulator";
 import { Constructor, DecorationKeys, prop } from "@decaf-ts/decoration";
 import { model } from "./decorators";
+import { ExtendedMetadata } from "../overrides/index";
 
 type BuildableModel = Model & Record<PropertyKey, any>;
 
@@ -166,5 +167,14 @@ export class ModelBuilder<
 
   static builder<M extends BuildableModel = BuildableModel>() {
     return new ModelBuilder<M>();
+  }
+
+  static from<N extends Model, M extends ExtendedMetadata<N>>(
+    meta: M,
+    name?: string
+  ): Constructor<N> {
+    const builder = new ModelBuilder<N>();
+    if (name) builder.setName(name);
+    else builder.setName("Class" + Date.now());
   }
 }
