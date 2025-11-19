@@ -1,7 +1,12 @@
 import { Model } from "./Model";
 import { ModelArg } from "./types";
 import { ObjectAccumulator } from "typed-object-accumulator";
-import { Constructor, DecorationKeys, prop } from "@decaf-ts/decoration";
+import {
+  Constructor,
+  DecorationKeys,
+  prop,
+  description,
+} from "@decaf-ts/decoration";
 import { model } from "./decorators";
 import { ComparisonValidatorOptions } from "../validation/types";
 import {
@@ -427,6 +432,10 @@ export class AttributeBuilder<M extends BuildableModel, N extends keyof M, T>
     return this.greaterThanOrEqual(propertyOrMeta, options);
   }
 
+  description(desc: string) {
+    return this.decorate(description(desc));
+  }
+
   /**
    * Applies the attribute metadata and decorators to the provided constructor.
    */
@@ -527,11 +536,17 @@ export class ModelBuilder<
   private attributes: Map<keyof M, AttributeBuilder<M, keyof M, any>> =
     new Map();
   private _name?: string;
+  private _description?: string;
 
   private _parent?: Constructor<M>;
 
   setName(name: string) {
     this._name = name;
+    return this;
+  }
+
+  description(desc: string) {
+    this._description = desc;
     return this;
   }
 
@@ -612,7 +627,12 @@ export class ModelBuilder<
       attribute.build(DynamicBuiltClass as Constructor<M>);
     }
 
-    return model()(DynamicBuiltClass);
+    let result = model()(DynamicBuiltClass);
+
+    if (this._description)
+      result = description(this._description)(result) as Constructor<M>;
+
+    return result;
   }
 
   static builder<M extends BuildableModel = BuildableModel>() {
