@@ -1,67 +1,91 @@
 import { Model } from "./Model";
 import { ModelArg } from "./types";
 import { ObjectAccumulator } from "typed-object-accumulator";
-import { Constructor } from "@decaf-ts/decoration";
+import { Constructor, DecorationKeys, prop } from "@decaf-ts/decoration";
+import { model } from "./decorators";
+
+type BuildableModel = Model & Record<PropertyKey, any>;
 
 export interface DecorateOption<M extends Model> {
   decorate(...decorators: PropertyDecorator[]): ModelBuilder<M>;
 }
 
-export class AttributeBuilder<M extends Model, N extends keyof M, T>
+export class AttributeBuilder<M extends BuildableModel, N extends keyof M, T>
   implements DecorateOption<M>
 {
   constructor(
     protected parent: ModelBuilder<M>,
-    readonly attr: keyof M,
+    readonly attr: N,
     readonly type: T
   ) {}
 
-  private decorators: Set<PropertyDecorator> = new Set();
+  private decorators: PropertyDecorator[] = [];
 
   decorate(...decorators: PropertyDecorator[]): ModelBuilder<M> {
     for (const decorator of decorators) {
-      if (this.decorators.has(decorator))
+      if (this.decorators.includes(decorator))
         throw new Error(`Decorator "${decorator}" has already been used`);
-      this.decorators.add(decorator);
+      this.decorators.push(decorator);
     }
     return this.parent;
   }
 
   undecorate(...decorators: PropertyDecorator[]) {
     for (const decorator of decorators) {
-      if (!this.decorators.has(decorator))
+      const index = this.decorators.indexOf(decorator);
+      if (index < 0)
         throw new Error(
           `Decorator "${decorator}" is not applied to ${this.attr as string}`
         );
-      this.decorators.delete(decorator);
+      this.decorators.splice(index, 1);
     }
     return this.parent;
   }
 
-  apply(): ModelBuilder<M> {
-    Object.defineProperty(this.parent, this.attr, {
-      value: undefined,
-    });
+  /**
+   * Applies the attribute metadata and decorators to the provided constructor.
+   */
+  build(constructor: Constructor<M>): void {
+    const target = constructor.prototype;
+    const propKey = this.attr as string | symbol;
+
+    if (!Object.getOwnPropertyDescriptor(target, propKey)) {
+      Object.defineProperty(target, propKey, {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: undefined,
+      });
+    }
+
+    if (this.type) {
+      Reflect.defineMetadata(
+        DecorationKeys.DESIGN_TYPE,
+        this.type,
+        target,
+        propKey
+      );
+    }
+
+    prop()(target, propKey as any);
+
     this.decorators.forEach((decorator) => {
       try {
-        decorator(this.parent, this.attr as any);
+        decorator(target, propKey as any);
       } catch (e: unknown) {
         throw new Error(
           `Failed to apply decorator to property "${this.attr as any}": ${e}`
         );
       }
     });
-    return this.parent;
   }
 }
 
 export class ModelBuilder<
-  M extends Model = Model,
+  M extends BuildableModel = BuildableModel,
 > extends ObjectAccumulator<M> {
-  private attributes: Map<
-    string,
-    AttributeBuilder<M, any, any> | ModelBuilder<any>
-  > = new Map();
+  private attributes: Map<keyof M, AttributeBuilder<M, keyof M, any>> =
+    new Map();
   private _name?: string;
 
   private _parent?: Constructor<M>;
@@ -71,34 +95,39 @@ export class ModelBuilder<
     return this;
   }
 
-  private attribute<T, N extends symbol>(
-    attr: string,
-    type: T
-  ): AttributeBuilder<M, N, T> {
-    return new AttributeBuilder<M, N, T>(this, attr as any, type);
+  private attribute<T, N extends keyof M>(attr: N, type: T) {
+    if (this.attributes.has(attr))
+      throw new Error(`Attribute "${String(attr)}" already exists`);
+    const attributeBuilder = new AttributeBuilder<M, N, T>(
+      this,
+      attr as any,
+      type
+    );
+    this.attributes.set(attr, attributeBuilder);
+    return attributeBuilder;
   }
 
-  string(attr: string) {
+  string<N extends keyof M>(attr: N) {
     return this.attribute(attr, String);
   }
 
-  number(attr: string) {
+  number<N extends keyof M>(attr: N) {
     return this.attribute(attr, Number);
   }
 
-  date(attr: string) {
+  date<N extends keyof M>(attr: N) {
     return this.attribute(attr, Date);
   }
 
-  bigint(attr: string) {
+  bigint<N extends keyof M>(attr: N) {
     return this.attribute(attr, BigInt);
   }
 
-  instance(clazz: Constructor<any>, attr: string) {
+  instance<N extends keyof M>(clazz: Constructor<any>, attr: N) {
     return this.attribute(attr, clazz);
   }
 
-  model<MM extends Model>(attr: string): ModelBuilder<MM> {
+  model<MM extends Model, N extends keyof M>(attr: N): ModelBuilder<MM> {
     const mm = new ModelBuilder<MM>();
     mm.build = new Proxy(mm.build, {
       apply: (target, thisArg, argArray: any[]) => {
@@ -112,7 +141,8 @@ export class ModelBuilder<
   build(): Constructor<M> {
     if (!this._name) throw new Error("name is required");
 
-    const DynamicBuiltClass = class<M> extends Model {
+    const Parent = this._parent ?? Model;
+    const DynamicBuiltClass = class extends Parent {
       constructor(arg?: ModelArg<M>) {
         super(arg as any);
       }
@@ -123,10 +153,18 @@ export class ModelBuilder<
       writable: false,
     });
 
-    return DynamicBuiltClass as unknown as Constructor<M>;
+    for (const attribute of this.attributes.values()) {
+      attribute.build(DynamicBuiltClass as Constructor<M>);
+    }
+
+    const DecoratedClass =
+      (model()(DynamicBuiltClass) as Constructor<M>) ||
+      (DynamicBuiltClass as Constructor<M>);
+
+    return DecoratedClass;
   }
 
-  static get builder() {
-    return new ModelBuilder();
+  static builder<M extends BuildableModel = BuildableModel>() {
+    return new ModelBuilder<M>();
   }
 }

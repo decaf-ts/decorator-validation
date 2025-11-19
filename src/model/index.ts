@@ -3,6 +3,7 @@ export * from "./construction";
 export * from "./decorators";
 export * from "./Model";
 export * from "./ModelErrorDefinition";
+export * from "./Builder";
 export * from "./types";
 export * from "./validation";
 export * from "./utils";
