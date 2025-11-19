@@ -4,6 +4,7 @@ import {
   list,
   min,
   minlength,
+  model,
   Model,
   ModelArg,
   ModelBuilder,
@@ -15,6 +16,7 @@ import "../../src/overrides";
 import { Metadata } from "@decaf-ts/decoration";
 
 describe("metadata type retrieval", () => {
+  @model()
   class ComplexChildClass extends Model {
     @required()
     @minlength(2)
@@ -25,6 +27,7 @@ describe("metadata type retrieval", () => {
     }
   }
 
+  @model()
   class ComplexTestClass extends Model {
     @required()
     @minlength(2)

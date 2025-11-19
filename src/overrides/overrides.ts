@@ -53,14 +53,24 @@ import { ReservedModels } from "../model/constants";
       };
   }
 
-  if (!key)
-    return meta.validation[property] as K extends string
+  if (!key) {
+    const validationsForProp =
+      meta.validation[property] as Record<string, ValidationMetadata>;
+    return validationsForProp as unknown as K extends string
       ? ValidationMetadata
       : P extends keyof M
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>;
-  if (!meta.validation[property]) return undefined;
-  return meta.validation[property][key];
+  }
+  const propValidation = meta.validation[property] as
+    | Record<string, ValidationMetadata>
+    | undefined;
+  if (!propValidation) return undefined;
+  return propValidation[key] as unknown as K extends string
+    ? ValidationMetadata
+    : P extends keyof M
+      ? Record<string, ValidationMetadata>
+      : Record<keyof M, Record<string, ValidationMetadata>>;
 }.bind(Metadata);
 
 (Metadata as any).modelName = function <M extends Model>(
@@ -105,7 +115,9 @@ import { ReservedModels } from "../model/constants";
 ) {
   const metadata = Metadata.get(model) as ExtendedMetadata<M> | undefined;
   const designTypeMeta = Metadata.type(model, prop as any);
-  const validation = metadata?.[ValidationKeys.REFLECT]?.[prop];
+  const validation = metadata?.[ValidationKeys.REFLECT]?.[
+    prop
+  ] as Record<string, any> | undefined;
 
   if (!designTypeMeta && (!validation || !validation[ValidationKeys.TYPE]))
     return {};

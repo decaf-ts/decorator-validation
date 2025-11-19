@@ -48,11 +48,11 @@ import { ASYNC_META_KEY } from "../constants";
  * @category Property Decorators
  */
 export function validationMetadata<V>(decorator: any, key: string, value: V) {
-  Validation.registerDecorator(key, decorator);
   return apply(propMetadata(key, value));
 }
 
 export function innerValidationDecorator(dec: any, key: string, meta: any) {
+  Validation.registerDecorator(key, dec);
   return function innerValidationDecorator(obj: any, prop: any) {
     return validationMetadata(
       dec,
