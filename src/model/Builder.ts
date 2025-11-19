@@ -484,19 +484,40 @@ class ListAttributeBuilder<M extends BuildableModel, N extends keyof M> {
     return this.parent;
   }
 
-  ofModel<MM extends BuildableModel>(): ModelBuilder<M> {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    const baseBuilder = ModelBuilder.builder<MM>();
-    baseBuilder.build = new Proxy(baseBuilder.build, {
-      apply(target: () => Constructor<M>, thisArg: any, argArray: any[]): any {
-        const built = Reflect.apply(target, thisArg, argArray);
-        self.attribute.list(built, self.collection);
-        return self.parent;
+  ofModel<MM extends BuildableModel>(): ModelBuilder<MM> {
+    const nestedBuilder = ModelBuilder.builder<MM>();
+    const originalBuild = nestedBuilder.build;
+    let cachedConstructor: Constructor<MM> | undefined;
+
+    const factory = (() => {
+      return function () {
+        if (!cachedConstructor) {
+          cachedConstructor = Reflect.apply(
+            originalBuild,
+            nestedBuilder,
+            []
+          ) as Constructor<MM>;
+        }
+        return cachedConstructor;
+      };
+    })();
+
+    this.attribute.list(factory as any, this.collection);
+
+    nestedBuilder.build = new Proxy(originalBuild, {
+      apply: (
+        target: () => Constructor<M>,
+        thisArg: ModelBuilder<MM>,
+        argArray: any[]
+      ): ModelBuilder<M> => {
+        cachedConstructor = Reflect.apply(target, thisArg, argArray) as
+          | Constructor<MM>
+          | undefined;
+        return this.parent;
       },
     });
 
-    return baseBuilder;
+    return nestedBuilder;
   }
 }
 
