@@ -1,4 +1,4 @@
-import { isEqual } from "@decaf-ts/reflection";
+import { isEqual } from "../../src/utils/equality";
 
 describe("date functions", () => {
   it("Properly compares dates", () => {

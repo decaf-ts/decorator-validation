@@ -6,75 +6,13 @@ import { ValidationKeys } from "../validation/Validators/constants";
 import {
   ModelErrors,
   TypeValidatorOptions,
-  ValidationPropertyDecoratorDefinition,
   ValidatorOptions,
 } from "../validation";
 import { PathProxyEngine } from "../utils/PathProxy";
 import { ASYNC_META_KEY, VALIDATION_PARENT_KEY } from "../constants";
-import { ConditionalAsync, DecoratorMetadataAsync } from "../types";
-import { Reflection } from "@decaf-ts/reflection";
+import { ConditionalAsync } from "../types";
 import { toConditionalPromise } from "./utils";
-
-/**
- * Retrieves the validation metadata decorators associated with a specific property of a model,
- * using the reflective metadata key.
- *
- * @param model - The model instance or class containing the decorated property.
- * @param {string} prop - The name of the property whose decorators should be retrieved.
- * @param {string} reflectKey - The metadata key used to retrieve the decorators.
- *                     Defaults to `ValidationKeys.REFLECT`.
- *
- * @returns The validation decorators applied to the property
- */
-export function getValidationDecorators(
-  model: Record<string, any>,
-  prop: string,
-  reflectKey: string = ValidationKeys.REFLECT
-): ValidationPropertyDecoratorDefinition {
-  return Reflection.getPropertyDecorators(
-    reflectKey,
-    model,
-    prop
-  ) as unknown as ValidationPropertyDecoratorDefinition;
-}
-
-/**
- * @description
- * Retrieves all validatable property decorators from a given model, excluding specified properties.
- *
- * @summary
- * Iterates through the own enumerable properties of a model instance, filtering out any properties
- * listed in the `propsToIgnore` array. For each remaining property, it checks whether validation
- * decorators are present using `getValidationDecorators`, and if so, collects them in the result array.
- *
- * @template M - A generic parameter extending the `Model` class, representing the model type being inspected.
- *
- * @param {M} model - An instance of a class extending `Model` from which validatable properties will be extracted.
- * @param {string[]} propsToIgnore - An array of property names that should be excluded from validation inspection.
- *
- * @return {ValidationPropertyDecoratorDefinition[]} An array of validation decorator definitions
- * associated with the model's properties, excluding those listed in `propsToIgnore`.
- *
- * @function getValidatableProperties
- */
-export function getValidatableProperties<M extends Model>(
-  model: M,
-  propsToIgnore: string[]
-): ValidationPropertyDecoratorDefinition[] {
-  const decoratedProperties: ValidationPropertyDecoratorDefinition[] = [];
-
-  for (const prop in model) {
-    if (
-      Object.prototype.hasOwnProperty.call(model, prop) &&
-      !propsToIgnore.includes(prop)
-    ) {
-      const dec = getValidationDecorators(model, prop);
-      if (dec) decoratedProperties.push(dec);
-    }
-  }
-
-  return decoratedProperties;
-}
+import { Constructor, Metadata } from "@decaf-ts/decoration";
 
 /**
  * Safely sets temporary metadata on an object
@@ -181,38 +119,31 @@ export function validateDecorator<
 >(
   model: M,
   value: any,
-  decorator: DecoratorMetadataAsync,
+  decorator: any,
   async?: Async
 ): ConditionalAsync<Async, string | undefined> {
+  // throw new Error("validateDecorator is not implemented");
   const validator = Validation.get(decorator.key);
   if (!validator) {
     throw new Error(`Missing validator for ${decorator.key}`);
   }
-
   // skip async decorators if validateDecorators is called synchronously (async = false)
-  if (!async && decorator.props.async) return undefined as any;
-
+  if (!async && decorator.async) return undefined as any;
   const decoratorProps =
-    decorator.key === ModelKeys.TYPE
-      ? [decorator.props]
-      : decorator.props || {};
-
+    decorator.key === ModelKeys.TYPE ? [decorator] : decorator || {};
   const context = PathProxyEngine.create(model, {
     ignoreUndefined: true,
     ignoreNull: true,
   });
-
   const validatorOptions: ValidatorOptions | TypeValidatorOptions =
     decorator.key === ModelKeys.TYPE
-      ? { type: (decoratorProps as any)[0].name }
+      ? ((decoratorProps as any)[0] as TypeValidatorOptions)
       : (decoratorProps as ValidatorOptions);
-
   const maybeAsyncErrors = validator.hasErrors(
     value,
     validatorOptions,
     context
   );
-
   return toConditionalPromise(maybeAsyncErrors, async);
 }
 
@@ -234,7 +165,7 @@ export function validateDecorator<
  * @param {M} model - The model instance that the validation is associated with.
  * @param {string} prop - The model field name
  * @param {any} value - The value to be validated against the provided decorators.
- * @param {DecoratorMetadataAsync[]} decorators - An array of metadata objects representing validation decorators.
+ * @param {DecoratorMetadataAsync} decorators - An object of metadata representing validation decorators.
  * @param {Async} [async] - Optional flag indicating whether validation should be performed asynchronously.
  *
  * @return {ConditionalAsync<Async, Record<string, string>> | undefined}
@@ -250,16 +181,15 @@ export function validateDecorators<
   model: M,
   prop: string,
   value: any,
-  decorators: DecoratorMetadataAsync[],
+  decorators: any,
   async?: Async,
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, Record<string, string> | undefined> {
   const result: Record<string, string | Promise<string>> = {};
-
-  for (const decorator of decorators) {
+  for (const decoratorKey in decorators) {
+    const decorator = { ...decorators[decoratorKey], key: decoratorKey };
     // skip async decorators if validateDecorators is called synchronously (async = false)
-    if (!async && decorator.props.async) continue;
-
+    if (!async && decorator.async) continue;
     let validationErrors = validateDecorator(model, value, decorator, async);
 
     /*
@@ -267,19 +197,18 @@ export function validateDecorators<
     When 'async' is true, the 'err' will always be a pending promise initially,
     so the '!err' check will evaluate to false (even if the promise later resolves with no errors)
     */
-    if (decorator.key === ValidationKeys.LIST && (!validationErrors || async)) {
+    if (decoratorKey === ValidationKeys.LIST && (!validationErrors || async)) {
       const values = value instanceof Set ? [...value] : value;
       if (values && values.length > 0) {
-        let types: string[] = (decorator.props.class ||
-          decorator.props.clazz ||
-          decorator.props.customTypes) as string[];
+        let types: string[] = (decorator.class ||
+          decorator.clazz ||
+          decorator.customTypes) as string[];
         types = (Array.isArray(types) ? types : [types]).map((e: any) => {
           e = typeof e === "function" && !e.name ? e() : e;
           return (e as any).name ? (e as any).name : e;
         }) as string[];
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
         // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
-
         const errs = values.map((childValue: any) => {
           // if (Model.isModel(v) && !reserved.includes(v) {
           if (Model.isModel(childValue)) {
@@ -293,12 +222,10 @@ export function validateDecorators<
             );
             // return getNestedValidationErrors(childValue, model, async);
           }
-
           return allowedTypes.includes(typeof childValue)
             ? undefined
             : "Value has no validatable type";
         });
-
         if (async) {
           validationErrors = Promise.all(errs).then((result) => {
             const allEmpty = result.every((r) => !r);
@@ -310,17 +237,14 @@ export function validateDecorators<
         }
       }
     }
-
     const name =
-      decorator.key === ModelKeys.TYPE ? ValidationKeys.TYPE : decorator.key;
+      decoratorKey === ModelKeys.TYPE ? ValidationKeys.TYPE : decoratorKey;
     if (validationErrors) (result as any)[name] = validationErrors;
   }
-
   if (!async)
     return Object.keys(result).length > 0
       ? (result as any)
       : (undefined as any);
-
   const keys = Object.keys(result);
   const promises = Object.values(result) as Promise<string | undefined>[];
   return Promise.all(promises).then((resolvedValues) => {
@@ -394,58 +318,39 @@ export function validate<
   async: Async,
   ...propsToIgnore: string[]
 ): ConditionalAsync<Async, ModelErrorDefinition | undefined> {
-  const decoratedProperties: ValidationPropertyDecoratorDefinition[] =
-    getValidatableProperties(model, propsToIgnore);
+  // throw new Error("validate is not implemented");
+
+  const decoratedProperties = Metadata.validatableProperties(
+    model.constructor as any,
+    ...propsToIgnore
+  );
 
   const result: Record<string, any> = {};
   const nestedErrors: Record<string, any> = {};
 
-  for (const { prop, decorators } of decoratedProperties) {
+  for (const prop of decoratedProperties) {
     const propKey = String(prop);
-    let propValue = (model as any)[prop];
+    const propValue = (model as any)[prop];
 
-    if (!decorators?.length) continue;
+    const decorators =
+      Metadata.validationFor(model.constructor as Constructor, prop) || {};
 
-    // Get the default type validator
-    const priority = [ValidationKeys.TYPE, ModelKeys.TYPE];
-    const designTypeDec = priority
-      .map((key) => decorators.find((d) => d.key === key))
-      .find(Boolean);
-
-    // Ensures that only one type decorator remains.
-    if (designTypeDec?.key === ValidationKeys.TYPE) {
-      decorators.splice(
-        0,
-        decorators.length,
-        ...decorators.filter((d) => d.key !== ModelKeys.TYPE)
-      );
-    }
-
-    if (!designTypeDec) continue;
-
-    const designType =
-      designTypeDec.props.class ||
-      designTypeDec.props.clazz ||
-      designTypeDec.props.customTypes ||
-      designTypeDec.props.name;
-
-    // TS emits "Object" as design:type for unions (string | number) and intersections (A & B).
-    // Since this metadata is ambiguous for validation, skip design:type checks in these cases.
-    // To enforce design:type validation explicitly, the @type validator can be used.
-    if (designTypeDec.key === ModelKeys.TYPE && designType === "Object")
-      decorators.shift();
-
-    const designTypes = (
-      Array.isArray(designType) ? designType : [designType]
-    ).map((e: any) => {
-      e = typeof e === "function" && !e.name ? e() : e;
-      return (e as any).name ? (e as any).name : e;
-    }) as string[];
+    const { designTypes, designType } = Metadata.getPropDesignTypes(
+      model.constructor as any,
+      prop
+    );
+    if (!designTypes) continue;
 
     // Handle array or Set types and enforce the presence of @list decorator
-    // if ([Array.name, Set.name].includes(designType)) {}
-    if (designTypes.some((t) => [Array.name, Set.name].includes(t))) {
-      if (!decorators.some((d) => d.key === ValidationKeys.LIST)) {
+    if (
+      designTypes.some((t: Constructor<any>) =>
+        [Array.name, Set.name].includes(t.name)
+      )
+    ) {
+      if (
+        !decorators ||
+        !Object.keys(decorators).includes(ValidationKeys.LIST)
+      ) {
         result[propKey] = {
           [ValidationKeys.TYPE]: `Array or Set property '${propKey}' requires a @list decorator`,
         };
@@ -461,14 +366,6 @@ export function validate<
         };
         continue;
       }
-
-      // Remove design:type decorator, since @list decorator already ensures type
-      for (let i = decorators.length - 1; i >= 0; i--) {
-        if (decorators[i].key === ModelKeys.TYPE) {
-          decorators.splice(i, 1);
-        }
-      }
-      propValue = propValue instanceof Set ? [...propValue] : propValue;
     }
 
     const propErrors: Record<string, any> =
@@ -486,22 +383,20 @@ export function validate<
     // let nestedErrors: Record<string, any> = {};
     const isConstr = Model.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
-    if (isConstr && hasPropValue) {
+    const isModelInstance =
+      hasPropValue && Model.isModel(propValue as Record<string, any>);
+    if (isConstr && hasPropValue && isModelInstance) {
       const instance = propValue as Model;
-      const isInvalidModel =
-        typeof instance !== "object" ||
-        typeof instance.hasErrors !== "function";
+      // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
+      // We need to capture that and excempt it from throwing an error
 
-      if (isInvalidModel) {
-        // propErrors[ValidationKeys.TYPE] = "Model should be validatable but it's not.";
-        console.warn("Model should be validatable but it's not.");
-      } else {
-        const Constr = (Array.isArray(designType) ? designType : [designType])
-          .map((d) => {
+      if (Model["shouldValidateNestedHandler"](model, propKey as keyof M)) {
+        const Constr = (Array.isArray(designType) ? designTypes : [designType])
+          .map((d: any) => {
             if (typeof d === "function" && !d.name) d = d();
             return Model.get(d.name || d);
           })
-          .find((d) => !!d) as any;
+          .find((d: any) => !!d) as any;
 
         // Ensure instance is of the expected model class.
         if (!Constr || !(instance instanceof Constr)) {

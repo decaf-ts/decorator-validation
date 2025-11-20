@@ -1,18 +1,17 @@
-import "reflect-metadata";
 import {
+  innerValidationDecorator,
   Model,
   ModelArg,
   ModelErrorDefinition,
-  propMetadata,
   required,
+  type,
   Validation,
   ValidationKeys,
-  ValidationMetadata,
   Validator,
   validator,
   ValidatorOptions,
 } from "../../src";
-import { apply } from "@decaf-ts/reflection";
+import { apply } from "@decaf-ts/decoration";
 
 function generateGtin() {
   function pad(num: number, width: number, padding: string = "0") {
@@ -81,11 +80,11 @@ class GtinValidator extends Validator {
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
   return apply(
     required(CUSTOM_VALIDATION_REQUIRED_ERROR_MESSAGE),
-    propMetadata<ValidationMetadata>(Validation.key(CUSTOM_VALIDATION_KEY), {
+    innerValidationDecorator(gtin, CUSTOM_VALIDATION_KEY, {
       message: message,
-      types: [String.name, Number.name],
       async: false,
-    })
+    }),
+    type([String, Number])
   );
 };
 

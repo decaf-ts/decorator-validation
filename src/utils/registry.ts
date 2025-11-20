@@ -1,4 +1,4 @@
-import { Constructor } from "../model/types";
+import { Constructor } from "@decaf-ts/decoration";
 
 /**
  * @summary Basic interface for Registries

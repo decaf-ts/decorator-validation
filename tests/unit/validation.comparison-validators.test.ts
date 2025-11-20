@@ -42,14 +42,14 @@ describe("Comparison Validators", () => {
     @model()
     class SimpleParentTestModel extends Model {
       @required()
-      parentValue: string;
+      parentValue!: string;
 
       @required()
       @list(Number)
       parentArray: number[] = [1, 2, 3, 4, 5];
 
       @required()
-      @type(SimpleChildTestModel.name)
+      @type(SimpleChildTestModel)
       child: SimpleChildTestModel = new SimpleChildTestModel();
 
       constructor(model?: ModelArg<SimpleParentTestModel>) {
@@ -185,7 +185,7 @@ describe("Comparison Validators", () => {
         @eq("mirror.objectValue")
         objectValue: Record<string, any> = {};
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeEqualsModel>) {
@@ -198,7 +198,7 @@ describe("Comparison Validators", () => {
         @eq("mirror.stringValue")
         stringValue: string = "";
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeEqualsModel>) {
@@ -299,7 +299,7 @@ describe("Comparison Validators", () => {
         @diff("mirror.objectValue")
         objectValue: Record<string, any> = {};
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
@@ -312,7 +312,7 @@ describe("Comparison Validators", () => {
         @diff("mirror.stringValue")
         stringValue: string = "";
 
-        @type(MultiTypeMirrorModel.name)
+        @type(MultiTypeMirrorModel)
         mirror?: MultiTypeMirrorModel;
 
         constructor(model?: ModelArg<MultiTypeDiffModel>) {
@@ -398,26 +398,24 @@ describe("Comparison Validators", () => {
         @lt("mirror.mirrorDateValue")
         dateValue: Date = new Date(0);
 
-        @type(LessThanTestModel.name)
+        @type(LessThanTestModel)
         mirror?: LessThanTestModel;
 
         constructor(model?: ModelArg<MultiTypeLessThanModel>) {
-          super();
-          Model.fromObject(this, model);
+          super(model);
         }
       }
 
       @model()
-      class InvalidPropertyModel extends Model {
+      class InvalidPropertyModelLT extends Model {
         @lt("mirror.invalidField")
         numberValue: number = 0;
 
-        @type(LessThanTestModel.name)
+        @type(LessThanTestModel)
         mirror?: LessThanTestModel;
 
-        constructor(model?: ModelArg<InvalidPropertyModel>) {
-          super();
-          Model.fromObject(this, model);
+        constructor(model?: ModelArg<InvalidPropertyModelLT>) {
+          super(model);
         }
       }
 
@@ -480,7 +478,7 @@ describe("Comparison Validators", () => {
       });
 
       it("should fail if target property does not exist", () => {
-        const model = new InvalidPropertyModel({
+        const model = new InvalidPropertyModelLT({
           numberValue: 10,
           mirror: new LessThanTestModel({
             mirrorNumberValue: 20,
@@ -502,16 +500,15 @@ describe("Comparison Validators", () => {
 
     describe("GreaterThanValidator", () => {
       @model()
-      class MirrorTestModel extends Model {
+      class GreaterThanTestModel extends Model {
         @required()
         mirrorNumberValue: number = 0;
 
         @required()
-        mirrorDateValue: Date = new Date();
+        mirrorDateValue: Date = new Date(0);
 
-        constructor(model?: ModelArg<MirrorTestModel>) {
-          super();
-          Model.fromObject(this, model);
+        constructor(model?: ModelArg<GreaterThanTestModel>) {
+          super(model);
         }
       }
 
@@ -523,8 +520,8 @@ describe("Comparison Validators", () => {
         @gt("mirror.mirrorDateValue")
         dateValue: Date = new Date();
 
-        @type(MirrorTestModel.name)
-        mirror?: MirrorTestModel;
+        @type(GreaterThanTestModel)
+        mirror?: GreaterThanTestModel;
 
         constructor(model?: ModelArg<MultiTypeGreaterThanModel>) {
           super();
@@ -533,14 +530,14 @@ describe("Comparison Validators", () => {
       }
 
       @model()
-      class InvalidPropertyModel extends Model {
+      class InvalidPropertyModelGT extends Model {
         @gt("mirror.inexistentField")
         numberValue: number = 0;
 
-        @type(MirrorTestModel.name)
-        mirror?: MirrorTestModel;
+        @type(GreaterThanTestModel)
+        mirror?: GreaterThanTestModel;
 
-        constructor(model?: ModelArg<InvalidPropertyModel>) {
+        constructor(model?: ModelArg<InvalidPropertyModelGT>) {
           super();
           Model.fromObject(this, model);
         }
@@ -550,7 +547,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeGreaterThanModel({
           numberValue: 10,
           dateValue: new Date("2024-01-02"),
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanTestModel({
             mirrorNumberValue: 5,
             mirrorDateValue: new Date("2024-01-01"),
           }),
@@ -564,7 +561,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeGreaterThanModel({
           numberValue: 5,
           dateValue: new Date("2024-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanTestModel({
             mirrorNumberValue: 5,
             mirrorDateValue: new Date("2024-01-01"),
           }),
@@ -586,7 +583,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeGreaterThanModel({
           numberValue: 3,
           dateValue: new Date("2024-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanTestModel({
             mirrorNumberValue: 5,
             mirrorDateValue: new Date("2024-01-02"),
           }),
@@ -605,9 +602,9 @@ describe("Comparison Validators", () => {
       });
 
       it("should return validation error if compared property does not exist", () => {
-        const model = new InvalidPropertyModel({
+        const model = new InvalidPropertyModelGT({
           numberValue: 10,
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanTestModel({
             mirrorNumberValue: 5,
             mirrorDateValue: new Date("2024-01-01"),
           }),
@@ -626,16 +623,15 @@ describe("Comparison Validators", () => {
 
     describe("GreaterThanOrEqualValidator", () => {
       @model()
-      class MirrorTestModel extends Model {
+      class GreaterThanOrEqualTestModel extends Model {
         @required()
         mirrorNumberValue: number = 0;
 
         @required()
         mirrorDateValue: Date = new Date(0);
 
-        constructor(model?: ModelArg<MirrorTestModel>) {
-          super();
-          Model.fromObject(this, model);
+        constructor(model?: ModelArg<GreaterThanOrEqualTestModel>) {
+          super(model);
         }
       }
 
@@ -647,8 +643,8 @@ describe("Comparison Validators", () => {
         @gte("mirror.mirrorDateValue")
         dateValue: Date = new Date(0);
 
-        @type(MirrorTestModel.name)
-        mirror?: MirrorTestModel;
+        @type(GreaterThanOrEqualTestModel)
+        mirror?: GreaterThanOrEqualTestModel;
 
         constructor(model?: ModelArg<MultiTypeGreaterThanOrEqualModel>) {
           super();
@@ -657,14 +653,14 @@ describe("Comparison Validators", () => {
       }
 
       @model()
-      class InvalidPropertyModel extends Model {
+      class InvalidPropertyModelGTOE extends Model {
         @gte("mirror.invalidField")
         numberValue: number = 0;
 
-        @type(MirrorTestModel.name)
-        mirror?: MirrorTestModel;
+        @type(GreaterThanOrEqualTestModel)
+        mirror?: GreaterThanOrEqualTestModel;
 
-        constructor(model?: ModelArg<InvalidPropertyModel>) {
+        constructor(model?: ModelArg<InvalidPropertyModelGTOE>) {
           super();
           Model.fromObject(this, model);
         }
@@ -674,7 +670,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeGreaterThanOrEqualModel({
           numberValue: 21,
           dateValue: new Date("2026-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -688,7 +684,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeGreaterThanOrEqualModel({
           numberValue: 20,
           dateValue: new Date("2025-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -702,7 +698,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeGreaterThanOrEqualModel({
           numberValue: 10,
           dateValue: new Date("2023-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -721,9 +717,9 @@ describe("Comparison Validators", () => {
       });
 
       it("should fail if target property does not exist", () => {
-        const model = new InvalidPropertyModel({
+        const model = new InvalidPropertyModelGTOE({
           numberValue: 30,
-          mirror: new MirrorTestModel({
+          mirror: new GreaterThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -743,14 +739,14 @@ describe("Comparison Validators", () => {
 
     describe("LessThanOrEqualValidator", () => {
       @model()
-      class MirrorTestModel extends Model {
+      class LessThanOrEqualTestModel extends Model {
         @required()
         mirrorNumberValue: number = 0;
 
         @required()
         mirrorDateValue: Date = new Date(0);
 
-        constructor(model?: ModelArg<MirrorTestModel>) {
+        constructor(model?: ModelArg<LessThanOrEqualTestModel>) {
           super();
           Model.fromObject(this, model);
         }
@@ -764,8 +760,8 @@ describe("Comparison Validators", () => {
         @lte("mirror.mirrorDateValue")
         dateValue: Date = new Date(0);
 
-        @type(MirrorTestModel.name)
-        mirror?: MirrorTestModel;
+        @type(LessThanOrEqualTestModel)
+        mirror?: LessThanOrEqualTestModel;
 
         constructor(model?: ModelArg<MultiTypeLessThanOrEqualModel>) {
           super();
@@ -774,14 +770,14 @@ describe("Comparison Validators", () => {
       }
 
       @model()
-      class InvalidPropertyModel extends Model {
+      class InvalidPropertyModelLTOE extends Model {
         @lte("mirror.invalidField")
         numberValue: number = 0;
 
-        @type(MirrorTestModel.name)
-        mirror?: MirrorTestModel;
+        @type(LessThanOrEqualTestModel)
+        mirror?: LessThanOrEqualTestModel;
 
-        constructor(model?: ModelArg<InvalidPropertyModel>) {
+        constructor(model?: ModelArg<InvalidPropertyModelLTOE>) {
           super();
           Model.fromObject(this, model);
         }
@@ -791,7 +787,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeLessThanOrEqualModel({
           numberValue: 10,
           dateValue: new Date("2022-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new LessThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -805,7 +801,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeLessThanOrEqualModel({
           numberValue: 20,
           dateValue: new Date("2025-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new LessThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -819,7 +815,7 @@ describe("Comparison Validators", () => {
         const model = new MultiTypeLessThanOrEqualModel({
           numberValue: 30,
           dateValue: new Date("2026-01-01"),
-          mirror: new MirrorTestModel({
+          mirror: new LessThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -838,9 +834,9 @@ describe("Comparison Validators", () => {
       });
 
       it("should fail if target property does not exist", () => {
-        const model = new InvalidPropertyModel({
+        const model = new InvalidPropertyModelLTOE({
           numberValue: 10,
-          mirror: new MirrorTestModel({
+          mirror: new LessThanOrEqualTestModel({
             mirrorNumberValue: 20,
             mirrorDateValue: new Date("2025-01-01"),
           }),
@@ -1674,14 +1670,14 @@ describe("Comparison Validators", () => {
 
       it("should validate all LessThanError cases", () => {
         @model()
-        class TestModel extends Model {
+        class TestModelLT extends Model {
           @required()
           comparisonValue!: number;
 
           @lt("comparisonValue")
           testValue!: string;
 
-          constructor(model?: ModelArg<TestModel>) {
+          constructor(model?: ModelArg<TestModelLT>) {
             super();
             Model.fromObject(this, model);
           }
@@ -1690,10 +1686,10 @@ describe("Comparison Validators", () => {
         @model()
         class TestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           @lt("comparisonValue")
           testValue!: number;
 
@@ -1704,11 +1700,11 @@ describe("Comparison Validators", () => {
         }
 
         // null/undefined values
-        const nullModel = new TestModel({
+        const nullModel = new TestModelLT({
           testValue: "10",
         });
-        const errors = nullModel.hasErrors();
-        expect(errors).toEqual(
+        const modelErrors = nullModel.hasErrors();
+        expect(modelErrors).toEqual(
           new ModelErrorDefinition({
             comparisonValue: {
               [ValidationKeys.REQUIRED]: "This field is required",
@@ -1722,7 +1718,7 @@ describe("Comparison Validators", () => {
         );
 
         // diff type
-        const typeMismatchModel = new TestModel({
+        const typeMismatchModel = new TestModelLT({
           testValue: "string",
           comparisonValue: 10,
         });
@@ -1741,7 +1737,7 @@ describe("Comparison Validators", () => {
         );
 
         // NaN values
-        const nanModel = new TestModel({
+        const nanModel = new TestModelLT({
           testValue: NaN,
           comparisonValue: 10,
         });
@@ -1758,7 +1754,7 @@ describe("Comparison Validators", () => {
         );
 
         // invalid Dates
-        const invalidDateModel = new TestModel({
+        const invalidDateModel = new TestModelLT({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
@@ -1778,7 +1774,7 @@ describe("Comparison Validators", () => {
         );
 
         // unsupported types
-        const unsupportedTypeModel = new TestModel({
+        const unsupportedTypeModel = new TestModelLT({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
@@ -1998,11 +1994,11 @@ describe("Comparison Validators", () => {
         @model()
         class LteTestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
           @lte("comparisonValue")
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           testValue!: number;
 
           constructor(model?: ModelArg<LteTestModelNumber>) {
@@ -2345,14 +2341,14 @@ describe("Comparison Validators", () => {
 
       it("should validate all GreaterThanError cases", () => {
         @model()
-        class TestModel extends Model {
+        class TestModelGT extends Model {
           @required()
           comparisonValue!: number;
 
           @gt("comparisonValue")
           testValue!: string;
 
-          constructor(model?: ModelArg<TestModel>) {
+          constructor(model?: ModelArg<TestModelGT>) {
             super();
             Model.fromModel(this, model);
           }
@@ -2361,20 +2357,19 @@ describe("Comparison Validators", () => {
         @model()
         class GteTestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
           @gt("comparisonValue")
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           testValue!: string;
 
-          constructor(model?: ModelArg<TestModel>) {
-            super();
-            Model.fromModel(this, model);
+          constructor(model?: ModelArg<TestModelGT>) {
+            super(model);
           }
         }
 
-        const nullModel = new TestModel({
+        const nullModel = new TestModelGT({
           testValue: 10,
         });
         expect(nullModel.hasErrors()).toEqual(
@@ -2392,7 +2387,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const typeMismatchModel = new TestModel({
+        const typeMismatchModel = new TestModelGT({
           testValue: "string",
           comparisonValue: 10,
         });
@@ -2410,7 +2405,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const nanModel = new TestModel({
+        const nanModel = new TestModelGT({
           testValue: NaN,
           comparisonValue: 10,
         });
@@ -2425,7 +2420,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const invalidDateModel = new TestModel({
+        const invalidDateModel = new TestModelGT({
           testValue: new Date("invalid"),
           comparisonValue: new Date(),
         });
@@ -2444,7 +2439,7 @@ describe("Comparison Validators", () => {
           })
         );
 
-        const unsupportedTypeModel = new TestModel({
+        const unsupportedTypeModel = new TestModelGT({
           testValue: { object: true },
           comparisonValue: { object: true },
         });
@@ -2687,11 +2682,11 @@ describe("Comparison Validators", () => {
         @model()
         class GteTestModelNumber extends Model {
           @required()
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           comparisonValue!: number;
 
           @gte("comparisonValue")
-          @type([Number.name, BigInt.name])
+          @type([Number, BigInt])
           testValue!: string;
 
           constructor(model?: ModelArg<GteTestModelNumber>) {
@@ -2878,7 +2873,7 @@ describe("Comparison Validators", () => {
       parentDate: Date = new Date();
 
       @required()
-      @type(BidirectionalChildModel.name)
+      @type(BidirectionalChildModel)
       child: BidirectionalChildModel = new BidirectionalChildModel();
 
       constructor(model?: ModelArg<BidirectionalParentModel>) {
@@ -2966,7 +2961,7 @@ describe("Comparison Validators", () => {
       parentValue: string = "";
 
       @required()
-      @type(ConflictingChildModel.name)
+      @type(ConflictingChildModel)
       child: ConflictingChildModel = new ConflictingChildModel();
 
       constructor(model?: ModelArg<ConflictingParentModel>) {

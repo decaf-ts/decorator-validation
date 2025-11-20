@@ -37,7 +37,7 @@ class InnerTestModel extends Model {
   @required()
   value!: string;
 
-  @type(SimpleNestedModel.name)
+  @type(SimpleNestedModel)
   child!: SimpleNestedModel;
 
   @list(SimpleNestedModel)

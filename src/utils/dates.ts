@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {
   DAYS_OF_WEEK_NAMES,
   MONTH_NAMES,

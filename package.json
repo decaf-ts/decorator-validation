@@ -78,7 +78,6 @@
     "@decaf-ts/utils": "latest"
   },
   "dependencies": {
-    "@decaf-ts/decoration": "latest",
-    "@decaf-ts/reflection": "latest"
+    "@decaf-ts/decoration": "latest"
   }
 }

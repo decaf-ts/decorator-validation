@@ -1,4 +1,12 @@
-import { min, minlength, Model, model, ModelArg, required } from "../../src";
+import {
+  min,
+  minlength,
+  Model,
+  ModelBuilder,
+  model,
+  ModelArg,
+  required,
+} from "../../src";
 
 @model()
 class TestModelBuilding extends Model {
@@ -27,7 +35,7 @@ describe("Model building", () => {
 
   it.skip("Builds a class", () => {
     // deprecated
-    const builder = ModelBuilder.builder;
+    const builder = ModelBuilder.builder();
 
     const clazz = builder
       .setName(TestModelBuilding.name)

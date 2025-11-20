@@ -8,8 +8,8 @@ import {
   ModelErrorDefinition,
   required,
   ValidationKeys,
-  prop,
 } from "../../src";
+import { prop } from "@decaf-ts/decoration";
 
 @model()
 class ConstructionTestModel extends Model {
@@ -87,11 +87,10 @@ describe("Construction", () => {
       },
     };
 
-    it("Only builds the parent class with the normal Builder function", () => {
+    it("Only builds the parent class with the object Builder function", () => {
       Model.setBuilder(Model.fromObject);
       const model = new ParentConstructionTestModel(r);
       const errors = model.hasErrors();
-      // expect(errors).toBeUndefined();
       expect(errors).toEqual(
         new ModelErrorDefinition({
           child: {
@@ -100,7 +99,15 @@ describe("Construction", () => {
           },
         })
       );
+      expect(model.child).not.toBeInstanceOf(ConstructionTestModel);
       Model.setBuilder();
+    });
+
+    it("builds the parent and child classes with the normal Builder function", () => {
+      const model = new ParentConstructionTestModel(r);
+      const errors = model.hasErrors();
+      expect(errors).toBeUndefined();
+      expect(model.child).toBeInstanceOf(ConstructionTestModel);
     });
 
     describe("Properly builds with the Model Builder Function", () => {
@@ -179,7 +186,7 @@ describe("Construction", () => {
       const m = new ModelWithDefaultValues({
         prop1: "test",
       });
-
+      //
       expect(m.hasErrors()).toBeUndefined();
     });
   });

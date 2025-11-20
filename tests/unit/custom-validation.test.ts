@@ -1,16 +1,16 @@
-import "reflect-metadata";
 import {
+  innerValidationDecorator,
   Model,
   model,
   ModelArg,
   ModelErrorDefinition,
-  propMetadata,
+  type,
   Validation,
-  ValidationMetadata,
   Validator,
   validator,
   ValidatorOptions,
 } from "../../src";
+import { apply } from "@decaf-ts/decoration";
 
 function generateGtin() {
   function pad(num: number, width: number, padding: string = "0") {
@@ -76,13 +76,12 @@ class GtinValidator extends Validator {
 }
 
 const gtin = (message: string = CUSTOM_VALIDATION_ERROR_MESSAGE) => {
-  return propMetadata<ValidationMetadata>(
-    Validation.key(CUSTOM_VALIDATION_KEY),
-    {
+  return apply(
+    innerValidationDecorator(gtin, CUSTOM_VALIDATION_KEY, {
       message: message,
-      types: ["string", "number"],
       async: false,
-    }
+    }),
+    type([String, Number])
   );
 };
 
@@ -93,7 +92,6 @@ class TestModel extends Model {
 
   constructor(model?: ModelArg<TestModel>) {
     super(model);
-    Model.fromObject<TestModel>(this, model);
   }
 }
 

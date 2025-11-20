@@ -1,9 +1,9 @@
 import { Model, ModelKeys, required } from "../../src";
 import type { ModelArg } from "../../src";
-import { metadata } from "@decaf-ts/reflection";
+import { Metadata, metadata } from "@decaf-ts/decoration";
 
 describe("metadata", () => {
-  @metadata(Model.key(ModelKeys.MODEL), TestModel1.name)
+  @metadata(ModelKeys.MODEL, "TestModel1")
   class TestModel1 extends Model {
     @required()
     name!: string;
@@ -11,7 +11,7 @@ describe("metadata", () => {
       super(arg);
     }
   }
-  @metadata(Model.key(ModelKeys.MODEL), TestModel2.name)
+  @metadata(ModelKeys.MODEL, "TestModel2")
   class TestModel2 extends Model {
     @required()
     name!: string;
@@ -19,7 +19,7 @@ describe("metadata", () => {
       super(arg);
     }
   }
-  @metadata(Model.key(ModelKeys.MODEL), TestModel3.name)
+  @metadata(ModelKeys.MODEL, "TestModel3")
   class TestModel3 extends TestModel1 {
     @required()
     description?: string = undefined;
@@ -28,7 +28,7 @@ describe("metadata", () => {
     }
   }
 
-  @metadata(Model.key(ModelKeys.MODEL), TestModel4.name)
+  @metadata(ModelKeys.MODEL, "TestModel4")
   class TestModel4 extends TestModel2 {
     @required()
     description?: string = undefined;
@@ -38,17 +38,9 @@ describe("metadata", () => {
   }
 
   it("Properly stores metadata", () => {
-    expect(Reflect.getMetadata(Model.key(ModelKeys.MODEL), TestModel1)).toEqual(
-      TestModel1.name
-    );
-    expect(Reflect.getMetadata(Model.key(ModelKeys.MODEL), TestModel2)).toEqual(
-      TestModel2.name
-    );
-    expect(Reflect.getMetadata(Model.key(ModelKeys.MODEL), TestModel3)).toEqual(
-      TestModel3.name
-    );
-    expect(Reflect.getMetadata(Model.key(ModelKeys.MODEL), TestModel4)).toEqual(
-      TestModel4.name
-    );
+    expect(Metadata.get(TestModel1, ModelKeys.MODEL)).toEqual(TestModel1.name);
+    expect(Metadata.get(TestModel2, ModelKeys.MODEL)).toEqual(TestModel2.name);
+    expect(Metadata.get(TestModel3, ModelKeys.MODEL)).toEqual(TestModel3.name);
+    expect(Metadata.get(TestModel4, ModelKeys.MODEL)).toEqual(TestModel4.name);
   });
 });

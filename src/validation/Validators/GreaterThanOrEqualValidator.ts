@@ -3,7 +3,7 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { GreaterThanOrEqualValidatorOptions } from "../types";
 import { isGreaterThan, isValidForGteOrLteComparison } from "./utils";
-import { isEqual } from "@decaf-ts/reflection";
+import { isEqual } from "../../utils/equality";
 import type { PathProxy } from "../../utils/PathProxy";
 
 /**

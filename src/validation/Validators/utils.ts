@@ -226,3 +226,70 @@ export function isGreaterThan(a: any, b: any): boolean {
     )
   );
 }
+
+/**
+ * @description Checks if a value matches a specified type name
+ * @summary Utility function to verify if a value's type matches the provided type name
+ * @param {unknown} value - The value to check the type of
+ * @param {string} acceptedType - The type name to check against
+ * @return {boolean} Returns true if the value matches the accepted type, false otherwise
+ */
+export function checkType(value: unknown, acceptedType: string) {
+  if (typeof value === acceptedType.toLowerCase()) return true;
+  if (typeof value === "undefined") return false;
+  if (typeof value !== "object") return false;
+  return (
+    (value as object).constructor &&
+    (value as object).constructor.name.toLowerCase() ===
+      acceptedType.toLowerCase()
+  );
+}
+
+/**
+ * @description Checks if a value matches any of the specified type names
+ * @summary Utility function to verify if a value's type matches any of the provided type names
+ * @param {unknown} value - The value to check the type of
+ * @param {string[]} acceptedTypes - Array of type names to check against
+ * @return {boolean} Returns true if the value matches any of the accepted types, false otherwise
+ */
+export function checkTypes(value: unknown, acceptedTypes: string[]) {
+  return !acceptedTypes.every((t) => !checkType(value, t));
+}
+
+/**
+ * @description Evaluates if a value matches the specified type metadata
+ * @summary Compares a value against type metadata to determine if they match
+ * @param {unknown} value - The value to evaluate
+ * @param {string | string[] | {name: string}} types - Type metadata to check against, can be a string, array of strings, or an object with a name property
+ * @return {boolean} Returns true if the value matches the type metadata, false otherwise
+ */
+export function evaluateDesignTypes(
+  value: unknown,
+  types: string | string[] | { name: string }
+) {
+  switch (typeof types) {
+    case "string":
+      return checkType(value, types);
+    case "object":
+      if (Array.isArray(types)) return checkTypes(value, types);
+      return true;
+    case "function":
+      if (types.name && types.name !== "Object")
+        return checkType(value, types.name);
+      return true;
+    default:
+      return true;
+  }
+}
+
+/**
+ * @description Returns the length of a value
+ * @summary Returns the length of a value
+ * @param {string | Set<any> | any[] | Map<any, any>} value - The value to evaluate
+ * @return {number} Returns the length of a value
+ */
+export function valueLength(value: string | Set<any> | any[] | Map<any, any>) {
+  return value instanceof Set || value instanceof Map
+    ? value.size
+    : value.length;
+}

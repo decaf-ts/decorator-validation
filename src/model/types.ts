@@ -28,19 +28,6 @@ export type ModelBuilderFunction = <T extends Model>(
 export type ModelArg<T> = T | Partial<T> | Record<string, any>;
 
 /**
- * @description Generic type for class constructor functions
- * @summary Definition of a Class Constructor that can create instances of a specified type
- * @template T
- * @param {any[]} [args] - Constructor arguments
- * @return {T} - An instance of the class
- * @typedef Constructor
- * @memberOf module:decorator-validation
- */
-export type Constructor<T> = {
-  new (...args: any[]): T;
-};
-
-/**
  * @description Specialized constructor type for Model classes
  * @summary Definition of a Model Constructor that creates instances of Model subclasses
  * @template T

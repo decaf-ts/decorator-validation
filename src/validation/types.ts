@@ -1,5 +1,4 @@
-import { DecoratorMetadata } from "@decaf-ts/reflection";
-import { Constructor } from "../model";
+import { Constructor } from "@decaf-ts/decoration";
 import { ValidationKeys, Validator } from "./Validators";
 import { IRegistry } from "../utils";
 
@@ -55,7 +54,7 @@ export type ValidationPropertyDecoratorDefinition = {
  * @memberOf module:decorator-validation
  * @category Validation
  */
-export type ValidationDecoratorDefinition = DecoratorMetadata & {
+export type ValidationDecoratorDefinition = {
   props: ValidationElementDefinition;
   async?: boolean;
 };
@@ -71,7 +70,6 @@ export type ValidationElementDefinition = {
   value?: string | number;
   message: string;
   description: string;
-  types?: string[];
 };
 
 /**
@@ -271,7 +269,7 @@ export interface MaxLengthValidatorOptions extends ValidatorOptions {
  * @category Validation
  */
 export interface ListValidatorOptions extends ValidatorOptions {
-  clazz: (string | (() => Constructor<any>))[];
+  clazz: (Constructor<any> | (() => Constructor<any>))[];
 }
 
 /**
@@ -327,4 +325,17 @@ export interface GreaterThanValidatorOptions
 export interface GreaterThanOrEqualValidatorOptions
   extends ComparisonValidatorOptions {
   [ValidationKeys.GREATER_THAN_OR_EQUAL]: string;
+}
+
+/**
+ * @description Enum validation options interface
+ * @summary Defines options for enum validation
+ * @interface EnumValidatorOptions
+ * @property {any[] | Record<any, any>} [ValidationKeys.ENUM] - List of values or a record
+ * @memberOf module:decorator-validation
+ * @category Validation
+ */
+export interface EnumValidatorOptions extends ValidatorOptions {
+  [ValidationKeys.ENUM]: any[] | Record<any, any>;
+  types?: string[];
 }

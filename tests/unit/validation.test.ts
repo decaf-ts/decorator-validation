@@ -11,13 +11,16 @@ import {
   ModelErrorDefinition,
   password,
   pattern,
-  prop,
   required,
   step,
   type,
   url,
   ValidationKeys,
+  option,
+  OptionValidator,
+  validate,
 } from "../../src";
+import { prop } from "@decaf-ts/decoration";
 
 @model()
 class InnerTestModel extends Model {
@@ -28,7 +31,7 @@ class InnerTestModel extends Model {
 
 @model()
 class TestModel extends Model {
-  @type(["string", "number"])
+  @type([String, Number])
   @required()
   id!: string | number;
 
@@ -57,10 +60,10 @@ class TestModel extends Model {
   @url()
   prop6?: string;
 
-  @type(InnerTestModel.name)
+  @type(InnerTestModel)
   prop7?: InnerTestModel;
 
-  @type(Array.name)
+  @type(Array)
   @list(InnerTestModel)
   prop8?: InnerTestModel[];
 
@@ -88,6 +91,49 @@ class ListModelTest extends Model {
   strings!: string[];
 
   constructor(model?: ModelArg<ListModelTest>) {
+    super(model);
+  }
+}
+
+enum OptionsEnum {
+  name = "John",
+  age = 15,
+}
+@model()
+class OptionModel extends Model {
+  @option(["one", "two", "three"])
+  againstArray: string = "4";
+
+  @option(OptionsEnum)
+  againstObject: any = 20;
+
+  constructor(model?: ModelArg<OptionModel>) {
+    super(model);
+  }
+}
+
+@model()
+class NewModel extends Model {
+  @type([String])
+  @minlength(5)
+  @required()
+  name: string = "Alex"; // fail minlength
+
+  @type([String])
+  @required()
+  age: number = 4; // fail type
+
+  @required()
+  propModel!: OptionModel;
+
+  @list(String)
+  @required()
+  entityArray: any[] = ["name", "age"];
+
+  @list(String, "Set")
+  entitySet: Set<any> = new Set(["name", "age"]);
+
+  constructor(model?: ModelArg<NewModel>) {
     super(model);
   }
 }
@@ -122,15 +168,13 @@ describe("Validation", function () {
       });
 
       const output = dm.toString();
-      expect(output).toBe(
-        `TestModel: {
+      expect(output).toBe(`TestModel: {
   "id": "id",
   "prop1": 23,
   "prop2": "tests",
   "prop3": "asdasfsdfsda",
   "prop4": "test@pdm.com"
-}`
-      );
+}`);
     });
 
     it("Create & Equality & Hash", function () {
@@ -307,6 +351,52 @@ describe("Validation", function () {
 
       errors = p.hasErrors();
       expect(errors).toBeUndefined();
+    });
+
+    it("validates enum", () => {
+      const myModel = new OptionModel();
+      console.log("myModel:", myModel);
+
+      const errors = myModel.hasErrors();
+      console.log("errors:", errors);
+      expect(errors).toBeDefined();
+    });
+
+    it("enum validator", () => {
+      const validator = new OptionValidator();
+      const errorsEnumArray = validator.hasErrors(4, { enum: ["4", "5"] });
+      console.log("errors:", errorsEnumArray);
+
+      const errorsEnumObject = validator.hasErrors(4, {
+        enum: { name: "john", age: 15 },
+      });
+      console.log("errors:", errorsEnumObject);
+      expect(errorsEnumArray).toBeDefined();
+      expect(errorsEnumObject).toBeDefined();
+    });
+
+    it("tests fromModel", () => {
+      // const result1 = new NewModel({ name: "john" });
+      // const result2 = new NewModel({ propModel: new OptionModel() });
+      const result = new NewModel({
+        entityArray: ["name", "age"],
+        entitySet: new Set(["name", "age"]),
+      });
+      console.log("result:", result);
+
+      expect(result).toBeDefined();
+    });
+
+    it("tests validate sync method", () => {
+      const validatesync = validate(new NewModel(), false);
+      console.log("validatesync:", validatesync);
+      expect(validatesync).toBeDefined();
+    });
+
+    it("tests validate async method", async () => {
+      const validateasync = await validate(new NewModel(), true);
+      console.log("validateasync:", validateasync);
+      expect(validateasync).toBeDefined();
     });
   });
 });

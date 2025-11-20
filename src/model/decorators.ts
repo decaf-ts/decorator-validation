@@ -1,8 +1,7 @@
 import { bindModelPrototype, construct } from "./construction";
 import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
-import { metadata } from "@decaf-ts/reflection";
-import { Decoration, DecorationKeys, Metadata } from "@decaf-ts/decoration";
+import { Decoration, metadata } from "@decaf-ts/decoration";
 
 export function modelBaseDecorator(original: any) {
   // the new constructor behaviour
@@ -14,23 +13,12 @@ export function modelBaseDecorator(original: any) {
     const builder = Model.getBuilder();
     if (builder) builder(instance, args.length ? args[0] : undefined);
 
-    metadata(Model.key(ModelKeys.MODEL), original.name)(instance.constructor);
-
     return instance;
   };
 
   // copy prototype so instanceof operator still works
   newConstructor.prototype = original.prototype;
 
-  metadata(Model.key(ModelKeys.MODEL), original.name)(original);
-
-  Reflect.getMetadataKeys(original).forEach((key) => {
-    Reflect.defineMetadata(
-      key,
-      Reflect.getMetadata(key, original),
-      newConstructor
-    );
-  });
   // Sets the proper constructor name for type verification
   Object.defineProperty(newConstructor, "name", {
     writable: false,
@@ -38,27 +26,10 @@ export function modelBaseDecorator(original: any) {
     configurable: false,
     value: original.prototype.constructor.name,
   });
-  //
-  // anchors the original constructor for future reference
-  Object.defineProperty(newConstructor, ModelKeys.ANCHOR, {
-    writable: false,
-    enumerable: false,
-    configurable: false,
-    value: original,
-  });
 
-  Metadata.set(newConstructor, DecorationKeys.CONSTRUCTOR, original);
-  //
-  // // anchors the new constructor for future reference
-  // Object.defineProperty(original, ModelKeys.ANCHOR, {
-  //   writable: false,
-  //   enumerable: true,
-  //   configurable: false,
-  //   value: newConstructor,
-  // });
+  metadata(ModelKeys.CONSTRUCTOR, original)(newConstructor);
 
   Model.register(newConstructor, original.name);
-
   // return new constructor (will override original)
   return newConstructor;
 }
@@ -76,7 +47,7 @@ export function modelBaseDecorator(original: any) {
  * @category Class Decorators
  */
 export function model() {
-  const key = Model.key(ModelKeys.MODEL);
+  const key = ModelKeys.MODEL;
   return Decoration.for(key).define(modelBaseDecorator).apply();
 }
 
@@ -95,7 +66,7 @@ export function model() {
  * @category Class Decorators
  */
 export function hashedBy(algorithm: string, ...args: any[]) {
-  return metadata(Model.key(ModelKeys.HASHING), {
+  return metadata(ModelKeys.HASHING, {
     algorithm: algorithm,
     args: args,
   });
@@ -111,21 +82,8 @@ export function hashedBy(algorithm: string, ...args: any[]) {
  * @category Class Decorators
  */
 export function serializedBy(serializer: string, ...args: any[]) {
-  return metadata(Model.key(ModelKeys.SERIALIZATION), {
+  return metadata(ModelKeys.SERIALIZATION, {
     serializer: serializer,
     args: args,
   });
-}
-
-/**
- * @summary Applies descriptive metadata to a class, property or method
- *
- * @param {string} description the description to apply
- *
- * @function description
- *
- * @category Decorators
- */
-export function description(description: string) {
-  return metadata(Model.key(ModelKeys.DESCRIPTION), description);
 }

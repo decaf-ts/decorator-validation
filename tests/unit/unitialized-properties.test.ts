@@ -1,4 +1,5 @@
-import { Model, ModelArg, prop } from "../../src";
+import { Model, ModelArg } from "../../src";
+import { prop } from "@decaf-ts/decoration";
 
 describe("unitialized properties", () => {
   class XRequestModelBase extends Model {

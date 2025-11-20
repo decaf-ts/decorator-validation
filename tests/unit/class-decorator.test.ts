@@ -1,4 +1,5 @@
-import { model, Model, ModelArg, ModelConstructor, prop } from "../../src";
+import { model, Model, ModelArg, ModelConstructor } from "../../src";
+import { Metadata, prop } from "@decaf-ts/decoration";
 
 @model()
 class TestModel extends Model {
@@ -13,12 +14,14 @@ class TestModel extends Model {
 describe("Class Decorators", () => {
   it("should define the anchor property", () => {
     const tm = new TestModel();
-    expect(Model.getMetadata(tm)).toEqual(tm.constructor.name);
+    expect(Metadata.constr(TestModel)).toEqual(tm.constructor);
   });
 
   it("should serialize and deserialize", () => {
     const tm = new TestModel();
-    const tmFromRegistry = Model.build(Model.deserialize(tm.serialize()));
+    const serialized = tm.serialize();
+    const deserialized = Model.deserialize(serialized);
+    const tmFromRegistry = Model.build(deserialized);
     expect(tmFromRegistry).toBeDefined();
   });
 

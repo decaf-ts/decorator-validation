@@ -2,6 +2,7 @@ import { Validator } from "./Validator";
 import { ValidationKeys, DEFAULT_ERROR_MESSAGES } from "./constants";
 import { validator } from "./decorators";
 import { MaxLengthValidatorOptions } from "../types";
+import { valueLength } from "./utils";
 
 /**
  * @summary Maximum Length Validator
@@ -17,7 +18,7 @@ import { MaxLengthValidatorOptions } from "../types";
 @validator(ValidationKeys.MAX_LENGTH)
 export class MaxLengthValidator extends Validator<MaxLengthValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX_LENGTH) {
-    super(message, String.name, Array.name);
+    super(message, String.name, Array.name, Set.name, Map.name);
   }
 
   /**
@@ -37,7 +38,7 @@ export class MaxLengthValidator extends Validator<MaxLengthValidatorOptions> {
     options: MaxLengthValidatorOptions
   ): string | undefined {
     if (typeof value === "undefined") return;
-    return value.length > options.maxlength
+    return valueLength(value) > options.maxlength
       ? this.getMessage(options.message || this.message, options.maxlength)
       : undefined;
   }

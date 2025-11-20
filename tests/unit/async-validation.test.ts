@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {
   async,
   ASYNC_META_KEY,
@@ -8,7 +7,6 @@ import {
   Model,
   ModelArg,
   ModelErrorDefinition,
-  prop,
   required,
   validate,
   Validation,
@@ -24,6 +22,7 @@ import {
   timeout,
   TimeoutValidator,
 } from "./validation.utils";
+import { prop } from "@decaf-ts/decoration";
 
 describe("Async Validation", () => {
   beforeAll(() => {
@@ -109,7 +108,7 @@ describe("Async Validation", () => {
                 },
               }),
             ],
-          },
+          } as any,
         })
       );
     });
@@ -301,7 +300,7 @@ describe("Async Validation", () => {
               processingTime: { timeout: "Timeout reached" },
             }),
           ],
-        },
+        } as any,
       })
     );
   });
@@ -520,6 +519,7 @@ describe("Async Validation", () => {
       publicValue!: string;
 
       @prop()
+      @required()
       inner!: ModelInner;
 
       constructor(model?: ModelArg<SyncTestModel>) {
@@ -534,6 +534,7 @@ describe("Async Validation", () => {
       asyncValue!: number;
 
       @prop()
+      @required()
       inner!: ModelInner;
 
       constructor(model?: ModelArg<AsyncTestModel>) {

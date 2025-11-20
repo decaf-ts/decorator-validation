@@ -1,8 +1,7 @@
-import { Constructor } from "../model/types";
+import { Constructor, Metadata } from "@decaf-ts/decoration";
 import { Serializer } from "./types";
 import { Model } from "../model/Model";
 import { ModelKeys } from "./constants";
-import { getMetadata } from "../model/utils";
 
 export const DefaultSerializationMethod = "json";
 
@@ -19,7 +18,7 @@ export const DefaultSerializationMethod = "json";
  *
  * @category Model
  */
-export class JSONSerializer<T extends Model> implements Serializer<T> {
+export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
   constructor() {}
   /**
    * @summary prepares the model for serialization
@@ -31,8 +30,15 @@ export class JSONSerializer<T extends Model> implements Serializer<T> {
    */
   protected preSerialize(model: T) {
     // TODO: nested preserialization (so increase performance when deserializing)
+    // TODO: Verify why there is no metadata
     const toSerialize: Record<string, any> = Object.assign({}, model);
-    const metadata = getMetadata(model);
+    let metadata;
+    try {
+      metadata = Metadata.modelName(model.constructor as Constructor);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
+      metadata = undefined;
+    }
     toSerialize[ModelKeys.ANCHOR] = metadata || model.constructor.name;
     return toSerialize;
   }

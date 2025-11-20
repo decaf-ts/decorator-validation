@@ -1,6 +1,6 @@
+import { Metadata } from "@decaf-ts/decoration";
 import { model, Model } from "../../src";
 import type { ModelArg } from "../../src";
-import "reflect-metadata";
 
 @model()
 class TestModel extends Model {
@@ -42,6 +42,6 @@ describe("Model Registry", () => {
     expect(tm.equals(rebuiltTm)).toBe(true);
     expect(tm === rebuiltTm).toBe(false);
     expect((tm as any).prototype).toBe(rebuiltTm.prototype);
-    expect(Model.getMetadata(tm)).toEqual(TestModel.name);
+    expect(Metadata.modelName(TestModel)).toEqual(TestModel.name);
   });
 });

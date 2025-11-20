@@ -8,35 +8,35 @@ import { MaxValidatorOptions } from "../types";
  * @summary The MaxValidator checks if a numeric value, date, or string is less than or equal to
  * a specified maximum value. It supports comparing numbers directly, dates chronologically,
  * and strings lexicographically. This validator is typically used with the @max decorator.
- * 
+ *
  * @param {string} [message] - Custom error message to display when validation fails, defaults to {@link DEFAULT_ERROR_MESSAGES#MAX}
- * 
+ *
  * @class MaxValidator
  * @extends Validator
- * 
+ *
  * @example
  * ```typescript
  * // Create a max validator with default error message
  * const maxValidator = new MaxValidator();
- * 
+ *
  * // Create a max validator with custom error message
  * const customMaxValidator = new MaxValidator("Value must not exceed {0}");
- * 
+ *
  * // Validate a number
  * const numOptions = { max: 100, message: "Number too large" };
  * const numResult = maxValidator.hasErrors(50, numOptions); // undefined (valid)
  * const invalidNumResult = maxValidator.hasErrors(150, numOptions); // Returns error message (invalid)
- * 
+ *
  * // Validate a date
  * const dateOptions = { max: new Date(2023, 11, 31) };
  * const dateResult = maxValidator.hasErrors(new Date(2023, 5, 15), dateOptions); // undefined (valid)
  * ```
- * 
+ *
  * @mermaid
  * sequenceDiagram
  *   participant C as Client
  *   participant V as MaxValidator
- *   
+ *
  *   C->>V: new MaxValidator(message)
  *   C->>V: hasErrors(value, options)
  *   alt value is undefined
@@ -52,13 +52,13 @@ import { MaxValidatorOptions } from "../types";
  *   else value <= max
  *     V-->>C: undefined (valid)
  *   end
- * 
+ *
  * @category Validators
  */
 @validator(ValidationKeys.MAX)
 export class MaxValidator extends Validator<MaxValidatorOptions> {
   constructor(message: string = DEFAULT_ERROR_MESSAGES.MAX) {
-    super(message, "number", "Date", "string");
+    super(message, Number.name, Date.name, String.name);
   }
 
   /**

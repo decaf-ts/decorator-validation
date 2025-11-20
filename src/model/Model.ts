@@ -3,7 +3,6 @@ import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import {
   Comparable,
-  Constructor,
   Hashable,
   ModelArg,
   ModelBuilderFunction,
@@ -11,15 +10,17 @@ import {
   Serializable,
   Validatable,
 } from "./types";
-import { DecoratorMetadata, isEqual, Reflection } from "@decaf-ts/reflection";
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
 import { ValidationKeys } from "../validation/Validators/constants";
 import { jsTypes, ReservedModels } from "./constants";
-import { getMetadata, getModelKey } from "./utils";
+
 import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
+import { Metadata, Constructor } from "@decaf-ts/decoration";
+import { isEqual } from "../utils/equality";
+import { ListValidatorOptions } from "../validation/index";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;
@@ -139,7 +140,7 @@ export class ModelRegistryManager<M extends Model<true | false>>
   build(obj: Record<string, any> = {}, clazz?: string): M {
     if (!clazz && !this.testFunction(obj))
       throw new Error("Provided obj is not a Model object");
-    const name = clazz || Model.getMetadata(obj as any);
+    const name = clazz || Metadata.modelName(obj.constructor as any);
     if (!(name in this.cache))
       throw new Error(
         `Provided class ${name} is not a registered Model object`
@@ -279,10 +280,16 @@ export abstract class Model<Async extends boolean = false>
    * @throws {Error} If it fails to parse the string, or if it fails to build the model
    */
   static deserialize(str: string) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.SERIALIZATION),
-      this.constructor
-    );
+    let metadata;
+    try {
+      metadata = Metadata.get(
+        this.constructor as unknown as Constructor,
+        ModelKeys.SERIALIZATION
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: unknown) {
+      metadata = undefined;
+    }
 
     if (metadata && metadata.serializer)
       return Serialization.deserialize(
@@ -359,8 +366,7 @@ export abstract class Model<Async extends boolean = false>
   static fromModel<T extends Model>(self: T, obj?: T | Record<string, any>): T {
     if (!obj) obj = {};
 
-    let decorators: DecoratorMetadata[], dec: DecoratorMetadata;
-
+    let decorators: DecoratorMetadata[];
     const props = Model.getAttributes(self);
 
     const proto = Object.getPrototypeOf(self);
@@ -392,93 +398,75 @@ export abstract class Model<Async extends boolean = false>
         continue;
       }
 
-      const allDecorators: DecoratorMetadata[] =
-        Reflection.getPropertyDecorators(
-          ValidationKeys.REFLECT,
-          self,
-          prop
-        ).decorators;
-      decorators = allDecorators.filter(
-        (d: DecoratorMetadata) =>
-          [ModelKeys.TYPE, ValidationKeys.TYPE as string].indexOf(d.key) !== -1
-      );
+      decorators = Metadata.allowedTypes(self.constructor as any, prop);
+
       if (!decorators || !decorators.length)
         throw new Error(`failed to find decorators for property ${prop}`);
-      dec = decorators.pop() as DecoratorMetadata;
-      const clazz = dec.props.name
-        ? [dec.props.name]
-        : (Array.isArray(dec.props.customTypes)
-            ? dec.props.customTypes
-            : [dec.props.customTypes]
-          ).map((t) => (typeof t === "function" ? t() : t));
-      const reserved = Object.values(ReservedModels).map((v) =>
-        v.toLowerCase()
-      ) as string[];
+      const clazz = decorators.map((t: any) =>
+        typeof t === "function" && !t.name ? t() : t
+      );
 
-      clazz.forEach((c) => {
-        if (typeof c === "function") {
-          if (c.name) c = c.name;
-          else c = c();
-        }
-        if (reserved.indexOf(c.toLowerCase()) === -1)
+      const reserved: any = Object.values(ReservedModels);
+
+      clazz.forEach((c: Constructor<any>) => {
+        if (!reserved.includes(c))
           try {
-            switch (c) {
+            switch (c.name) {
               case "Array":
-              case "Set":
-                if (allDecorators.length) {
-                  const listDec = allDecorators.find(
-                    (d) => d.key === ValidationKeys.LIST
-                  );
-                  if (listDec) {
-                    let clazzName = (listDec.props.clazz as string[]).find(
-                      (t: string) => {
-                        t = typeof t === "function" ? (t as any)() : t;
-                        t = (t as any).name ? (t as any).name : t;
-                        return !jsTypes.includes(t);
-                      }
-                    );
-                    clazzName =
-                      typeof clazzName === "string"
-                        ? clazzName
-                        : (clazzName as any)();
-                    clazzName =
-                      typeof clazzName === "string"
-                        ? clazzName
-                        : (clazzName as any).name;
-                    if (c === "Array")
-                      (self as Record<string, any>)[prop] = (
-                        self as Record<string, any>
-                      )[prop].map((el: any) => {
-                        return ["object", "function"].includes(typeof el) &&
-                          clazzName
-                          ? Model.build(el, clazzName)
-                          : el;
-                      });
-                    if (c === "Set") {
-                      const s = new Set();
-                      for (const v of (self as Record<string, any>)[prop]) {
-                        if (
-                          ["object", "function"].includes(typeof v) &&
-                          clazzName
-                        ) {
-                          s.add(Model.build(v, clazzName));
-                        } else {
-                          s.add(v);
-                        }
-                      }
-                      (self as Record<string, any>)[prop] = s;
+              case "Set": {
+                const validation: any = Metadata.validationFor(
+                  self.constructor as Constructor,
+                  prop
+                );
+                if (!validation || !validation[ValidationKeys.LIST]) break;
+                const listDec: ListValidatorOptions =
+                  validation[ValidationKeys.LIST];
+                const clazzName = (
+                  listDec.clazz as (
+                    | Constructor<any>
+                    | (() => Constructor<any>)
+                  )[]
+                )
+                  .map((t) =>
+                    typeof t === "function" && !(t as any).name
+                      ? (t as any)()
+                      : t
+                  )
+                  .find((t) => !jsTypes.includes(t.name));
+
+                if (c.name === "Array")
+                  (self as Record<string, any>)[prop] = (
+                    self as Record<string, any>
+                  )[prop].map((el: any) => {
+                    return ["object", "function"].includes(typeof el) &&
+                      clazzName
+                      ? Model.build(el, clazzName.name)
+                      : el;
+                  });
+                if (c.name === "Set") {
+                  const s = new Set();
+                  for (const v of (self as Record<string, any>)[prop]) {
+                    if (
+                      ["object", "function"].includes(typeof v) &&
+                      clazzName
+                    ) {
+                      s.add(Model.build(v, clazzName.name));
+                    } else {
+                      s.add(v);
                     }
                   }
+                  (self as Record<string, any>)[prop] = s;
                 }
                 break;
+              }
               default:
                 if (
                   typeof self[prop as keyof typeof self] !== "undefined" &&
-                  Model.get(c)
+                  Model.get(c.name)
                 )
                   (self as Record<string, any>)[prop] = Model.build(
                     (self as any)[prop],
-                    c
+                    c.name
                   );
             }
           } catch (e: any) {
@@ -586,18 +574,6 @@ export abstract class Model<Async extends boolean = false>
   }
 
   /**
-   * @description Retrieves the model metadata from a model instance
-   * @summary Gets the metadata associated with a model instance, typically the model class name
-   *
-   * @template M
-   * @param {M} model - The model instance to get metadata from
-   * @return {string} - The model metadata (typically the class name)
-   */
-  static getMetadata<M extends Model>(model: M) {
-    return getMetadata<M>(model);
-  }
-
-  /**
    * @description Retrieves all attribute names from a model class or instance
    * @summary Gets all attributes defined in a model, traversing the prototype chain to include inherited attributes
    *
@@ -605,20 +581,29 @@ export abstract class Model<Async extends boolean = false>
    * @param {Constructor<V> | V} model - The model class or instance to get attributes from
    * @return {string[]} - Array of attribute names defined in the model
    */
-  static getAttributes<V extends Model>(model: Constructor<V> | V) {
-    const result: string[] = [];
-    let prototype =
-      model instanceof Model
-        ? Object.getPrototypeOf(model)
-        : (model as any).prototype;
-    while (prototype != null) {
-      const props: string[] = prototype[ModelKeys.ATTRIBUTE];
-      if (props) {
-        result.push(...props);
+  static getAttributes<V extends Model>(model: Constructor<V> | V): string[] {
+    const constructor =
+      model instanceof Model ? (model.constructor as Constructor) : model;
+    const seen = new Set<string>();
+
+    const collect = (current?: Constructor): string[] => {
+      if (!current) return [];
+
+      const parent = Object.getPrototypeOf(current) as Constructor | undefined;
+      const attributes = collect(parent);
+      const props = Metadata.properties(current) ?? [];
+
+      for (const prop of props) {
+        if (!seen.has(prop)) {
+          seen.add(prop);
+          attributes.push(prop);
+        }
       }
-      prototype = Object.getPrototypeOf(prototype);
-    }
-    return result;
+
+      return attributes;
+    };
+
+    return collect(constructor);
   }
 
   /**
@@ -662,10 +647,16 @@ export abstract class Model<Async extends boolean = false>
    * @return {string} - The serialized string representation of the model
    */
   static serialize<M extends Model<boolean>>(model: M) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.SERIALIZATION),
-      model.constructor
-    );
+    let metadata;
+    try {
+      metadata = Metadata.get(
+        model.constructor as Constructor,
+        ModelKeys.SERIALIZATION
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: unknown) {
+      metadata = undefined;
+    }
 
     if (metadata && metadata.serializer)
       return Serialization.serialize(
@@ -685,25 +676,14 @@ export abstract class Model<Async extends boolean = false>
    * @return {string} - The hash string representing the model
    */
   static hash<M extends Model<boolean>>(model: M) {
-    const metadata = Reflect.getMetadata(
-      Model.key(ModelKeys.HASHING),
-      model.constructor
+    const metadata = Metadata.get(
+      model.constructor as Constructor,
+      ModelKeys.HASHING
     );
 
     if (metadata && metadata.algorithm)
       return Hashing.hash(model, metadata.algorithm, ...(metadata.args || []));
     return Hashing.hash(model);
-  }
-
-  /**
-   * @description Creates a metadata key for use with the Reflection API
-   * @summary Builds the key to store as Metadata under Reflections
-   *
-   * @param {string} str - The base key to concatenate with the model reflection prefix
-   * @return {string} - The complete metadata key
-   */
-  static key(str: string) {
-    return getModelKey(str);
   }
 
   /**
@@ -729,7 +709,15 @@ export abstract class Model<Async extends boolean = false>
    */
   static isModel(target: Record<string, any>) {
     try {
-      return target instanceof Model || !!Model.getMetadata(target as any);
+      if (target instanceof Model) return true;
+      const constr = Metadata.constr(target as any);
+      if (!constr || constr === target) return false;
+      return !!Metadata.modelName(constr as any);
+      //
+      // // return target instanceof Model || !!Metadata.modelName(target as any);
+      // const modelName = Metadata.modelName(target as any);
+      // return target instanceof Model || !!Model.get(modelName);
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e: any) {
       return false;
@@ -751,28 +739,47 @@ export abstract class Model<Async extends boolean = false>
     target: M,
     attribute: string
   ): boolean | string | undefined {
-    if (Model.isModel((target as Record<string, any>)[attribute])) return true;
-    const metadata = Reflect.getMetadata(ModelKeys.TYPE, target, attribute);
+    const isModel = Model.isModel((target as Record<string, any>)[attribute]);
+    if (isModel) return true;
+    const metadata = Metadata.type(
+      target.constructor as Constructor<M>,
+      attribute as string
+    );
     if (!metadata) return undefined;
     return Model.get(metadata.name) ? metadata.name : undefined;
   }
 
-  static describe<M extends Model>(model: M | Constructor<M>, key?: keyof M) {
-    const descKey = Model.key(ModelKeys.DESCRIPTION);
-    if (key) {
-      model = model instanceof Model ? model : new model();
-      return (
-        Reflect.getMetadataKeys(model.constructor, key.toString())
-          .find((k) => k === descKey)
-          ?.toString() || model.toString()
-      );
-    }
-
-    return (
-      Reflect.getMetadata(
-        Model.key(ModelKeys.DESCRIPTION),
-        model instanceof Model ? model.constructor : model
-      ) || model.toString()
-    );
+  static describe<M extends Model>(model: Constructor<M>, key?: keyof M) {
+    return Metadata.description(model, key);
   }
+
+  /**
+   * @description Returns if a Model property should be validated
+   * @summary Returns if a Model property should be validated. Use for models that are relations.
+   *
+   * @template model - The model type extending from Model
+   * @param {M} model - The constructor of the target model class
+   * @param {string} property - The property name to retrieve validation for
+   * @return {boolean} An object of the designtypes
+   *
+   * @example
+   * Class Contacts extends Model{}
+   * class User extends Model {
+   *  contacts: Contacts
+   * }
+   *
+   *   const shouldValidate = shouldValidateNestedHandler(User,'contacts')
+   */
+  private static shouldValidateNestedHandler = function <M extends Model>(
+    model: M,
+    property: keyof M
+  ): boolean {
+    const instance = (model as any)[property as keyof M];
+    if (!instance) return false;
+    const isValidModel =
+      typeof instance === "object" && typeof instance.hasErrors === "function";
+    if (!isValidModel)
+      console.log(`The instance should be validatable but it is not`);
+    return isValidModel;
+  };
 }

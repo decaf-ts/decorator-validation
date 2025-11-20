@@ -1,5 +1,3 @@
-import { ModelKeys } from "../../utils/constants";
-
 /**
  * @description Object-like set of keys used for comparison-based validations.
  * @summary Provides canonical names for validators that compare two values (equality and ordering checks).
@@ -62,7 +60,7 @@ export const ComparisonValidationKeys = {
  * @type {ValidationKeysDef}
  */
 export const ValidationKeys = {
-  REFLECT: `${ModelKeys.REFLECT}validation.`,
+  REFLECT: `validation`,
   DATE: "date",
   EMAIL: "email",
   FORMAT: "format",
@@ -79,6 +77,7 @@ export const ValidationKeys = {
   UNIQUE: "unique",
   URL: "url",
   VALIDATOR: "validator",
+  ENUM: "enum",
   ...ComparisonValidationKeys,
 } as const;
 
@@ -177,6 +176,7 @@ export const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   GREATER_THAN_OR_EQUAL:
     "This field must be greater than or equal to field {0}",
   UNIQUE: "Duplicate found, this field must be unique.",
+  ENUM: "Value is not allowed. Must be one of {0}",
 };
 
 /**

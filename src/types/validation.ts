@@ -1,4 +1,3 @@
-import { DecoratorMetadata } from "@decaf-ts/reflection";
 import { Model } from "../model/Model";
 import { ModelErrorDefinition } from "../model/ModelErrorDefinition";
 
@@ -24,8 +23,11 @@ export type ConditionalAsync<Async extends boolean, T> = Async extends true
   ? Promise<T>
   : T;
 
-export type DecoratorMetadataAsync = DecoratorMetadata & { async?: boolean };
+export type DecoratorMetadataAsync = { async?: boolean };
 
+/**
+ * @deprecated
+ */
 export type ModelConditionalAsync<M> =
   M extends Model<true>
     ? Promise<ModelErrorDefinition | undefined>

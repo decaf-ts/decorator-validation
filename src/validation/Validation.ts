@@ -2,6 +2,8 @@ import { Validator } from "./Validators/Validator";
 import { IValidatorRegistry, ValidatorDefinition } from "./types";
 import { ValidatorRegistry } from "./Validators/ValidatorRegistry";
 import { ValidationKeys } from "./Validators/constants";
+import { ModelKeys } from "../utils/index";
+import { Metadata } from "@decaf-ts/decoration";
 
 /**
  * @summary Static class acting as a namespace for the Validation
@@ -15,7 +17,6 @@ export class Validation {
   private static actingValidatorRegistry?: IValidatorRegistry<Validator> =
     undefined;
 
-  private static loadedDecorators: Record<string, PropertyDecorator> = {};
   private constructor() {}
 
   /**
@@ -85,14 +86,30 @@ export class Validation {
     return this.getRegistry().getKeys();
   }
 
-  static registerDecorator(key: string, decorator: PropertyDecorator) {
-    if (key in this.loadedDecorators) return;
-    this.loadedDecorators[key] = decorator;
+  static registerDecorator(
+    key: string,
+    decorator: (...args: any[]) => PropertyDecorator
+  ) {
+    const meta = Metadata["innerGet"](
+      Symbol.for(ModelKeys.DECORATORS),
+      Metadata.key(ValidationKeys.REFLECT, key)
+    ) as Record<string, PropertyDecorator> | undefined;
+    if (meta?.[key]) return;
+    Metadata.set(
+      ModelKeys.DECORATORS,
+      Metadata.key(ValidationKeys.REFLECT, key),
+      decorator
+    );
   }
 
   static decoratorFromKey(key: string) {
-    if (!(key in this.loadedDecorators))
-      throw new Error(`No decorator registered under ${key}`);
-    return this.loadedDecorators[key];
+    try {
+      return Metadata["innerGet"](
+        Symbol.for(ModelKeys.DECORATORS),
+        Metadata.key(ValidationKeys.REFLECT, key)
+      );
+    } catch (e: unknown) {
+      throw new Error(`No decorator registered under ${key}: ${e}`);
+    }
   }
 }

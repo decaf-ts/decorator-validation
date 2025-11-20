@@ -15,7 +15,7 @@ describe("type via function", () => {
   it("enforces type via function", () => {
     @model()
     class TypeFunction extends Model {
-      @type(() => Number.name)
+      @type(() => Number)
       @required()
       prop!: Dummy;
 
@@ -38,7 +38,7 @@ describe("type via function", () => {
   it("enforces type via function in a list", () => {
     @model()
     class ChildClazz {
-      @type(() => Number.name)
+      @type(() => Number)
       @required()
       nestedProp!: Dummy;
 
@@ -80,7 +80,7 @@ describe("type via function", () => {
   it("enforces type via function in a list with many types", () => {
     @model()
     class ChildClazz {
-      @type(() => Number.name)
+      @type(() => Number)
       @required()
       nestedProp!: Dummy;
 

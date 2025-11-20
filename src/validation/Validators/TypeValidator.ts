@@ -8,7 +8,7 @@ import {
   ValidatorOptions,
 } from "../types";
 import { ModelKeys } from "../../utils/constants";
-import { Reflection } from "@decaf-ts/reflection";
+import { evaluateDesignTypes } from "./utils";
 
 /**
  * @description Validator for checking if a value is of the expected type(s)
@@ -104,7 +104,7 @@ export class TypeValidator extends Validator<TypeValidatorOptions> {
       return (t as any).name || t;
     });
 
-    if (!Reflection.evaluateDesignTypes(value, ts as any))
+    if (!evaluateDesignTypes(value, ts as any))
       return this.getMessage(
         message || this.message,
         typeof ts === "string" ? ts : Array.isArray(ts) ? ts.join(", ") : ts,
