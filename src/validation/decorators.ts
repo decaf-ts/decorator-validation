@@ -422,7 +422,7 @@ export function date(
     ): any {
       const values = new WeakMap();
       Object.defineProperty(target, propertyKey, {
-        configurable: false,
+        configurable: true,
         set(this: any, newValue: string | Date) {
           const descriptor = Object.getOwnPropertyDescriptor(this, propertyKey);
           if (!descriptor || descriptor.configurable)
