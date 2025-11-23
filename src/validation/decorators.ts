@@ -416,6 +416,59 @@ export function date(
       description: `defines the attribute as a date with the format ${format}`,
       async: false,
     };
+
+    // return function dateDec(
+    //   target: Record<string, any>,
+    //   propertyKey?: any
+    // ): any {
+    //   const definitionTarget =
+    //     typeof target === "function" ? target.prototype : target;
+    //   const values = new WeakMap<any, Date | undefined>();
+    //
+    //   const ensureInstanceDescriptor = (instance: any) => {
+    //     if (
+    //       Object.prototype.hasOwnProperty.call(instance, propertyKey) &&
+    //       !Object.getOwnPropertyDescriptor(instance, propertyKey)?.configurable
+    //     )
+    //       return;
+    //
+    //     Object.defineProperty(instance, propertyKey, {
+    //       enumerable: true,
+    //       configurable: false,
+    //       get(this: any) {
+    //         return values.get(this);
+    //       },
+    //       set(this: any, newValue: string | Date | number | undefined | null) {
+    //         if (typeof newValue === "undefined" || newValue === null) {
+    //           values.delete(this);
+    //           return;
+    //         }
+    //
+    //         try {
+    //           const val = parseDate(format, newValue);
+    //           values.set(this, val);
+    //         } catch (e: any) {
+    //           console.error(sf("Failed to parse date: {0}", e.message || e));
+    //         }
+    //       },
+    //     });
+    //   };
+    //
+    //   Object.defineProperty(definitionTarget, propertyKey, {
+    //     configurable: true,
+    //     enumerable: true,
+    //     get(this: any) {
+    //       ensureInstanceDescriptor(this);
+    //       return (this as any)[propertyKey];
+    //     },
+    //     set(this: any, newValue: string | Date | number | undefined | null) {
+    //       ensureInstanceDescriptor(this);
+    //       (this as any)[propertyKey] = newValue;
+    //     },
+    //   });
+    //
+    //   return innerValidationDecorator(date, key, meta)(target, propertyKey);
+    // };
     return function dateDec(
       target: Record<string, any>,
       propertyKey?: any
@@ -448,6 +501,7 @@ export function date(
           return values.get(this);
         },
       });
+
       return innerValidationDecorator(date, key, meta)(target, propertyKey);
     };
   }

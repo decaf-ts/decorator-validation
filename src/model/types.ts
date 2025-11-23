@@ -141,3 +141,20 @@ export interface Comparable<T> {
    */
   equals(other: T, ...args: any[]): boolean;
 }
+
+export type SetterKeyFor<
+  OBJ,
+  K extends keyof OBJ,
+> = `set${Capitalize<string & K>}`;
+
+export type SetterFor<OBJ, K extends keyof OBJ, R> = (value: OBJ[K]) => R;
+
+export type Builder<OUT, ARGS extends any[] = any[], IN = OUT> = {
+  [K in keyof OUT as K extends keyof Model | "build" ? never : K]: OUT[K];
+} & {
+  [K in keyof OUT as K extends keyof Model | "build"
+    ? never
+    : SetterKeyFor<OUT, K>]: SetterFor<OUT, K, IN>;
+} & {
+  build: (...args: ARGS) => OUT | Promise<OUT>;
+};
