@@ -8,3 +8,4 @@ A TypeScript decorator-driven validation and model framework. It lets you:
 - Extend validation via a registry of Validator classes and utilities.
 - Optionally expose validation as MCP tools for automation workflows.
 
+> Release docs refreshed on 2025-11-26. See [workdocs/reports/RELEASE_NOTES.md](./workdocs/reports/RELEASE_NOTES.md) for ticket summaries.
