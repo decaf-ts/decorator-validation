@@ -130,7 +130,7 @@ export interface Hashable {
  * @memberOf module:decorator-validation
  * @category Model
  */
-export interface Comparable<T> {
+export interface Comparable {
   /**
    * @description Determines if this object is equal to another object
    * @summary Compares this object with another for equality
@@ -139,7 +139,13 @@ export interface Comparable<T> {
    * @return {boolean} - True if the objects are equal, false otherwise
    * @method
    */
-  equals(other: T, ...args: any[]): boolean;
+  equals<T extends Model>(this: T, other: T, ...args: any[]): boolean;
+
+  compare<T extends Model>(
+    this: T,
+    other: T,
+    ...args: any[]
+  ): Comparison<T> | undefined;
 }
 
 export type SetterKeyFor<
@@ -158,3 +164,11 @@ export type Builder<OUT, ARGS extends any[] = any[], IN = OUT> = {
 } & {
   build: (...args: ARGS) => OUT | Promise<OUT>;
 };
+
+export type Comparison<M, K extends keyof M = keyof M> = Record<
+  K,
+  {
+    other: M[K] | undefined;
+    current: M[K] | undefined;
+  }
+>;

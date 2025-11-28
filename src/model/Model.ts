@@ -3,6 +3,7 @@ import { BuilderRegistry } from "../utils/registry";
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import {
   Comparable,
+  Comparison,
   Hashable,
   ModelArg,
   ModelBuilderFunction,
@@ -197,11 +198,7 @@ export function bulkModelRegister<M extends Model>(
  *      }
  */
 export abstract class Model<Async extends boolean = false>
-  implements
-    Validatable<Async>,
-    Serializable,
-    Hashable,
-    Comparable<Model<Async>>
+  implements Validatable<Async>, Serializable, Hashable, Comparable
 {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected constructor(arg: ModelArg<Model> | undefined = undefined) {}
@@ -238,6 +235,66 @@ export abstract class Model<Async extends boolean = false>
    */
   public equals(obj: any, ...exceptions: string[]): boolean {
     return isEqual(this, obj, ...exceptions);
+  }
+
+  compare<M extends Model>(
+    this: M,
+    other: M,
+    ...exceptions: (keyof M)[]
+  ): Comparison<M> | undefined {
+    const props = Metadata.properties(this.constructor as Constructor<M>);
+    if (!props || !props.length) return undefined;
+
+    const diff = props.reduce((acc: any, el) => {
+      const k = el as keyof M;
+      if (exceptions.includes(k)) return acc;
+
+      if (isEqual(this[k], other[k])) return acc;
+
+      if (typeof this[k] === "undefined" && typeof other[k] !== "undefined") {
+        acc[k] = { other: other[k], current: undefined };
+        return acc;
+      }
+      if (typeof this[k] !== "undefined" && typeof other[k] === "undefined") {
+        acc[k] = { other: undefined, current: this[k] };
+        return acc;
+      }
+
+      if (Model.isPropertyModel(this, k as string)) {
+        const nestedDiff = (this[k] as M).compare(other[k] as M);
+        if (nestedDiff) {
+          acc[k] = nestedDiff;
+        }
+        return acc;
+      }
+
+      if (Array.isArray(this[k]) && Array.isArray(other[k])) {
+        if ((this[k] as any[]).length !== (other[k] as any[]).length) {
+          acc[k] = { current: this[k], other: other[k] };
+          return acc;
+        }
+
+        const listDiff = (this[k] as any[]).map((item, i) => {
+          if (isEqual(item, (other[k] as any[])[i])) return null;
+          if (
+            item instanceof Model &&
+            (other[k] as any[])[i] instanceof Model
+          ) {
+            return item.compare((other[k] as any[])[i]);
+          }
+          return { current: item, other: (other[k] as any[])[i] };
+        });
+        if (listDiff.some((d) => d !== null)) {
+          acc[k] = listDiff;
+        }
+        return acc;
+      }
+
+      acc[k] = { other: other[k], current: this[k] };
+      return acc;
+    }, {});
+
+    return Object.keys(diff).length > 0 ? (diff as Comparison<M>) : undefined;
   }
 
   /**
@@ -755,7 +812,7 @@ export abstract class Model<Async extends boolean = false>
 
   /**
    * @description Returns if a Model property should be validated
-   * @summary Returns if a Model property should be validated. Use for models that are relations.
+   * @summary Returns if a Model-property should be validated. Use for models that are relations.
    *
    * @template model - The model type extending from Model
    * @param {M} model - The constructor of the target model class
