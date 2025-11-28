@@ -8,6 +8,7 @@ A TypeScript decorator-driven validation and model framework. It lets you:
 - Extend validation via a registry of Validator classes and utilities.
 - Optionally expose validation as MCP tools for automation workflows.
 
+> Release docs refreshed on 2025-11-26. See [workdocs/reports/RELEASE_NOTES.md](./workdocs/reports/RELEASE_NOTES.md) for ticket summaries.
 
 ![Licence](https://img.shields.io/github/license/decaf-ts/decorator-validation.svg?style=plastic)
 ![GitHub language count](https://img.shields.io/github/languages/count/decaf-ts/decorator-validation?style=plastic)
@@ -32,7 +33,7 @@ A TypeScript decorator-driven validation and model framework. It lets you:
 
 Documentation available [here](https://decaf-ts.github.io/decorator-validation/)
 
-Minimal size: 13.1 KB kb gzipped
+Minimal size: 13.3 KB kb gzipped
 
 
 # Decorator Validation – Detailed Description
@@ -567,6 +568,9 @@ const allKeys = Validation.keys();
   - strategy;
   - builder;
   - etc;
+
+## Release Documentation Hooks
+Stay aligned with the automated release pipeline by reviewing [Release Notes](./workdocs/reports/RELEASE_NOTES.md) and [Dependencies](./workdocs/reports/DEPENDENCIES.md) after trying these recipes (updated on 2025-11-26).
 
 
 ### Related

@@ -205,4 +205,21 @@ describe("Model.compare", () => {
       email: { current: undefined, other: null },
     });
   });
+
+  it("should skip specified properties from comparison", () => {
+    const user1 = new User({
+      name: "John Doe",
+      email: "john.doe@example.com",
+    });
+
+    const user2 = new User({
+      name: "Jane Doe",
+      email: "jane.doe@example.com",
+    });
+
+    const diff = user1.compare(user2, "name");
+    expect(diff).toEqual({
+      email: { current: "john.doe@example.com", other: "jane.doe@example.com" },
+    });
+  });
 });
