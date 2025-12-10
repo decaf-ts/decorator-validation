@@ -75,6 +75,16 @@ class OuterTestModel extends Model {
 }
 
 @model()
+class SimpleParentModel extends Model {
+  @required()
+  child!: SimpleNestedModel;
+
+  constructor(arg: ModelArg<SimpleParentModel>) {
+    super(arg);
+  }
+}
+
+@model()
 class OuterListTestModel extends Model {
   @required()
   id!: string;
@@ -303,5 +313,20 @@ describe("Nested Validation", () => {
     expect(list0NestedValidationMock).toHaveBeenCalledTimes(0);
     expect(list1NestedValidationMock).toHaveBeenCalledTimes(0);
     expect(list2NestedValidationMock).toHaveBeenCalledTimes(0);
+  });
+  it("should exclude from validation simple and nested properties", () => {
+    const parentModel = new SimpleParentModel({
+      child: { value: "test" },
+    });
+    expect(parentModel.hasErrors()).toBeDefined();
+    expect(parentModel.hasErrors()).toEqual(
+      new ModelErrorDefinition({
+        ["child.value"]: {
+          type: "Invalid type. Expected Number, received string",
+        },
+      })
+    );
+    expect(parentModel.hasErrors("value")).toBeUndefined();
+    expect(parentModel.hasErrors("child")).toBeUndefined();
   });
 });
