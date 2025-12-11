@@ -1,3 +1,4 @@
+import { Metadata } from "@decaf-ts/decoration";
 import type { ModelArg } from "../../src";
 import {
   list,
@@ -75,9 +76,25 @@ class OuterTestModel extends Model {
 }
 
 @model()
+class SimpleChildModel extends Model {
+  @required()
+  child2!: SimpleNestedModel;
+
+  @required()
+  childValue!: string;
+
+  constructor(arg: ModelArg<SimpleChildModel>) {
+    super(arg);
+  }
+}
+
+@model()
 class SimpleParentModel extends Model {
   @required()
-  child!: SimpleNestedModel;
+  child1!: SimpleChildModel;
+
+  @required()
+  parentValue!: string;
 
   constructor(arg: ModelArg<SimpleParentModel>) {
     super(arg);
@@ -316,17 +333,35 @@ describe("Nested Validation", () => {
   });
   it("should exclude from validation simple and nested properties", () => {
     const parentModel = new SimpleParentModel({
-      child: { value: "test" },
+      child1: new SimpleChildModel({
+        childValue: 12,
+        child2: new SimpleNestedModel({ value: "should be number" }),
+      }),
     });
-    expect(parentModel.hasErrors()).toBeDefined();
+
     expect(parentModel.hasErrors()).toEqual(
       new ModelErrorDefinition({
-        ["child.value"]: {
+        ["child1.child2.value"]: {
+          type: "Invalid type. Expected Number, received string",
+        },
+        ["child1.childValue"]: {
+          type: "Invalid type. Expected String, received number",
+        },
+        parentValue: { required: "This field is required" },
+      })
+    );
+    expect(
+      parentModel.hasErrors("parentValue", "childValue", "value")
+    ).toBeUndefined();
+    expect(parentModel.hasErrors("parentValue", "child1.childValue")).toEqual(
+      new ModelErrorDefinition({
+        ["child1.child2.value"]: {
           type: "Invalid type. Expected Number, received string",
         },
       })
     );
-    expect(parentModel.hasErrors("value")).toBeUndefined();
-    expect(parentModel.hasErrors("child")).toBeUndefined();
+    expect(
+      parentModel.hasErrors("parentValue", "childValue", "child1.child2.value")
+    ).toBeUndefined();
   });
 });

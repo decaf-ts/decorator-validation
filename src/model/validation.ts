@@ -113,6 +113,26 @@ export function validateChildValue<M extends Model>(
   );
 }
 
+/**
+ * @description Retrieves nested properties to ignore for child validation
+ * @param parentProp - The property of the parent model
+ * @param propsToIgnore - Properties to ignore from the parent model
+ * @returns An array of properties to ignore for the child model
+ */
+function getChildNestedPropsToIgnore(
+  parentProp: string,
+  ...propsToIgnore: string[]
+) {
+  return propsToIgnore?.map((propToIgnore) => {
+    if (
+      typeof propToIgnore === "string" &&
+      propToIgnore?.startsWith(`${parentProp}.`)
+    )
+      propToIgnore = propToIgnore.replace(`${parentProp}.`, "");
+    return propToIgnore;
+  });
+}
+
 export function validateDecorator<
   M extends Model,
   Async extends boolean = false,
@@ -212,13 +232,17 @@ export function validateDecorators<
         const errs = values.map((childValue: any) => {
           // if (Model.isModel(v) && !reserved.includes(v) {
           if (Model.isModel(childValue)) {
+            const nestedPropsToIgnore = getChildNestedPropsToIgnore(
+              prop,
+              ...propsToIgnore
+            );
             return validateChildValue(
               prop,
               childValue,
               model,
               types.flat(),
               !!async,
-              ...propsToIgnore
+              ...nestedPropsToIgnore
             );
             // return getNestedValidationErrors(childValue, model, async);
           }
@@ -405,11 +429,15 @@ export function validate<
             : `Value must be an instance of ${Constr.name}`;
           delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
         } else {
+          const nestedPropsToIgnore = getChildNestedPropsToIgnore(
+            propKey,
+            ...propsToIgnore
+          );
           nestedErrors[propKey] = getNestedValidationErrors(
             instance,
             model,
             async,
-            ...propsToIgnore
+            ...nestedPropsToIgnore
           );
         }
       }
