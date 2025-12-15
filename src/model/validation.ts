@@ -407,40 +407,38 @@ export function validate<
     // let nestedErrors: Record<string, any> = {};
     const isConstr = Model.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
-    const isModelInstance =
-      hasPropValue && Model.isModel(propValue as Record<string, any>);
-    if (isConstr && hasPropValue && isModelInstance) {
+    if (isConstr && hasPropValue) {
       const instance = propValue as Model;
       // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
       // We need to capture that and excempt it from throwing an error
 
-      if (Model["shouldValidateNestedHandler"](model, propKey as keyof M)) {
-        const Constr = (Array.isArray(designType) ? designTypes : [designType])
-          .map((d: any) => {
-            if (typeof d === "function" && !d.name) d = d();
-            return Model.get(d.name || d);
-          })
-          .find((d: any) => !!d) as any;
+      // if (Model["shouldValidateNestedHandler"](model, propKey as keyof M)) {
+      const Constr = (Array.isArray(designType) ? designTypes : [designType])
+        .map((d: any) => {
+          if (typeof d === "function" && !d.name) d = d();
+          return Model.get(d.name || d);
+        })
+        .find((d: any) => !!d) as any;
 
-        // Ensure instance is of the expected model class.
-        if (!Constr || !(instance instanceof Constr)) {
-          propErrors[ValidationKeys.TYPE] = !Constr
-            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
-            : `Value must be an instance of ${Constr.name}`;
-          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
-        } else {
-          const nestedPropsToIgnore = getChildNestedPropsToIgnore(
-            propKey,
-            ...propsToIgnore
-          );
-          nestedErrors[propKey] = getNestedValidationErrors(
-            instance,
-            model,
-            async,
-            ...nestedPropsToIgnore
-          );
-        }
+      // Ensure instance is of the expected model class.
+      if (!Constr || !(instance instanceof Constr)) {
+        propErrors[ValidationKeys.TYPE] = !Constr
+          ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
+          : `Value must be an instance of ${Constr.name}`;
+        delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
+      } else {
+        const nestedPropsToIgnore = getChildNestedPropsToIgnore(
+          propKey,
+          ...propsToIgnore
+        );
+        nestedErrors[propKey] = getNestedValidationErrors(
+          instance,
+          model,
+          async,
+          ...nestedPropsToIgnore
+        );
       }
+      // }
     }
 
     // Add to the result if we have any errors
