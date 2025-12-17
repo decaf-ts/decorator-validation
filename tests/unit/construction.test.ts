@@ -95,7 +95,7 @@ describe("Construction", () => {
         new ModelErrorDefinition({
           child: {
             [ValidationKeys.TYPE]:
-              "Invalid type. Expected ConstructionTestModel, received object",
+              "Value must be an instance of ConstructionTestModel",
           },
         })
       );

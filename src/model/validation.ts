@@ -113,6 +113,26 @@ export function validateChildValue<M extends Model>(
   );
 }
 
+/**
+ * @description Retrieves nested properties to ignore for child validation
+ * @param parentProp - The property of the parent model
+ * @param propsToIgnore - Properties to ignore from the parent model
+ * @returns An array of properties to ignore for the child model
+ */
+function getChildNestedPropsToIgnore(
+  parentProp: string,
+  ...propsToIgnore: string[]
+) {
+  return propsToIgnore?.map((propToIgnore) => {
+    if (
+      typeof propToIgnore === "string" &&
+      propToIgnore?.startsWith(`${parentProp}.`)
+    )
+      propToIgnore = propToIgnore.replace(`${parentProp}.`, "");
+    return propToIgnore;
+  });
+}
+
 export function validateDecorator<
   M extends Model,
   Async extends boolean = false,
@@ -212,13 +232,17 @@ export function validateDecorators<
         const errs = values.map((childValue: any) => {
           // if (Model.isModel(v) && !reserved.includes(v) {
           if (Model.isModel(childValue)) {
+            const nestedPropsToIgnore = getChildNestedPropsToIgnore(
+              prop,
+              ...propsToIgnore
+            );
             return validateChildValue(
               prop,
               childValue,
               model,
               types.flat(),
               !!async,
-              ...propsToIgnore
+              ...nestedPropsToIgnore
             );
             // return getNestedValidationErrors(childValue, model, async);
           }
@@ -383,35 +407,35 @@ export function validate<
     // let nestedErrors: Record<string, any> = {};
     const isConstr = Model.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
-    const isModelInstance =
-      hasPropValue && Model.isModel(propValue as Record<string, any>);
-    if (isConstr && hasPropValue && isModelInstance) {
+    if (isConstr && hasPropValue) {
       const instance = propValue as Model;
       // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
-      // We need to capture that and excempt it from throwing an error
+      // We need to capture that and excempt it from throwing an error. This is being handled in the core Metadata.validationExceptions.
 
-      if (Model["shouldValidateNestedHandler"](model, propKey as keyof M)) {
-        const Constr = (Array.isArray(designType) ? designTypes : [designType])
-          .map((d: any) => {
-            if (typeof d === "function" && !d.name) d = d();
-            return Model.get(d.name || d);
-          })
-          .find((d: any) => !!d) as any;
+      const Constr = (Array.isArray(designType) ? designTypes : [designType])
+        .map((d: any) => {
+          if (typeof d === "function" && !d.name) d = d();
+          return Model.get(d.name || d);
+        })
+        .find((d: any) => !!d) as any;
 
-        // Ensure instance is of the expected model class.
-        if (!Constr || !(instance instanceof Constr)) {
-          propErrors[ValidationKeys.TYPE] = !Constr
-            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
-            : `Value must be an instance of ${Constr.name}`;
-          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
-        } else {
-          nestedErrors[propKey] = getNestedValidationErrors(
-            instance,
-            model,
-            async,
-            ...propsToIgnore
-          );
-        }
+      // Ensure instance is of the expected model class.
+      if (!Constr || !(instance instanceof Constr)) {
+        propErrors[ValidationKeys.TYPE] = !Constr
+          ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
+          : `Value must be an instance of ${Constr.name}`;
+        delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
+      } else {
+        const nestedPropsToIgnore = getChildNestedPropsToIgnore(
+          propKey,
+          ...propsToIgnore
+        );
+        nestedErrors[propKey] = getNestedValidationErrors(
+          instance,
+          model,
+          async,
+          ...nestedPropsToIgnore
+        );
       }
     }
 
