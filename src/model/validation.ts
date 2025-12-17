@@ -410,9 +410,8 @@ export function validate<
     if (isConstr && hasPropValue) {
       const instance = propValue as Model;
       // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
-      // We need to capture that and excempt it from throwing an error
+      // We need to capture that and excempt it from throwing an error. This is being handled in the core Metadata.validationExceptions.
 
-      // if (Model["shouldValidateNestedHandler"](model, propKey as keyof M)) {
       const Constr = (Array.isArray(designType) ? designTypes : [designType])
         .map((d: any) => {
           if (typeof d === "function" && !d.name) d = d();
@@ -438,7 +437,6 @@ export function validate<
           ...nestedPropsToIgnore
         );
       }
-      // }
     }
 
     // Add to the result if we have any errors
