@@ -28,7 +28,8 @@ export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
    * @param {T} model
    * @protected
    */
-  protected preSerialize(model: T) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected preSerialize(model: T, ...args: any[]) {
     // TODO: nested preserialization (so increase performance when deserializing)
     // TODO: Verify why there is no metadata
     const toSerialize: Record<string, any> = Object.assign({}, model);
@@ -49,7 +50,8 @@ export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
    *
    * @throws {Error} If it fails to parse the string, or to build the model
    */
-  deserialize(str: string): T {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  deserialize(str: string, ...args: any[]): T {
     const deserialization = JSON.parse(str);
     const className = deserialization[ModelKeys.ANCHOR];
     if (!className)
@@ -64,7 +66,8 @@ export class JSONSerializer<T extends Model<boolean>> implements Serializer<T> {
    *
    * @throws {Error} if fails to serialize
    */
-  serialize(model: T): string {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  serialize(model: T, ...args: any[]): string {
     return JSON.stringify(this.preSerialize(model));
   }
 }

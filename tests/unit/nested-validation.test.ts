@@ -1,4 +1,3 @@
-import { Metadata } from "@decaf-ts/decoration";
 import type { ModelArg } from "../../src";
 import {
   list,
