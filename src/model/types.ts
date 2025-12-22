@@ -102,7 +102,7 @@ export interface Serializable {
    * @return {string} - The serialized string representation
    * @method
    */
-  serialize(): string;
+  serialize(...args: any[]): string;
 }
 
 /**
@@ -119,7 +119,7 @@ export interface Hashable {
    * @return {string} - Hash value representing the object
    * @method
    */
-  hash(): string;
+  hash(...args: any[]): string;
 }
 
 /**
