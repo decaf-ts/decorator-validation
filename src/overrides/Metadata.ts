@@ -1,4 +1,5 @@
 import { Model } from "../model/Model";
+import "@decaf-ts/decoration";
 import { Constructor } from "@decaf-ts/decoration";
 import { designTypeReturn, ExtendedMetadata } from "./types";
 import { ValidationMetadata } from "../validation/index";
