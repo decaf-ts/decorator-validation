@@ -249,16 +249,17 @@ export abstract class Model<Async extends boolean = false>
       const k = el as keyof M;
       if (exceptions.includes(k)) return acc;
 
-      if (isEqual(this[k], other[k])) return acc;
-
       if (typeof this[k] === "undefined" && typeof other[k] !== "undefined") {
         acc[k] = { other: other[k], current: undefined };
         return acc;
       }
+
       if (typeof this[k] !== "undefined" && typeof other[k] === "undefined") {
         acc[k] = { other: undefined, current: this[k] };
         return acc;
       }
+
+      if (isEqual(this[k], other[k])) return acc;
 
       if (Model.isPropertyModel(this, k as string)) {
         const nestedDiff = (this[k] as M).compare(other[k] as M);
