@@ -402,27 +402,46 @@ export function validate<
         ...propsToIgnore
       ) || {};
 
-    // // Check for nested properties.
-    // // To prevent unnecessary processing, "propValue" must be defined
+    // Check for nested properties.
+    // To prevent unnecessary processing, "propValue" must be defined and validatable
     const isConstr = Model.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
-    const isExcludedRelation = propsToIgnore.includes(
-      `${model.constructor.name}..${propKey}`
-    );
-
-    if (!isExcludedRelation && isConstr && hasPropValue) {
-      const expectedConstr = designTypes
+    if (isConstr && hasPropValue) {
+      // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
+      // We need to capture that and excempt it from throwing an error. This is being handled in the core Metadata.validationExceptions.
+      const Constr = designTypes
         .map((d: any) => Model.get(d.name || d))
         .find((d: any) => !!d) as any;
-      if (
-        typeof expectedConstr !== "function" ||
-        !(propValue instanceof expectedConstr)
-      ) {
-        // If types don't match throw an error
-        propErrors[ValidationKeys.TYPE] = !expectedConstr
-          ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
-          : `Value must be an instance of ${expectedConstr.name}`;
-        delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
+      const designTypeNames = designTypes.map((d: any) => {
+        if (typeof d === "function")
+          return d.name ? d.name.toLowerCase() : d()?.name.toLowerCase();
+        return d.toLowerCase();
+      });
+
+      // If instance is NOT of the expected model class.
+      if (!Constr || !(propValue instanceof Constr)) {
+        // This is a working solution for validation relations, but must be handled at the core side.
+        const shouldIgnoreRelationTypeCheck = (propsToIgnore || []).some(
+          (p) => {
+            if (p === `.${propKey}`) return true;
+            return false;
+          }
+        );
+
+        if (
+          designTypeNames.includes(typeof propValue) ||
+          shouldIgnoreRelationTypeCheck
+        ) {
+          // do nothing
+          // TODO: This must be improved and handled on the core side
+        } else {
+          // If types don't match throw an error
+          propErrors[ValidationKeys.TYPE] = !Constr
+            ? `Unable to verify type consistency, missing model registry for ${designTypes.toString()} on prop ${propKey}`
+            : `Value must be an instance of ${Constr.name}`;
+          delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
+        }
+        // This is a working solution for validation relations, but must be handled at the core side.
       } else {
         const nestedPropsToIgnore = getChildNestedPropsToIgnore(
           propKey,
