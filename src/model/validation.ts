@@ -403,7 +403,7 @@ export function validate<
       ) || {};
 
     // Check for nested properties.
-    // To prevent unnecessary processing, "propValue" must be defined and validatable
+    // To prevent unnecessary processing, "propValue" must be defined
     const isConstr = Model.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
     if (isConstr && hasPropValue) {
@@ -420,20 +420,8 @@ export function validate<
 
       // If instance is NOT of the expected model class.
       if (!Constr || !(propValue instanceof Constr)) {
-        // This is a working solution for validation relations, but must be handled at the core side.
-        const shouldIgnoreRelationTypeCheck = (propsToIgnore || []).some(
-          (p) => {
-            if (p === `.${propKey}`) return true;
-            return false;
-          }
-        );
-
-        if (
-          designTypeNames.includes(typeof propValue) ||
-          shouldIgnoreRelationTypeCheck
-        ) {
+        if (designTypeNames.includes(typeof propValue)) {
           // do nothing
-          // TODO: This must be improved and handled on the core side
         } else {
           // If types don't match throw an error
           propErrors[ValidationKeys.TYPE] = !Constr
@@ -441,7 +429,6 @@ export function validate<
             : `Value must be an instance of ${Constr.name}`;
           delete propErrors[ModelKeys.TYPE]; // remove duplicate type error
         }
-        // This is a working solution for validation relations, but must be handled at the core side.
       } else {
         const nestedPropsToIgnore = getChildNestedPropsToIgnore(
           propKey,
