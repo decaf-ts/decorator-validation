@@ -359,7 +359,7 @@ export function validate<
     const decorators =
       Metadata.validationFor(model.constructor as Constructor, prop) || {};
 
-    const { designTypes, designType } = Metadata.getPropDesignTypes(
+    const { designTypes } = Metadata.getPropDesignTypes(
       model.constructor as any,
       prop
     );
