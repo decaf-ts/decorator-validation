@@ -1,7 +1,7 @@
 export * from "./constants";
 export * from "./construction";
 export * from "./decorators";
-export * from "./registry"; // registry before model on purpose
+export * from "./model-registry"; // registry before model on purpose
 export * from "./Model";
 export * from "./ModelErrorDefinition";
 export * from "./Builder";

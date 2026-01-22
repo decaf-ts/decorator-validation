@@ -8,7 +8,7 @@ import {
   ValidationKeys,
 } from "../validation/Validators/constants";
 import { ReservedModels } from "../model/constants";
-import { ModelRegistryManager } from "../model/registry";
+import { ModelRegistryManager } from "../model/model-registry";
 
 (Metadata as any).validationFor = function <
   M extends Model,

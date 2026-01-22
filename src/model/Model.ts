@@ -18,7 +18,7 @@ import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
-import { ModelRegistryManager } from "./registry";
+import { ModelRegistryManager } from "./model-registry";
 
 /**
  * @summary Abstract class representing a Validatable Model object
