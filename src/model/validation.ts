@@ -13,7 +13,7 @@ import { ASYNC_META_KEY, VALIDATION_PARENT_KEY } from "../constants";
 import { ConditionalAsync } from "../types";
 import { toConditionalPromise } from "./utils";
 import { Constructor, Metadata } from "@decaf-ts/decoration";
-import { ModelRegistryManager } from "./model-registry";
+import { ModelRegistryManager } from "./ModelRegistry";
 
 /**
  * Safely sets temporary metadata on an object
