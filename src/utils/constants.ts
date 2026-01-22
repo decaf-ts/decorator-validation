@@ -30,3 +30,4 @@ export enum ModelKeys {
   DECORATORS = "decorators",
   CONSTRUCTOR = `${DecorationKeys.CONSTRUCTOR}`,
 }
+export const DefaultSerializationMethod = "json";
