@@ -2,7 +2,7 @@ import { Model } from "../model/Model";
 import "@decaf-ts/decoration";
 import { Constructor } from "@decaf-ts/decoration";
 import { designTypeReturn, ExtendedMetadata } from "./types";
-import { ValidationMetadata } from "../validation/index";
+import { ValidationMetadata } from "../validation/types";
 
 declare module "@decaf-ts/decoration" {
   // eslint-disable-next-line @typescript-eslint/no-namespace

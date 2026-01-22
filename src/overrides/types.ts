@@ -1,5 +1,5 @@
 import { BasicMetadata } from "@decaf-ts/decoration";
-import { ValidatorOptions } from "../validation/index";
+import { ValidatorOptions } from "../validation/types";
 
 export type ExtendedMetadata<M> = BasicMetadata<M> & {
   validation: Record<keyof M, ValidatorOptions>;

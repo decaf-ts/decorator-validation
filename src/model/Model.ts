@@ -21,7 +21,7 @@ import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
-import { ListValidatorOptions } from "../validation/index";
+import { ListValidatorOptions } from "../validation/types";
 
 let modelBuilderFunction: ModelBuilderFunction | undefined;
 let actingModelRegistry: BuilderRegistry<any>;

@@ -1,5 +1,5 @@
 import { COMPARISON_ERROR_MESSAGES } from "../../constants";
-import { sf } from "../../utils";
+import { sf } from "../../utils/strings";
 
 // /**
 //  * Safely retrieves a nested property value from an object using a dot-notated path string.

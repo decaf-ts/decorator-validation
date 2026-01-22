@@ -2,7 +2,7 @@ import { Validator } from "./Validators/Validator";
 import { IValidatorRegistry, ValidatorDefinition } from "./types";
 import { ValidatorRegistry } from "./Validators/ValidatorRegistry";
 import { ValidationKeys } from "./Validators/constants";
-import { ModelKeys } from "../utils/index";
+import { ModelKeys } from "../utils/constants";
 import { Metadata } from "@decaf-ts/decoration";
 
 /**
