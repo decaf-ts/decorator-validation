@@ -8,6 +8,7 @@ import {
   ValidationKeys,
 } from "../validation/Validators/constants";
 import { ReservedModels } from "../model/constants";
+import { ModelRegistryManager } from "../model/registry";
 
 (Metadata as any).validationFor = function <
   M extends Model,
@@ -54,8 +55,10 @@ import { ReservedModels } from "../model/constants";
   }
 
   if (!key) {
-    const validationsForProp =
-      meta.validation[property] as Record<string, ValidationMetadata>;
+    const validationsForProp = meta.validation[property] as Record<
+      string,
+      ValidationMetadata
+    >;
     return validationsForProp as unknown as K extends string
       ? ValidationMetadata
       : P extends keyof M
@@ -115,9 +118,9 @@ import { ReservedModels } from "../model/constants";
 ) {
   const metadata = Metadata.get(model) as ExtendedMetadata<M> | undefined;
   const designTypeMeta = Metadata.type(model, prop as any);
-  const validation = metadata?.[ValidationKeys.REFLECT]?.[
-    prop
-  ] as Record<string, any> | undefined;
+  const validation = metadata?.[ValidationKeys.REFLECT]?.[prop] as
+    | Record<string, any>
+    | undefined;
 
   if (!designTypeMeta && (!validation || !validation[ValidationKeys.TYPE]))
     return {};
@@ -143,4 +146,66 @@ import { ReservedModels } from "../model/constants";
   ) as Constructor[];
 
   return { designTypes, designType };
+}.bind(Metadata);
+
+(Metadata as any).isModel = function isModel(
+  target: Record<string, any>
+): boolean {
+  try {
+    if (target instanceof Model) return true;
+    const constr = Metadata.constr(target as any);
+    if (!constr || constr === target) return false;
+    return !!Metadata.modelName(constr as any);
+    //
+    // // return target instanceof Model || !!Metadata.modelName(target as any);
+    // const modelName = Metadata.modelName(target as any);
+    // return target instanceof Model || !!Model.get(modelName);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e: any) {
+    return false;
+  }
+}.bind(Metadata);
+
+(Metadata as any).isPropertyModel = function isPropertyModel<M extends Model>(
+  target: M,
+  attribute: string
+): boolean | string | undefined {
+  const isModel = Metadata.isModel((target as Record<string, any>)[attribute]);
+  if (isModel) return true;
+  const metadata = Metadata.type(
+    target.constructor as Constructor<M>,
+    attribute as string
+  );
+  if (!metadata) return undefined;
+  return ModelRegistryManager.getRegistry().get(metadata.name)
+    ? metadata.name
+    : undefined;
+}.bind(Metadata);
+
+(Metadata as any).getAttributes = function getAttributes<V extends Model>(
+  model: Constructor<V> | V
+): string[] {
+  const constructor =
+    model instanceof Model ? (model.constructor as Constructor) : model;
+  const seen = new Set<string>();
+
+  const collect = (current?: Constructor): string[] => {
+    if (!current) return [];
+
+    const parent = Object.getPrototypeOf(current) as Constructor | undefined;
+    const attributes = collect(parent);
+    const props = Metadata.properties(current) ?? [];
+
+    for (const prop of props) {
+      if (!seen.has(prop)) {
+        seen.add(prop);
+        attributes.push(prop);
+      }
+    }
+
+    return attributes;
+  };
+
+  return collect(constructor);
 }.bind(Metadata);

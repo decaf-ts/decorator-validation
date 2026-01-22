@@ -1,6 +1,6 @@
 import { ModelErrorDefinition } from "./ModelErrorDefinition";
 import { ModelKeys } from "../utils/constants";
-import { Model } from "./Model";
+import type { Model } from "./Model";
 import { Validation } from "../validation/Validation";
 import { ValidationKeys } from "../validation/Validators/constants";
 import {
@@ -13,6 +13,7 @@ import { ASYNC_META_KEY, VALIDATION_PARENT_KEY } from "../constants";
 import { ConditionalAsync } from "../types";
 import { toConditionalPromise } from "./utils";
 import { Constructor, Metadata } from "@decaf-ts/decoration";
+import { ModelRegistryManager } from "./registry";
 
 /**
  * Safely sets temporary metadata on an object
@@ -80,7 +81,7 @@ export function validateChildValue<M extends Model>(
     | Promise<string | undefined | ModelErrorDefinition> = undefined;
   let atLeastOneMatched = false;
   for (const allowedType of allowedTypes) {
-    const Constr = Model.get(allowedType) as any;
+    const Constr = ModelRegistryManager.getRegistry().get(allowedType) as any;
     if (!Constr) {
       err = new ModelErrorDefinition({
         [prop]: {
@@ -231,7 +232,7 @@ export function validateDecorators<
         // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
         const errs = values.map((childValue: any) => {
           // if (Model.isModel(v) && !reserved.includes(v) {
-          if (Model.isModel(childValue)) {
+          if (Metadata.isModel(childValue)) {
             const nestedPropsToIgnore = getChildNestedPropsToIgnore(
               prop,
               ...propsToIgnore
@@ -404,13 +405,13 @@ export function validate<
 
     // Check for nested properties.
     // To prevent unnecessary processing, "propValue" must be defined
-    const isConstr = Model.isPropertyModel(model, propKey);
+    const isConstr = Metadata.isPropertyModel(model, propKey);
     const hasPropValue = propValue !== null && propValue !== undefined;
     if (isConstr && hasPropValue) {
       // If property comes from a relation and has populate flag set to false, this will have the value of the id of that relation, instead of a model.
       // We need to capture that and excempt it from throwing an error. This is being handled in the core Metadata.validationExceptions.
       const Constr = designTypes
-        .map((d: any) => Model.get(d.name || d))
+        .map((d: any) => ModelRegistryManager.getRegistry().get(d.name || d))
         .find((d: any) => !!d) as any;
       const designTypeNames = designTypes.map((d: any) => {
         if (typeof d === "function")

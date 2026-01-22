@@ -14,164 +14,11 @@ import {
 import { validate } from "./validation";
 import { Hashing } from "../utils/hashing";
 import { ModelKeys } from "../utils/constants";
-import { ValidationKeys } from "../validation/Validators/constants";
-import { jsTypes, ReservedModels } from "./constants";
-
 import { ConditionalAsync } from "../types";
 import { ASYNC_META_KEY } from "../constants";
 import { Metadata, Constructor } from "@decaf-ts/decoration";
 import { isEqual } from "../utils/equality";
-import { ListValidatorOptions } from "../validation/types";
-
-let modelBuilderFunction: ModelBuilderFunction | undefined;
-let actingModelRegistry: BuilderRegistry<any>;
-
-/**
- * @description Registry type for storing and retrieving model constructors
- * @summary The ModelRegistry type defines a registry for model constructors that extends
- * the BuilderRegistry interface. It provides a standardized way to register, retrieve,
- * and build model instances, enabling the model system to work with different types of models.
- *
- * @interface ModelRegistry
- * @template T Type of model that can be registered, must extend Model
- * @extends BuilderRegistry<T>
- * @memberOf module:decorator-validation
- * @category Model
- */
-export type ModelRegistry<T extends Model> = BuilderRegistry<T>;
-
-/**
- * @description Registry manager for model constructors that enables serialization and rebuilding
- * @summary The ModelRegistryManager implements the ModelRegistry interface and provides
- * functionality for registering, retrieving, and building model instances. It maintains
- * a cache of model constructors indexed by name, allowing for efficient lookup and instantiation.
- * This class is essential for the serialization and deserialization of model objects.
- *
- * @param {function(Record<string, any>): boolean} [testFunction] - Function to test if an object is a model, defaults to {@link Model#isModel}
- *
- * @class ModelRegistryManager
- * @template M Type of model that can be registered, must extend Model
- * @implements ModelRegistry<M>
- * @category Model
- *
- * @example
- * ```typescript
- * // Create a model registry
- * const registry = new ModelRegistryManager();
- *
- * // Register a model class
- * registry.register(User);
- *
- * // Retrieve a model constructor by name
- * const UserClass = registry.get("User");
- *
- * // Build a model instance from a plain object
- * const userData = { name: "John", age: 30 };
- * const user = registry.build(userData, "User");
- * ```
- *
- * @mermaid
- * sequenceDiagram
- *   participant C as Client
- *   participant R as ModelRegistryManager
- *   participant M as Model Class
- *
- *   C->>R: new ModelRegistryManager(testFunction)
- *   C->>R: register(ModelClass)
- *   R->>R: Store in cache
- *   C->>R: get("ModelName")
- *   R-->>C: ModelClass constructor
- *   C->>R: build(data, "ModelName")
- *   R->>R: Get constructor from cache
- *   R->>M: new ModelClass(data)
- *   M-->>R: Model instance
- *   R-->>C: Model instance
- */
-export class ModelRegistryManager<M extends Model<true | false>>
-  implements ModelRegistry<M>
-{
-  private cache: Record<string, ModelConstructor<M>> = {};
-  private readonly testFunction: (obj: object) => boolean;
-
-  constructor(
-    testFunction: (obj: Record<string, any>) => boolean = Model.isModel
-  ) {
-    this.testFunction = testFunction;
-  }
-
-  /**
-   * @description Registers a model constructor with the registry
-   * @summary Adds a model constructor to the registry cache, making it available for
-   * later retrieval and instantiation. If no name is provided, the constructor's name
-   * property is used as the key in the registry.
-   *
-   * @param {ModelConstructor<M>} constructor - The model constructor to register
-   * @param {string} [name] - Optional name to register the constructor under, defaults to constructor.name
-   * @return {void}
-   * @throws {Error} If the constructor is not a function
-   */
-  register(constructor: ModelConstructor<M>, name?: string): void {
-    if (typeof constructor !== "function")
-      throw new Error(
-        "Model registering failed. Missing Class name or constructor"
-      );
-    name = name || constructor.name;
-    this.cache[name] = constructor;
-  }
-
-  /**
-   * @summary Gets a registered Model {@link ModelConstructor}
-   * @param {string} name
-   */
-  get(name: string): ModelConstructor<M> | undefined {
-    try {
-      return this.cache[name];
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e: any) {
-      return undefined;
-    }
-  }
-
-  /**
-   * @param {Record<string, any>} obj
-   * @param {string} [clazz] when provided, it will attempt to find the matching constructor
-   *
-   * @throws Error If clazz is not found, or obj is not a {@link Model} meaning it has no {@link ModelKeys.ANCHOR} property
-   */
-  build(obj: Record<string, any> = {}, clazz?: string): M {
-    if (!clazz && !this.testFunction(obj))
-      throw new Error("Provided obj is not a Model object");
-    const name = clazz || Metadata.modelName(obj.constructor as any);
-    if (!(name in this.cache))
-      throw new Error(
-        `Provided class ${name} is not a registered Model object`
-      );
-    return new this.cache[name](obj);
-  }
-}
-
-/**
- * @summary Bulk Registers Models
- * @description Useful when using bundlers that might not evaluate all the code at once
- *
- * @template M extends Model
- * @param {Array<Constructor<M>> | Array<{name: string, constructor: Constructor<M>}>} [models]
- *
- * @memberOf module:decorator-validation
- * @category Model
- */
-export function bulkModelRegister<M extends Model>(
-  ...models: (Constructor<M> | { name: string; constructor: Constructor<M> })[]
-) {
-  models.forEach(
-    (m: Constructor<M> | { name: string; constructor: Constructor<M> }) => {
-      const constructor: Constructor<M> = (
-        m.constructor ? m.constructor : m
-      ) as Constructor<M>;
-      Model.register(constructor, (m as Constructor<M>).name);
-    }
-  );
-}
+import { ModelRegistryManager } from "./registry";
 
 /**
  * @summary Abstract class representing a Validatable Model object
@@ -422,118 +269,7 @@ export abstract class Model<Async extends boolean = false>
    *   M-->>C: Return updated self
    */
   static fromModel<T extends Model>(self: T, obj?: T | Record<string, any>): T {
-    if (!obj) obj = {};
-
-    let decorators: DecoratorMetadata[];
-    const props = Model.getAttributes(self);
-
-    const proto = Object.getPrototypeOf(self);
-    let descriptor: PropertyDescriptor | undefined;
-    for (const prop of props) {
-      try {
-        (self as Record<string, any>)[prop] =
-          (obj as Record<string, any>)[prop] ??
-          (self as Record<string, any>)[prop] ??
-          undefined;
-      } catch (e: unknown) {
-        descriptor = Object.getOwnPropertyDescriptor(proto, prop);
-        if (!descriptor || descriptor.writable)
-          throw new Error(`Unable to write property ${prop} to model: ${e}`);
-      }
-
-      if (typeof (self as any)[prop] !== "object") continue;
-
-      const propM = Model.isPropertyModel(self, prop);
-      if (propM) {
-        try {
-          (self as Record<string, any>)[prop] = Model.build(
-            (self as Record<string, any>)[prop],
-            typeof propM === "string" ? propM : undefined
-          );
-        } catch (e: any) {
-          console.log(e);
-        }
-        continue;
-      }
-
-      decorators = Metadata.allowedTypes(self.constructor as any, prop);
-
-      if (!decorators || !decorators.length)
-        throw new Error(`failed to find decorators for property ${prop}`);
-      const clazz = decorators.map((t: any) =>
-        typeof t === "function" && !t.name ? t() : t
-      );
-
-      const reserved: any = Object.values(ReservedModels);
-
-      clazz.forEach((c: Constructor<any>) => {
-        if (!reserved.includes(c))
-          try {
-            switch (c.name) {
-              case "Array":
-              case "Set": {
-                const validation: any = Metadata.validationFor(
-                  self.constructor as Constructor,
-                  prop
-                );
-                if (!validation || !validation[ValidationKeys.LIST]) break;
-                const listDec: ListValidatorOptions =
-                  validation[ValidationKeys.LIST];
-                const clazzName = (
-                  listDec.clazz as (
-                    | Constructor<any>
-                    | (() => Constructor<any>)
-                  )[]
-                )
-                  .map((t) =>
-                    typeof t === "function" && !(t as any).name
-                      ? (t as any)()
-                      : t
-                  )
-                  .find((t) => !jsTypes.includes(t.name));
-
-                if (c.name === "Array")
-                  (self as Record<string, any>)[prop] = (
-                    self as Record<string, any>
-                  )[prop].map((el: any) => {
-                    return ["object", "function"].includes(typeof el) &&
-                      clazzName
-                      ? Model.build(el, clazzName.name)
-                      : el;
-                  });
-                if (c.name === "Set") {
-                  const s = new Set();
-                  for (const v of (self as Record<string, any>)[prop]) {
-                    if (
-                      ["object", "function"].includes(typeof v) &&
-                      clazzName
-                    ) {
-                      s.add(Model.build(v, clazzName.name));
-                    } else {
-                      s.add(v);
-                    }
-                  }
-                  (self as Record<string, any>)[prop] = s;
-                }
-                break;
-              }
-              default:
-                if (
-                  typeof self[prop as keyof typeof self] !== "undefined" &&
-                  Model.get(c.name)
-                )
-                  (self as Record<string, any>)[prop] = Model.build(
-                    (self as any)[prop],
-                    c.name
-                  );
-            }
-          } catch (e: any) {
-            console.log(e);
-            // do nothing. we have no registry of this class
-          }
-      });
-    }
-    return self;
+    return ModelRegistryManager.fromModel(self, obj);
   }
 
   /**
@@ -544,7 +280,7 @@ export abstract class Model<Async extends boolean = false>
    * @return {void}
    */
   static setBuilder(builder?: ModelBuilderFunction) {
-    modelBuilderFunction = builder;
+    ModelRegistryManager.setBuilder(builder);
   }
 
   /**
@@ -554,7 +290,7 @@ export abstract class Model<Async extends boolean = false>
    * @return {ModelBuilderFunction | undefined} - The current global builder function or undefined if not set
    */
   static getBuilder(): ModelBuilderFunction | undefined {
-    return modelBuilderFunction || Model.fromModel;
+    return ModelRegistryManager.getBuilder();
   }
 
   /**
@@ -565,8 +301,7 @@ export abstract class Model<Async extends boolean = false>
    * @private
    */
   private static getRegistry() {
-    if (!actingModelRegistry) actingModelRegistry = new ModelRegistryManager();
-    return actingModelRegistry;
+    return ModelRegistryManager.getRegistry();
   }
 
   /**
@@ -577,7 +312,7 @@ export abstract class Model<Async extends boolean = false>
    * @return {void}
    */
   static setRegistry(modelRegistry: BuilderRegistry<any>) {
-    actingModelRegistry = modelRegistry;
+    ModelRegistryManager.setRegistry(modelRegistry);
   }
 
   /**
@@ -595,7 +330,7 @@ export abstract class Model<Async extends boolean = false>
     constructor: ModelConstructor<T>,
     name?: string
   ): void {
-    return Model.getRegistry().register(constructor, name);
+    return ModelRegistryManager.getRegistry().register(constructor, name);
   }
 
   /**
@@ -609,7 +344,7 @@ export abstract class Model<Async extends boolean = false>
    * @see ModelRegistry
    */
   static get<T extends Model>(name: string): ModelConstructor<T> | undefined {
-    return Model.getRegistry().get(name);
+    return ModelRegistryManager.getRegistry().get(name);
   }
 
   /**
@@ -640,28 +375,7 @@ export abstract class Model<Async extends boolean = false>
    * @return {string[]} - Array of attribute names defined in the model
    */
   static getAttributes<V extends Model>(model: Constructor<V> | V): string[] {
-    const constructor =
-      model instanceof Model ? (model.constructor as Constructor) : model;
-    const seen = new Set<string>();
-
-    const collect = (current?: Constructor): string[] => {
-      if (!current) return [];
-
-      const parent = Object.getPrototypeOf(current) as Constructor | undefined;
-      const attributes = collect(parent);
-      const props = Metadata.properties(current) ?? [];
-
-      for (const prop of props) {
-        if (!seen.has(prop)) {
-          seen.add(prop);
-          attributes.push(prop);
-        }
-      }
-
-      return attributes;
-    };
-
-    return collect(constructor);
+    return Metadata.getAttributes(model);
   }
 
   /**
@@ -766,20 +480,7 @@ export abstract class Model<Async extends boolean = false>
    * ```
    */
   static isModel(target: Record<string, any>) {
-    try {
-      if (target instanceof Model) return true;
-      const constr = Metadata.constr(target as any);
-      if (!constr || constr === target) return false;
-      return !!Metadata.modelName(constr as any);
-      //
-      // // return target instanceof Model || !!Metadata.modelName(target as any);
-      // const modelName = Metadata.modelName(target as any);
-      // return target instanceof Model || !!Model.get(modelName);
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e: any) {
-      return false;
-    }
+    return Metadata.isModel(target);
   }
 
   /**
@@ -797,14 +498,7 @@ export abstract class Model<Async extends boolean = false>
     target: M,
     attribute: string
   ): boolean | string | undefined {
-    const isModel = Model.isModel((target as Record<string, any>)[attribute]);
-    if (isModel) return true;
-    const metadata = Metadata.type(
-      target.constructor as Constructor<M>,
-      attribute as string
-    );
-    if (!metadata) return undefined;
-    return Model.get(metadata.name) ? metadata.name : undefined;
+    return Metadata.isPropertyModel(target, attribute);
   }
 
   static describe<M extends Model>(model: Constructor<M>, key?: keyof M) {

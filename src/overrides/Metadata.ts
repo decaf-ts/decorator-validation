@@ -157,5 +157,16 @@ declare module "@decaf-ts/decoration" {
       model: Constructor<M>,
       property: keyof M
     ): designTypeReturn;
+
+    function isModel(target: Record<string, any>): boolean;
+
+    function isPropertyModel<M extends Model>(
+      target: M,
+      attribute: string
+    ): boolean | string | undefined;
+
+    function getAttributes<V extends Model>(
+      model: Constructor<V> | V
+    ): string[];
   }
 }
