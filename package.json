@@ -1,6 +1,6 @@
 {
   "name": "@decaf-ts/decorator-validation",
-  "version": "1.11.13",
+  "version": "1.11.14",
   "description": "simple decorator based validation engine",
   "type": "module",
   "exports": {
