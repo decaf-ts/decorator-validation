@@ -1,4 +1,5 @@
 export * from "./constants";
+export * from "./DateBuilder";
 export * from "./dates";
 export * from "./equality";
 export * from "./hashing";
