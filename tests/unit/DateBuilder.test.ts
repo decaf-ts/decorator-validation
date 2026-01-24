@@ -169,4 +169,24 @@ describe("DateBuilder helper utilities", () => {
     expected.setSeconds(expected.getSeconds() - 30);
     expect(SecondsAgo(30)).toEqual(expected);
   });
+
+  it("ago defaults to a past date", () => {
+    const expected = new Date(frozenNow);
+    expected.setDate(expected.getDate() - 1);
+    expect(DateBuilder.Days(1).ago()).toEqual(expected);
+  });
+
+  it("ago mirrors until when a reference is provided", () => {
+    const anchor = new Date(2023, 0, 1);
+    expect(DateBuilder.Days(2).ago(anchor)).toEqual(
+      DateBuilder.Days(2).until(anchor)
+    );
+  });
+
+  it("DateBuilder helpers mirror exported utilities", () => {
+    expect(DateBuilder.NextDays(5)).toEqual(NextDays(5));
+    expect(DateBuilder.DaysAgo(5)).toEqual(DaysAgo(5));
+    expect(DateBuilder.NextSeconds(5)).toEqual(NextSeconds(5));
+    expect(DateBuilder.Yesterday()).toEqual(Yesterday());
+  });
 });

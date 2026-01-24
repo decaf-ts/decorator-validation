@@ -1,4 +1,14 @@
-export type DateTarget = Date | DateBuilder;
+type DateBuilderField =
+  | "Years"
+  | "Months"
+  | "Days"
+  | "Hours"
+  | "Minutes"
+  | "Seconds";
+
+export type DateBuilderInstance = DateBuilder<DateBuilderField>;
+
+export type DateTarget = Date | DateBuilderInstance;
 
 export type OffsetValues = {
   years: number;
@@ -35,10 +45,53 @@ export function offsetDate(
   return computed;
 }
 
+type RemoveField<
+  Input extends DateBuilderField,
+  Field extends DateBuilderField,
+> = Input extends Field ? never : Input;
+
+interface DateBuilderUtilityMethods {
+  Now(): Date;
+  Tomorrow(): Date;
+  Yesterday(): Date;
+  DaysAgo(count: number): Date;
+  NextDays(count: number): Date;
+  YearsAgo(count: number): Date;
+  NextYears(count: number): Date;
+  MonthsAgo(count: number): Date;
+  NextMonths(count: number): Date;
+  HoursAgo(count: number): Date;
+  NextHours(count: number): Date;
+  MinutesAgo(count: number): Date;
+  NextMinutes(count: number): Date;
+  SecondsAgo(count: number): Date;
+  NextSeconds(count: number): Date;
+}
+
+interface DateBuilderCoreMethods extends DateBuilderUtilityMethods {
+  build(reference?: DateTarget): Date;
+  from(reference: DateTarget): Date;
+  past(reference: DateTarget): Date;
+  after(reference: DateTarget): Date;
+  until(reference: DateTarget): Date;
+  before(reference: DateTarget): Date;
+  ago(reference?: DateTarget): Date;
+}
+
+export type DateBuilderChain<
+  Remaining extends DateBuilderField = DateBuilderField,
+> = DateBuilderCoreMethods & {
+  [Field in Remaining]: (
+    value: number
+  ) => DateBuilderChain<RemoveField<Remaining, Field>>;
+};
+
 /**
  * Fluent builder for producing dates relative to a reference point.
  */
-export class DateBuilder {
+export class DateBuilder<Remaining extends DateBuilderField = DateBuilderField>
+  implements DateBuilderCoreMethods
+{
   private years = 0;
   private months = 0;
   private days = 0;
@@ -48,58 +101,136 @@ export class DateBuilder {
 
   private constructor() {}
 
-  static Years(value: number) {
+  static Years(
+    value: number
+  ): DateBuilderChain<RemoveField<DateBuilderField, "Years">> {
     return new DateBuilder().Years(value);
   }
 
-  static Months(value: number) {
+  static Months(
+    value: number
+  ): DateBuilderChain<RemoveField<DateBuilderField, "Months">> {
     return new DateBuilder().Months(value);
   }
 
-  static Days(value: number) {
+  static Days(
+    value: number
+  ): DateBuilderChain<RemoveField<DateBuilderField, "Days">> {
     return new DateBuilder().Days(value);
   }
 
-  static Hours(value: number) {
+  static Hours(
+    value: number
+  ): DateBuilderChain<RemoveField<DateBuilderField, "Hours">> {
     return new DateBuilder().Hours(value);
   }
 
-  static Minutes(value: number) {
+  static Minutes(
+    value: number
+  ): DateBuilderChain<RemoveField<DateBuilderField, "Minutes">> {
     return new DateBuilder().Minutes(value);
   }
 
-  static Seconds(value: number) {
+  static Seconds(
+    value: number
+  ): DateBuilderChain<RemoveField<DateBuilderField, "Seconds">> {
     return new DateBuilder().Seconds(value);
   }
 
-  Years(value: number) {
+  static Now() {
+    return new Date();
+  }
+
+  static Tomorrow() {
+    return DateBuilder.Days(1).from(DateBuilder.Now());
+  }
+
+  static Yesterday() {
+    return DateBuilder.Days(1).until(DateBuilder.Now());
+  }
+
+  static DaysAgo(count: number) {
+    return DateBuilder.Days(count).until(DateBuilder.Now());
+  }
+
+  static NextDays(count: number) {
+    return DateBuilder.Days(count).from(DateBuilder.Now());
+  }
+
+  static YearsAgo(count: number) {
+    return DateBuilder.Years(count).until(DateBuilder.Now());
+  }
+
+  static NextYears(count: number) {
+    return DateBuilder.Years(count).from(DateBuilder.Now());
+  }
+
+  static MonthsAgo(count: number) {
+    return DateBuilder.Months(count).until(DateBuilder.Now());
+  }
+
+  static NextMonths(count: number) {
+    return DateBuilder.Months(count).from(DateBuilder.Now());
+  }
+
+  static HoursAgo(count: number) {
+    return DateBuilder.Hours(count).until(DateBuilder.Now());
+  }
+
+  static NextHours(count: number) {
+    return DateBuilder.Hours(count).from(DateBuilder.Now());
+  }
+
+  static MinutesAgo(count: number) {
+    return DateBuilder.Minutes(count).until(DateBuilder.Now());
+  }
+
+  static NextMinutes(count: number) {
+    return DateBuilder.Minutes(count).from(DateBuilder.Now());
+  }
+
+  static SecondsAgo(count: number) {
+    return DateBuilder.Seconds(count).until(DateBuilder.Now());
+  }
+
+  static NextSeconds(count: number) {
+    return DateBuilder.Seconds(count).from(DateBuilder.Now());
+  }
+
+  Years(value: number): DateBuilderChain<RemoveField<Remaining, "Years">> {
     this.years += value;
-    return this;
+    return this as unknown as DateBuilderChain<RemoveField<Remaining, "Years">>;
   }
 
-  Months(value: number) {
+  Months(value: number): DateBuilderChain<RemoveField<Remaining, "Months">> {
     this.months += value;
-    return this;
+    return this as unknown as DateBuilderChain<
+      RemoveField<Remaining, "Months">
+    >;
   }
 
-  Days(value: number) {
+  Days(value: number): DateBuilderChain<RemoveField<Remaining, "Days">> {
     this.days += value;
-    return this;
+    return this as unknown as DateBuilderChain<RemoveField<Remaining, "Days">>;
   }
 
-  Hours(value: number) {
+  Hours(value: number): DateBuilderChain<RemoveField<Remaining, "Hours">> {
     this.hours += value;
-    return this;
+    return this as unknown as DateBuilderChain<RemoveField<Remaining, "Hours">>;
   }
 
-  Minutes(value: number) {
+  Minutes(value: number): DateBuilderChain<RemoveField<Remaining, "Minutes">> {
     this.minutes += value;
-    return this;
+    return this as unknown as DateBuilderChain<
+      RemoveField<Remaining, "Minutes">
+    >;
   }
 
-  Seconds(value: number) {
+  Seconds(value: number): DateBuilderChain<RemoveField<Remaining, "Seconds">> {
     this.seconds += value;
-    return this;
+    return this as unknown as DateBuilderChain<
+      RemoveField<Remaining, "Seconds">
+    >;
   }
 
   build(reference: DateTarget = new Date()) {
@@ -126,6 +257,70 @@ export class DateBuilder {
     return this.until(reference);
   }
 
+  ago(reference: DateTarget = new Date()) {
+    return this.until(reference);
+  }
+
+  Now() {
+    return DateBuilder.Now();
+  }
+
+  Tomorrow() {
+    return DateBuilder.Tomorrow();
+  }
+
+  Yesterday() {
+    return DateBuilder.Yesterday();
+  }
+
+  DaysAgo(count: number) {
+    return DateBuilder.DaysAgo(count);
+  }
+
+  NextDays(count: number) {
+    return DateBuilder.NextDays(count);
+  }
+
+  YearsAgo(count: number) {
+    return DateBuilder.YearsAgo(count);
+  }
+
+  NextYears(count: number) {
+    return DateBuilder.NextYears(count);
+  }
+
+  MonthsAgo(count: number) {
+    return DateBuilder.MonthsAgo(count);
+  }
+
+  NextMonths(count: number) {
+    return DateBuilder.NextMonths(count);
+  }
+
+  HoursAgo(count: number) {
+    return DateBuilder.HoursAgo(count);
+  }
+
+  NextHours(count: number) {
+    return DateBuilder.NextHours(count);
+  }
+
+  MinutesAgo(count: number) {
+    return DateBuilder.MinutesAgo(count);
+  }
+
+  NextMinutes(count: number) {
+    return DateBuilder.NextMinutes(count);
+  }
+
+  SecondsAgo(count: number) {
+    return DateBuilder.SecondsAgo(count);
+  }
+
+  NextSeconds(count: number) {
+    return DateBuilder.NextSeconds(count);
+  }
+
   private offsets(): OffsetValues {
     return {
       years: this.years,
@@ -140,42 +335,32 @@ export class DateBuilder {
 
 export const Dates = DateBuilder;
 
-export const Now = () => new Date();
+export const Now = () => DateBuilder.Now();
 
-export const Tomorrow = () => DateBuilder.Days(1).from(Now());
+export const Tomorrow = () => DateBuilder.Tomorrow();
 
-export const Yesterday = () => DateBuilder.Days(1).until(Now());
+export const Yesterday = () => DateBuilder.Yesterday();
 
-export const DaysAgo = (count: number) => DateBuilder.Days(count).until(Now());
+export const DaysAgo = (count: number) => DateBuilder.DaysAgo(count);
 
-export const NextDays = (count: number) => DateBuilder.Days(count).from(Now());
+export const NextDays = (count: number) => DateBuilder.NextDays(count);
 
-export const YearsAgo = (count: number) =>
-  DateBuilder.Years(count).until(Now());
+export const YearsAgo = (count: number) => DateBuilder.YearsAgo(count);
 
-export const NextYears = (count: number) =>
-  DateBuilder.Years(count).from(Now());
+export const NextYears = (count: number) => DateBuilder.NextYears(count);
 
-export const MonthsAgo = (count: number) =>
-  DateBuilder.Months(count).until(Now());
+export const MonthsAgo = (count: number) => DateBuilder.MonthsAgo(count);
 
-export const NextMonths = (count: number) =>
-  DateBuilder.Months(count).from(Now());
+export const NextMonths = (count: number) => DateBuilder.NextMonths(count);
 
-export const HoursAgo = (count: number) =>
-  DateBuilder.Hours(count).until(Now());
+export const HoursAgo = (count: number) => DateBuilder.HoursAgo(count);
 
-export const NextHours = (count: number) =>
-  DateBuilder.Hours(count).from(Now());
+export const NextHours = (count: number) => DateBuilder.NextHours(count);
 
-export const MinutesAgo = (count: number) =>
-  DateBuilder.Minutes(count).until(Now());
+export const MinutesAgo = (count: number) => DateBuilder.MinutesAgo(count);
 
-export const NextMinutes = (count: number) =>
-  DateBuilder.Minutes(count).from(Now());
+export const NextMinutes = (count: number) => DateBuilder.NextMinutes(count);
 
-export const SecondsAgo = (count: number) =>
-  DateBuilder.Seconds(count).until(Now());
+export const SecondsAgo = (count: number) => DateBuilder.SecondsAgo(count);
 
-export const NextSeconds = (count: number) =>
-  DateBuilder.Seconds(count).from(Now());
+export const NextSeconds = (count: number) => DateBuilder.NextSeconds(count);
