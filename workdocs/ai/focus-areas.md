@@ -1,0 +1,6 @@
+- @model() - how/when to use. what it does;
+- all the validation decorators: how to use;
+- serialization, hashing, model construction, how to user, what they do.
+- Date operations, date building, model building. what they do, howto use
+- Validators: existing ones, how to use, how to control message with edcoratros, how to create new validators and matchinf decorators
+- hasErrors() - how to use, how to ignore properties

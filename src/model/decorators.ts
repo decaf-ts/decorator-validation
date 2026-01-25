@@ -3,6 +3,14 @@ import { ModelKeys } from "../utils/constants";
 import { Model } from "./Model";
 import { Decoration, metadata } from "@decaf-ts/decoration";
 
+/**
+ * @description Base decorator for model classes.
+ * @summary This decorator wraps the original constructor to bind the Model prototype, run a builder function, and register the model.
+ * @param {any} original The original constructor of the class.
+ * @return {any} The new constructor with added model functionality.
+ * @function modelBaseDecorator
+ * @memberOf module:decorator-validation
+ */
 export function modelBaseDecorator(original: any) {
   // the new constructor behaviour
   const newConstructor: any = function (...args: any[]) {

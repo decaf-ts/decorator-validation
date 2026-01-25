@@ -9,3 +9,11 @@ A TypeScript decorator-driven validation and model framework. It lets you:
 - Optionally expose validation as MCP tools for automation workflows.
 
 > Release docs refreshed on 2025-11-26. See [workdocs/reports/RELEASE_NOTES.md](./workdocs/reports/RELEASE_NOTES.md) for ticket summaries.
+
+### Core Concepts
+
+*   **`@model()`**: A class decorator that turns a regular class into a validatable model.
+*   **Validation Decorators**: A rich set of decorators for defining validation rules on properties (e.g., `@required`, `@email`, `@minLength`).
+*   **`Model` Class**: An abstract base class that provides validation, serialization, hashing, and comparison methods.
+*   **`Validation` Class**: A static class for managing the validator registry and creating custom validation logic.
+*   **Builders and Registries**: Pluggable systems for controlling how models are constructed, serialized, and hashed.
