@@ -404,7 +404,7 @@ export type DateMetadata = DateValidatorOptions;
  * @category Property Decorators
  */
 export function date(
-  format: string = "dd/MM/yyyy",
+  format: string = "dd-MM-yyyy HH:mm:ss:S",
   message: string = DEFAULT_ERROR_MESSAGES.DATE
 ) {
   const key = ValidationKeys.DATE;

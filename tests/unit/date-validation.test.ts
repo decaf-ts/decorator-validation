@@ -47,6 +47,16 @@ class TestModelInner extends Model {
 }
 
 @model()
+class TestModelInner2 extends Model {
+  @date("dd-MM-yyyy HH:mm:ss:S")
+  dateProp?: Date;
+
+  constructor(model?: ModelArg<TestModelInner2>) {
+    super(model);
+  }
+}
+
+@model()
 class NestedTestModel extends Model {
   @prop()
   test!: TestModelInner;
@@ -125,6 +135,25 @@ describe("Date Integration", function () {
         }
       });
     });
+  });
+
+  it("tests date attribute", async () => {
+    const date = new Date();
+    const dm = new TestModelInner2({
+      dateProp: date,
+    });
+    expect(dm.dateProp).toBeDefined();
+    if (!dm.dateProp) {
+      return;
+    }
+
+    expect(dm.dateProp.getFullYear()).toEqual(date.getFullYear());
+    expect(dm.dateProp.getMonth()).toEqual(date.getMonth());
+    expect(dm.dateProp.getDate()).toEqual(date.getDate());
+    expect(dm.dateProp.getHours()).toEqual(date.getHours());
+    expect(dm.dateProp.getMinutes()).toEqual(date.getMinutes());
+    expect(dm.dateProp.getSeconds()).toEqual(date.getSeconds());
+    expect(dm.dateProp.getMilliseconds()).toEqual(date.getMilliseconds());
   });
 
   it("Properly overrides the value", function () {
