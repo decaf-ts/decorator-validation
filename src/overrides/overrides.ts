@@ -193,7 +193,10 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
   const collect = (current?: Constructor): string[] => {
     if (!current) return [];
 
-    const parent = Object.getPrototypeOf(current) as Constructor | undefined;
+    const resolved = Metadata.constr(current);
+    const parent = Object.getPrototypeOf(resolved) as
+      | Constructor
+      | undefined;
     const attributes = collect(parent);
     const props = Metadata.properties(current) ?? [];
 

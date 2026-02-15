@@ -231,6 +231,10 @@ export function validateDecorators<
         const allowedTypes = [types].flat().map((t) => String(t).toLowerCase());
         // const reserved = Object.values(ReservedModels).map((v) => v.toLowerCase()) as string[];
         const errs = values.map((childValue: any) => {
+          if (["string", "number", "bigint"].includes(typeof childValue)) {
+            return undefined;
+          }
+
           // if (Model.isModel(v) && !reserved.includes(v) {
           if (Metadata.isModel(childValue)) {
             const nestedPropsToIgnore = getChildNestedPropsToIgnore(

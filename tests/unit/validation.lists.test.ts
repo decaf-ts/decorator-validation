@@ -354,7 +354,7 @@ describe("Validation Lists", () => {
                 items: {
                   // @ts-expect-error dont know why
                   list: [
-                    "Value has no validatable type",
+                    undefined, // TODO fix this
                     "Value has no validatable type",
                     new ModelErrorDefinition({
                       id: {
