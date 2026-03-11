@@ -537,6 +537,7 @@ export class ModelBuilder<
     new Map();
   private _name?: string;
   private _description?: string;
+  private _classDecorators: ClassDecorator[] = [];
 
   private _parent?: Constructor<M>;
 
@@ -547,6 +548,11 @@ export class ModelBuilder<
 
   description(desc: string) {
     this._description = desc;
+    return this;
+  }
+
+  decorateClass(decorator: ClassDecorator) {
+    this._classDecorators.push(decorator);
     return this;
   }
 
@@ -628,6 +634,10 @@ export class ModelBuilder<
     }
 
     let result = model()(DynamicBuiltClass);
+    for (const decorator of this._classDecorators) {
+      const decorated = decorator(result) as Constructor<M> | undefined;
+      if (decorated) result = decorated;
+    }
 
     if (this._description)
       result = description(this._description)(result) as Constructor<M>;
