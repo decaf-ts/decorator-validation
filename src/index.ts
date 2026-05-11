@@ -7,6 +7,8 @@
  */
 import { Metadata } from "@decaf-ts/decoration";
 
+import "./validation";
+
 export * from "./overrides";
 export * from "./constants";
 export * from "./types";

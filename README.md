@@ -41,7 +41,7 @@ A TypeScript decorator-driven validation and model framework. It lets you:
 
 Documentation available [here](https://decaf-ts.github.io/decorator-validation/)
 
-Minimal size: 14.4 KB kb gzipped
+Minimal size: 14.3 KB kb gzipped
 
 
 # Decorator Validation – Detailed Description
