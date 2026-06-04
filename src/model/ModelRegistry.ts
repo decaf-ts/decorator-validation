@@ -231,6 +231,49 @@ export class ModelRegistryManager<M extends Model<true | false>>
         continue;
       }
 
+      const validation: any = Metadata.validationFor(
+        self.constructor as Constructor,
+        prop
+      );
+      if (
+        validation?.[ValidationKeys.LIST] &&
+        (Array.isArray((self as Record<string, any>)[prop]) ||
+          (self as Record<string, any>)[prop] instanceof Set)
+      ) {
+        const listDec: ListValidatorOptions = validation[ValidationKeys.LIST];
+        const clazzName = (
+          listDec.clazz as (Constructor<any> | (() => Constructor<any>))[]
+        )
+          .map((t) =>
+            typeof t === "function" && !(t as any).name ? (t as any)() : t
+          )
+          .find((t) => !jsTypes.includes(t.name.toLowerCase()));
+
+        if (Array.isArray((self as Record<string, any>)[prop])) {
+          (self as Record<string, any>)[prop] = (
+            self as Record<string, any>
+          )[prop].map((el: any) => {
+            return ["object", "function"].includes(typeof el) && clazzName
+              ? ModelRegistryManager.getRegistry().build(el, clazzName.name)
+              : el;
+          });
+        }
+
+        if ((self as Record<string, any>)[prop] instanceof Set) {
+          const s = new Set();
+          for (const v of (self as Record<string, any>)[prop]) {
+            if (["object", "function"].includes(typeof v) && clazzName) {
+              s.add(ModelRegistryManager.getRegistry().build(v, clazzName.name));
+            } else {
+              s.add(v);
+            }
+          }
+          (self as Record<string, any>)[prop] = s;
+        }
+
+        continue;
+      }
+
       decorators = Metadata.allowedTypes(self.constructor as any, prop);
 
       if (!decorators || !decorators.length)
@@ -245,61 +288,6 @@ export class ModelRegistryManager<M extends Model<true | false>>
         if (!reserved.includes(c))
           try {
             switch (c.name) {
-              case "Array":
-              case "Set": {
-                const validation: any = Metadata.validationFor(
-                  self.constructor as Constructor,
-                  prop
-                );
-                if (!validation || !validation[ValidationKeys.LIST]) break;
-                const listDec: ListValidatorOptions =
-                  validation[ValidationKeys.LIST];
-                const clazzName = (
-                  listDec.clazz as (
-                    | Constructor<any>
-                    | (() => Constructor<any>)
-                  )[]
-                )
-                  .map((t) =>
-                    typeof t === "function" && !(t as any).name
-                      ? (t as any)()
-                      : t
-                  )
-                  .find((t) => !jsTypes.includes(t.name));
-
-                if (c.name === "Array")
-                  (self as Record<string, any>)[prop] = (
-                    self as Record<string, any>
-                  )[prop].map((el: any) => {
-                    return ["object", "function"].includes(typeof el) &&
-                      clazzName
-                      ? ModelRegistryManager.getRegistry().build(
-                          el,
-                          clazzName.name
-                        )
-                      : el;
-                  });
-                if (c.name === "Set") {
-                  const s = new Set();
-                  for (const v of (self as Record<string, any>)[prop]) {
-                    if (
-                      ["object", "function"].includes(typeof v) &&
-                      clazzName
-                    ) {
-                      s.add(
-                        ModelRegistryManager.getRegistry().build(
-                          v,
-                          clazzName.name
-                        )
-                      );
-                    } else {
-                      s.add(v);
-                    }
-                  }
-                  (self as Record<string, any>)[prop] = s;
-                }
-                break;
-              }
               default:
                 if (
                   typeof self[prop as keyof typeof self] !== "undefined" &&
