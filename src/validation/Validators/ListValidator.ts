@@ -3,6 +3,7 @@ import { DEFAULT_ERROR_MESSAGES, ValidationKeys } from "./constants";
 import { validator } from "./decorators";
 import { ListValidatorOptions } from "../types";
 import { Constructor } from "@decaf-ts/decoration";
+import { matchesAcceptedType } from "./utils";
 
 /**
  * @description Validator for checking if elements in a list or set match expected types
@@ -92,15 +93,8 @@ export class ListValidator extends Validator<ListValidatorOptions> {
       i++
     ) {
       val = ([...value] as any)[i];
-      switch (typeof val) {
-        case "object":
-        case "function":
-          isValid = clazz.includes(((val ?? {}) as object).constructor?.name); // null is an object
-          break;
-        default:
-          isValid = clazz.some((c: string) => typeof val === c?.toLowerCase());
-          break;
-      }
+      isValid = (Array.isArray(options.clazz) ? options.clazz : [options.clazz])
+        .some((t) => matchesAcceptedType(val, t));
     }
 
     return isValid

@@ -112,4 +112,40 @@ describe("type via function", () => {
     const errs = testModel.hasErrors();
     expect(errs).toBeUndefined();
   });
+
+  it("accepts subclasses for @type and @list", () => {
+    @model()
+    class Animal extends Model {
+      constructor(arg?: ModelArg<Animal>) {
+        super(arg);
+      }
+    }
+
+    @model()
+    class Dog extends Animal {
+      constructor(arg?: ModelArg<Dog>) {
+        super(arg);
+      }
+    }
+
+    @model()
+    class Zoo extends Model {
+      @type(Animal)
+      pet!: Animal;
+
+      @list(Animal)
+      pets!: Animal[];
+
+      constructor(arg?: ModelArg<Zoo>) {
+        super(arg);
+      }
+    }
+
+    const zoo = new Zoo({
+      pet: new Dog(),
+      pets: [new Dog()],
+    });
+
+    expect(zoo.hasErrors()).toBeUndefined();
+  });
 });

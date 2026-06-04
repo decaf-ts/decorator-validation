@@ -97,17 +97,18 @@ export class TypeValidator extends Validator<TypeValidatorOptions> {
 
     const { type, message, customTypes } = options;
 
-    let ts = customTypes || type;
-    ts = (Array.isArray(ts) ? ts : [ts]).map((t) => {
+    let ts: any = customTypes || type;
+    ts = Array.isArray(ts) ? ts : [ts];
+    const typeNames = (ts as any[]).map((t: any) => {
       if (typeof t === "string") return t;
-      if (typeof t === "function" && !t.name) t = (t as () => string)();
-      return (t as any).name || t;
+      if (typeof t === "function" && !t.name) return (t as () => any)().name;
+      return t?.name || String(t);
     });
 
     if (!evaluateDesignTypes(value, ts as any))
       return this.getMessage(
         message || this.message,
-        typeof ts === "string" ? ts : Array.isArray(ts) ? ts.join(", ") : ts,
+        typeNames.join(", "),
         typeof value
       );
   }

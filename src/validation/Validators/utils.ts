@@ -1,3 +1,4 @@
+import { Constructor } from "@decaf-ts/decoration";
 import { COMPARISON_ERROR_MESSAGES } from "../../constants";
 import { sf } from "../../utils/strings";
 
@@ -236,13 +237,13 @@ export function isGreaterThan(a: any, b: any): boolean {
  */
 export function checkType(value: unknown, acceptedType: string) {
   if (typeof value === acceptedType.toLowerCase()) return true;
+  if (value === null) return false;
   if (typeof value === "undefined") return false;
   if (typeof value !== "object") return false;
-  return (
-    (value as object).constructor &&
+  return value instanceof (Object as Constructor) &&
+    !!(value as object).constructor &&
     (value as object).constructor.name.toLowerCase() ===
-      acceptedType.toLowerCase()
-  );
+      acceptedType.toLowerCase();
 }
 
 /**
@@ -256,6 +257,51 @@ export function checkTypes(value: unknown, acceptedTypes: string[]) {
   return !acceptedTypes.every((t) => !checkType(value, t));
 }
 
+function normalizeAcceptedType(
+  acceptedType: unknown
+): string | Constructor | undefined {
+  if (typeof acceptedType === "function" && !acceptedType.name) {
+    return (acceptedType as () => Constructor)();
+  }
+  return acceptedType as string | Constructor | undefined;
+}
+
+export function matchesAcceptedType(
+  value: unknown,
+  acceptedType: unknown
+): boolean {
+  const normalizedType = normalizeAcceptedType(acceptedType);
+
+  if (typeof normalizedType === "string") return checkType(value, normalizedType);
+
+  if (typeof normalizedType !== "function") return false;
+
+  switch (normalizedType.name) {
+    case "String":
+      return typeof value === "string";
+    case "Number":
+      return typeof value === "number";
+    case "Boolean":
+      return typeof value === "boolean";
+    case "BigInt":
+      return typeof value === "bigint";
+    case "Symbol":
+      return typeof value === "symbol";
+    case "Function":
+      return typeof value === "function";
+    case "Array":
+      return Array.isArray(value);
+    case "Date":
+      return value instanceof Date;
+    case "Object":
+      return typeof value === "object";
+    default:
+      break;
+  }
+
+  return value instanceof normalizedType;
+}
+
 /**
  * @description Evaluates if a value matches the specified type metadata
  * @summary Compares a value against type metadata to determine if they match
@@ -265,21 +311,10 @@ export function checkTypes(value: unknown, acceptedTypes: string[]) {
  */
 export function evaluateDesignTypes(
   value: unknown,
-  types: string | string[] | { name: string }
+  types: string | string[] | Constructor | Constructor[] | { name: string }
 ) {
-  switch (typeof types) {
-    case "string":
-      return checkType(value, types);
-    case "object":
-      if (Array.isArray(types)) return checkTypes(value, types);
-      return true;
-    case "function":
-      if (types.name && types.name !== "Object")
-        return checkType(value, types.name);
-      return true;
-    default:
-      return true;
-  }
+  const expectedTypes = Array.isArray(types) ? types : [types];
+  return expectedTypes.some((type) => matchesAcceptedType(value, type));
 }
 
 /**
