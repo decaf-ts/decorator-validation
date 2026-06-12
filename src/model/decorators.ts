@@ -27,6 +27,9 @@ export function modelBaseDecorator(original: any) {
   // copy prototype so instanceof operator still works
   newConstructor.prototype = original.prototype;
 
+  // inherit static methods/properties from the original class
+  Object.setPrototypeOf(newConstructor, original);
+
   // Sets the proper constructor name for type verification
   Object.defineProperty(newConstructor, "name", {
     writable: false,
