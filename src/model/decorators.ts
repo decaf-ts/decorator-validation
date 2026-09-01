@@ -15,6 +15,19 @@ export function modelBaseDecorator(original: any) {
   // the new constructor behaviour
   const newConstructor: any = function (...args: any[]) {
     const instance: ReturnType<typeof original> = construct(original, ...args);
+
+    // When invoked as super() in a decorated subclass, returning an object from a plain function binds `this` to the base instance,
+    // causing subclass instances to retain the base prototype and have their constructor resolve to the base model.
+    // Re‑attaching the most‑derived prototype preserves per‑model metadata identity.
+    const target: any =
+      typeof new.target === "function" ? new.target : newConstructor;
+    const targetPrototype = target.prototype;
+    if (
+      targetPrototype &&
+      Object.getPrototypeOf(instance) !== targetPrototype
+    )
+      Object.setPrototypeOf(instance, targetPrototype);
+
     bindModelPrototype(instance);
 
     // run a builder function if defined with the first argument (The ModelArg)

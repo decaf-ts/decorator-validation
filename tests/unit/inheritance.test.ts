@@ -1,6 +1,7 @@
 import { required, Model, model } from "../../src";
 import type { ModelArg } from "../../src";
 import { hashObj } from "../../src";
+import { Decoration, Metadata, propMetadata } from "@decaf-ts/decoration";
 
 type Callback = (...args: any) => void;
 
@@ -345,5 +346,157 @@ describe("inheritance Test", () => {
     });
 
     expect(t3.hasErrors()).toBeUndefined();
+  });
+});
+
+describe("per-model metadata scoping", () => {
+  const TRANSIENT_KEY = "transient";
+
+  function transient() {
+    return Decoration.for(TRANSIENT_KEY)
+      .define(function transient(model: any, attribute: any) {
+        propMetadata(Metadata.key(TRANSIENT_KEY, attribute), {})(
+          model,
+          attribute
+        );
+      })
+      .apply();
+  }
+
+  @model()
+  abstract class ScopedBaseModel extends Model {
+    id?: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    version?: number;
+    constructor(arg?: any) {
+      super(arg);
+    }
+  }
+
+  @model()
+  class Jurisdiction extends ScopedBaseModel {
+    @required()
+    code!: string;
+
+    @required()
+    name!: string;
+
+    description?: string;
+  }
+
+  @model()
+  class Provider extends ScopedBaseModel {
+    @required()
+    entityPrefix!: string;
+
+    @required()
+    entityName!: string;
+
+    description?: string;
+
+    @transient()
+    secretSetting?: string;
+  }
+
+  const validationKeysOf = (cls: any): string[] => {
+    const bucket = Metadata.get(cls, "validation") as any;
+    return bucket ? Object.keys(bucket).sort() : [];
+  };
+
+  // mirrors the persistence-layer Model.segregate split over the same
+  // per-model metadata reads: validatableProperties + the transient bucket
+  const segregate = (instance: any) => {
+    const ctor = instance.constructor;
+    if (!Metadata.get(ctor, TRANSIENT_KEY)) return { model: instance };
+    const decorated: string[] = (Metadata as any)[
+      "validatableProperties"
+    ](ctor);
+    const transientProps = Metadata.get(ctor, TRANSIENT_KEY) ?? {};
+    const result: any = { model: {}, transient: {} };
+    for (const key of decorated) {
+      if (Object.keys(transientProps).includes(key))
+        result.transient[key] = instance[key];
+      else result.model[key] = instance[key];
+    }
+    result.model = Model.build(result.model, ctor.name);
+    return result;
+  };
+
+  it("keeps validation buckets disjoint per decorated model", () => {
+    const jurKeys = validationKeysOf(Jurisdiction);
+    const provKeys = validationKeysOf(Provider);
+
+    expect(jurKeys).toEqual(["code", "name"]);
+    expect(provKeys).toEqual(["entityName", "entityPrefix"]);
+    expect(jurKeys).not.toContain("entityPrefix");
+    expect(jurKeys).not.toContain("entityName");
+    expect(jurKeys).not.toContain("secretSetting");
+    expect(provKeys).not.toContain("code");
+    expect(provKeys).not.toContain("name");
+  });
+
+  it("validates each model against its own required properties only", () => {
+    const jurEmpty: any = new Jurisdiction({});
+    const jurErrors = jurEmpty.hasErrors();
+    expect(jurErrors).toBeDefined();
+    expect(Object.keys(jurErrors).sort()).toEqual(["code", "name"]);
+
+    const jurFilled: any = new Jurisdiction({ code: "PT", name: "Portugal" });
+    expect(jurFilled.hasErrors()).toBeUndefined();
+
+    const provEmpty: any = new Provider({});
+    const provErrors = provEmpty.hasErrors();
+    expect(provErrors).toBeDefined();
+    expect(Object.keys(provErrors).sort()).toEqual([
+      "entityName",
+      "entityPrefix",
+    ]);
+
+    const provFilled: any = new Provider({
+      entityPrefix: "PRT",
+      entityName: "Portugal Provider",
+      secretSetting: "s3cr3t",
+    });
+    expect(provFilled.hasErrors()).toBeUndefined();
+  });
+
+  it("resolves the instance constructor's own validatable properties", () => {
+    const jurFilled: any = new Jurisdiction({ code: "PT", name: "Portugal" });
+
+    expect(jurFilled.constructor.name).toBe("Jurisdiction");
+
+    const vp: string[] = (Metadata as any)["validatableProperties"](
+      jurFilled.constructor,
+      "id"
+    );
+    expect(vp).toContain("code");
+    expect(vp).toContain("name");
+    expect(vp).not.toContain("id");
+    expect(vp).not.toContain("entityPrefix");
+    expect(vp).not.toContain("entityName");
+  });
+
+  it("segregates a non-empty per-model record with the transient split", () => {
+    const jurFilled: any = new Jurisdiction({ code: "PT", name: "Portugal" });
+    const jurSplit: any = segregate(jurFilled);
+
+    expect(Object.keys(jurSplit.model).sort()).toEqual(["code", "name"]);
+    expect(jurSplit.model).toBeInstanceOf(Jurisdiction);
+    expect(jurSplit.transient).toBeUndefined();
+
+    const provFilled: any = new Provider({
+      entityPrefix: "PRT",
+      entityName: "Portugal Provider",
+      secretSetting: "s3cr3t",
+    });
+    const provSplit: any = segregate(provFilled);
+
+    expect(provSplit.model).toBeInstanceOf(Provider);
+    expect(Object.keys(provSplit.model)).toEqual(
+      expect.arrayContaining(["entityPrefix", "entityName"])
+    );
+    expect(provSplit.model.secretSetting).toBeUndefined();
+    expect(provSplit.transient.secretSetting).toBe("s3cr3t");
   });
 });
