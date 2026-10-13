@@ -39,8 +39,8 @@ export function findLastProtoBeforeObject(obj: object): object {
 }
 
 /**
- * @description Binds the Model class as the root prototype of the provided instance when not already a Model.
- * @summary Ensures objects created outside of the Model inheritance chain gain Model as their ultimate prototype to access model utilities.
+ * @description Binds Model.prototype as the root of the provided object's prototype chain when the object is not already a Model.
+ * @summary Ensures objects created outside of the Model inheritance chain gain Model as their ultimate prototype to access model utilities. Plain objects whose direct prototype is Object.prototype are bound directly to Model.prototype; for deeper chains, walks up to the root prototype (the last one whose parent is Object.prototype) and sets that prototype's parent to Model.prototype instead, preserving the intermediate ancestors.
  * @param {unknown} obj The object to bind to the Model prototype chain.
  * @return {void}
  * @function bindModelPrototype
@@ -56,8 +56,8 @@ export function findLastProtoBeforeObject(obj: object): object {
  *     Fn->>Fn: setPrototypeOf(obj, M)
  *     Fn-->>Caller: return
  *   else deep prototype chain
- *     Fn->>Fn: walk prototypes
- *     Fn->>Fn: setPrototypeOf(last, M)
+ *     Fn->>Fn: walk up to root prototype (parent is Object.prototype)
+ *     Fn->>Fn: setPrototypeOf(rootProto, M)
  *     Fn-->>Caller: return
  *   end
  * @memberOf module:decorator-validation
@@ -69,18 +69,12 @@ export function bindModelPrototype(obj: unknown) {
     Object.setPrototypeOf(objToOverride, prototype);
   }
 
-  const prototype: any = Object.getPrototypeOf(obj);
+  let prototype: any = Object.getPrototypeOf(obj);
   if (prototype === Object.prototype) {
     return bindPrototype(obj, Model.prototype);
   }
-  while (prototype !== Object.prototype) {
-    const prot = Object.getPrototypeOf(prototype);
-    if (
-      prot === Object.prototype ||
-      Object.getPrototypeOf(prot) === Object.prototype
-    ) {
-      return bindPrototype(prototype, Model.prototype);
-    }
+  while (Object.getPrototypeOf(prototype) !== Object.prototype) {
+    prototype = Object.getPrototypeOf(prototype);
   }
-  throw new Error("Could not find proper prototype to bind");
+  return bindPrototype(prototype, Model.prototype);
 }
