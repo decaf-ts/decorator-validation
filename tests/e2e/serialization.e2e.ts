@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 /**
  * @description E2E tests for serialization functionality
  * Tests serialize/deserialize and model registry against src/lib/dist builds

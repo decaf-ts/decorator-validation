@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 /**
  * @description E2E tests for hashing functionality
  * Tests hash, hashObj, Hashing registry against src/lib/dist builds

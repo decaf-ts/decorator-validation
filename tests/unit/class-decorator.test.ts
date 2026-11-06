@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 import { model, Model, ModelArg, ModelConstructor } from "../../src";
 import { Metadata, prop } from "@decaf-ts/decoration";
 

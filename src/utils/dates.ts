@@ -282,17 +282,17 @@ export function formatDate(date: Date, patternStr: string = "yyyy/MM/dd") {
  * @category Model
  */
 export function parseDate(format: string, v?: string | Date | number) {
-  let value: Date | undefined = undefined;
+  let value: Date | undefined;
 
   if (!v) return undefined;
 
   if (v instanceof Date)
     try {
       value = dateFromFormat(formatDate(v as Date, format), format);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e: any) {
+    } catch (e: unknown) {
       throw new Error(
-        sf("Could not convert date {0} to format: {1}", v.toString(), format)
+        sf("Could not convert date {0} to format: {1}", v.toString(), format),
+        { cause: e }
       );
     }
   else if (typeof v === "string") {
@@ -304,10 +304,10 @@ export function parseDate(format: string, v?: string | Date | number) {
     try {
       const d = new Date(v);
       value = dateFromFormat(formatDate(d, format), format);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    } catch (e: unknown) {
       throw new Error(
-        sf("Could not convert date {0} to format: {1}", v, format)
+        sf("Could not convert date {0} to format: {1}", v, format),
+        { cause: e }
       );
     }
   } else {

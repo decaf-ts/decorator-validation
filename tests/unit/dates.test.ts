@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 import { isEqual } from "../../src/utils/equality";
 
 describe("date functions", () => {

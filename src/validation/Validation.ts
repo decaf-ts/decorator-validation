@@ -109,7 +109,7 @@ export class Validation {
         Metadata.key(ValidationKeys.REFLECT, key)
       );
     } catch (e: unknown) {
-      throw new Error(`No decorator registered under ${key}: ${e}`);
+      throw new Error(`No decorator registered under ${key}: ${e}`, { cause: e });
     }
   }
 }

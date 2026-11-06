@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 /**
  * @description E2E tests for validation functionality
  * Tests hasErrors, validate, and error handling against src/lib/dist builds

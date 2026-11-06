@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 import { model, Model, ModelArg } from "../../src/model";
 import { required, email, minlength, list } from "../../src/validation";
 import "../../src/overrides";

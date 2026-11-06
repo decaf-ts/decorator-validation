@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 /**
  * @description E2E tests for construction functionality
  * Tests Model construction, builders, and fromObject/fromModel against src/lib/dist builds

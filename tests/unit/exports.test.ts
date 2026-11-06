@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 describe("lib import tests", () => {
   it("should import all modules without errors", () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports

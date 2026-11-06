@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 import { date, maxlength, model, Model, ModelArg } from "../../src/index";
 import { Metadata } from "@decaf-ts/decoration";
 

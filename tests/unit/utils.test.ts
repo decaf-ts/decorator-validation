@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 import { hashedBy, Hashing, model, Model, required } from "../../src";
 import type { ModelArg } from "../../src";
 import { HashingFunction } from "../../src";

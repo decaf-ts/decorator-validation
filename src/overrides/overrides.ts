@@ -142,7 +142,7 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
   const designTypes = (
     Array.isArray(designType) ? designType : [designType]
   ).map(
-    (e: any) => (e = typeof e === "function" && !e.name ? e() : e)
+    (e: any) => (typeof e === "function" && !e.name ? e() : e)
   ) as Constructor[];
 
   return { designTypes, designType };

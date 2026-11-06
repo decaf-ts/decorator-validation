@@ -212,7 +212,7 @@ export class ModelRegistryManager<M extends Model<true | false>>
       } catch (e: unknown) {
         descriptor = Object.getOwnPropertyDescriptor(proto, prop);
         if (!descriptor || descriptor.writable)
-          throw new Error(`Unable to write property ${prop} to model: ${e}`);
+          throw new Error(`Unable to write property ${prop} to model: ${e}`, { cause: e });
       }
 
       if (typeof (self as any)[prop] !== "object") continue;

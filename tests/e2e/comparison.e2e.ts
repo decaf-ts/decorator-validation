@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 /**
  * @description E2E tests for comparison functionality
  * Tests Model.compare method against src/lib/dist builds

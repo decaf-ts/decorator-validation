@@ -468,7 +468,8 @@ export class AttributeBuilder<M extends BuildableModel, N extends keyof M, T>
         decorator(target, propKey as any);
       } catch (e: unknown) {
         throw new Error(
-          `Failed to apply decorator to property "${this.attr as any}": ${e}`
+          `Failed to apply decorator to property "${this.attr as any}": ${e}`,
+          { cause: e }
         );
       }
     });

@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 /**
  * @description E2E tests for equality functionality
  * Tests equals, isEqual against src/lib/dist builds

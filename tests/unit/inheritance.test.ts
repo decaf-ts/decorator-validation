@@ -1,3 +1,4 @@
+import { it } from "@decaf-ts/for-testing";
 import { required, Model, model } from "../../src";
 import type { ModelArg } from "../../src";
 import { hashObj } from "../../src";
