@@ -10,6 +10,7 @@ import {
   parseDate,
   formatDate,
   twoDigitPad,
+  required,
 } from "../../src";
 import type { ModelArg } from "../../src";
 import { prop } from "@decaf-ts/decoration";
@@ -36,6 +37,17 @@ class TestModel2 extends Model {
 }
 
 const format = "dd-MM-yyyy";
+
+@model()
+class RequiredDateModel extends Model {
+  @required()
+  @date("dd/MM/yyyy")
+  dateProp?: Date;
+
+  constructor(model?: ModelArg<RequiredDateModel>) {
+    super(model);
+  }
+}
 
 @model()
 class TestModelInner extends Model {
@@ -283,5 +295,64 @@ describe("Date Integration", function () {
     expect(dm2.test?.dateProp?.getTime()).toEqual(
       md3.test?.dateProp?.getTime()
     );
+  });
+});
+
+describe("@date null handling", () => {
+  const value = new Date(2021, 0, 5);
+
+  it("keeps an assigned null so merges can tell a cleared date from a missing one", () => {
+    const m = new TestModel({ dateProp: value });
+    expect(m.dateProp).toBeInstanceOf(Date);
+    (m as any).dateProp = null;
+    expect(m.dateProp).toBeNull();
+    expect(JSON.parse(JSON.stringify(m)).dateProp).toBeNull();
+  });
+
+  it("clears to undefined when a model is built from it (like any other field)", () => {
+    const cleared = new TestModel({ dateProp: value });
+    (cleared as any).dateProp = null;
+    const rebuilt = new TestModel(
+      Object.assign({}, new TestModel({ dateProp: value }), cleared)
+    );
+    expect(rebuilt.dateProp).toBeUndefined();
+  });
+
+  it("accepts null on construction without logging a parse error", () => {
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const m = new TestModel({ dateProp: null } as any);
+      expect(m.dateProp).toBeUndefined();
+      expect(spy).not.toHaveBeenCalled();
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("keeps clearing with undefined", () => {
+    const m = new TestModel({ dateProp: value });
+    m.dateProp = undefined;
+    expect(m.dateProp).toBeUndefined();
+  });
+
+  it("parses dates again after being cleared", () => {
+    const m = new TestModel({ dateProp: value });
+    (m as any).dateProp = null;
+    m.dateProp = new Date(2021, 0, 6);
+    expect(m.dateProp).toBeInstanceOf(Date);
+    expect(m.dateProp?.getDate()).toBe(6);
+  });
+
+  it("yields a valid model once the cleared date is resolved by construction", () => {
+    const m = new TestModel({ dateProp: value });
+    (m as any).dateProp = null;
+    expect(new TestModel(Object.assign({}, m)).hasErrors()).toBeUndefined();
+  });
+
+  it("still fails @required for a null date", () => {
+    const m = new RequiredDateModel({ dateProp: value });
+    expect(m.hasErrors()).toBeUndefined();
+    (m as any).dateProp = null;
+    expect(m.hasErrors()).toBeDefined();
   });
 });

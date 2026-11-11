@@ -476,14 +476,19 @@ export function date(
       const values = new WeakMap();
       Object.defineProperty(target, propertyKey, {
         configurable: true,
-        set(this: any, newValue: string | Date) {
+        set(this: any, newValue: string | Date | null) {
           const descriptor = Object.getOwnPropertyDescriptor(this, propertyKey);
           if (!descriptor || descriptor.configurable)
             Object.defineProperty(this, propertyKey, {
               enumerable: true,
               configurable: false,
               get: () => values.get(this),
-              set: (newValue: string | Date | number) => {
+              set: (newValue: string | Date | number | null) => {
+                // null marks the date as cleared: keep it so merges (e.g. updates) clear the field
+                if (newValue === null) {
+                  values.set(this, null);
+                  return;
+                }
                 let val: Date | undefined;
                 try {
                   val = parseDate(format, newValue);
