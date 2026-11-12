@@ -36,24 +36,23 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
         : Record<keyof M, Record<string, ValidationMetadata>>;
   // Every property with a declared (design) type is type-checked by default, including
   // properties that only carry `@prop()` and therefore have no validation entry of their own.
-  // An explicit `@type(...)` on the property takes precedence.
+  // `getPropDesignTypes` already prefers an explicit `@type(...)` and resolves lazy
+  // `() => Model` references, so the stored entry always holds the RESOLVED accepted types
+  // (consumers such as core's relation handlers read them back via `Metadata.allowedTypes`).
   const existing = (meta.validation as any)?.[property] as
-    | Record<string, ValidationMetadata>
-    | undefined;
+    Record<string, ValidationMetadata> | undefined;
   let validationsForProp = existing;
-  if (!existing || !existing[ValidationKeys.TYPE]) {
-    const { designTypes } = Metadata.getPropDesignTypes(model, property);
-    // If the designtypes is object, we exclude it. It causes problems with pks.
-    if (designTypes?.length && designTypes[0] !== ReservedModels.OBJECT) {
-      const typeValidation = {
-        customTypes: designTypes,
-        message: DEFAULT_ERROR_MESSAGES.TYPE,
-        description: "defines the accepted types for the attribute",
-        async: false,
-      } as unknown as ValidationMetadata;
-      if (existing) existing[ValidationKeys.TYPE] = typeValidation;
-      else validationsForProp = { [ValidationKeys.TYPE]: typeValidation };
-    }
+  const { designTypes } = Metadata.getPropDesignTypes(model, property);
+  // If the designtypes is object, we exclude it. It causes problems with pks.
+  if (designTypes?.length && designTypes[0] !== ReservedModels.OBJECT) {
+    const typeValidation = {
+      customTypes: designTypes,
+      message: DEFAULT_ERROR_MESSAGES.TYPE,
+      description: "defines the accepted types for the attribute",
+      async: false,
+    } as unknown as ValidationMetadata;
+    if (existing) existing[ValidationKeys.TYPE] = typeValidation;
+    else validationsForProp = { [ValidationKeys.TYPE]: typeValidation };
   }
 
   if (!validationsForProp) return undefined;
@@ -113,8 +112,7 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
   const metadata = Metadata.get(model) as ExtendedMetadata<M> | undefined;
   const designTypeMeta = Metadata.type(model, prop as any);
   const validation = metadata?.[ValidationKeys.REFLECT]?.[prop] as
-    | Record<string, any>
-    | undefined;
+    Record<string, any> | undefined;
 
   if (!designTypeMeta && (!validation || !validation[ValidationKeys.TYPE]))
     return {};
@@ -135,8 +133,8 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
 
   const designTypes = (
     Array.isArray(designType) ? designType : [designType]
-  ).map(
-    (e: any) => (typeof e === "function" && !e.name ? e() : e)
+  ).map((e: any) =>
+    typeof e === "function" && !e.name ? e() : e
   ) as Constructor[];
 
   return { designTypes, designType };
@@ -188,9 +186,7 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
     if (!current) return [];
 
     const resolved = Metadata.constr(current);
-    const parent = Object.getPrototypeOf(resolved) as
-      | Constructor
-      | undefined;
+    const parent = Object.getPrototypeOf(resolved) as Constructor | undefined;
     const attributes = collect(parent);
     const props = Metadata.properties(current) ?? [];
 

@@ -1,4 +1,4 @@
-import { prop } from "@decaf-ts/decoration";
+import { Metadata, prop } from "@decaf-ts/decoration";
 import {
   list,
   minlength,
@@ -92,6 +92,22 @@ class Related extends Model {
  * `prop()` + `type([Model, ...pkTypes])`, `@oneToMany`/`@manyToMany` apply
  * `prop()` + `list([Model, ...pkTypes])`, so a non-populated relation (just the id) is valid.
  */
+/** Same, but with lazy `() => Model` references (as `@oneToOne(() => Other)` passes them). */
+@model()
+class LazyRelationLike extends Model {
+  @prop()
+  @type([() => Related, Number])
+  one?: Related | number;
+
+  @prop()
+  @list([() => Related, String])
+  many?: (Related | string)[];
+
+  constructor(arg?: ModelArg<LazyRelationLike>) {
+    super(arg);
+  }
+}
+
 @model()
 class RelationLike extends Model {
   @prop()
@@ -182,7 +198,9 @@ describe("type validation of @prop() properties", () => {
 
   describe("@type() overrides", () => {
     it("accepts every overridden type", () => {
-      expect(new Overridden({ value: "a", both: "b" }).hasErrors()).toBeUndefined();
+      expect(
+        new Overridden({ value: "a", both: "b" }).hasErrors()
+      ).toBeUndefined();
       expect(new Overridden({ value: 1, both: 2 }).hasErrors()).toBeUndefined();
     });
 
@@ -240,6 +258,31 @@ describe("type validation of @prop() properties", () => {
         one: new Related({ id: "nope" as any }),
       }).hasErrors();
       expect(errors?.["one.id"] ?? errors?.one).toBeDefined();
+    });
+  });
+
+  describe("lazy () => Model references in @type()", () => {
+    it("exposes the RESOLVED accepted types (read back by core relation handlers)", () => {
+      const allowed = (Metadata as any).allowedTypes(LazyRelationLike, "one");
+      expect(allowed).toEqual([Related, Number]);
+      const typeMeta = (Metadata as any).validationFor(
+        LazyRelationLike,
+        "one",
+        "type"
+      );
+      expect(typeMeta.customTypes).toEqual([Related, Number]);
+    });
+
+    it("accepts the model or its id and rejects anything else", () => {
+      expect(
+        new LazyRelationLike({
+          one: new Related({ id: 1 }),
+          many: ["a"],
+        }).hasErrors()
+      ).toBeUndefined();
+      expect(new LazyRelationLike({ one: 1 }).hasErrors()).toBeUndefined();
+      const errors: any = new LazyRelationLike({ one: "x" as any }).hasErrors();
+      expect(errors?.one?.type).toBeDefined();
     });
   });
 
