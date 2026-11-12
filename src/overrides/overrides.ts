@@ -34,42 +34,36 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
       : P extends keyof M
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>;
-  if (!meta.validation) return undefined;
-
-  if (!(meta.validation as ValidationMetadata)[ValidationKeys.TYPE]) {
+  // Every property with a declared (design) type is type-checked by default, including
+  // properties that only carry `@prop()` and therefore have no validation entry of their own.
+  // An explicit `@type(...)` on the property takes precedence.
+  const existing = (meta.validation as any)?.[property] as
+    | Record<string, ValidationMetadata>
+    | undefined;
+  let validationsForProp = existing;
+  if (!existing || !existing[ValidationKeys.TYPE]) {
     const { designTypes } = Metadata.getPropDesignTypes(model, property);
-
-    // Adds by default the type validation
     // If the designtypes is object, we exclude it. It causes problems with pks.
-    if (
-      (meta.validation as any)[property] &&
-      designTypes?.length &&
-      designTypes[0] !== ReservedModels.OBJECT
-    )
-      (meta.validation as any)[property][ValidationKeys.TYPE] = {
+    if (designTypes?.length && designTypes[0] !== ReservedModels.OBJECT) {
+      const typeValidation = {
         customTypes: designTypes,
         message: DEFAULT_ERROR_MESSAGES.TYPE,
         description: "defines the accepted types for the attribute",
         async: false,
-      };
+      } as unknown as ValidationMetadata;
+      if (existing) existing[ValidationKeys.TYPE] = typeValidation;
+      else validationsForProp = { [ValidationKeys.TYPE]: typeValidation };
+    }
   }
 
-  if (!key) {
-    const validationsForProp = meta.validation[property] as Record<
-      string,
-      ValidationMetadata
-    >;
+  if (!validationsForProp) return undefined;
+  if (!key)
     return validationsForProp as unknown as K extends string
       ? ValidationMetadata
       : P extends keyof M
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>;
-  }
-  const propValidation = meta.validation[property] as
-    | Record<string, ValidationMetadata>
-    | undefined;
-  if (!propValidation) return undefined;
-  return propValidation[key] as unknown as K extends string
+  return validationsForProp[key] as unknown as K extends string
     ? ValidationMetadata
     : P extends keyof M
       ? Record<string, ValidationMetadata>
