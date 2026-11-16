@@ -26,21 +26,27 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>)
   | undefined {
-  const meta = Metadata.get(model) as ExtendedMetadata<M> | undefined;
-  if (!meta) return undefined;
-  if (!property)
+  // Read only what is needed: `Metadata.get(model)` deep-clones the model's
+  // whole metadata, and validation calls this once per property.
+  if (!property) {
+    const meta = Metadata.get(model) as ExtendedMetadata<M> | undefined;
+    if (!meta) return undefined;
     return meta.validation as K extends string
       ? ValidationMetadata
       : P extends keyof M
         ? Record<string, ValidationMetadata>
         : Record<keyof M, Record<string, ValidationMetadata>>;
+  }
   // Every property with a declared (design) type is type-checked by default, including
   // properties that only carry `@prop()` and therefore have no validation entry of their own.
   // `getPropDesignTypes` already prefers an explicit `@type(...)` and resolves lazy
   // `() => Model` references, so the stored entry always holds the RESOLVED accepted types
   // (consumers such as core's relation handlers read them back via `Metadata.allowedTypes`).
-  const existing = (meta.validation as any)?.[property] as
-    Record<string, ValidationMetadata> | undefined;
+  const existing = Metadata.get(
+    model,
+    `${ValidationKeys.REFLECT}.${String(property)}`
+  ) as Record<string, ValidationMetadata> | undefined;
+  if (!existing && !Metadata.properties(model)) return undefined;
   let validationsForProp = existing;
   const { designTypes } = Metadata.getPropDesignTypes(model, property);
   // If the designtypes is object, we exclude it. It causes problems with pks.
@@ -109,10 +115,12 @@ import { ModelRegistryManager } from "../model/ModelRegistry";
   model: Constructor<M>,
   prop: keyof M
 ) {
-  const metadata = Metadata.get(model) as ExtendedMetadata<M> | undefined;
   const designTypeMeta = Metadata.type(model, prop as any);
-  const validation = metadata?.[ValidationKeys.REFLECT]?.[prop] as
-    Record<string, any> | undefined;
+  // Only the property's validation subtree (not a clone of all metadata).
+  const validation = Metadata.get(
+    model,
+    `${ValidationKeys.REFLECT}.${String(prop)}`
+  ) as Record<string, any> | undefined;
 
   if (!designTypeMeta && (!validation || !validation[ValidationKeys.TYPE]))
     return {};
