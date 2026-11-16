@@ -150,6 +150,11 @@ export function validateDecorator<
   }
   // skip async decorators if validateDecorators is called synchronously (async = false)
   if (!async && decorator.async) return undefined as any;
+  // `null` means "no value", like `undefined`: only @required judges it (and
+  // rejects it). Every other rule — type, length, format, … — applies to
+  // values, so a cleared optional property is valid.
+  if (value === null && decorator.key !== ValidationKeys.REQUIRED)
+    return toConditionalPromise(undefined, async);
   const decoratorProps =
     decorator.key === ModelKeys.TYPE ? [decorator] : decorator || {};
   const context = PathProxyEngine.create(model, {
